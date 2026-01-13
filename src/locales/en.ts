@@ -1,5 +1,6 @@
 const translations = {
   "UOM_format": "Unit format",
+  "accent_color": "Accent color",
   "access": "Access",
   "account_status": "Account status",
   "activate": "Activate",
@@ -303,6 +304,8 @@ const translations = {
   "navigation": "Navigation",
   "navs": {
     "welcome": "Welcome screen",
+    "your_chats": "Your chats",
+    "document_analysis": "Document Analysis",
     "dashboard": "Dashboard",
     "user": "User",
     "other": {

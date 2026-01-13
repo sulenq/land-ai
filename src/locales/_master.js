@@ -4,6 +4,14 @@ export const navs = {
     id: "Halaman utama",
     en: "Welcome screen",
   },
+  your_chats: {
+    id: "Obrolan anda",
+    en: "Your chats",
+  },
+  document_analysis: {
+    id: "Analisa Dokumen",
+    en: "Document Analysis",
+  },
   dashboard: {
     id: "Dashboard",
     en: "Dashboard",
@@ -462,6 +470,10 @@ export const main = {
 export const theme = {
   id: "Tema",
   en: "Theme",
+};
+export const accent_color = {
+  id: "Warna aksen",
+  en: "Accent color",
 };
 export const dark_mode = {
   id: "Mode gelap",

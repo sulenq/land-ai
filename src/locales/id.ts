@@ -1,5 +1,6 @@
 const translations = {
   "UOM_format": "Format satuan",
+  "accent_color": "Warna aksen",
   "access": "Akses",
   "account_status": "Status akun",
   "activate": "Aktifkan",
@@ -303,6 +304,8 @@ const translations = {
   "navigation": "Navigasi",
   "navs": {
     "welcome": "Halaman utama",
+    "your_chats": "Obrolan anda",
+    "document_analysis": "Analisa Dokumen",
     "dashboard": "Dashboard",
     "user": "Pengguna",
     "other": {

@@ -2,16 +2,13 @@ import { Interface__NavItem } from "@/constants/interfaces";
 import {
   ActivityIcon,
   BlocksIcon,
-  DatabaseIcon,
   LanguagesIcon,
-  LayoutDashboardIcon,
   MapPinIcon,
   PaletteIcon,
   SettingsIcon,
   ShieldHalfIcon,
   UserCogIcon,
   UserIcon,
-  UsersIcon,
 } from "lucide-react";
 
 export const PRIVATE_ROUTE_INDEX = "/pvt";
@@ -20,18 +17,6 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
   {
     groupLabelKey: "main",
     list: [
-      {
-        icon: LayoutDashboardIcon,
-        labelKey: "navs.dashboard",
-        path: `/dashboard`,
-        allowedRoles: [],
-      },
-      {
-        icon: UsersIcon,
-        labelKey: "navs.user",
-        path: `/user`,
-        allowedRoles: [],
-      },
       {
         icon: MapPinIcon,
         labelKey: "navs.other.index",
@@ -59,6 +44,45 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
           },
         ],
       },
+      // {
+      //   icon: LayoutDashboardIcon,
+      //   labelKey: "navs.dashboard",
+      //   path: `/dashboard`,
+      //   allowedRoles: [],
+      // },
+      // {
+      //   icon: UsersIcon,
+      //   labelKey: "navs.user",
+      //   path: `/user`,
+      //   allowedRoles: [],
+      // },
+      // {
+      //   icon: MapPinIcon,
+      //   labelKey: "navs.other.index",
+      //   path: `/other-navs`,
+      //   allowedRoles: [],
+      //   subMenus: [
+      //     {
+      //       list: [
+      //         {
+      //           labelKey: "navs.other.type",
+      //           path: `/other-navs/type`,
+      //           allowedRoles: [],
+      //         },
+      //         {
+      //           labelKey: "navs.other.category",
+      //           path: `/other-navs/category`,
+      //           allowedRoles: [],
+      //         },
+      //         {
+      //           labelKey: "navs.other.index",
+      //           path: `/other-navs/other`,
+      //           allowedRoles: [],
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
     ],
   },
 ];
@@ -67,26 +91,26 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
   {
     groupLabelKey: "other",
     list: [
-      {
-        icon: DatabaseIcon,
-        labelKey: "navs.master_data",
-        path: `/master-data`,
-        allowedRoles: [],
-        subMenus: [
-          {
-            groupLabelKey: "master_data_navs.hr.index",
-            list: [
-              {
-                icon: UserCogIcon,
-                labelKey: "master_data_navs.hr.employment_status",
-                path: `/master-data/employment-status`,
-                allowedRoles: [],
-                backPath: `/master-data`,
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   icon: DatabaseIcon,
+      //   labelKey: "navs.master_data",
+      //   path: `/master-data`,
+      //   allowedRoles: [],
+      //   subMenus: [
+      //     {
+      //       groupLabelKey: "master_data_navs.hr.index",
+      //       list: [
+      //         {
+      //           icon: UserCogIcon,
+      //           labelKey: "master_data_navs.hr.employment_status",
+      //           path: `/master-data/employment-status`,
+      //           allowedRoles: [],
+      //           backPath: `/master-data`,
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
       {
         icon: SettingsIcon,
         labelKey: "navs.settings",
