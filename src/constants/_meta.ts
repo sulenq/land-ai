@@ -1,7 +1,7 @@
 export const APP = {
-  name: "Exium.id",
-  defaultTitle: "Exium.id",
-  titleTemplate: "%s | Exium.id",
+  name: "Land.ai",
+  defaultTitle: "Land.ai",
+  titleTemplate: "%s | Land.ai",
   description: "",
   version: "1.0.0",
   lastUpdated: "2025-09-13",
