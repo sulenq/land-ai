@@ -377,7 +377,7 @@ export function buildPrivateNavsFromChats(
         {
           icon: SquarePenIcon,
           labelKey: "navs.new_chat",
-          path: "/welcome",
+          path: "/new-chat",
           allowedRoles: [],
         },
         {

@@ -873,6 +873,14 @@ export const msg_welcome_to_the_app = {
   id: "Selamat datang di ${appName}",
   en: "Welcome to ${appName}",
 };
+export const msg_welcome_context = {
+  id: "Konsultasi Hukum Pertanahan (Berbasis Dokumen Resmi)",
+  en: "Legal Consultation (Based on Official Documents)",
+};
+export const msg_discliamer = {
+  id: "Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
+  en: "Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
+};
 export const msg_welcome_1 = {
   id: "Semoga harimu berjalan lancar.",
   en: "Hope your day goes smoothly.",

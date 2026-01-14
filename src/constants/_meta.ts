@@ -1,5 +1,6 @@
 export const APP = {
   name: "Land.ai",
+  poweredBy: "Land.ai",
   defaultTitle: "Land.ai",
   titleTemplate: "%s | Land.ai",
   description: "",

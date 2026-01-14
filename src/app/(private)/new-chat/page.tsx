@@ -2,11 +2,12 @@
 
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import { HelperText } from "@/components/ui/helper-text";
 import { P } from "@/components/ui/p";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip } from "@/components/ui/tooltip";
-import BrandWatermark from "@/components/widget/BrandWatermark";
 import { AppIcon } from "@/components/widget/AppIcon";
+import BrandWatermark from "@/components/widget/BrandWatermark";
 import { PageContainer } from "@/components/widget/Page";
 import { APP } from "@/constants/_meta";
 import { CHAT_API_CREATE } from "@/constants/apis";
@@ -17,8 +18,8 @@ import { interpolateString, pluckString } from "@/utils/string";
 import { FieldsetRoot, Group, HStack, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon } from "lucide-react";
-import * as yup from "yup";
 import { useState } from "react";
+import * as yup from "yup";
 
 const Additional = () => {
   // States
@@ -66,7 +67,9 @@ const Additional = () => {
     </Group>
   );
 };
-const ChatForm = () => {
+const PromptComposer = () => {
+  const ID = "prompt_composer";
+
   // Hooks
   const { req, loading } = useRequest({
     id: CHAT_API_CREATE,
@@ -79,15 +82,13 @@ const ChatForm = () => {
   // States
   const formik = useFormik({
     validateOnChange: false,
-    initialValues: { msg: "" },
+    initialValues: { prompt: "" },
     validationSchema: yup
       .object()
-      .shape({ msg: yup.string().required(l.msg_required_form) }),
+      .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: (values) => {
-      console.debug({ msg: values });
-
       const payload = {
-        msg: values.msg,
+        prompt: values.prompt,
       };
 
       const config = {
@@ -103,19 +104,19 @@ const ChatForm = () => {
   });
 
   return (
-    <form id="chat_form" onSubmit={formik.handleSubmit}>
+    <form id={ID} onSubmit={formik.handleSubmit}>
       <FieldsetRoot>
         <CContainer
-          maxW={"500px"}
+          maxW={"600px"}
           p={3}
           bg={"bg.muted"}
           rounded={themeConfig.radii.container}
           mx={"auto"}
         >
           <Textarea
-            inputValue={formik.values.msg}
+            inputValue={formik.values.prompt}
             onChange={(inputValue) => {
-              formik.setFieldValue("msg", inputValue);
+              formik.setFieldValue("prompt", inputValue);
             }}
             p={0}
             px={"1 !important"}
@@ -134,22 +135,19 @@ const ChatForm = () => {
 
             <Group>
               <Tooltip content={l.upload_file}>
-                <Btn
-                  iconButton
-                  colorPalette={themeConfig.colorPalette}
-                  variant={"ghost"}
-                  disabled
-                >
+                <Btn iconButton variant={"ghost"} disabled>
                   <AppIcon icon={PaperclipIcon} />
                 </Btn>
               </Tooltip>
 
               <Tooltip content={l.submit}>
                 <Btn
+                  type="submit"
+                  form={ID}
                   iconButton
                   colorPalette={themeConfig.colorPalette}
                   loading={loading}
-                  disabled={!formik.values.msg}
+                  disabled={!formik.values.prompt}
                 >
                   <AppIcon icon={ArrowUpIcon} />
                 </Btn>
@@ -167,7 +165,7 @@ export default function Page() {
   const { l } = useLang();
 
   // States
-  const variantNumber = Math.floor(Math.random() * 16) + 1;
+  // const variantNumber = Math.floor(Math.random() * 16) + 1;
   // const user = getUserData();
 
   return (
@@ -192,10 +190,14 @@ export default function Page() {
             textAlign={"center"}
             mb={4}
           >
-            {pluckString(l, `msg_welcome_${variantNumber}`)}
+            {l.msg_welcome_context}
           </P>
 
-          <ChatForm />
+          <PromptComposer />
+
+          <HelperText textAlign={"center"} maxW={"500px"} mx={"auto"} mt={4}>
+            {l.msg_discliamer}
+          </HelperText>
         </VStack>
 
         <VStack>

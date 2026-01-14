@@ -39,7 +39,7 @@ interface Props extends StackProps {}
 
 const BASE_SIGNIN_EP = `/api/login`;
 const SIGNOUT_EP = "/api/rski/dashboard/logout";
-const INDEX_ROUTE = "/welcome";
+const INDEX_ROUTE = "/new-chat";
 
 const Signedin = (props: any) => {
   // Props
