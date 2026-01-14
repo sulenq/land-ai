@@ -123,6 +123,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const rename = {
+  id: "Ganti nama",
+  en: "Rename",
+};
+export const protect = {
+  id: "Lindungi",
+  en: "Protect",
+};
 export const your_chats = {
   id: "Obrolan Anda",
   en: "Your Chats",

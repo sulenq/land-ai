@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/popover";
 import SearchInput from "@/components/ui/search-input";
 import { Tooltip, TooltipProps } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
 import Clock from "@/components/widget/Clock";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
@@ -75,8 +76,12 @@ import { Box, Center, HStack, Icon } from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
+  EllipsisIcon,
+  PenIcon,
+  ShieldIcon,
   SidebarCloseIcon,
   SidebarOpenIcon,
+  TrashIcon,
   UserIcon,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -218,6 +223,7 @@ const YourChats = (props: any) => {
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<
@@ -240,11 +246,47 @@ const YourChats = (props: any) => {
           return (
             <NavTooltip key={chat.id} content={chat.title}>
               <NavLink to={`/chats/${chat.id}`} w={"full"}>
-                <Btn justifyContent={"start"} px={2} variant={"ghost"}>
+                <HStack
+                  h={["44px", null, "36px"]}
+                  pl={2}
+                  justifyContent={"space-between"}
+                  rounded={themeConfig.radii.component}
+                  _hover={{
+                    bg: "bg.muted",
+                  }}
+                  transition={"200ms"}
+                >
                   <P lineClamp={1} textAlign={"left"}>
                     {chat.title}
                   </P>
-                </Btn>
+
+                  <MenuRoot>
+                    <MenuTrigger asChild>
+                      <Btn iconButton size={"xs"} variant={"plain"}>
+                        <AppIcon icon={EllipsisIcon} />
+                      </Btn>
+                    </MenuTrigger>
+
+                    <MenuContent>
+                      <MenuItem value="rename">
+                        <AppIcon icon={PenIcon} /> {l.rename}
+                      </MenuItem>
+
+                      <MenuItem value="protect">
+                        <AppIcon icon={ShieldIcon} /> {l.protect}
+                      </MenuItem>
+
+                      <MenuItem
+                        value="delete"
+                        _hover={{
+                          color: "fg.error",
+                        }}
+                      >
+                        <AppIcon icon={TrashIcon} /> {l.delete_}
+                      </MenuItem>
+                    </MenuContent>
+                  </MenuRoot>
+                </HStack>
               </NavLink>
             </NavTooltip>
           );
