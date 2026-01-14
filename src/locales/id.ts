@@ -41,6 +41,7 @@ const translations = {
   "all": "Semua",
   "apply": "Terapkan",
   "april": "April",
+  "ask_land_ai": "Tanya Land.ai",
   "august": "Agustus",
   "back": "Kembali",
   "before": "Sebelum",
@@ -304,6 +305,7 @@ const translations = {
   "navigation": "Navigasi",
   "navs": {
     "welcome": "Halaman utama",
+    "new_chat": "Obrolan Baru",
     "your_chats": "Obrolan Anda",
     "document_analysis": "Analisa Dokumen",
     "dashboard": "Dashboard",
@@ -485,6 +487,7 @@ const translations = {
   "update": "Ubah",
   "updated": "Diubah",
   "updating": "Memperbarui",
+  "upload_file": "Unggah file",
   "upload_new_avatar": "Unggah avatar baru",
   "uploaded": "Sudah diunggah",
   "uploaded_file": "File yang sudah diunggah",

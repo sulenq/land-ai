@@ -10,7 +10,7 @@ import { isDateObject } from "./date";
 import { getTimezoneOffsetMs, getUserTimezone } from "./time";
 import { parseISO, isValid } from "date-fns";
 import { toZonedTime, format as formatTz } from "date-fns-tz";
-import { FileTextIcon, MessageSquareIcon } from "lucide-react";
+import { FileTextIcon, MessageSquareIcon, SquarePenIcon } from "lucide-react";
 import { ChatListResponse, Interface__NavItem } from "@/constants/interfaces";
 
 export const formatDate = (
@@ -374,6 +374,12 @@ export function buildPrivateNavsFromChats(
     {
       groupLabelKey: "main",
       list: [
+        {
+          icon: SquarePenIcon,
+          labelKey: "navs.new_chat",
+          path: "/welcome",
+          allowedRoles: [],
+        },
         {
           icon: MessageSquareIcon,
           labelKey: "navs.your_chats",

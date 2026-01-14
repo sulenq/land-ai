@@ -41,6 +41,7 @@ const translations = {
   "all": "All",
   "apply": "Apply",
   "april": "April",
+  "ask_land_ai": "Ask Land.ai",
   "august": "August",
   "back": "Back",
   "before": "Before",
@@ -304,6 +305,7 @@ const translations = {
   "navigation": "Navigation",
   "navs": {
     "welcome": "Welcome screen",
+    "new_chat": "New Chat",
     "your_chats": "Your Chats",
     "document_analysis": "Document Analysis",
     "dashboard": "Dashboard",
@@ -485,6 +487,7 @@ const translations = {
   "update": "Update",
   "updated": "Updated",
   "updating": "Updating",
+  "upload_file": "Upload file",
   "upload_new_avatar": "Upload new avatar",
   "uploaded": "Uploaded",
   "uploaded_file": "Uploaded file",

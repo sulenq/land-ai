@@ -4,6 +4,10 @@ export const navs = {
     id: "Halaman utama",
     en: "Welcome screen",
   },
+  new_chat: {
+    id: "Obrolan Baru",
+    en: "New Chat",
+  },
   your_chats: {
     id: "Obrolan Anda",
     en: "Your Chats",
@@ -119,6 +123,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const upload_file = {
+  id: "Unggah file",
+  en: "Upload file",
+};
+export const ask_land_ai = {
+  id: "Tanya Land.ai",
+  en: "Ask Land.ai",
+};
 export const example_UI = {
   id: "Contoh UI",
   en: "Example UI",
