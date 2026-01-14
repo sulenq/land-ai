@@ -479,9 +479,7 @@ const DesktopLayout = (props: any) => {
     !item.allowedRoles ||
     item.allowedRoles.length === 0 ||
     (roleId && item.allowedRoles.includes(roleId));
-
   const qNormalized = q?.toLowerCase().trim();
-
   const resolvedNavs = PRIVATE_NAVS.map((nav) => {
     const filteredList = nav.list
       .map((item) => {
