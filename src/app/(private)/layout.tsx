@@ -490,7 +490,10 @@ const DesktopLayout = (props: LayoutProps) => {
     .map((nav) => {
       const filteredList = nav.list
         .map((item) => {
-          const labelMain = pluckString(l, item.labelKey)?.toLowerCase() || "";
+          const labelMain =
+            item.label?.toLowerCase() ||
+            pluckString(l, item.labelKey)?.toLowerCase() ||
+            "";
           const allowedMain = isAllowed(item, roleId);
 
           if (!item.subMenus || item.subMenus.length === 0) {
@@ -531,9 +534,11 @@ const DesktopLayout = (props: LayoutProps) => {
               ...sub,
               list: (sub.list ?? []).filter((subItem) => {
                 if (!isAllowed(subItem, roleId)) return false;
-                const lbl =
-                  pluckString(l, subItem.labelKey)?.toLowerCase() || "";
-                return qNormalized && lbl.includes(qNormalized);
+                const subLabel =
+                  subItem.label?.toLowerCase() ||
+                  pluckString(l, subItem.labelKey)?.toLowerCase() ||
+                  "";
+                return qNormalized && subLabel.includes(qNormalized);
               }),
             }))
             .filter((s) => (s.list ?? []).length > 0);
@@ -843,7 +848,10 @@ const DesktopLayout = (props: LayoutProps) => {
                               )}
 
                               {navsExpanded && (
-                                <AccordionRoot multiple>
+                                <AccordionRoot
+                                  multiple
+                                  value={search ? [nav.path] : undefined}
+                                >
                                   <AccordionItem
                                     value={nav.path}
                                     border="none"

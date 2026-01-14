@@ -180,17 +180,6 @@ const BasicAuthForm = (props: any) => {
 
   return (
     <CContainer {...restProps}>
-      {/* TODO disable in real dev */}
-      <P
-        maxW={"250px"}
-        fontWeight={"medium"}
-        textAlign={"center"}
-        mx={"auto"}
-        mb={2}
-      >
-        Just click the Sign In button to go to the demo page.
-      </P>
-
       <form id="signin_form" onSubmit={formik.handleSubmit}>
         <FieldsetRoot disabled={loading}>
           <Field
