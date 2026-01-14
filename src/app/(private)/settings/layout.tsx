@@ -24,7 +24,7 @@ import { HStack, Icon } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const NAVS = OTHER_PRIVATE_NAVS[0].list[0].subMenus!;
+const NAVS = OTHER_PRIVATE_NAVS[0].list[2].subMenus!;
 const NAVS_COLOR = "ibody";
 const ROOT_PATH = `/settings`;
 

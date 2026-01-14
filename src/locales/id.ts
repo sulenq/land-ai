@@ -504,6 +504,7 @@ const translations = {
   "year": "Tahun",
   "yearly_sales": "Penjualan tahunan",
   "yes": "Ya",
+  "your_chats": "Obrolan Anda",
   "zoom_in": "Perbesar",
   "zoom_out": "Perkecil",
   "zoom_reset": "Reset zoom"

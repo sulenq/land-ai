@@ -168,10 +168,8 @@ export interface Interface__SelectOption {
 
 // Modul 1 - AI Chats
 // Chats
-export interface ChatListResponse {
-  chats: {
-    id: string;
-    title: string;
-    updatedAt: string;
-  }[];
+export interface Interface__YourChat {
+  id: string;
+  title: string;
+  updatedAt: string;
 }

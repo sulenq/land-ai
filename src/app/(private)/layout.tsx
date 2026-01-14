@@ -9,6 +9,7 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import { CSpinner } from "@/components/ui/c-spinner";
 import { Divider } from "@/components/ui/divider";
 import {
   MenuContent,
@@ -27,7 +28,9 @@ import {
 import SearchInput from "@/components/ui/search-input";
 import { Tooltip, TooltipProps } from "@/components/ui/tooltip";
 import Clock from "@/components/widget/Clock";
+import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
+import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import HScroll from "@/components/widget/HScroll";
 import { LucideIcon } from "@/components/widget/Icon";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
@@ -37,8 +40,12 @@ import { NavBreadcrumb, TopBar } from "@/components/widget/Page";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
-import { CHAT_LIST_RESPONSE } from "@/constants/dummyData";
-import { Interface__NavItem } from "@/constants/interfaces";
+import { CHAT_API_YOUR_CHATS } from "@/constants/apis";
+import { DUMMY_YOUR_CHATS } from "@/constants/dummyData";
+import {
+  Interface__NavItem,
+  Interface__YourChat,
+} from "@/constants/interfaces";
 import { OTHER_PRIVATE_NAVS, PRIVATE_NAVS } from "@/constants/navs";
 import { Props__Layout, Props__NavLink } from "@/constants/props";
 import {
@@ -50,6 +57,7 @@ import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useClickOutside from "@/hooks/useClickOutside";
+import useDataState from "@/hooks/useDataState";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import useRequest from "@/hooks/useRequest";
 import useScreen from "@/hooks/useScreen";
@@ -204,9 +212,80 @@ const DesktoMiniMyProfile = (props: any) => {
     </PopoverRoot>
   );
 };
+const YourChats = (props: any) => {
+  // Props
+  const { navsExpanded, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // States
+  const { error, initialLoading, data, onRetry } = useDataState<
+    Interface__YourChat[]
+  >({
+    initialData: DUMMY_YOUR_CHATS,
+    url: CHAT_API_YOUR_CHATS,
+    dataResource: false,
+  });
+
+  // Render
+  const render = {
+    loading: <CSpinner />,
+    error: <FeedbackRetry onRetry={onRetry} />,
+    empty: <FeedbackNoData />,
+    notFound: <FeedbackNotFound />,
+    loaded: (
+      <>
+        {data?.map((chat) => {
+          return (
+            <NavTooltip key={chat.id} content={chat.title}>
+              <NavLink to={`/chats/${chat.id}`} w={"full"}>
+                <Btn justifyContent={"start"} px={2} variant={"ghost"}>
+                  <P lineClamp={1} textAlign={"left"}>
+                    {chat.title}
+                  </P>
+                </Btn>
+              </NavLink>
+            </NavTooltip>
+          );
+        })}
+      </>
+    ),
+  };
+
+  let content = null;
+
+  if (initialLoading) {
+    content = render.loading;
+  } else if (error) {
+    content = render.error;
+  } else if (!data || isEmptyArray(data)) {
+    content = render.empty;
+  } else {
+    content = render.loaded;
+  }
+
+  return (
+    <CContainer gap={1} {...restProps}>
+      {navsExpanded && !isEmptyArray(data) && (
+        <P
+          fontSize={"sm"}
+          fontWeight={"semibold"}
+          letterSpacing={"wide"}
+          color={"fg.subtle"}
+          ml={1}
+        >
+          {l.your_chats}
+        </P>
+      )}
+
+      <CContainer>{content}</CContainer>
+    </CContainer>
+  );
+};
 
 interface LayoutProps extends Props__Layout {
-  navs: Interface__NavItem[];
+  navs?: Interface__NavItem[];
 }
 const MobileLayout = (props: LayoutProps) => {
   // Props
@@ -462,7 +541,11 @@ const MobileLayout = (props: LayoutProps) => {
 };
 const DesktopLayout = (props: LayoutProps) => {
   // Props
-  const { children, navs, ...restProps } = props;
+  const {
+    children,
+    // navs,
+    ...restProps
+  } = props;
 
   // Contexts
   const { l } = useLang();
@@ -486,72 +569,70 @@ const DesktopLayout = (props: LayoutProps) => {
     item.allowedRoles.length === 0 ||
     (roleId && item.allowedRoles.includes(roleId));
   const qNormalized = q?.toLowerCase().trim();
-  const resolvedNavs = navs
-    .map((nav) => {
-      const filteredList = nav.list
-        .map((item) => {
-          const labelMain =
-            item.label?.toLowerCase() ||
-            pluckString(l, item.labelKey)?.toLowerCase() ||
-            "";
-          const allowedMain = isAllowed(item, roleId);
+  const resolvedNavs = PRIVATE_NAVS.map((nav) => {
+    const filteredList = nav.list
+      .map((item) => {
+        const labelMain =
+          item.label?.toLowerCase() ||
+          pluckString(l, item.labelKey)?.toLowerCase() ||
+          "";
+        const allowedMain = isAllowed(item, roleId);
 
-          if (!item.subMenus || item.subMenus.length === 0) {
-            if (!qNormalized) return allowedMain ? item : null;
-            const isMatchMain = qNormalized && labelMain.includes(qNormalized);
-            return allowedMain && isMatchMain ? item : null;
-          }
-
-          const subsFilteredByRole = item.subMenus
-            .map((sub) => ({
-              ...sub,
-              list: (sub.list ?? []).filter((subItem) =>
-                isAllowed(subItem, roleId)
-              ),
-            }))
-            .filter((s) => (s.list ?? []).length > 0);
-
-          if (!qNormalized) {
-            if (allowedMain)
-              return subsFilteredByRole.length > 0
-                ? { ...item, subMenus: subsFilteredByRole }
-                : { ...item, subMenus: undefined };
-            return subsFilteredByRole.length > 0
-              ? { ...item, subMenus: subsFilteredByRole }
-              : null;
-          }
-
+        if (!item.subMenus || item.subMenus.length === 0) {
+          if (!qNormalized) return allowedMain ? item : null;
           const isMatchMain = qNormalized && labelMain.includes(qNormalized);
+          return allowedMain && isMatchMain ? item : null;
+        }
 
-          if (isMatchMain && allowedMain) {
+        const subsFilteredByRole = item.subMenus
+          .map((sub) => ({
+            ...sub,
+            list: (sub.list ?? []).filter((subItem) =>
+              isAllowed(subItem, roleId)
+            ),
+          }))
+          .filter((s) => (s.list ?? []).length > 0);
+
+        if (!qNormalized) {
+          if (allowedMain)
             return subsFilteredByRole.length > 0
               ? { ...item, subMenus: subsFilteredByRole }
               : { ...item, subMenus: undefined };
-          }
-
-          const matchedSubs = item.subMenus
-            .map((sub) => ({
-              ...sub,
-              list: (sub.list ?? []).filter((subItem) => {
-                if (!isAllowed(subItem, roleId)) return false;
-                const subLabel =
-                  subItem.label?.toLowerCase() ||
-                  pluckString(l, subItem.labelKey)?.toLowerCase() ||
-                  "";
-                return qNormalized && subLabel.includes(qNormalized);
-              }),
-            }))
-            .filter((s) => (s.list ?? []).length > 0);
-
-          return matchedSubs.length > 0
-            ? { ...item, subMenus: matchedSubs }
+          return subsFilteredByRole.length > 0
+            ? { ...item, subMenus: subsFilteredByRole }
             : null;
-        })
-        .filter(Boolean) as typeof nav.list;
+        }
 
-      return filteredList.length > 0 ? { ...nav, list: filteredList } : null;
-    })
-    .filter(Boolean) as typeof PRIVATE_NAVS;
+        const isMatchMain = qNormalized && labelMain.includes(qNormalized);
+
+        if (isMatchMain && allowedMain) {
+          return subsFilteredByRole.length > 0
+            ? { ...item, subMenus: subsFilteredByRole }
+            : { ...item, subMenus: undefined };
+        }
+
+        const matchedSubs = item.subMenus
+          .map((sub) => ({
+            ...sub,
+            list: (sub.list ?? []).filter((subItem) => {
+              if (!isAllowed(subItem, roleId)) return false;
+              const subLabel =
+                subItem.label?.toLowerCase() ||
+                pluckString(l, subItem.labelKey)?.toLowerCase() ||
+                "";
+              return qNormalized && subLabel.includes(qNormalized);
+            }),
+          }))
+          .filter((s) => (s.list ?? []).length > 0);
+
+        return matchedSubs.length > 0
+          ? { ...item, subMenus: matchedSubs }
+          : null;
+      })
+      .filter(Boolean) as typeof nav.list;
+
+    return filteredList.length > 0 ? { ...nav, list: filteredList } : null;
+  }).filter(Boolean) as typeof PRIVATE_NAVS;
 
   // If navsExpanded, focus the search input
   useEffect(() => {
@@ -652,7 +733,7 @@ const DesktopLayout = (props: LayoutProps) => {
           </CContainer>
         )}
 
-        {/* Navs List */}
+        {/* Navs */}
         <CContainer
           className="scrollY"
           overflowX={"clip"}
@@ -661,6 +742,7 @@ const DesktopLayout = (props: LayoutProps) => {
           p={3}
           pr={`calc(12px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
         >
+          {/* Private Navs */}
           <CContainer gap={1}>
             {isEmptyArray(resolvedNavs) && <FeedbackNotFound />}
 
@@ -1045,7 +1127,13 @@ const DesktopLayout = (props: LayoutProps) => {
               })}
           </CContainer>
 
-          <CContainer gap={1} mt={"auto"}>
+          {/* Your Chats */}
+          <CContainer mt={2}>
+            <YourChats navsExpanded={navsExpanded} />
+          </CContainer>
+
+          {/* Other Navs */}
+          {/* <CContainer gap={1} mt={"auto"}>
             {OTHER_PRIVATE_NAVS[0].list.map((nav) => {
               return (
                 <NavLink key={nav.path} to={nav.path} w={"full"}>
@@ -1076,15 +1164,13 @@ const DesktopLayout = (props: LayoutProps) => {
                 </NavLink>
               );
             })}
-          </CContainer>
+          </CContainer> */}
+        </CContainer>
 
-          <CContainer>
-            <Divider my={2} />
+        <Divider />
 
-            <CContainer mt={1}>
-              <DesktoMiniMyProfile navsExpanded={navsExpanded} />
-            </CContainer>
-          </CContainer>
+        <CContainer p={3}>
+          <DesktoMiniMyProfile navsExpanded={navsExpanded} />
         </CContainer>
       </CContainer>
 
@@ -1121,18 +1207,14 @@ const TheApp = (props: Props__Layout) => {
   const iss = useIsSmScreenWidth();
 
   // States
-  const NAVS = buildPrivateNavsFromChats(CHAT_LIST_RESPONSE.chats);
+  const NAVS = buildPrivateNavsFromChats(DUMMY_YOUR_CHATS);
 
   return (
     <CContainer id="app_layout" h={"100dvh"} {...restProps}>
-      {NAVS && (
-        <>
-          {iss ? (
-            <MobileLayout navs={NAVS} {...props} />
-          ) : (
-            <DesktopLayout navs={NAVS} {...props} />
-          )}
-        </>
+      {iss ? (
+        <MobileLayout navs={NAVS} {...props} />
+      ) : (
+        <DesktopLayout navs={NAVS} {...props} />
       )}
     </CContainer>
   );

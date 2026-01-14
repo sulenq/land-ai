@@ -2,11 +2,13 @@ import { Interface__NavItem } from "@/constants/interfaces";
 import {
   ActivityIcon,
   BlocksIcon,
+  DatabaseIcon,
+  FileTextIcon,
   LanguagesIcon,
-  MessageSquareIcon,
   PaletteIcon,
   SettingsIcon,
   ShieldHalfIcon,
+  SquarePenIcon,
   UserCogIcon,
   UserIcon,
 } from "lucide-react";
@@ -18,26 +20,15 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
     groupLabelKey: "main",
     list: [
       {
-        icon: MessageSquareIcon,
-        labelKey: "navs.your_chats",
-        path: `/chats`,
+        icon: SquarePenIcon,
+        labelKey: "navs.new_chat",
+        path: "/new-chat",
         allowedRoles: [],
-        subMenus: [
-          {
-            list: [
-              {
-                labelKey: "navs.other.type",
-                path: `/chats/{chatId}`,
-                allowedRoles: [],
-              },
-            ],
-          },
-        ],
       },
       {
-        icon: MessageSquareIcon,
+        icon: FileTextIcon,
         labelKey: "navs.document_analysis",
-        path: `/document-analysis`,
+        path: "/document-analysis",
         allowedRoles: [],
       },
       // {
@@ -87,26 +78,32 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
   {
     groupLabelKey: "other",
     list: [
-      // {
-      //   icon: DatabaseIcon,
-      //   labelKey: "navs.master_data",
-      //   path: `/master-data`,
-      //   allowedRoles: [],
-      //   subMenus: [
-      //     {
-      //       groupLabelKey: "master_data_navs.hr.index",
-      //       list: [
-      //         {
-      //           icon: UserCogIcon,
-      //           labelKey: "master_data_navs.hr.employment_status",
-      //           path: `/master-data/employment-status`,
-      //           allowedRoles: [],
-      //           backPath: `/master-data`,
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // },
+      {
+        icon: UserIcon,
+        labelKey: "navs.profile",
+        path: `/settings/profile`,
+        allowedRoles: [],
+      },
+      {
+        icon: DatabaseIcon,
+        labelKey: "navs.master_data",
+        path: `/master-data`,
+        allowedRoles: [],
+        subMenus: [
+          {
+            groupLabelKey: "master_data_navs.hr.index",
+            list: [
+              {
+                icon: UserCogIcon,
+                labelKey: "master_data_navs.hr.employment_status",
+                path: `/master-data/employment-status`,
+                allowedRoles: [],
+                backPath: `/master-data`,
+              },
+            ],
+          },
+        ],
+      },
       {
         icon: SettingsIcon,
         labelKey: "navs.settings",

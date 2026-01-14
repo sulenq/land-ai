@@ -6,9 +6,11 @@ import { Divider } from "@/components/ui/divider";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
+import { OTHER_PRIVATE_NAVS } from "@/constants/navs";
 import { SVGS_PATH } from "@/constants/paths";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
@@ -17,8 +19,9 @@ import { useThemeConfig } from "@/context/useThemeConfig";
 import useRequest from "@/hooks/useRequest";
 import { getUserData } from "@/utils/auth";
 import { back, removeStorage } from "@/utils/client";
+import { pluckString } from "@/utils/string";
 import { Icon, StackProps } from "@chakra-ui/react";
-import { LogOutIcon, UserIcon } from "lucide-react";
+import { LogOutIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 const SIGNOUT_EP = "/api/rski/dashboard/logout";
@@ -103,28 +106,30 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
       <Divider />
 
       <CContainer gap={1} p={"6px"}>
-        <NavLink to={`/settings/profile`} w={"full"}>
-          <Btn
-            clicky={false}
-            px={2}
-            variant={"ghost"}
-            justifyContent={"start"}
-            pos={"relative"}
-            onClick={() => {
-              onClose?.();
-            }}
-          >
-            <Icon boxSize={BASE_ICON_BOX_SIZE}>
-              <LucideIcon icon={UserIcon} />
-            </Icon>
+        {OTHER_PRIVATE_NAVS[0].list.map((nav) => {
+          return (
+            <NavLink key={nav.path} to={nav.path} w={"full"}>
+              <Btn
+                clicky={false}
+                px={2}
+                variant={"ghost"}
+                justifyContent={"start"}
+                pos={"relative"}
+                onClick={() => {
+                  onClose?.();
+                }}
+              >
+                <AppIcon icon={nav.icon} />
 
-            {l.my_profile}
+                {nav.label || pluckString(l, nav.labelKey)}
 
-            {pathname.includes("/profile") && (
-              <DotIndicator ml={"auto"} mr={1} />
-            )}
-          </Btn>
-        </NavLink>
+                {pathname.includes(nav.path) && (
+                  <DotIndicator ml={"auto"} mr={1} />
+                )}
+              </Btn>
+            </NavLink>
+          );
+        })}
 
         <ConfirmationDisclosureTrigger
           id="signout"

@@ -123,6 +123,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const your_chats = {
+  id: "Obrolan Anda",
+  en: "Your Chats",
+};
 export const upload_file = {
   id: "Unggah file",
   en: "Upload file",

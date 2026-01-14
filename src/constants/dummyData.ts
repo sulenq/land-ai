@@ -1,19 +1,57 @@
-import { ChatListResponse } from "@/constants/interfaces";
+import { Interface__YourChat } from "@/constants/interfaces";
 
-export const CHAT_LIST_RESPONSE: ChatListResponse = {
-  chats: [
-    {
-      id: "c_001",
-      title: "Analisis SHM Jakarta Selatan",
-      updatedAt: "2026-01-10T10:12:00Z",
-    },
-    {
-      id: "c_002",
-      title: "Status tanah warisan",
-      updatedAt: "2026-01-09T08:30:00Z",
-    },
-  ],
-};
+export const DUMMY_YOUR_CHATS: Interface__YourChat[] = [
+  {
+    id: "1",
+    title: "Analisis SHM Jakarta Selatan",
+    updatedAt: "2026-01-10T10:12:00Z",
+  },
+  {
+    id: "2",
+    title: "Status tanah warisan orang tua",
+    updatedAt: "2026-01-09T08:30:00Z",
+  },
+  {
+    id: "3",
+    title: "Proses balik nama sertifikat",
+    updatedAt: "2026-01-08T14:45:00Z",
+  },
+  {
+    id: "4",
+    title: "Perbedaan SHM dan HGB",
+    updatedAt: "2026-01-08T09:10:00Z",
+  },
+  {
+    id: "5",
+    title: "Pajak jual beli tanah",
+    updatedAt: "2026-01-07T16:20:00Z",
+  },
+  {
+    id: "6",
+    title: "Legalitas tanah girik",
+    updatedAt: "2026-01-07T11:05:00Z",
+  },
+  {
+    id: "7",
+    title: "Sengketa batas tanah tetangga",
+    updatedAt: "2026-01-06T19:40:00Z",
+  },
+  {
+    id: "8",
+    title: "Syarat pemecahan sertifikat",
+    updatedAt: "2026-01-06T13:15:00Z",
+  },
+  {
+    id: "9",
+    title: "Tanah wakaf dan status hukumnya",
+    updatedAt: "2026-01-05T10:00:00Z",
+  },
+  {
+    id: "10",
+    title: "IMB dan perizinan bangunan",
+    updatedAt: "2026-01-04T17:25:00Z",
+  },
+];
 
 const generate1D = () => {
   let v23 = 80;

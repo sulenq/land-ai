@@ -504,6 +504,7 @@ const translations = {
   "year": "Year",
   "yearly_sales": "Yearly sales",
   "yes": "Yes",
+  "your_chats": "Your Chats",
   "zoom_in": "Zoom in",
   "zoom_out": "Zoom out",
   "zoom_reset": "Reset zoom"
