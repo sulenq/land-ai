@@ -9,7 +9,6 @@ import { P } from "@/components/ui/p";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
 import { LucideIcon } from "@/components/widget/Icon";
-import { DotIndicator } from "@/components/widget/Indicator";
 import { OTHER_PRIVATE_NAVS } from "@/constants/navs";
 import { SVGS_PATH } from "@/constants/paths";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
@@ -22,7 +21,7 @@ import { back, removeStorage } from "@/utils/client";
 import { pluckString } from "@/utils/string";
 import { Icon, StackProps } from "@chakra-ui/react";
 import { LogOutIcon } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const SIGNOUT_EP = "/api/rski/dashboard/logout";
 
@@ -46,7 +45,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
   });
   const router = useRouter();
   router.prefetch("/");
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
   // States
   const user = getUserData();
@@ -123,9 +122,9 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
 
                 {nav.label || pluckString(l, nav.labelKey)}
 
-                {pathname.includes(nav.path) && (
+                {/* {pathname.includes(nav.path) && (
                   <DotIndicator ml={"auto"} mr={1} />
-                )}
+                )} */}
               </Btn>
             </NavLink>
           );
