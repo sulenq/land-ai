@@ -304,7 +304,7 @@ const translations = {
   "navigation": "Navigasi",
   "navs": {
     "welcome": "Halaman utama",
-    "your_chats": "Obrolan anda",
+    "your_chats": "Obrolan Anda",
     "document_analysis": "Analisa Dokumen",
     "dashboard": "Dashboard",
     "user": "Pengguna",

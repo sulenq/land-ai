@@ -10,6 +10,8 @@ import { isDateObject } from "./date";
 import { getTimezoneOffsetMs, getUserTimezone } from "./time";
 import { parseISO, isValid } from "date-fns";
 import { toZonedTime, format as formatTz } from "date-fns-tz";
+import { FileTextIcon, MessageSquareIcon } from "lucide-react";
+import { ChatListResponse, Interface__NavItem } from "@/constants/interfaces";
 
 export const formatDate = (
   date?: Date | string | undefined,
@@ -364,3 +366,37 @@ export const formatDuration = (
       return "0 detik";
   }
 };
+
+export function buildPrivateNavsFromChats(
+  chats: ChatListResponse["chats"]
+): Interface__NavItem[] {
+  return [
+    {
+      groupLabelKey: "main",
+      list: [
+        {
+          icon: MessageSquareIcon,
+          labelKey: "navs.your_chats",
+          path: "/chats",
+          allowedRoles: [],
+          subMenus: [
+            {
+              list: chats.map((chat) => ({
+                labelKey: chat.title,
+                label: chat.title,
+                path: `/chats/${chat.id}`,
+                allowedRoles: [],
+              })),
+            },
+          ],
+        },
+        {
+          icon: FileTextIcon,
+          labelKey: "navs.document_analysis",
+          path: "/document-analysis",
+          allowedRoles: [],
+        },
+      ],
+    },
+  ];
+}

@@ -5,8 +5,8 @@ export const navs = {
     en: "Welcome screen",
   },
   your_chats: {
-    id: "Obrolan anda",
-    en: "Your chats",
+    id: "Obrolan Anda",
+    en: "Your Chats",
   },
   document_analysis: {
     id: "Analisa Dokumen",

@@ -1,3 +1,20 @@
+import { ChatListResponse } from "@/constants/interfaces";
+
+export const CHAT_LIST_RESPONSE: ChatListResponse = {
+  chats: [
+    {
+      id: "c_001",
+      title: "Analisis SHM Jakarta Selatan",
+      updatedAt: "2026-01-10T10:12:00Z",
+    },
+    {
+      id: "c_002",
+      title: "Status tanah warisan",
+      updatedAt: "2026-01-09T08:30:00Z",
+    },
+  ],
+};
+
 const generate1D = () => {
   let v23 = 80;
   let v24 = 90;

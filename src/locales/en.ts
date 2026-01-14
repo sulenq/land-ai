@@ -304,7 +304,7 @@ const translations = {
   "navigation": "Navigation",
   "navs": {
     "welcome": "Welcome screen",
-    "your_chats": "Your chats",
+    "your_chats": "Your Chats",
     "document_analysis": "Document Analysis",
     "dashboard": "Dashboard",
     "user": "User",

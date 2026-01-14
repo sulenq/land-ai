@@ -37,6 +37,8 @@ import { NavBreadcrumb, TopBar } from "@/components/widget/Page";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
+import { CHAT_LIST_RESPONSE } from "@/constants/dummyData";
+import { Interface__NavItem } from "@/constants/interfaces";
 import { OTHER_PRIVATE_NAVS, PRIVATE_NAVS } from "@/constants/navs";
 import { Props__Layout, Props__NavLink } from "@/constants/props";
 import {
@@ -58,6 +60,7 @@ import {
   setAccessToken,
   setUserData,
 } from "@/utils/auth";
+import { buildPrivateNavsFromChats } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import { Box, Center, HStack, Icon } from "@chakra-ui/react";
@@ -202,7 +205,10 @@ const DesktoMiniMyProfile = (props: any) => {
   );
 };
 
-const MobileLayout = (props: any) => {
+interface LayoutProps extends Props__Layout {
+  navs: Interface__NavItem[];
+}
+const MobileLayout = (props: LayoutProps) => {
   // Props
   const { children, ...restProps } = props;
 
@@ -454,9 +460,9 @@ const MobileLayout = (props: any) => {
     </CContainer>
   );
 };
-const DesktopLayout = (props: any) => {
+const DesktopLayout = (props: LayoutProps) => {
   // Props
-  const { children, ...restProps } = props;
+  const { children, navs, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -480,65 +486,69 @@ const DesktopLayout = (props: any) => {
     item.allowedRoles.length === 0 ||
     (roleId && item.allowedRoles.includes(roleId));
   const qNormalized = q?.toLowerCase().trim();
-  const resolvedNavs = PRIVATE_NAVS.map((nav) => {
-    const filteredList = nav.list
-      .map((item) => {
-        const labelMain = pluckString(l, item.labelKey)?.toLowerCase() || "";
-        const allowedMain = isAllowed(item, roleId);
+  const resolvedNavs = navs
+    .map((nav) => {
+      const filteredList = nav.list
+        .map((item) => {
+          const labelMain = pluckString(l, item.labelKey)?.toLowerCase() || "";
+          const allowedMain = isAllowed(item, roleId);
 
-        if (!item.subMenus || item.subMenus.length === 0) {
-          if (!qNormalized) return allowedMain ? item : null;
+          if (!item.subMenus || item.subMenus.length === 0) {
+            if (!qNormalized) return allowedMain ? item : null;
+            const isMatchMain = qNormalized && labelMain.includes(qNormalized);
+            return allowedMain && isMatchMain ? item : null;
+          }
+
+          const subsFilteredByRole = item.subMenus
+            .map((sub) => ({
+              ...sub,
+              list: (sub.list ?? []).filter((subItem) =>
+                isAllowed(subItem, roleId)
+              ),
+            }))
+            .filter((s) => (s.list ?? []).length > 0);
+
+          if (!qNormalized) {
+            if (allowedMain)
+              return subsFilteredByRole.length > 0
+                ? { ...item, subMenus: subsFilteredByRole }
+                : { ...item, subMenus: undefined };
+            return subsFilteredByRole.length > 0
+              ? { ...item, subMenus: subsFilteredByRole }
+              : null;
+          }
+
           const isMatchMain = qNormalized && labelMain.includes(qNormalized);
-          return allowedMain && isMatchMain ? item : null;
-        }
 
-        const subsFilteredByRole = item.subMenus
-          .map((sub) => ({
-            ...sub,
-            list: (sub.list ?? []).filter((subItem) =>
-              isAllowed(subItem, roleId)
-            ),
-          }))
-          .filter((s) => (s.list ?? []).length > 0);
-
-        if (!qNormalized) {
-          if (allowedMain)
+          if (isMatchMain && allowedMain) {
             return subsFilteredByRole.length > 0
               ? { ...item, subMenus: subsFilteredByRole }
               : { ...item, subMenus: undefined };
-          return subsFilteredByRole.length > 0
-            ? { ...item, subMenus: subsFilteredByRole }
+          }
+
+          const matchedSubs = item.subMenus
+            .map((sub) => ({
+              ...sub,
+              list: (sub.list ?? []).filter((subItem) => {
+                if (!isAllowed(subItem, roleId)) return false;
+                const lbl =
+                  pluckString(l, subItem.labelKey)?.toLowerCase() || "";
+                return qNormalized && lbl.includes(qNormalized);
+              }),
+            }))
+            .filter((s) => (s.list ?? []).length > 0);
+
+          return matchedSubs.length > 0
+            ? { ...item, subMenus: matchedSubs }
             : null;
-        }
+        })
+        .filter(Boolean) as typeof nav.list;
 
-        const isMatchMain = qNormalized && labelMain.includes(qNormalized);
+      return filteredList.length > 0 ? { ...nav, list: filteredList } : null;
+    })
+    .filter(Boolean) as typeof PRIVATE_NAVS;
 
-        if (isMatchMain && allowedMain) {
-          return subsFilteredByRole.length > 0
-            ? { ...item, subMenus: subsFilteredByRole }
-            : { ...item, subMenus: undefined };
-        }
-
-        const matchedSubs = item.subMenus
-          .map((sub) => ({
-            ...sub,
-            list: (sub.list ?? []).filter((subItem) => {
-              if (!isAllowed(subItem, roleId)) return false;
-              const lbl = pluckString(l, subItem.labelKey)?.toLowerCase() || "";
-              return qNormalized && lbl.includes(qNormalized);
-            }),
-          }))
-          .filter((s) => (s.list ?? []).length > 0);
-
-        return matchedSubs.length > 0
-          ? { ...item, subMenus: matchedSubs }
-          : null;
-      })
-      .filter(Boolean) as typeof nav.list;
-
-    return filteredList.length > 0 ? { ...nav, list: filteredList } : null;
-  }).filter(Boolean) as typeof PRIVATE_NAVS;
-
+  // If navsExpanded, focus the search input
   useEffect(() => {
     if (!navsExpanded) {
       setSearch("");
@@ -718,294 +728,306 @@ const DesktopLayout = (props: any) => {
                             </NavLink>
                           )}
 
-                          {hasSubMenus && !navsExpanded && (
-                            <MenuRoot
-                              positioning={{
-                                placement: "right-start",
-                                offset: {
-                                  mainAxis: DESKTOP_POPOVER_MAIN_AXIS,
-                                },
-                              }}
-                            >
-                              <NavTooltip
-                                content={pluckString(l, nav.labelKey)}
-                              >
-                                <CContainer>
-                                  <MenuTrigger asChild>
-                                    <Btn
-                                      iconButton
-                                      clicky={false}
-                                      px={2}
-                                      justifyContent={"start"}
-                                      variant={"ghost"}
-                                      colorPalette={NAVS_COLOR_PALETTE}
-                                      pos={"relative"}
-                                      color={isMainNavsActive ? "" : NAVS_COLOR}
-                                    >
-                                      {isMainNavsActive && <LeftIndicator />}
-
-                                      <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                        <LucideIcon icon={nav.icon} />
-                                      </Icon>
-                                    </Btn>
-                                  </MenuTrigger>
-                                </CContainer>
-                              </NavTooltip>
-
-                              <MenuContent>
-                                {nav.subMenus?.map((menuItem, menuItemIdx) => {
-                                  return (
-                                    <MenuItemGroup
-                                      key={menuItemIdx}
-                                      gap={1}
-                                      title={
-                                        menuItem.groupLabelKey
-                                          ? pluckString(
-                                              l,
-                                              menuItem.groupLabelKey
-                                            )
-                                          : ""
-                                      }
-                                    >
-                                      {menuItem.list.map((menu) => {
-                                        const isSubNavsActive =
-                                          pathname === menu.path;
-
-                                        return (
-                                          <NavLink
-                                            key={menu.path}
-                                            to={menu.path}
-                                            w={"full"}
-                                          >
-                                            <Tooltip
-                                              content={pluckString(
-                                                l,
-                                                menu.labelKey
-                                              )}
-                                              positioning={{
-                                                placement: "right",
-                                                offset: {
-                                                  mainAxis: 12,
-                                                },
-                                              }}
-                                            >
-                                              <MenuItem
-                                                value={menu.path}
-                                                px={3}
-                                                color={
-                                                  isSubNavsActive
-                                                    ? ""
-                                                    : NAVS_COLOR
-                                                }
-                                              >
-                                                {isSubNavsActive && (
-                                                  <LeftIndicator />
-                                                )}
-
-                                                <P lineClamp={1}>
-                                                  {pluckString(
-                                                    l,
-                                                    menu.labelKey
-                                                  )}
-                                                </P>
-                                              </MenuItem>
-                                            </Tooltip>
-                                          </NavLink>
-                                        );
-                                      })}
-                                    </MenuItemGroup>
-                                  );
-                                })}
-                              </MenuContent>
-                            </MenuRoot>
-                          )}
-
-                          {hasSubMenus && navsExpanded && (
-                            <AccordionRoot multiple>
-                              <AccordionItem
-                                value={nav.path}
-                                border={"none"}
-                                rounded={themeConfig.radii.component}
-                                _open={{
-                                  bg: "transparent",
-                                }}
-                              >
-                                <NavTooltip
-                                  key={nav.path}
-                                  content={pluckString(l, nav.labelKey)}
+                          {hasSubMenus && (
+                            <>
+                              {!navsExpanded && (
+                                <MenuRoot
+                                  positioning={{
+                                    placement: "right-start",
+                                    offset: {
+                                      mainAxis: DESKTOP_POPOVER_MAIN_AXIS,
+                                    },
+                                  }}
                                 >
-                                  <Btn
-                                    as={AccordionItemTrigger}
-                                    clicky={false}
-                                    variant={"ghost"}
-                                    px={2}
-                                    justifyContent={"start"}
-                                    pr={"10px"}
-                                    pos={"relative"}
-                                    bg={"transparent"}
-                                    color={isMainNavsActive ? "" : NAVS_COLOR}
-                                    _hover={{
-                                      bg: "bg.muted",
-                                    }}
+                                  <NavTooltip
+                                    content={
+                                      nav.label
+                                        ? nav.label
+                                        : pluckString(l, nav.labelKey)
+                                    }
                                   >
-                                    {isMainNavsActive && <LeftIndicator />}
+                                    <CContainer>
+                                      <MenuTrigger asChild>
+                                        <Btn
+                                          iconButton
+                                          clicky={false}
+                                          px={2}
+                                          justifyContent="start"
+                                          variant="ghost"
+                                          colorPalette={NAVS_COLOR_PALETTE}
+                                          pos="relative"
+                                          color={
+                                            isMainNavsActive ? "" : NAVS_COLOR
+                                          }
+                                        >
+                                          {isMainNavsActive && (
+                                            <LeftIndicator />
+                                          )}
+                                          <Icon boxSize={BASE_ICON_BOX_SIZE}>
+                                            <LucideIcon icon={nav.icon} />
+                                          </Icon>
+                                        </Btn>
+                                      </MenuTrigger>
+                                    </CContainer>
+                                  </NavTooltip>
 
-                                    <HStack gap={4}>
-                                      <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                        <LucideIcon icon={nav.icon} />
-                                      </Icon>
-
-                                      <P lineClamp={1} textAlign={"left"}>
-                                        {pluckString(l, nav.labelKey)}
-                                      </P>
-                                    </HStack>
-                                  </Btn>
-                                </NavTooltip>
-
-                                <AccordionItemContent p={0}>
-                                  <CContainer gap={1} pt={1}>
+                                  <MenuContent>
                                     {nav.subMenus?.map(
-                                      (menuItem, menuItemIdx) => {
-                                        return (
-                                          <CContainer key={menuItemIdx} gap={1}>
-                                            {menuItem.groupLabelKey && (
-                                              <P
-                                                fontSize={"sm"}
-                                                fontWeight={"semibold"}
-                                                color={"fg.subtle"}
-                                                ml={9}
-                                                mt={1}
-                                              >
-                                                {pluckString(
+                                      (menuItem, menuItemIdx) => (
+                                        <MenuItemGroup
+                                          key={menuItemIdx}
+                                          gap={1}
+                                          title={
+                                            menuItem.groupLabelKey
+                                              ? pluckString(
                                                   l,
                                                   menuItem.groupLabelKey
-                                                )}
-                                              </P>
-                                            )}
+                                                )
+                                              : ""
+                                          }
+                                        >
+                                          {menuItem.list.map((menu) => {
+                                            const isSubNavsActive =
+                                              pathname === menu.path;
 
-                                            {menuItem.list.map((menu, idx) => {
-                                              const isFirstIdx = idx === 0;
-                                              const isLastIdx =
-                                                idx ===
-                                                menuItem.list.length - 1;
-                                              const isSubNavsActive =
-                                                pathname === menu.path;
-
-                                              return (
-                                                <NavLink
-                                                  key={menu.path}
-                                                  to={menu.path}
-                                                  w={"full"}
+                                            return (
+                                              <NavLink
+                                                key={menu.path}
+                                                to={menu.path}
+                                                w="full"
+                                              >
+                                                <Tooltip
+                                                  content={
+                                                    menu.label
+                                                      ? menu.label
+                                                      : pluckString(
+                                                          l,
+                                                          menu.labelKey
+                                                        )
+                                                  }
+                                                  positioning={{
+                                                    placement: "right",
+                                                    offset: { mainAxis: 12 },
+                                                  }}
                                                 >
-                                                  <Tooltip
-                                                    content={pluckString(
-                                                      l,
-                                                      menu.labelKey
-                                                    )}
-                                                    positioning={{
-                                                      placement: "right",
-                                                      offset: {
-                                                        mainAxis:
-                                                          DESKTOP_TOOLTIP_MAIN_AXIS +
-                                                          2,
-                                                      },
-                                                    }}
+                                                  <MenuItem
+                                                    value={menu.path}
+                                                    px={3}
+                                                    color={
+                                                      isSubNavsActive
+                                                        ? ""
+                                                        : NAVS_COLOR
+                                                    }
                                                   >
-                                                    <HStack
-                                                      pos={"relative"}
-                                                      pl={"8.5px"}
-                                                      gap={1}
-                                                    >
-                                                      {!isFirstIdx && (
-                                                        <Box
-                                                          flexShrink={0}
-                                                          w={"1px"}
-                                                          h={"calc(50% + 2px)"}
-                                                          pos={"absolute"}
-                                                          top={"-2px"}
-                                                          left={"18px"}
-                                                          bg={"d3"}
-                                                        />
-                                                      )}
-                                                      {!isLastIdx && (
-                                                        <Box
-                                                          flexShrink={0}
-                                                          w={"1px"}
-                                                          h={"calc(50% + 2px)"}
-                                                          pos={"absolute"}
-                                                          bottom={"-2px"}
-                                                          left={"18px"}
-                                                          bg={"d3"}
-                                                        />
-                                                      )}
-
-                                                      <Center
-                                                        flexShrink={0}
-                                                        boxSize={
-                                                          BASE_ICON_BOX_SIZE
-                                                        }
-                                                        zIndex={2}
-                                                        ml={"1.5px"}
-                                                      >
-                                                        <Icon
-                                                          boxSize={2}
-                                                          color={
-                                                            isSubNavsActive
-                                                              ? themeConfig.primaryColor
-                                                              : "bg.emphasized"
-                                                          }
-                                                        >
-                                                          <IconCircleFilled
-                                                            stroke={1.5}
-                                                          />
-                                                        </Icon>
-                                                      </Center>
-
-                                                      <Btn
-                                                        iconButton={
-                                                          navsExpanded
-                                                            ? false
-                                                            : true
-                                                        }
-                                                        clicky={false}
-                                                        flex={1}
-                                                        gap={3}
-                                                        px={3}
-                                                        rounded={`calc(${themeConfig.radii.component})`}
-                                                        justifyContent={"start"}
-                                                        variant={"ghost"}
-                                                        colorPalette={
-                                                          NAVS_COLOR_PALETTE
-                                                        }
-                                                        color={
-                                                          isSubNavsActive
-                                                            ? ""
-                                                            : NAVS_COLOR
-                                                        }
-                                                      >
-                                                        <P
-                                                          lineClamp={1}
-                                                          textAlign={"left"}
-                                                        >
-                                                          {pluckString(
+                                                    {isSubNavsActive && (
+                                                      <LeftIndicator />
+                                                    )}
+                                                    <P lineClamp={1}>
+                                                      {menu.label
+                                                        ? menu.label
+                                                        : pluckString(
                                                             l,
                                                             menu.labelKey
                                                           )}
-                                                        </P>
-                                                      </Btn>
-                                                    </HStack>
-                                                  </Tooltip>
-                                                </NavLink>
-                                              );
-                                            })}
-                                          </CContainer>
-                                        );
-                                      }
+                                                    </P>
+                                                  </MenuItem>
+                                                </Tooltip>
+                                              </NavLink>
+                                            );
+                                          })}
+                                        </MenuItemGroup>
+                                      )
                                     )}
-                                  </CContainer>
-                                </AccordionItemContent>
-                              </AccordionItem>
-                            </AccordionRoot>
+                                  </MenuContent>
+                                </MenuRoot>
+                              )}
+
+                              {navsExpanded && (
+                                <AccordionRoot multiple>
+                                  <AccordionItem
+                                    value={nav.path}
+                                    border="none"
+                                    rounded={themeConfig.radii.component}
+                                    _open={{ bg: "transparent" }}
+                                  >
+                                    <NavTooltip
+                                      content={pluckString(l, nav.labelKey)}
+                                    >
+                                      <Btn
+                                        as={AccordionItemTrigger}
+                                        clicky={false}
+                                        variant="ghost"
+                                        px={2}
+                                        justifyContent="start"
+                                        pr="10px"
+                                        pos="relative"
+                                        bg="transparent"
+                                        color={
+                                          isMainNavsActive ? "" : NAVS_COLOR
+                                        }
+                                        _hover={{ bg: "bg.muted" }}
+                                      >
+                                        {isMainNavsActive && <LeftIndicator />}
+                                        <HStack gap={4}>
+                                          <Icon boxSize={BASE_ICON_BOX_SIZE}>
+                                            <LucideIcon icon={nav.icon} />
+                                          </Icon>
+                                          <P lineClamp={1} textAlign="left">
+                                            {nav.label
+                                              ? nav.label
+                                              : pluckString(l, nav.labelKey)}
+                                          </P>
+                                        </HStack>
+                                      </Btn>
+                                    </NavTooltip>
+
+                                    <AccordionItemContent p={0}>
+                                      <CContainer gap={1} pt={1}>
+                                        {nav.subMenus?.map(
+                                          (menuItem, menuItemIdx) => (
+                                            <CContainer
+                                              key={menuItemIdx}
+                                              gap={1}
+                                            >
+                                              {menuItem.groupLabelKey && (
+                                                <P
+                                                  fontSize="sm"
+                                                  fontWeight="semibold"
+                                                  color="fg.subtle"
+                                                  ml={9}
+                                                  mt={1}
+                                                >
+                                                  {pluckString(
+                                                    l,
+                                                    menuItem.groupLabelKey
+                                                  )}
+                                                </P>
+                                              )}
+
+                                              {menuItem.list.map(
+                                                (menu, idx) => {
+                                                  const isFirstIdx = idx === 0;
+                                                  const isLastIdx =
+                                                    idx ===
+                                                    menuItem.list.length - 1;
+                                                  const isSubNavsActive =
+                                                    pathname === menu.path;
+
+                                                  return (
+                                                    <NavLink
+                                                      key={menu.path}
+                                                      to={menu.path}
+                                                      w="full"
+                                                    >
+                                                      <Tooltip
+                                                        content={
+                                                          menu.label
+                                                            ? menu.label
+                                                            : pluckString(
+                                                                l,
+                                                                menu.labelKey
+                                                              )
+                                                        }
+                                                        positioning={{
+                                                          placement: "right",
+                                                          offset: {
+                                                            mainAxis:
+                                                              DESKTOP_TOOLTIP_MAIN_AXIS +
+                                                              2,
+                                                          },
+                                                        }}
+                                                      >
+                                                        <HStack
+                                                          pos="relative"
+                                                          pl="8.5px"
+                                                          gap={1}
+                                                        >
+                                                          {!isFirstIdx && (
+                                                            <Box
+                                                              w="1px"
+                                                              h="calc(50% + 2px)"
+                                                              pos="absolute"
+                                                              top="-2px"
+                                                              left="18px"
+                                                              bg="d3"
+                                                            />
+                                                          )}
+                                                          {!isLastIdx && (
+                                                            <Box
+                                                              w="1px"
+                                                              h="calc(50% + 2px)"
+                                                              pos="absolute"
+                                                              bottom="-2px"
+                                                              left="18px"
+                                                              bg="d3"
+                                                            />
+                                                          )}
+
+                                                          <Center
+                                                            boxSize={
+                                                              BASE_ICON_BOX_SIZE
+                                                            }
+                                                            zIndex={2}
+                                                            ml="1.5px"
+                                                          >
+                                                            <Icon
+                                                              boxSize={2}
+                                                              color={
+                                                                isSubNavsActive
+                                                                  ? themeConfig.primaryColor
+                                                                  : "bg.emphasized"
+                                                              }
+                                                            >
+                                                              <IconCircleFilled
+                                                                stroke={1.5}
+                                                              />
+                                                            </Icon>
+                                                          </Center>
+
+                                                          <Btn
+                                                            clicky={false}
+                                                            flex={1}
+                                                            gap={3}
+                                                            px={3}
+                                                            rounded={`calc(${themeConfig.radii.component})`}
+                                                            justifyContent="start"
+                                                            variant="ghost"
+                                                            colorPalette={
+                                                              NAVS_COLOR_PALETTE
+                                                            }
+                                                            color={
+                                                              isSubNavsActive
+                                                                ? ""
+                                                                : NAVS_COLOR
+                                                            }
+                                                          >
+                                                            <P
+                                                              lineClamp={1}
+                                                              textAlign="left"
+                                                            >
+                                                              {menu.label
+                                                                ? menu.label
+                                                                : pluckString(
+                                                                    l,
+                                                                    menu.labelKey
+                                                                  )}
+                                                            </P>
+                                                          </Btn>
+                                                        </HStack>
+                                                      </Tooltip>
+                                                    </NavLink>
+                                                  );
+                                                }
+                                              )}
+                                            </CContainer>
+                                          )
+                                        )}
+                                      </CContainer>
+                                    </AccordionItemContent>
+                                  </AccordionItem>
+                                </AccordionRoot>
+                              )}
+                            </>
                           )}
                         </Fragment>
                       );
@@ -1074,7 +1096,7 @@ const DesktopLayout = (props: any) => {
           borderColor={"border.muted"}
           overflow={"auto"}
         >
-          <TopBar />
+          <TopBar navs={resolvedNavs} />
 
           {children}
         </CContainer>
@@ -1083,14 +1105,35 @@ const DesktopLayout = (props: any) => {
   );
 };
 
+const TheApp = (props: Props__Layout) => {
+  // Props
+  const { ...restProps } = props;
+
+  // Hooks
+  const iss = useIsSmScreenWidth();
+
+  // States
+  const NAVS = buildPrivateNavsFromChats(CHAT_LIST_RESPONSE.chats);
+
+  return (
+    <CContainer id="app_layout" h={"100dvh"} {...restProps}>
+      {NAVS && (
+        <>
+          {iss ? (
+            <MobileLayout navs={NAVS} {...props} />
+          ) : (
+            <DesktopLayout navs={NAVS} {...props} />
+          )}
+        </>
+      )}
+    </CContainer>
+  );
+};
 export default function Layout(props: Props__Layout) {
   // Toggle auth guard
   // const ENABLE_AUTH_GUARD = process.env.NODE_ENV !== "development";
   // TODO remove on real dev and enable above
   const ENABLE_AUTH_GUARD = false;
-
-  // Props
-  const { ...restProps } = props;
 
   // Context / stores
   const authToken = getAccessToken();
@@ -1103,7 +1146,6 @@ export default function Layout(props: Props__Layout) {
   const verificationStartedRef = useRef(false);
 
   // Hooks
-  const iss = useIsSmScreenWidth();
   const router = useRouter();
   const { req, loading } = useRequest({
     id: "user-profile",
@@ -1114,11 +1156,7 @@ export default function Layout(props: Props__Layout) {
 
   // If guard disabled -> render directly
   if (!ENABLE_AUTH_GUARD) {
-    return (
-      <CContainer id="app_layout" h={"100dvh"} {...restProps}>
-        {iss ? <MobileLayout {...props} /> : <DesktopLayout {...props} />}
-      </CContainer>
-    );
+    return <TheApp {...props} />;
   }
 
   // If there's no token at all -> redirect immediately
@@ -1155,7 +1193,7 @@ export default function Layout(props: Props__Layout) {
     return <VerifyingScreen />;
   }
 
-  // If request hook reports loading
+  // If request hook return loading
   if (loading) {
     return <VerifyingScreen />;
   }
@@ -1166,9 +1204,5 @@ export default function Layout(props: Props__Layout) {
     return <VerifyingScreen />;
   }
 
-  return (
-    <CContainer id="app_layout" h={"100dvh"} {...restProps}>
-      {iss ? <MobileLayout {...props} /> : <DesktopLayout {...props} />}
-    </CContainer>
-  );
+  return <TheApp {...props} />;
 }

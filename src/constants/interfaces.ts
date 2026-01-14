@@ -57,6 +57,7 @@ export interface Interface__Role {
 export interface Interface__NavListItem {
   icon?: any;
   labelKey: string;
+  label?: string;
   path: string;
   backPath?: string;
   allowedRoles?: string[];
@@ -163,4 +164,14 @@ export interface Interface__SelectOption {
   label2?: any;
   original_data?: any;
   disabled?: boolean;
+}
+
+// Modul 1 - AI Chats
+// Chats
+export interface ChatListResponse {
+  chats: {
+    id: string;
+    title: string;
+    updatedAt: string;
+  }[];
 }

@@ -3,7 +3,7 @@ import {
   ActivityIcon,
   BlocksIcon,
   LanguagesIcon,
-  MapPinIcon,
+  MessageSquareIcon,
   PaletteIcon,
   SettingsIcon,
   ShieldHalfIcon,
@@ -18,31 +18,27 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
     groupLabelKey: "main",
     list: [
       {
-        icon: MapPinIcon,
-        labelKey: "navs.other.index",
-        path: `/other-navs`,
+        icon: MessageSquareIcon,
+        labelKey: "navs.your_chats",
+        path: `/chats`,
         allowedRoles: [],
         subMenus: [
           {
             list: [
               {
                 labelKey: "navs.other.type",
-                path: `/other-navs/type`,
-                allowedRoles: [],
-              },
-              {
-                labelKey: "navs.other.category",
-                path: `/other-navs/category`,
-                allowedRoles: [],
-              },
-              {
-                labelKey: "navs.other.index",
-                path: `/other-navs/other`,
+                path: `/chats/{chatId}`,
                 allowedRoles: [],
               },
             ],
           },
         ],
+      },
+      {
+        icon: MessageSquareIcon,
+        labelKey: "navs.document_analysis",
+        path: `/document-analysis`,
+        allowedRoles: [],
       },
       // {
       //   icon: LayoutDashboardIcon,
