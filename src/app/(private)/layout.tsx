@@ -85,7 +85,23 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useRef, useState } from "react";
 
-// Shared Area
+// Mobile Area
+const MobileNavLink = (props: Props__NavLink) => {
+  // Props
+  const { children, ...restProps } = props;
+
+  return (
+    <NavLink
+      minW={"50px"}
+      align={"center"}
+      gap={1}
+      pos={"relative"}
+      {...restProps}
+    >
+      {children}
+    </NavLink>
+  );
+};
 const MobileLayout = (props: Props__Layout) => {
   // Props
   const { children, ...restProps } = props;
@@ -331,24 +347,6 @@ const MobileLayout = (props: Props__Layout) => {
         </HStack>
       </HScroll>
     </CContainer>
-  );
-};
-
-// Mobile Area
-const MobileNavLink = (props: Props__NavLink) => {
-  // Props
-  const { children, ...restProps } = props;
-
-  return (
-    <NavLink
-      minW={"50px"}
-      align={"center"}
-      gap={1}
-      pos={"relative"}
-      {...restProps}
-    >
-      {children}
-    </NavLink>
   );
 };
 
