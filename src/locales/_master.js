@@ -123,6 +123,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const empty_prompt = {
+  id: "Prompt kosong",
+  en: "Empty prompt",
+};
+export const exceed_char_limit = {
+  id: "Melebihi batas karakter",
+  en: "Exceed character limit",
+};
 export const rename = {
   id: "Ganti nama",
   en: "Rename",

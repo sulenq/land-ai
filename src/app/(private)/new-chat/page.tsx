@@ -18,57 +18,58 @@ import { interpolateString, pluckString } from "@/utils/string";
 import { FieldsetRoot, Group, HStack, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import * as yup from "yup";
 
-const Additional = () => {
-  // States
-  const [addition, setAddition] = useState<string[]>([]);
-  const isActive = (value: string) => addition.includes(value);
+// const Additional = () => {
+//   // States
+//   const [addition, setAddition] = useState<string[]>([]);
+//   const isActive = (value: string) => addition.includes(value);
 
-  // Utils
-  function toggleAddition(addition: string) {
-    if (isActive(addition)) {
-      setAddition((prev) => prev.filter((item) => item !== addition));
-    } else {
-      setAddition((prev) => [...prev, addition]);
-    }
-  }
+//   // Utils
+//   function toggleAddition(addition: string) {
+//     if (isActive(addition)) {
+//       setAddition((prev) => prev.filter((item) => item !== addition));
+//     } else {
+//       setAddition((prev) => [...prev, addition]);
+//     }
+//   }
 
-  return (
-    <Group>
-      <Btn
-        variant={isActive("law") ? "subtle" : "outline"}
-        borderColor={"d2"}
-        onClick={() => {
-          toggleAddition("law");
-        }}
-      >
-        Law
-      </Btn>
-      <Btn
-        variant={isActive("pajak") ? "subtle" : "outline"}
-        borderColor={"d2"}
-        onClick={() => {
-          toggleAddition("pajak");
-        }}
-      >
-        Pajak
-      </Btn>
-      <Btn
-        variant={isActive("perizinan") ? "subtle" : "outline"}
-        borderColor={"d2"}
-        onClick={() => {
-          toggleAddition("perizinan");
-        }}
-      >
-        Perizinan
-      </Btn>
-    </Group>
-  );
-};
+//   return (
+//     <Group>
+//       <Btn
+//         variant={isActive("law") ? "subtle" : "outline"}
+//         borderColor={"d2"}
+//         onClick={() => {
+//           toggleAddition("law");
+//         }}
+//       >
+//         Law
+//       </Btn>
+//       <Btn
+//         variant={isActive("pajak") ? "subtle" : "outline"}
+//         borderColor={"d2"}
+//         onClick={() => {
+//           toggleAddition("pajak");
+//         }}
+//       >
+//         Pajak
+//       </Btn>
+//       <Btn
+//         variant={isActive("perizinan") ? "subtle" : "outline"}
+//         borderColor={"d2"}
+//         onClick={() => {
+//           toggleAddition("perizinan");
+//         }}
+//       >
+//         Perizinan
+//       </Btn>
+//     </Group>
+//   );
+// };
 const PromptComposer = () => {
   const ID = "prompt_composer";
+  const MAX_CHAR = 8000;
 
   // Hooks
   const { req, loading } = useRequest({
@@ -78,6 +79,7 @@ const PromptComposer = () => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+  const router = useRouter();
 
   // States
   const formik = useFormik({
@@ -99,9 +101,17 @@ const PromptComposer = () => {
 
       req({
         config,
+        onResolve: {
+          onSuccess: (r) => {
+            const chatId = r.data.data.id;
+            router.push(`/chat/${chatId}`);
+          },
+        },
       });
     },
   });
+  const isExceedCharLimit = formik.values.prompt.length > MAX_CHAR;
+  const isEmpty = !formik.values.prompt;
 
   return (
     <form id={ID} onSubmit={formik.handleSubmit}>
@@ -128,10 +138,20 @@ const PromptComposer = () => {
                 formik.handleSubmit();
               }
             }}
+            maxChar={MAX_CHAR}
           />
 
-          <HStack justify={"space-between"}>
-            <Additional />
+          <HStack wrap={"wrap"} justify={"space-between"}>
+            <HelperText
+              ml={1}
+              mb={-4}
+              fontVariantNumeric={"tabular-nums"}
+              color={
+                formik.values.prompt.length > MAX_CHAR
+                  ? "fg.error"
+                  : "fg.subtle"
+              }
+            >{`${formik.values.prompt.length}/${MAX_CHAR}`}</HelperText>
 
             <Group>
               <Tooltip content={l.upload_file}>
@@ -140,14 +160,22 @@ const PromptComposer = () => {
                 </Btn>
               </Tooltip>
 
-              <Tooltip content={l.submit}>
+              <Tooltip
+                content={
+                  isEmpty
+                    ? l.empty_prompt
+                    : isExceedCharLimit
+                    ? l.exceed_char_limit
+                    : l.submit
+                }
+              >
                 <Btn
                   type="submit"
                   form={ID}
                   iconButton
                   colorPalette={themeConfig.colorPalette}
                   loading={loading}
-                  disabled={!formik.values.prompt}
+                  disabled={!formik.values.prompt || isExceedCharLimit}
                 >
                   <AppIcon icon={ArrowUpIcon} />
                 </Btn>
@@ -201,7 +229,7 @@ export default function Page() {
         </VStack>
 
         <VStack>
-          <BrandWatermark />
+          <BrandWatermark color={"fg.subtle"} />
         </VStack>
       </VStack>
     </PageContainer>

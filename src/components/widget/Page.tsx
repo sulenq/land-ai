@@ -112,7 +112,7 @@ export const TopBar = (props: any) => {
     <HStack
       gap={4}
       h={"52px"}
-      p={4}
+      px={4}
       pr={"10px"}
       justify={"space-between"}
       bg={"body"}

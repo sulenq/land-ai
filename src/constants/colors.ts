@@ -14,7 +14,7 @@ export const COLORS: string[] = [
   "#E53E3E",
 ];
 
-export const ABS_COLORS = {
+export const ABS_COLOR = {
   green: "#22c55e",
   orange: "#F6AD55",
   red: "#ef4444",
