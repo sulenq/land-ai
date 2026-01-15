@@ -20,7 +20,6 @@ import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
-import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
@@ -35,11 +34,11 @@ import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
 import { HStack, useDisclosure } from "@chakra-ui/react";
 import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 export const YourChats = (props: any) => {
   // Props
-  const { navsExpanded, ...restProps } = props;
+  const { ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -66,15 +65,6 @@ export const YourChats = (props: any) => {
     );
   }, [data, qNormalized]);
 
-  // If navsExpanded, focus the search input
-  useEffect(() => {
-    if (!navsExpanded) {
-      setSearch("");
-    } else {
-      searchInputRef.current?.focus();
-    }
-  }, [navsExpanded]);
-
   // Render
   let loadedContent = null;
   if (isEmptyArray(resolvedData)) {
@@ -96,13 +86,18 @@ export const YourChats = (props: any) => {
             </P>
 
             <MenuRoot>
-              <MenuTrigger asChild>
+              <MenuTrigger
+                asChild
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <Btn iconButton size={"xs"} variant={"plain"}>
                   <AppIcon icon={EllipsisIcon} />
                 </Btn>
               </MenuTrigger>
 
-              <MenuContent>
+              <MenuContent zIndex={"modal"}>
                 <MenuItem value="rename">
                   <AppIcon icon={PenIcon} /> {l.rename}
                 </MenuItem>
@@ -127,39 +122,25 @@ export const YourChats = (props: any) => {
   } else if (error) {
     content = <FeedbackRetry onRetry={onRetry} />;
   } else if (!data || isEmptyArray(data)) {
-    content = <FeedbackNoData />;
+    content = <FeedbackNotFound />;
   } else {
     content = loadedContent;
   }
 
   return (
-    <CContainer gap={1} {...restProps}>
-      {navsExpanded && !isEmptyArray(data) && (
-        <P
-          fontSize={"sm"}
-          fontWeight={"semibold"}
-          letterSpacing={"wide"}
-          color={"fg.subtle"}
-          ml={1}
-        >
-          {l.your_chats}
-        </P>
-      )}
+    <CContainer gap={2} {...restProps}>
+      <CContainer>
+        <SearchInput
+          queryKey={"q_sidebar_navs"}
+          inputRef={searchInputRef}
+          inputValue={search}
+          onChange={(inputValue) => {
+            setSearch(inputValue || "");
+          }}
+        />
+      </CContainer>
 
-      {navsExpanded && (
-        <CContainer pt={2} pb={1}>
-          <SearchInput
-            queryKey={"q_sidebar_navs"}
-            inputRef={searchInputRef}
-            inputValue={search}
-            onChange={(inputValue) => {
-              setSearch(inputValue || "");
-            }}
-          />
-        </CContainer>
-      )}
-
-      <CContainer>{navsExpanded ? content : null}</CContainer>
+      <CContainer>{content}</CContainer>
     </CContainer>
   );
 };
@@ -177,16 +158,16 @@ export const YourChatsDisclosureTrigger = (props: any) => {
 
   return (
     <>
-      <CContainer onClick={onOpen} {...restProps}></CContainer>
+      <CContainer onClick={onOpen} w={"fit"} {...restProps}></CContainer>
 
-      <DisclosureRoot open={open} lazyLoad>
+      <DisclosureRoot open={open} lazyLoad size={"xs"}>
         <DisclosureContent>
           <DisclosureHeader>
             <DisclosureHeaderContent title={`${l.your_chats}`} />
           </DisclosureHeader>
 
           <DisclosureBody>
-            <SearchInput queryKey={"q_sidebar_navs"} />
+            <YourChats />
           </DisclosureBody>
 
           <DisclosureFooter>

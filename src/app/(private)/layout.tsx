@@ -25,6 +25,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Tooltip } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
 import Clock from "@/components/widget/Clock";
 import HScroll from "@/components/widget/HScroll";
 import { LucideIcon } from "@/components/widget/Icon";
@@ -35,7 +36,10 @@ import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
 import { NavBreadcrumb, TopBar } from "@/components/widget/Page";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
-import { YourChats } from "@/components/widget/YourChats";
+import {
+  YourChats,
+  YourChatsDisclosureTrigger,
+} from "@/components/widget/YourChats";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_USER_PROFILE } from "@/constants/apis";
 import { DUMMY_YOUR_CHATS } from "@/constants/dummyData";
@@ -78,6 +82,7 @@ import { Box, Center, HStack, Icon } from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
+  MessageSquareIcon,
   SidebarCloseIcon,
   SidebarOpenIcon,
   UserIcon,
@@ -564,6 +569,7 @@ const DesktopLayout = (props: Props__Layout) => {
                       letterSpacing={"wide"}
                       color={"fg.subtle"}
                       ml={1}
+                      mb={1}
                     >
                       {pluckString(l, navItem.groupLabelKey)}
                     </P>
@@ -925,8 +931,29 @@ const DesktopLayout = (props: Props__Layout) => {
           </CContainer>
 
           {/* Your Chats */}
-          <CContainer mt={2}>
-            <YourChats navsExpanded={navsExpanded} />
+          <CContainer>
+            {navsExpanded ? (
+              <>
+                <P
+                  fontSize={"sm"}
+                  fontWeight={"semibold"}
+                  letterSpacing={"wide"}
+                  color={"fg.subtle"}
+                  ml={1}
+                  my={2}
+                >
+                  {l.your_chats}
+                </P>
+
+                <YourChats navsExpanded={navsExpanded} />
+              </>
+            ) : (
+              <YourChatsDisclosureTrigger mr={"auto"}>
+                <Btn iconButton clicky={false} variant={"ghost"}>
+                  <AppIcon icon={MessageSquareIcon} />
+                </Btn>
+              </YourChatsDisclosureTrigger>
+            )}
           </CContainer>
         </CContainer>
 
