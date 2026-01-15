@@ -242,55 +242,56 @@ const YourChats = (props: any) => {
     notFound: <FeedbackNotFound />,
     loaded: (
       <>
-        {data?.map((chat) => {
-          return (
-            <NavTooltip key={chat.id} content={chat.title}>
-              <NavLink to={`/chats/${chat.id}`} w={"full"}>
-                <HStack
-                  h={["44px", null, "36px"]}
-                  pl={2}
-                  justifyContent={"space-between"}
-                  rounded={themeConfig.radii.component}
-                  _hover={{
-                    bg: "bg.muted",
-                  }}
-                  transition={"200ms"}
-                >
-                  <P lineClamp={1} textAlign={"left"}>
-                    {chat.title}
-                  </P>
+        {navsExpanded &&
+          data?.map((chat) => {
+            return (
+              <NavTooltip key={chat.id} content={chat.title}>
+                <NavLink to={`/chats/${chat.id}`} w={"full"}>
+                  <HStack
+                    h={["44px", null, "36px"]}
+                    pl={2}
+                    justifyContent={"space-between"}
+                    rounded={themeConfig.radii.component}
+                    _hover={{
+                      bg: "bg.muted",
+                    }}
+                    transition={"200ms"}
+                  >
+                    <P lineClamp={1} textAlign={"left"}>
+                      {chat.title}
+                    </P>
 
-                  <MenuRoot>
-                    <MenuTrigger asChild>
-                      <Btn iconButton size={"xs"} variant={"plain"}>
-                        <AppIcon icon={EllipsisIcon} />
-                      </Btn>
-                    </MenuTrigger>
+                    <MenuRoot>
+                      <MenuTrigger asChild>
+                        <Btn iconButton size={"xs"} variant={"plain"}>
+                          <AppIcon icon={EllipsisIcon} />
+                        </Btn>
+                      </MenuTrigger>
 
-                    <MenuContent>
-                      <MenuItem value="rename">
-                        <AppIcon icon={PenIcon} /> {l.rename}
-                      </MenuItem>
+                      <MenuContent>
+                        <MenuItem value="rename">
+                          <AppIcon icon={PenIcon} /> {l.rename}
+                        </MenuItem>
 
-                      <MenuItem value="protect">
-                        <AppIcon icon={ShieldIcon} /> {l.protect}
-                      </MenuItem>
+                        <MenuItem value="protect">
+                          <AppIcon icon={ShieldIcon} /> {l.protect}
+                        </MenuItem>
 
-                      <MenuItem
-                        value="delete"
-                        _hover={{
-                          color: "fg.error",
-                        }}
-                      >
-                        <AppIcon icon={TrashIcon} /> {l.delete_}
-                      </MenuItem>
-                    </MenuContent>
-                  </MenuRoot>
-                </HStack>
-              </NavLink>
-            </NavTooltip>
-          );
-        })}
+                        <MenuItem
+                          value="delete"
+                          _hover={{
+                            color: "fg.error",
+                          }}
+                        >
+                          <AppIcon icon={TrashIcon} /> {l.delete_}
+                        </MenuItem>
+                      </MenuContent>
+                    </MenuRoot>
+                  </HStack>
+                </NavLink>
+              </NavTooltip>
+            );
+          })}
       </>
     ),
   };
@@ -716,7 +717,7 @@ const DesktopLayout = (props: LayoutProps) => {
           <HStack justify={"space-between"} h={"40px"}>
             {navsExpanded && (
               <NavLink to="/">
-                <HStack ml={"7px"} gap={3}>
+                <HStack ml={"6px"} gap={3}>
                   <Logo size={15} />
 
                   <P
