@@ -54,6 +54,7 @@ export const YourChats = (props: any) => {
     initialData: DUMMY_YOUR_CHATS,
     url: CHAT_API_YOUR_CHATS,
     dataResource: false,
+    loadingBar: false,
   });
   const [search, setSearch] = useState<string>("");
   const q = (search ?? "").toLowerCase();
