@@ -945,14 +945,47 @@ const DesktopLayout = (props: Props__Layout) => {
                   {l.your_chats}
                 </P>
 
+                {/* <PromptComposerDisclosureTrigger w={"full"} mb={2}>
+                  <Btn
+                    clicky={false}
+                    variant={"ghost"}
+                    justifyContent={"start"}
+                    textAlign={"left"}
+                    px={2}
+                    gap={4}
+                  >
+                    <AppIcon icon={SquarePenIcon} />
+                    {navsExpanded && l.navs.new_chat}
+                  </Btn>
+                </PromptComposerDisclosureTrigger> */}
+
                 <YourChats navsExpanded={navsExpanded} />
               </>
             ) : (
-              <YourChatsDisclosureTrigger mr={"auto"}>
-                <Btn iconButton clicky={false} variant={"ghost"}>
-                  <AppIcon icon={MessageSquareIcon} />
-                </Btn>
-              </YourChatsDisclosureTrigger>
+              <>
+                {/* <PromptComposerDisclosureTrigger w={"full"} mb={1}>
+                  <DesktopNavTooltip content={l.navs.new_chat}>
+                    <Btn
+                      clicky={false}
+                      variant={"ghost"}
+                      justifyContent={"start"}
+                      textAlign={"left"}
+                      px={2}
+                      gap={4}
+                    >
+                      <AppIcon icon={SquarePenIcon} />
+                    </Btn>
+                  </DesktopNavTooltip>
+                </PromptComposerDisclosureTrigger> */}
+
+                <YourChatsDisclosureTrigger mr={"auto"}>
+                  <DesktopNavTooltip content={l.your_chats}>
+                    <Btn iconButton clicky={false} variant={"ghost"}>
+                      <AppIcon icon={MessageSquareIcon} />
+                    </Btn>
+                  </DesktopNavTooltip>
+                </YourChatsDisclosureTrigger>
+              </>
             )}
           </CContainer>
         </CContainer>

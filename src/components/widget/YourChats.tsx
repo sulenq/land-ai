@@ -159,7 +159,7 @@ export const YourChatsDisclosureTrigger = (props: any) => {
 
   return (
     <>
-      <CContainer onClick={onOpen} w={"fit"} {...restProps}></CContainer>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps}></CContainer>
 
       <DisclosureRoot open={open} lazyLoad size={"xs"}>
         <DisclosureContent>
