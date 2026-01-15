@@ -443,11 +443,7 @@ const DesktoMiniMyProfile = (props: any) => {
 };
 const DesktopLayout = (props: Props__Layout) => {
   // Props
-  const {
-    children,
-    // navs,
-    ...restProps
-  } = props;
+  const { children, navs, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -1013,7 +1009,7 @@ const DesktopLayout = (props: Props__Layout) => {
           borderColor={"border.muted"}
           overflow={"auto"}
         >
-          <TopBar navs={PRIVATE_NAVS} />
+          <TopBar navs={navs} />
 
           {children}
         </CContainer>

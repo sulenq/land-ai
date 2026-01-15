@@ -11,7 +11,10 @@ import { getTimezoneOffsetMs, getUserTimezone } from "./time";
 import { parseISO, isValid } from "date-fns";
 import { toZonedTime, format as formatTz } from "date-fns-tz";
 import { FileTextIcon, MessageSquareIcon, SquarePenIcon } from "lucide-react";
-import { ChatListResponse, Interface__NavItem } from "@/constants/interfaces";
+import {
+  Interface__NavItem,
+  Interface__YourChat,
+} from "@/constants/interfaces";
 
 export const formatDate = (
   date?: Date | string | undefined,
@@ -368,7 +371,7 @@ export const formatDuration = (
 };
 
 export function buildPrivateNavsFromChats(
-  chats: ChatListResponse["chats"]
+  chats: Interface__YourChat[]
 ): Interface__NavItem[] {
   return [
     {
