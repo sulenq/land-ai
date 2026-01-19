@@ -56,7 +56,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
     const url = AUTH_API_SIGNOUT;
     const config = {
       url,
-      method: "GET",
+      method: "POST",
     };
 
     req({
