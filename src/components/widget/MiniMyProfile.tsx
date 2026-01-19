@@ -9,6 +9,7 @@ import { P } from "@/components/ui/p";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
 import { LucideIcon } from "@/components/widget/Icon";
+import { AUTH_API_SIGNOUT } from "@/constants/apis";
 import { OTHER_PRIVATE_NAVS } from "@/constants/navs";
 import { SVGS_PATH } from "@/constants/paths";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
@@ -16,14 +17,12 @@ import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useRequest from "@/hooks/useRequest";
-import { getUserData } from "@/utils/auth";
-import { back, removeStorage } from "@/utils/client";
+import { clearAccessToken, clearUserData, getUserData } from "@/utils/auth";
+import { back } from "@/utils/client";
 import { pluckString } from "@/utils/string";
 import { Icon, StackProps } from "@chakra-ui/react";
 import { LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-const SIGNOUT_EP = "/api/rski/dashboard/logout";
 
 interface Props__MiniMyProfile extends StackProps {
   onClose?: () => void;
@@ -54,7 +53,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
   function onSignout() {
     back();
 
-    const url = SIGNOUT_EP;
+    const url = AUTH_API_SIGNOUT;
     const config = {
       url,
       method: "GET",
@@ -64,8 +63,8 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
       config,
       onResolve: {
         onSuccess: () => {
-          removeStorage("__access_token");
-          removeStorage("__user_data");
+          clearAccessToken();
+          clearUserData();
           removeAuth();
           router.push("/");
         },
