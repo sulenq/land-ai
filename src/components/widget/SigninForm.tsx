@@ -12,7 +12,7 @@ import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useRequest from "@/hooks/useRequest";
-import { getAccessToken, getUserData } from "@/utils/auth";
+import { getAccessToken, getUserData, setUserData } from "@/utils/auth";
 import { removeStorage } from "@/utils/client";
 import {
   FieldsetRoot,
@@ -34,11 +34,10 @@ import { P } from "../ui/p";
 import { PasswordInput } from "../ui/password-input";
 import { StringInput } from "../ui/string-input";
 import ResetPasswordDisclosureTrigger from "./ResetPasswordDisclosure";
+import { AUTH_API_SIGNIN, AUTH_API_SIGNOUT } from "@/constants/apis";
 
 interface Props extends StackProps {}
 
-const BASE_SIGNIN_EP = `/api/login`;
-const SIGNOUT_EP = "/api/rski/dashboard/logout";
 const INDEX_ROUTE = "/new-chat";
 
 const Signedin = (props: any) => {
@@ -60,7 +59,7 @@ const Signedin = (props: any) => {
 
   // Utils
   function onSignout() {
-    const url = SIGNOUT_EP;
+    const url = AUTH_API_SIGNOUT;
 
     const config = {
       url,
@@ -115,18 +114,13 @@ const BasicAuthForm = (props: any) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
 
-  // TODO enable in real dev
-  // const setAccessToken = useAuthMiddleware((s) => s.setAccessToken);
-  // const setVerifiedAuthToken = useAuthMiddleware((s) => s.setVerifiedAuthToken);
-  // const setPermissions = useAuthMiddleware((s) => s.setPermissions);
+  const setAccessToken = useAuthMiddleware((s) => s.setAccessToken);
+  const setVerifiedAuthToken = useAuthMiddleware((s) => s.setVerifiedAuthToken);
+  const setPermissions = useAuthMiddleware((s) => s.setPermissions);
 
   // Hooks
   const router = useRouter();
-  const {
-    // TODO enable in real dev
-    // req,
-    loading,
-  } = useRequest({
+  const { req, loading } = useRequest({
     id: "signin",
     loadingMessage: l.loading_signin,
     successMessage: l.success_signin,
@@ -140,41 +134,35 @@ const BasicAuthForm = (props: any) => {
       password: "",
     },
     validationSchema: yup.object().shape({
-      // TODO enable in real dev
-      // identifier: yup.string().required(l.msg_required_form),
-      // password: yup.string().required(l.msg_required_form),
+      identifier: yup.string().required(l.msg_required_form),
+      password: yup.string().required(l.msg_required_form),
     }),
     onSubmit: (values) => {
-      console.debug(values, signinAPI);
-
-      // TODO enable in real dev
-      // const payload = {
-      //   email: values.identifier,
-      //   password: values.password,
-      // };
-      // const config = {
-      //   method: "POST",
-      //   url: signinAPI,
-      //   data: payload,
-      // };
-      // req({
-      //   config,
-      //   onResolve: {
-      //     onSuccess: (r: any) => {
-      //       const accessToken = r.data?.token;
-      //       const userData = r.data?.user?.data;
-      //       const permissionsData = r.data?.user?.data?.permissions;
-      //       setAccessToken(accessToken);
-      //       setUserData(userData);
-      //       setAccessToken(accessToken);
-      //       setVerifiedAuthToken(accessToken);
-      //       setPermissions(permissionsData);
-      //       router.push(INDEX_ROUTE);
-      //     },
-      //   },
-      // });
-
-      router.push(INDEX_ROUTE);
+      const payload = {
+        email: values.identifier,
+        password: values.password,
+      };
+      const config = {
+        method: "POST",
+        url: signinAPI,
+        data: payload,
+      };
+      req({
+        config,
+        onResolve: {
+          onSuccess: (r: any) => {
+            const accessToken = r.data?.token;
+            const userData = r.data?.user?.data;
+            const permissionsData = r.data?.user?.data?.permissions;
+            setAccessToken(accessToken);
+            setUserData(userData);
+            setAccessToken(accessToken);
+            setVerifiedAuthToken(accessToken);
+            setPermissions(permissionsData);
+            router.push(INDEX_ROUTE);
+          },
+        },
+      });
     },
   });
 
@@ -276,7 +264,7 @@ export const SigninForm = (props: Props) => {
   const resolvedAuthToken = authToken || verifiedAuthToken;
 
   // States
-  const signinAPI = BASE_SIGNIN_EP;
+  const signinAPI = AUTH_API_SIGNIN;
 
   return (
     <CContainer

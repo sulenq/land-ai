@@ -71,7 +71,7 @@ export default function useRequest<T = any>(props: Props) {
     (update: Partial<Interface__RequestState<T>>) => {
       setReqState((prev) => ({ ...prev, ...update }));
     },
-    []
+    [],
   );
   const resolveToastProps = (e: any) => {
     const statusCode = e.response?.status;
@@ -120,6 +120,10 @@ export default function useRequest<T = any>(props: Props) {
         switch (errorCase) {
           default:
             return l.error_403_default;
+          case "INVALID_CREDENTIALS":
+            return l.error_signin_wrong_credentials;
+          case "FORBIDDEN_ROLE":
+            return l.error_signin_wrong_credentials;
         }
 
       case 404:
@@ -256,7 +260,7 @@ export default function useRequest<T = any>(props: Props) {
       l,
       router,
       safeSetState,
-    ]
+    ],
   );
 
   return { req, loading, status, error, response, setReqState };
