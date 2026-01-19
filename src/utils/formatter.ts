@@ -13,7 +13,7 @@ import { toZonedTime, format as formatTz } from "date-fns-tz";
 import { FileTextIcon, MessageSquareIcon, SquarePenIcon } from "lucide-react";
 import {
   Interface__NavItem,
-  Interface__YourChat,
+  Interface__ChatSession,
 } from "@/constants/interfaces";
 
 export const formatDate = (
@@ -24,7 +24,7 @@ export const formatDate = (
     timeFormat?: string; // default HH:mm
     dateFormat?: Type__DateFormat;
     timezoneKey?: string;
-  } = {}
+  } = {},
 ): string => {
   if (!date) return "";
 
@@ -72,7 +72,7 @@ export const formatDate = (
   const year = parseInt(formatTz(zonedDate, "yyyy", { timeZone: timezoneKey }));
   // Weekday convertion ISO (1-7) ke 0-based (0=Sun, 6=Sat) yang digunakan L_WEEKDAYS_0_BASED
   const isoWeekday = parseInt(
-    formatTz(zonedDate, "i", { timeZone: timezoneKey })
+    formatTz(zonedDate, "i", { timeZone: timezoneKey }),
   );
   const weekday = isoWeekday === 7 ? 0 : isoWeekday;
 
@@ -86,7 +86,7 @@ export const formatDate = (
   const formatDateString = (
     yearVal: number,
     monthOrName: string | number,
-    dayVal: number
+    dayVal: number,
   ) => {
     const monthDisplay =
       typeof monthOrName === "number"
@@ -160,28 +160,28 @@ export const formatDate = (
       formattedDate = `${weekdayName}, ${formatDateString(
         year,
         monthName,
-        day
+        day,
       )}`;
       break;
     case "weekdayDayShortMonthYear":
       formattedDate = `${weekdayName}, ${formatDateString(
         year,
         shortMonthName,
-        day
+        day,
       )}`;
       break;
     case "shortWeekdayDayMonthYear":
       formattedDate = `${shortWeekdayName}, ${formatDateString(
         year,
         monthName,
-        day
+        day,
       )}`;
       break;
     case "shortWeekdayDayShortMonthYear":
       formattedDate = `${shortWeekdayName}, ${formatDateString(
         year,
         shortMonthName,
-        day
+        day,
       )}`;
       break;
     default:
@@ -201,7 +201,7 @@ export const formatDate = (
 
 export const formatAbsDate = (
   date?: Date | string,
-  options: Parameters<typeof formatDate>[1] = {}
+  options: Parameters<typeof formatDate>[1] = {},
 ): string => {
   return formatDate(date, {
     timezoneKey: "UTC",
@@ -210,7 +210,7 @@ export const formatAbsDate = (
 };
 
 export const formatNumber = (
-  numParam: number | string | undefined | null
+  numParam: number | string | undefined | null,
 ): string => {
   if (numParam === null || numParam === undefined) return "";
 
@@ -268,7 +268,7 @@ export const formatTime = (
     timeFormat?: Type__TimeFormat;
     timezoneKey?: string;
     withSuffix?: boolean;
-  } = {}
+  } = {},
 ): string => {
   if (!time) return "";
 
@@ -302,7 +302,7 @@ export const formatTime = (
   } else {
     formattedTime = `${String(hh).padStart(2, "0")}:${String(mm).padStart(
       2,
-      "0"
+      "0",
     )}`;
 
     if (options.showSeconds) {
@@ -315,7 +315,7 @@ export const formatTime = (
 
 export const formatDuration = (
   seconds: number | undefined,
-  format: "long" | "short" | "digital" = "long"
+  format: "long" | "short" | "digital" = "long",
 ): string => {
   if (!seconds) return "0 s";
 
@@ -371,7 +371,7 @@ export const formatDuration = (
 };
 
 export function buildPrivateNavsFromChats(
-  chats: Interface__YourChat[]
+  chats: Interface__ChatSession[],
 ): Interface__NavItem[] {
   return [
     {

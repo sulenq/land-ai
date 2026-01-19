@@ -17,7 +17,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { APP } from "@/constants/_meta";
-import { CHAT_API_CREATE } from "@/constants/apis";
+import { CHAT_API_CHAT_AI } from "@/constants/apis";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as yup from "yup";
 
@@ -90,8 +90,9 @@ export const PromptInputForm = () => {
   const MAX_CHAR = 8000;
 
   // Hooks
+  const { sessionId } = useParams();
   const { req, loading } = useRequest({
-    id: CHAT_API_CREATE,
+    id: ID,
   });
 
   // Contexts
@@ -108,11 +109,12 @@ export const PromptInputForm = () => {
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: (values) => {
       const payload = {
+        sessionId: sessionId,
         prompt: values.prompt,
       };
 
       const config = {
-        url: CHAT_API_CREATE,
+        url: CHAT_API_CHAT_AI,
         method: "POST",
         data: payload,
       };
@@ -183,8 +185,8 @@ export const PromptInputForm = () => {
                   isEmpty
                     ? l.empty_prompt
                     : isExceedCharLimit
-                    ? l.exceed_char_limit
-                    : l.submit
+                      ? l.exceed_char_limit
+                      : l.submit
                 }
               >
                 <Btn

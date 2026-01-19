@@ -118,11 +118,11 @@ export interface Interface__TableOption {
 }
 export type Interface__RowOptionsTableOptionGenerator<T = any> = (
   formattedRow: Interface__FormattedTableRow<T>,
-  overloads?: any
+  overloads?: any,
 ) => Interface__TableOption | null | false;
 export type Interface__BatchOptionsTableOptionGenerator<T = string[]> = (
   selectedRowIds: T,
-  overloads?: any
+  overloads?: any,
 ) => Interface__TableOption | null | false;
 
 // HTTP
@@ -168,8 +168,25 @@ export interface Interface__SelectOption {
 
 // Modul 1 - AI Chats
 // Chats
-export interface Interface__YourChat {
+export interface Interface__ChatSession extends Interface__CUD {
   id: string;
-  title: string;
-  updatedAt: string;
+  title: string | null;
+}
+export interface Interface__ChatMessage extends Interface__CUD {
+  id: string;
+  sessionId: string;
+  role: "user" | "assistant";
+  content: string;
+}
+export interface Interface__ChatStreamingState {
+  messageId: string | null;
+  active: boolean;
+}
+export interface Interface__ChatState {
+  session: Interface__ChatSession | null;
+  messages: Interface__ChatMessage[];
+  streaming: Interface__ChatStreamingState;
+  loadingSession: boolean;
+  sendingPrompt: boolean;
+  error: boolean;
 }

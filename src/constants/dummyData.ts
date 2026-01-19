@@ -1,6 +1,6 @@
-import { Interface__YourChat } from "@/constants/interfaces";
+import { Interface__ChatSession } from "@/constants/interfaces";
 
-export const DUMMY_YOUR_CHATS: Interface__YourChat[] = [
+export const DUMMY_YOUR_CHATS: Interface__ChatSession[] = [
   {
     id: "1",
     title: "Analisis SHM Jakarta Selatan",

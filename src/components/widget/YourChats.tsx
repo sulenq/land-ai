@@ -25,7 +25,7 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
 import { CHAT_API_YOUR_CHATS } from "@/constants/apis";
 import { DUMMY_YOUR_CHATS } from "@/constants/dummyData";
-import { Interface__YourChat } from "@/constants/interfaces";
+import { Interface__ChatSession } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
@@ -49,7 +49,7 @@ export const YourChats = (props: any) => {
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<
-    Interface__YourChat[]
+    Interface__ChatSession[]
   >({
     initialData: DUMMY_YOUR_CHATS,
     url: CHAT_API_YOUR_CHATS,
@@ -62,7 +62,7 @@ export const YourChats = (props: any) => {
   const resolvedData = useMemo(() => {
     if (qNormalized === "") return data;
     return data?.filter((chat) =>
-      chat.title.toLowerCase().includes(qNormalized)
+      chat.title.toLowerCase().includes(qNormalized),
     );
   }, [data, qNormalized]);
 
