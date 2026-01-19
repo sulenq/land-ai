@@ -420,10 +420,10 @@ const DesktoMiniMyProfile = (props: any) => {
             <>
               <CContainer>
                 <P lineClamp={1} fontWeight={"semibold"}>
-                  {user?.name || "Signed out"}
+                  {user?.name || user?.email || "Signed out"}
                 </P>
                 <P lineClamp={1} color={"fg.subtle"}>
-                  {user?.email || user?.username || "-"}
+                  {user?.name ? user?.email || user?.username : "-"}
                 </P>
               </CContainer>
 

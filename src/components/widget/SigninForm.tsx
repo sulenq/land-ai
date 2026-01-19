@@ -151,14 +151,16 @@ const BasicAuthForm = (props: any) => {
         config,
         onResolve: {
           onSuccess: (r: any) => {
-            const accessToken = r.data?.token;
-            const userData = r.data?.user?.data;
-            const permissionsData = r.data?.user?.data?.permissions;
+            const accessToken = r.data?.data?.authToken;
+            const userData = r.data?.data?.user;
+            const permissionsData = r.data?.data?.user?.permissions;
+
             setAccessToken(accessToken);
             setUserData(userData);
             setAccessToken(accessToken);
             setVerifiedAuthToken(accessToken);
             setPermissions(permissionsData);
+
             router.push(INDEX_ROUTE);
           },
         },
