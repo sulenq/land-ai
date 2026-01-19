@@ -677,7 +677,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                           menuItem.groupLabelKey
                                             ? pluckString(
                                                 l,
-                                                menuItem.groupLabelKey
+                                                menuItem.groupLabelKey,
                                               )
                                             : ""
                                         }
@@ -698,7 +698,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                     ? menu.label
                                                     : pluckString(
                                                         l,
-                                                        menu.labelKey
+                                                        menu.labelKey,
                                                       )
                                                 }
                                                 positioning={{
@@ -723,7 +723,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                       ? menu.label
                                                       : pluckString(
                                                           l,
-                                                          menu.labelKey
+                                                          menu.labelKey,
                                                         )}
                                                   </P>
                                                 </MenuItem>
@@ -732,7 +732,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                           );
                                         })}
                                       </MenuItemGroup>
-                                    )
+                                    ),
                                   )}
                                 </MenuContent>
                               </MenuRoot>
@@ -790,7 +790,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                               >
                                                 {pluckString(
                                                   l,
-                                                  menuItem.groupLabelKey
+                                                  menuItem.groupLabelKey,
                                                 )}
                                               </P>
                                             )}
@@ -815,7 +815,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                         ? menu.label
                                                         : pluckString(
                                                             l,
-                                                            menu.labelKey
+                                                            menu.labelKey,
                                                           )
                                                     }
                                                     positioning={{
@@ -899,7 +899,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                             ? menu.label
                                                             : pluckString(
                                                                 l,
-                                                                menu.labelKey
+                                                                menu.labelKey,
                                                               )}
                                                         </P>
                                                       </Btn>
@@ -909,7 +909,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                               );
                                             })}
                                           </CContainer>
-                                        )
+                                        ),
                                       )}
                                     </CContainer>
                                   </AccordionItemContent>
