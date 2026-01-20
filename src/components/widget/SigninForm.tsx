@@ -63,7 +63,7 @@ const Signedin = (props: any) => {
 
     const config = {
       url,
-      method: "GET",
+      method: "POST",
     };
 
     req({
@@ -100,7 +100,7 @@ const Signedin = (props: any) => {
           onClick={onSignout}
           loading={loading}
         >
-          Signin
+          Sign in
         </Btn>
       </VStack>
     </VStack>
