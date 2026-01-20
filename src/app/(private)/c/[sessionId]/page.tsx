@@ -5,7 +5,10 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { PageContainer, PageLayout } from "@/components/widget/Page";
-import { PromptInputForm } from "@/components/widget/PromptComposer";
+import {
+  PromptHelperText,
+  PromptInput,
+} from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { DUMMY_CHAT_SESSION } from "@/constants/dummyData";
 import { Interface__ChatState } from "@/constants/interfaces";
@@ -27,7 +30,14 @@ export default function Page() {
     url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
   });
-  const [chat, setChat] = useState<Interface__ChatState>();
+  const [chat, setChat] = useState<Interface__ChatState>({
+    session: null,
+    messages: [],
+    streaming: { active: false, messageId: null },
+    loadingSession: true,
+    sendingPrompt: false,
+    error: false,
+  });
 
   // Scroll to bottom on load
   useEffect(() => {
@@ -60,7 +70,9 @@ export default function Page() {
       <PageLayout>
         {content}
 
-        <PromptInputForm />
+        <PromptInput />
+
+        <PromptHelperText mt={4} />
       </PageLayout>
     </PageContainer>
   );

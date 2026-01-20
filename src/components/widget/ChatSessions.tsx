@@ -75,7 +75,7 @@ export const ChatSessions = (props: any) => {
     loadedContent = <FeedbackNotFound />;
   } else {
     loadedContent = resolvedData?.map((chat) => {
-      const isActive = pathname?.includes(`/c/${chat.id}`);
+      const isActive = pathname === `/c/${chat.id}`;
 
       return (
         <DesktopNavTooltip key={chat.id} content={chat.title}>
