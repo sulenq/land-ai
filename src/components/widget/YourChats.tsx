@@ -82,7 +82,8 @@ export const YourChats = (props: any) => {
           <NavLink to={`/chats/${chat.id}`} w={"full"}>
             <HStack
               h={["44px", null, "36px"]}
-              pl={2}
+              pl={"10px"}
+              pr={"2px"}
               justifyContent={"space-between"}
               rounded={themeConfig.radii.component}
               _hover={{ bg: "bg.muted" }}
