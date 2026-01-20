@@ -30,7 +30,7 @@ export default function Page() {
     url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
   });
-  const [chat, setChat] = useState<Interface__ChatState>({
+  const [_chat, _setChat] = useState<Interface__ChatState>({
     session: null,
     messages: [],
     streaming: { active: false, messageId: null },
