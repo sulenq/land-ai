@@ -16,7 +16,9 @@ export default function useOfflineAlert(props: Props) {
   const { setOffline } = useOffline();
 
   // Refs
-  const lastStatus = useRef(navigator.onLine);
+  const lastStatus = useRef(
+    typeof window !== "undefined" ? navigator.onLine : true,
+  );
 
   // Utils
   function handleOnline() {
@@ -37,7 +39,7 @@ export default function useOfflineAlert(props: Props) {
     window.addEventListener("offline", handleOffline);
 
     const interval = setInterval(() => {
-      const online = navigator.onLine;
+      const online = typeof navigator !== "undefined" ? navigator.onLine : true;
       if (online !== lastStatus.current) {
         lastStatus.current = online;
         if (online) handleOnline();

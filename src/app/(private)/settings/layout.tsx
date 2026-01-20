@@ -12,7 +12,6 @@ import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/Page";
 import { APP } from "@/constants/_meta";
 import { OTHER_PRIVATE_NAVS } from "@/constants/navs";
-import { Props__Layout } from "@/constants/props";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
@@ -108,10 +107,7 @@ const NavsList = (props: any) => {
   );
 };
 
-export default function Layout(props: Props__Layout) {
-  // Props
-  const { children } = props;
-
+export default function Layout({ children }: { children: React.ReactNode }) {
   // Hooks
   const pathname = usePathname();
 
