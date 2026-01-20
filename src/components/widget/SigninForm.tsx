@@ -263,7 +263,7 @@ export const SigninForm = (props: Props) => {
   const { themeConfig } = useThemeConfig();
   const authToken = getAccessToken();
   const verifiedAuthToken = useAuthMiddleware((s) => s.verifiedAuthToken);
-  const resolvedAuthToken = authToken || verifiedAuthToken;
+  const resolvedAuthToken = authToken && verifiedAuthToken;
 
   // States
   const signinAPI = AUTH_API_SIGNIN;
