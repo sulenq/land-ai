@@ -123,8 +123,8 @@ export const PromptInputForm = () => {
         config,
         onResolve: {
           onSuccess: (r) => {
-            const chatId = r.data.data.id;
-            router.push(`/chat/${chatId}`);
+            const sessionId = r?.data?.data?.id;
+            router.push(`/c/${sessionId}`);
           },
         },
       });

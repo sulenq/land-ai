@@ -3,51 +3,61 @@ import { Interface__ChatSession } from "@/constants/interfaces";
 export const DUMMY_YOUR_CHATS: Interface__ChatSession[] = [
   {
     id: "1",
+    isStreaming: false,
     title: "Analisis SHM Jakarta Selatan",
     updatedAt: "2026-01-10T10:12:00Z",
   },
   {
     id: "2",
+    isStreaming: false,
     title: "Status tanah warisan orang tua",
     updatedAt: "2026-01-09T08:30:00Z",
   },
   {
     id: "3",
+    isStreaming: false,
     title: "Proses balik nama sertifikat",
     updatedAt: "2026-01-08T14:45:00Z",
   },
   {
     id: "4",
+    isStreaming: false,
     title: "Perbedaan SHM dan HGB",
     updatedAt: "2026-01-08T09:10:00Z",
   },
   {
     id: "5",
+    isStreaming: false,
     title: "Pajak jual beli tanah",
     updatedAt: "2026-01-07T16:20:00Z",
   },
   {
     id: "6",
+    isStreaming: false,
     title: "Legalitas tanah girik",
     updatedAt: "2026-01-07T11:05:00Z",
   },
   {
     id: "7",
+    isStreaming: false,
     title: "Sengketa batas tanah tetangga",
     updatedAt: "2026-01-06T19:40:00Z",
   },
   {
     id: "8",
+    isStreaming: false,
     title: "Syarat pemecahan sertifikat",
     updatedAt: "2026-01-06T13:15:00Z",
   },
   {
     id: "9",
+    isStreaming: false,
     title: "Tanah wakaf dan status hukumnya",
     updatedAt: "2026-01-05T10:00:00Z",
   },
   {
     id: "10",
+    isStreaming: false,
     title: "IMB dan perizinan bangunan",
     updatedAt: "2026-01-04T17:25:00Z",
   },

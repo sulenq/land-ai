@@ -38,7 +38,7 @@ import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
-export const YourChats = (props: any) => {
+export const ChatSessions = (props: any) => {
   // Props
   const { ...restProps } = props;
 
@@ -75,11 +75,11 @@ export const YourChats = (props: any) => {
     loadedContent = <FeedbackNotFound />;
   } else {
     loadedContent = resolvedData?.map((chat) => {
-      const isActive = pathname?.includes(`/chats/${chat.id}`);
+      const isActive = pathname?.includes(`/c/${chat.id}`);
 
       return (
         <DesktopNavTooltip key={chat.id} content={chat.title}>
-          <NavLink to={`/chats/${chat.id}`} w={"full"}>
+          <NavLink to={`/c/${chat.id}`} w={"full"}>
             <HStack
               h={["44px", null, "36px"]}
               pl={"10px"}
@@ -158,7 +158,7 @@ export const YourChats = (props: any) => {
   );
 };
 
-export const YourChatsDisclosureTrigger = (props: any) => {
+export const ChatSessionsDisclosureTrigger = (props: any) => {
   // Props
   const { ...restProps } = props;
 
@@ -167,7 +167,7 @@ export const YourChatsDisclosureTrigger = (props: any) => {
 
   // Hooks
   const { open, onOpen, onClose } = useDisclosure();
-  useBackOnClose(disclosureId(`search_your_chats`), open, onOpen, onClose);
+  useBackOnClose(disclosureId(`chat_sessions`), open, onOpen, onClose);
 
   return (
     <>
@@ -180,7 +180,7 @@ export const YourChatsDisclosureTrigger = (props: any) => {
           </DisclosureHeader>
 
           <DisclosureBody>
-            <YourChats />
+            <ChatSessions />
           </DisclosureBody>
 
           <DisclosureFooter>

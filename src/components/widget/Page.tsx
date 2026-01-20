@@ -39,7 +39,7 @@ export const PageContainer = forwardRef<HTMLDivElement, StackProps>(
         {children}
       </CContainer>
     );
-  }
+  },
 );
 PageContainer.displayName = "PageContainer";
 
@@ -110,8 +110,9 @@ export const TopBar = (props: any) => {
 
   return (
     <HStack
-      gap={4}
+      flexShrink={0}
       h={"52px"}
+      gap={4}
       px={4}
       pr={"10px"}
       justify={"space-between"}
@@ -174,6 +175,6 @@ export const PageContent = forwardRef<HTMLDivElement, StackProps>(
         {children}
       </CContainer>
     );
-  }
+  },
 );
 PageContent.displayName = "PageContent";

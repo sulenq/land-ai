@@ -26,6 +26,10 @@ import {
 } from "@/components/ui/popover";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
+import {
+  ChatSessions,
+  ChatSessionsDisclosureTrigger,
+} from "@/components/widget/ChatSessions";
 import Clock from "@/components/widget/Clock";
 import HScroll from "@/components/widget/HScroll";
 import { LucideIcon } from "@/components/widget/Icon";
@@ -36,14 +40,10 @@ import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
 import { NavBreadcrumb, TopBar } from "@/components/widget/Page";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
-import {
-  YourChats,
-  YourChatsDisclosureTrigger,
-} from "@/components/widget/YourChats";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_USER_PROFILE } from "@/constants/apis";
 import { DUMMY_YOUR_CHATS } from "@/constants/dummyData";
-import { OTHER_PRIVATE_NAVS, PRIVATE_NAVS } from "@/constants/navs";
+import { PRIVATE_NAVS } from "@/constants/navs";
 import { Props__Layout, Props__NavLink } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
@@ -52,12 +52,13 @@ import {
 import {
   DESKTOP_CONTENT_CONTAINER_BG,
   DESKTOP_NAVS_BG,
+  DESKTOP_NAVS_COLOR,
   DESKTOP_POPOVER_MAIN_AXIS,
   DESKTOP_TOOLTIP_MAIN_AXIS,
   MOBILE_CONTENT_CONTAINER_BG,
   MOBILE_NAV_LABEL_FONT_SIZE,
+  MOBILE_NAVS_COLOR,
   MOBILE_POPOVER_MAIN_AXIS,
-  NAVS_COLOR,
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
@@ -78,7 +79,7 @@ import {
 import { buildPrivateNavsFromChats } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
-import { Box, Center, HStack, Icon } from "@chakra-ui/react";
+import { Box, Center, HStack, Icon, VStack } from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
@@ -285,31 +286,6 @@ const MobileLayout = (props: Props__Layout) => {
             );
           })}
 
-          {OTHER_PRIVATE_NAVS[0]?.list.map((nav) => {
-            return (
-              <MobileNavLink
-                key={nav.path}
-                to={nav.path}
-                color={pathname === nav.path ? "" : NAVS_COLOR}
-                flex={1}
-              >
-                <Icon boxSize={5}>
-                  <LucideIcon icon={nav.icon} />
-                </Icon>
-
-                <P
-                  textAlign={"center"}
-                  lineClamp={1}
-                  fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
-                >
-                  {pluckString(l, nav.labelKey)}
-                </P>
-
-                {pathname === nav.path && <BottomIndicator />}
-              </MobileNavLink>
-            );
-          })}
-
           <PopoverRoot
             positioning={{
               placement: "top",
@@ -319,7 +295,14 @@ const MobileLayout = (props: Props__Layout) => {
             }}
           >
             <PopoverTrigger asChild>
-              <MobileNavLink flex={1} color={NAVS_COLOR}>
+              <VStack
+                flex={1}
+                color={MOBILE_NAVS_COLOR}
+                onClick={() => {
+                  console.debug("Jembot");
+                }}
+                cursor={"pointer"}
+              >
                 {!user?.avatar?.filePath && (
                   <Icon boxSize={6}>
                     <LucideIcon icon={UserIcon} />
@@ -337,12 +320,12 @@ const MobileLayout = (props: Props__Layout) => {
                 <P
                   fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
                   textAlign={"center"}
-                  color={isInProfileRoute ? "" : NAVS_COLOR}
+                  color={isInProfileRoute ? "" : MOBILE_NAVS_COLOR}
                   lineClamp={1}
                 >
                   {l.profile}
                 </P>
-              </MobileNavLink>
+              </VStack>
             </PopoverTrigger>
 
             <PopoverContent w={"200px"} zIndex={10}>
@@ -532,7 +515,7 @@ const DesktopLayout = (props: Props__Layout) => {
                 variant={"ghost"}
                 colorPalette={NAVS_COLOR_PALETTE}
                 onClick={toggleNavsExpanded}
-                color={NAVS_COLOR}
+                color={DESKTOP_NAVS_COLOR}
               >
                 <Icon boxSize={BASE_ICON_BOX_SIZE}>
                   <LucideIcon
@@ -591,7 +574,9 @@ const DesktopLayout = (props: Props__Layout) => {
                                 px={2}
                                 justifyContent={"start"}
                                 variant={"ghost"}
-                                color={isMainNavsActive ? "" : NAVS_COLOR}
+                                color={
+                                  isMainNavsActive ? "" : DESKTOP_NAVS_COLOR
+                                }
                               >
                                 {isMainNavsActive && nav.icon && (
                                   <LeftIndicator />
@@ -655,7 +640,9 @@ const DesktopLayout = (props: Props__Layout) => {
                                         colorPalette={NAVS_COLOR_PALETTE}
                                         pos="relative"
                                         color={
-                                          isMainNavsActive ? "" : NAVS_COLOR
+                                          isMainNavsActive
+                                            ? ""
+                                            : DESKTOP_NAVS_COLOR
                                         }
                                       >
                                         {isMainNavsActive && <LeftIndicator />}
@@ -712,7 +699,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                   color={
                                                     isSubNavsActive
                                                       ? ""
-                                                      : NAVS_COLOR
+                                                      : DESKTOP_NAVS_COLOR
                                                   }
                                                 >
                                                   {isSubNavsActive && (
@@ -758,7 +745,11 @@ const DesktopLayout = (props: Props__Layout) => {
                                       pr="10px"
                                       pos="relative"
                                       bg="transparent"
-                                      color={isMainNavsActive ? "" : NAVS_COLOR}
+                                      color={
+                                        isMainNavsActive
+                                          ? ""
+                                          : DESKTOP_NAVS_COLOR
+                                      }
                                       _hover={{ bg: "bg.muted" }}
                                     >
                                       {isMainNavsActive && <LeftIndicator />}
@@ -888,7 +879,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                         color={
                                                           isSubNavsActive
                                                             ? ""
-                                                            : NAVS_COLOR
+                                                            : DESKTOP_NAVS_COLOR
                                                         }
                                                       >
                                                         <P
@@ -926,7 +917,7 @@ const DesktopLayout = (props: Props__Layout) => {
             })}
           </CContainer>
 
-          {/* Your Chats */}
+          {/* Chat Sessions */}
           <CContainer>
             {navsExpanded ? (
               <>
@@ -955,7 +946,7 @@ const DesktopLayout = (props: Props__Layout) => {
                   </Btn>
                 </PromptComposerDisclosureTrigger> */}
 
-                <YourChats navsExpanded={navsExpanded} />
+                <ChatSessions navsExpanded={navsExpanded} />
               </>
             ) : (
               <>
@@ -974,7 +965,7 @@ const DesktopLayout = (props: Props__Layout) => {
                   </DesktopNavTooltip>
                 </PromptComposerDisclosureTrigger> */}
 
-                <YourChatsDisclosureTrigger mr={"auto"}>
+                <ChatSessionsDisclosureTrigger mr={"auto"}>
                   <DesktopNavTooltip content={l.your_chats}>
                     <Btn iconButton clicky={false} variant={"ghost"}>
                       {pathname.includes("/chats/") && <LeftIndicator />}
@@ -982,7 +973,7 @@ const DesktopLayout = (props: Props__Layout) => {
                       <AppIcon icon={MessageSquareIcon} />
                     </Btn>
                   </DesktopNavTooltip>
-                </YourChatsDisclosureTrigger>
+                </ChatSessionsDisclosureTrigger>
               </>
             )}
           </CContainer>

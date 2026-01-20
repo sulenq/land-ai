@@ -36,7 +36,7 @@ import {
 import { IconCaretDownFilled, IconReload } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
-const NAVS_COLOR = "fg.muted";
+const DESKTOP_NAVS_COLOR = "fg.muted";
 
 const SelectOptions = (props: Props__SelectOptions) => {
   // Props
@@ -51,7 +51,7 @@ const SelectOptions = (props: Props__SelectOptions) => {
   const [search, setSearch] = useState<string>("");
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const resolvedSelectOptions = selectOptions?.filter((o) =>
-    o.label?.toLowerCase().includes(search.toLowerCase())
+    o.label?.toLowerCase().includes(search.toLowerCase()),
   );
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const SelectOptions = (props: Props__SelectOptions) => {
                   variant={"ghost"}
                   justifyContent={"start"}
                   size={"md"}
-                  color={isActive ? "" : NAVS_COLOR}
+                  color={isActive ? "" : DESKTOP_NAVS_COLOR}
                   onClick={() => {
                     if (!multiple) {
                       setSelected([o]);
@@ -133,7 +133,7 @@ const SelectOptions = (props: Props__SelectOptions) => {
                       if (exists) {
                         // remove o
                         setSelected(
-                          selected.filter((item) => item.id !== o.id)
+                          selected.filter((item) => item.id !== o.id),
                         );
                       } else {
                         // add o
@@ -230,8 +230,8 @@ export const SelectInput = (props: Props__SelectInput) => {
             resolvedInvalid
               ? "border.error"
               : variant === "subtle"
-              ? "transparent"
-              : "border.muted"
+                ? "transparent"
+                : "border.muted"
           }
           onClick={onOpen}
           {...restProps}

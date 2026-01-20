@@ -25,7 +25,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS = OTHER_PRIVATE_NAVS[0].list[2].subMenus!;
-const NAVS_COLOR = "ibody";
+const DESKTOP_NAVS_COLOR = "ibody";
 const ROOT_PATH = `/settings`;
 
 const NavsList = (props: any) => {
@@ -40,20 +40,23 @@ const NavsList = (props: any) => {
 
   // States
   const searchTerm = search.toLowerCase();
-  const resolvedList = NAVS.reduce<typeof NAVS>((acc, nav) => {
-    const filteredItems = nav.list.filter((item) =>
-      pluckString(l, item.labelKey).toLowerCase().includes(searchTerm)
-    );
+  const resolvedList = NAVS.reduce<typeof NAVS>(
+    (acc, nav) => {
+      const filteredItems = nav.list.filter((item) =>
+        pluckString(l, item.labelKey).toLowerCase().includes(searchTerm),
+      );
 
-    if (filteredItems.length > 0) {
-      acc.push({
-        ...nav,
-        list: filteredItems,
-      });
-    }
+      if (filteredItems.length > 0) {
+        acc.push({
+          ...nav,
+          list: filteredItems,
+        });
+      }
 
-    return acc;
-  }, [] as typeof NAVS);
+      return acc;
+    },
+    [] as typeof NAVS,
+  );
 
   return (
     <CContainer gap={4} {...restProps}>
@@ -84,7 +87,7 @@ const NavsList = (props: any) => {
                       justifyContent={"start"}
                       variant={"ghost"}
                       px={2}
-                      color={isActive ? "" : NAVS_COLOR}
+                      color={isActive ? "" : DESKTOP_NAVS_COLOR}
                       pos={"relative"}
                     >
                       {isActive && <LeftIndicator />}
@@ -119,7 +122,7 @@ export default function Layout(props: Props__Layout) {
   // Contexts
   const { l } = useLang();
   const setContainerDimension = useSettingsPageContainer(
-    (s) => s.setContainerDimension
+    (s) => s.setContainerDimension,
   );
 
   // States
