@@ -32,7 +32,6 @@ import {
 } from "@/components/widget/ChatSessions";
 import Clock from "@/components/widget/Clock";
 import HScroll from "@/components/widget/HScroll";
-import { LucideIcon } from "@/components/widget/Icon";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { MiniMyProfile } from "@/components/widget/MiniMyProfile";
@@ -182,9 +181,7 @@ const MobileLayout = (props: Props__Layout) => {
                           color={isMainNavActive ? "" : "fg.muted"}
                           flex={1}
                         >
-                          <Icon boxSize={5}>
-                            <LucideIcon icon={nav.icon} />
-                          </Icon>
+                          <AppIcon icon={nav.icon} boxSize={5} />
 
                           <P
                             textAlign={"center"}
@@ -219,9 +216,7 @@ const MobileLayout = (props: Props__Layout) => {
                                 cursor={"pointer"}
                                 flex={1}
                               >
-                                <Icon boxSize={5}>
-                                  <LucideIcon icon={nav.icon} />
-                                </Icon>
+                                <AppIcon icon={nav.icon} boxSize={5} />
 
                                 <P
                                   fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
@@ -286,6 +281,20 @@ const MobileLayout = (props: Props__Layout) => {
             );
           })}
 
+          <ChatSessionsDisclosureTrigger mr={"auto"}>
+            <MobileNavLink>
+              <AppIcon icon={MessageSquareIcon} boxSize={5} />
+
+              <P
+                textAlign={"center"}
+                lineClamp={1}
+                fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
+              >
+                {l.your_chats}
+              </P>
+            </MobileNavLink>
+          </ChatSessionsDisclosureTrigger>
+
           <PopoverRoot
             positioning={{
               placement: "top",
@@ -304,9 +313,7 @@ const MobileLayout = (props: Props__Layout) => {
                 cursor={"pointer"}
               >
                 {!user?.avatar?.filePath && (
-                  <Icon boxSize={6}>
-                    <LucideIcon icon={UserIcon} />
-                  </Icon>
+                  <AppIcon icon={UserIcon} boxSize={6} />
                 )}
 
                 {user?.avatar?.filePath && (
@@ -410,9 +417,12 @@ const DesktoMiniMyProfile = (props: any) => {
                 </P>
               </CContainer>
 
-              <Icon boxSize={BASE_ICON_BOX_SIZE} color={"fg.subtle"} mr={1}>
-                <LucideIcon icon={ChevronsUpDownIcon} />
-              </Icon>
+              <AppIcon
+                icon={ChevronsUpDownIcon}
+                boxSize={BASE_ICON_BOX_SIZE}
+                color={"fg.subtle"}
+                mr={1}
+              />
             </>
           )}
         </HStack>
@@ -517,11 +527,10 @@ const DesktopLayout = (props: Props__Layout) => {
                 onClick={toggleNavsExpanded}
                 color={DESKTOP_NAVS_COLOR}
               >
-                <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                  <LucideIcon
-                    icon={navsExpanded ? SidebarCloseIcon : SidebarOpenIcon}
-                  />
-                </Icon>
+                <AppIcon
+                  icon={navsExpanded ? SidebarCloseIcon : SidebarOpenIcon}
+                  boxSize={BASE_ICON_BOX_SIZE}
+                />
               </Btn>
             </Tooltip>
           </HStack>
@@ -583,9 +592,10 @@ const DesktopLayout = (props: Props__Layout) => {
                                 )}
 
                                 {nav.icon && (
-                                  <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                    <LucideIcon icon={nav.icon} />
-                                  </Icon>
+                                  <AppIcon
+                                    icon={nav.icon}
+                                    boxSize={BASE_ICON_BOX_SIZE}
+                                  />
                                 )}
 
                                 {!nav.icon && (
@@ -646,9 +656,10 @@ const DesktopLayout = (props: Props__Layout) => {
                                         }
                                       >
                                         {isMainNavsActive && <LeftIndicator />}
-                                        <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                          <LucideIcon icon={nav.icon} />
-                                        </Icon>
+                                        <AppIcon
+                                          icon={nav.icon}
+                                          boxSize={BASE_ICON_BOX_SIZE}
+                                        />
                                       </Btn>
                                     </MenuTrigger>
                                   </CContainer>
@@ -754,9 +765,10 @@ const DesktopLayout = (props: Props__Layout) => {
                                     >
                                       {isMainNavsActive && <LeftIndicator />}
                                       <HStack gap={4}>
-                                        <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                          <LucideIcon icon={nav.icon} />
-                                        </Icon>
+                                        <AppIcon
+                                          icon={nav.icon}
+                                          boxSize={BASE_ICON_BOX_SIZE}
+                                        />
                                         <P lineClamp={1} textAlign="left">
                                           {nav.label
                                             ? nav.label
