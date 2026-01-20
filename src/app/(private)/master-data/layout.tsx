@@ -10,7 +10,6 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/Page";
 import { OTHER_PRIVATE_NAVS } from "@/constants/navs";
-import { Props__Layout } from "@/constants/props";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useLang from "@/context/useLang";
 import { useMasterDataPageContainer } from "@/context/useMasterDataPageContainer";
@@ -37,20 +36,23 @@ const NavsList = (props: any) => {
 
   // States
   const searchTerm = search.toLowerCase();
-  const resolvedList = NAVS.reduce<typeof NAVS>((acc, nav) => {
-    const filteredItems = nav.list.filter((item) =>
-      pluckString(l, item.labelKey).toLowerCase().includes(searchTerm)
-    );
+  const resolvedList = NAVS.reduce<typeof NAVS>(
+    (acc, nav) => {
+      const filteredItems = nav.list.filter((item) =>
+        pluckString(l, item.labelKey).toLowerCase().includes(searchTerm),
+      );
 
-    if (filteredItems.length > 0) {
-      acc.push({
-        ...nav,
-        list: filteredItems,
-      });
-    }
+      if (filteredItems.length > 0) {
+        acc.push({
+          ...nav,
+          list: filteredItems,
+        });
+      }
 
-    return acc;
-  }, [] as typeof NAVS);
+      return acc;
+    },
+    [] as typeof NAVS,
+  );
 
   return (
     <CContainer gap={4} {...restProps}>
@@ -102,10 +104,7 @@ const NavsList = (props: any) => {
   );
 };
 
-export default function Layout(props: Props__Layout) {
-  // Props
-  const { children } = props;
-
+export default function Layout({ children }: { children: React.ReactNode }) {
   // Hooks
   const pathname = usePathname();
 
@@ -115,7 +114,7 @@ export default function Layout(props: Props__Layout) {
 
   // Contexts
   const setContainerDimension = useMasterDataPageContainer(
-    (s) => s.setContainerDimension
+    (s) => s.setContainerDimension,
   );
 
   // States
