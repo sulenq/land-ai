@@ -23,6 +23,27 @@ import { forwardRef } from "react";
 
 const FONT_SIZE = "md";
 
+export const PageLayout = forwardRef<HTMLDivElement, StackProps>(
+  (props, ref) => {
+    // Props
+    const { children, ...restProps } = props;
+
+    return (
+      <CContainer
+        className="page-layout"
+        ref={ref}
+        flex={1}
+        maxW={"720px"}
+        mx={"auto"}
+        {...restProps}
+      >
+        {children}
+      </CContainer>
+    );
+  },
+);
+PageLayout.displayName = "PageLayout";
+
 export const PageContainer = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {
     // Props

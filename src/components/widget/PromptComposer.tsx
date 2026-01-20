@@ -17,7 +17,8 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { APP } from "@/constants/_meta";
-import { CHAT_API_CHAT_AI } from "@/constants/apis";
+import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
+import { Props__PromptInput } from "@/constants/props";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
@@ -25,19 +26,19 @@ import useRequest from "@/hooks/useRequest";
 import { disclosureId } from "@/utils/disclosure";
 import { interpolateString, pluckString } from "@/utils/string";
 import {
-  FieldsetRoot,
   Group,
   HStack,
   StackProps,
+  TextProps,
   useDisclosure,
-  VStack,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import * as yup from "yup";
 
+// Unused but exported for consistency
 export const AdditionalPrompt = () => {
   // States
   const [addition, setAddition] = useState<string[]>([]);
@@ -85,20 +86,120 @@ export const AdditionalPrompt = () => {
   );
 };
 
-export const PromptInputForm = () => {
-  const ID = "prompt_composer";
+export const PromptInput = (props: Props__PromptInput) => {
   const MAX_CHAR = 8000;
 
-  // Hooks
-  const { sessionId } = useParams();
-  const { req, loading } = useRequest({
-    id: ID,
-  });
+  // Props
+  const {
+    inputValue = "",
+    onChange,
+    onSubmit,
+    loading = false,
+    maxChar = MAX_CHAR,
+    ...restProps
+  } = props;
 
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+
+  // States
+  const inputLength = inputValue?.length;
+  const isExceedCharLimit = inputLength > maxChar;
+  const isEmpty = !inputValue;
+
+  return (
+    <CContainer
+      p={3}
+      bg={"bg.muted"}
+      rounded={themeConfig.radii.container}
+      mx={"auto"}
+      {...restProps}
+    >
+      <Textarea
+        inputValue={inputValue}
+        onChange={(inputValue) => {
+          onChange?.(inputValue);
+        }}
+        p={0}
+        px={"1 !important"}
+        border={"none"}
+        placeholder={l.ask_land_ai}
+        mb={4}
+        onKeyUp={(e) => {
+          if (e.ctrlKey && e.key === "Enter") {
+            onSubmit?.();
+          }
+        }}
+        maxChar={maxChar}
+      />
+
+      <HStack wrap={"wrap"} justify={"space-between"}>
+        <HelperText
+          ml={1}
+          mb={-4}
+          fontVariantNumeric={"tabular-nums"}
+          color={inputLength > maxChar ? "fg.error" : "fg.subtle"}
+        >{`${inputLength}/${maxChar}`}</HelperText>
+
+        <Group>
+          <Tooltip content={l.upload_file}>
+            <Btn iconButton variant={"ghost"} disabled>
+              <AppIcon icon={PaperclipIcon} />
+            </Btn>
+          </Tooltip>
+
+          <Tooltip
+            content={
+              isEmpty
+                ? l.empty_prompt
+                : isExceedCharLimit
+                  ? l.exceed_char_limit
+                  : l.submit
+            }
+          >
+            <Btn
+              iconButton
+              colorPalette={themeConfig.colorPalette}
+              loading={loading}
+              disabled={!inputValue || isExceedCharLimit}
+              onClick={() => {
+                onSubmit?.();
+              }}
+            >
+              <AppIcon icon={ArrowUpIcon} />
+            </Btn>
+          </Tooltip>
+        </Group>
+      </HStack>
+    </CContainer>
+  );
+};
+
+export const PromptHelperText = (props: TextProps) => {
+  // Contexts
+  const { l } = useLang();
+
+  return (
+    <HelperText textAlign={"center"} mx={"auto"} {...props}>
+      {l.msg_discliamer}
+    </HelperText>
+  );
+};
+
+export const NewPrompt = (props: StackProps) => {
+  const ID = "prompt_composer";
+
+  // Contexts
+  const { l } = useLang();
   const router = useRouter();
+
+  // Hooks
+  const { req, loading } = useRequest({
+    id: ID,
+    showLoadingToast: false,
+    showSuccessToast: false,
+  });
 
   // States
   const formik = useFormik({
@@ -109,12 +210,11 @@ export const PromptInputForm = () => {
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: (values) => {
       const payload = {
-        sessionId: sessionId,
         prompt: values.prompt,
       };
 
       const config = {
-        url: CHAT_API_CHAT_AI,
+        url: CHAT_API_CHAT_AI_STREAM,
         method: "POST",
         data: payload,
       };
@@ -130,126 +230,47 @@ export const PromptInputForm = () => {
       });
     },
   });
-  const isExceedCharLimit = formik.values.prompt.length > MAX_CHAR;
-  const isEmpty = !formik.values.prompt;
 
   return (
-    <form id={ID} onSubmit={formik.handleSubmit}>
-      <FieldsetRoot>
-        <CContainer
-          maxW={"600px"}
-          p={3}
-          bg={"bg.muted"}
-          rounded={themeConfig.radii.container}
-          mx={"auto"}
-        >
-          <Textarea
-            inputValue={formik.values.prompt}
-            onChange={(inputValue) => {
-              formik.setFieldValue("prompt", inputValue);
-            }}
-            p={0}
-            px={"1 !important"}
-            border={"none"}
-            placeholder={l.ask_land_ai}
-            mb={4}
-            onKeyUp={(e) => {
-              if (e.ctrlKey && e.key === "Enter") {
-                formik.handleSubmit();
-              }
-            }}
-            maxChar={MAX_CHAR}
-          />
+    <CContainer {...props}>
+      <P
+        fontSize={"lg"}
+        fontWeight={"medium"}
+        textAlign={"center"}
+        color={"fg.subtle"}
+      >
+        {interpolateString(pluckString(l, `msg_welcome_to_the_app`), {
+          appName: APP.name,
+        })}
+      </P>
 
-          <HStack wrap={"wrap"} justify={"space-between"}>
-            <HelperText
-              ml={1}
-              mb={-4}
-              fontVariantNumeric={"tabular-nums"}
-              color={
-                formik.values.prompt.length > MAX_CHAR
-                  ? "fg.error"
-                  : "fg.subtle"
-              }
-            >{`${formik.values.prompt.length}/${MAX_CHAR}`}</HelperText>
+      <P
+        fontSize={"xl"}
+        fontWeight={"medium"}
+        color={"ibody"}
+        textAlign={"center"}
+        mb={4}
+      >
+        {l.msg_welcome_context}
+      </P>
 
-            <Group>
-              <Tooltip content={l.upload_file}>
-                <Btn iconButton variant={"ghost"} disabled>
-                  <AppIcon icon={PaperclipIcon} />
-                </Btn>
-              </Tooltip>
+      <PromptInput
+        inputValue={formik.values.prompt}
+        onChange={(inputValue) => {
+          formik.setFieldValue("prompt", inputValue);
+        }}
+        onSubmit={() => {
+          formik.handleSubmit();
+        }}
+        loading={loading}
+      />
 
-              <Tooltip
-                content={
-                  isEmpty
-                    ? l.empty_prompt
-                    : isExceedCharLimit
-                      ? l.exceed_char_limit
-                      : l.submit
-                }
-              >
-                <Btn
-                  type="submit"
-                  form={ID}
-                  iconButton
-                  colorPalette={themeConfig.colorPalette}
-                  loading={loading}
-                  disabled={!formik.values.prompt || isExceedCharLimit}
-                >
-                  <AppIcon icon={ArrowUpIcon} />
-                </Btn>
-              </Tooltip>
-            </Group>
-          </HStack>
-        </CContainer>
-      </FieldsetRoot>
-    </form>
+      <PromptHelperText mt={4} />
+    </CContainer>
   );
 };
 
-export const PromptComposer = (props: StackProps) => {
-  // Contexts
-  const { l } = useLang();
-
-  return (
-    <VStack flex={1} gap={1} justify={"center"} align={"stretch"} {...props}>
-      <VStack my={"auto"} align={"stretch"}>
-        <P
-          fontSize={"lg"}
-          fontWeight={"medium"}
-          textAlign={"center"}
-          color={"fg.subtle"}
-        >
-          {interpolateString(pluckString(l, `msg_welcome_to_the_app`), {
-            appName: APP.name,
-          })}
-        </P>
-
-        <P
-          fontSize={"xl"}
-          fontWeight={"medium"}
-          color={"ibody"}
-          textAlign={"center"}
-          mb={4}
-        >
-          {l.msg_welcome_context}
-        </P>
-
-        <PromptInputForm />
-
-        <HelperText textAlign={"center"} maxW={"500px"} mx={"auto"} mt={4}>
-          {l.msg_discliamer}
-        </HelperText>
-      </VStack>
-    </VStack>
-  );
-};
-
-export const PromptComposerDisclosureTrigger = (props: any) => {
-  // Props
-  const { ...restProps } = props;
-
+export const NewPromptDisclosureTrigger = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
 
@@ -259,7 +280,7 @@ export const PromptComposerDisclosureTrigger = (props: any) => {
 
   return (
     <>
-      <CContainer w={"fit"} onClick={onOpen} {...restProps}></CContainer>
+      <CContainer w={"fit"} onClick={onOpen} {...props}></CContainer>
 
       <DisclosureRoot open={open} lazyLoad size={"xl"}>
         <DisclosureContent>
@@ -268,7 +289,7 @@ export const PromptComposerDisclosureTrigger = (props: any) => {
           </DisclosureHeader>
 
           <DisclosureBody>
-            <PromptComposer my={12} />
+            <NewPrompt my={12} />
           </DisclosureBody>
 
           <DisclosureFooter>

@@ -42,7 +42,7 @@ import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_USER_PROFILE } from "@/constants/apis";
-import { DUMMY_YOUR_CHATS } from "@/constants/dummyData";
+import { DUMMY_CHAT_SESSIONS } from "@/constants/dummyData";
 import { PRIVATE_NAVS } from "@/constants/navs";
 import { Props__Layout, Props__NavLink } from "@/constants/props";
 import {
@@ -932,7 +932,7 @@ const DesktopLayout = (props: Props__Layout) => {
                   {l.your_chats}
                 </P>
 
-                {/* <PromptComposerDisclosureTrigger w={"full"} mb={2}>
+                {/* <NewPromptDisclosureTrigger w={"full"} mb={2}>
                   <Btn
                     clicky={false}
                     variant={"ghost"}
@@ -944,13 +944,13 @@ const DesktopLayout = (props: Props__Layout) => {
                     <AppIcon icon={SquarePenIcon} />
                     {navsExpanded && l.navs.new_chat}
                   </Btn>
-                </PromptComposerDisclosureTrigger> */}
+                </NewPromptDisclosureTrigger> */}
 
                 <ChatSessions navsExpanded={navsExpanded} />
               </>
             ) : (
               <>
-                {/* <PromptComposerDisclosureTrigger w={"full"} mb={1}>
+                {/* <NewPromptDisclosureTrigger w={"full"} mb={1}>
                   <DesktopNavTooltip content={l.navs.new_chat}>
                     <Btn
                       clicky={false}
@@ -963,7 +963,7 @@ const DesktopLayout = (props: Props__Layout) => {
                       <AppIcon icon={SquarePenIcon} />
                     </Btn>
                   </DesktopNavTooltip>
-                </PromptComposerDisclosureTrigger> */}
+                </NewPromptDisclosureTrigger> */}
 
                 <ChatSessionsDisclosureTrigger mr={"auto"}>
                   <DesktopNavTooltip content={l.your_chats}>
@@ -1019,7 +1019,7 @@ const TheApp = (props: Props__Layout) => {
   const iss = useIsSmScreenWidth();
 
   // States
-  const NAVS = buildPrivateNavsFromChats(DUMMY_YOUR_CHATS);
+  const NAVS = buildPrivateNavsFromChats(DUMMY_CHAT_SESSIONS);
 
   return (
     <CContainer id="app_layout" h={"100dvh"} {...restProps}>

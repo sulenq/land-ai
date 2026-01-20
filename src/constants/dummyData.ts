@@ -1,6 +1,6 @@
 import { Interface__ChatSession } from "@/constants/interfaces";
 
-export const DUMMY_YOUR_CHATS: Interface__ChatSession[] = [
+export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
   {
     id: "1",
     isStreaming: false,
@@ -62,6 +62,33 @@ export const DUMMY_YOUR_CHATS: Interface__ChatSession[] = [
     updatedAt: "2026-01-04T17:25:00Z",
   },
 ];
+
+export const DUMMY_CHAT_SESSION = {
+  session: {
+    id: "f8e025f0-10cf-4815-a6bf-5d19405e0ccc",
+    title: "apa saja dasar hukum yang mendasari petunjuk tekni...",
+  },
+  totalMessages: 2,
+  messages: [
+    {
+      id: "1d901f95-cda7-4e1b-85bf-a6654dedea6e",
+      role: "user",
+      content: "apa saja dasar hukum yang mendasari petunjuk teknis?",
+      createdAt: "2026-01-20T02:46:38.866Z",
+      timestampUnix: "1768902398867",
+      sequenceNumber: "1",
+    },
+    {
+      id: "eb0e89f3-7e7c-4548-b1c4-8eb156b8b5b2",
+      role: "assistant",
+      content:
+        "Dasar Hukum yang mendasari Petunjuk Teknis ini meliputi: \n1. Undang-Undang Nomor 26 Tahun 2007 tentang Penataan Ruang (Lembaran Negara Republik Indonesia Tahun 2007 Nomor 68, Tambahan Lembaran Negara Republik Indonesia Nomor 4725);\n2. Undang-Undang Nomor 39 Tahun 2008 tentang Kementerian Negara (Lembaran Negara Republik Indonesia Tahun 2008 Nomor 116, Tambahan Lembaran Negara Republik Indonesia Nomor 4916) sebagaimana telah diubah dengan Undang-Undang Nomor 61 Tahun 2024 tentang Perubahan atas Undang-Undang Nomor 39 Tahun 2008 tentang Kementerian Negara (Lembaran Negara Republik Indonesia Tahun 2024 Nomor 225, Tambahan Lembaran Negara Republik Indonesia Nomor 6994); \n3. Peraturan Pemerintah Nomor 21 Tahun 2021 tentang Penyelenggaraan Penataan Ruang (Lembaran Negara Republik Indonesia Tahun 2021 Nomor 31, Tambahan Lembaran Negara Republik Indonesia Nomor 6633); \n4. Peraturan Presiden Nomor 176 Tahun 2024 tentang Kementerian Agraria dan Tata Ruang (Lembaran Negara Republik Indonesia Tahun 2024 Nomor 372); \n5. Peraturan Presiden Nomor 177 Tahun 2024 tentang Badan Pertanahan Nasional (Lembaran Negara Republik Indonesia Tahun 2024 Nomor 373); \n6. Peraturan Menteri Agraria dan Tata Ruang/Kepala Badan Pertanahan Nasional Nomor 17 Tahun 2020 tentang Organisasi dan Tata Kerja Kantor Wilayah Badan Pertanahan Nasional dan Kantor Pertanahan (Berita Negara Republik Indonesia Tahun 2020 Nomor 986);\n7. Peraturan Menteri Agraria dan Tata Ruang/Kepala Badan Pertanahan Nasional Nomor 13 Tahun 2021 tentang Pelaksanaan Kesesuaian Kegiatan Pemanfaatan Ruang dan Sinkronisasi Program Pemanfaatan Ruang (Berita Negara Republik Indonesia Tahun 2021 Nomor 330); \n8. Peraturan Menteri Agraria dan Tata Ruang/Kepala Badan Pertanahan Nasional Nomor 15 Tahun 2021 Tentang Koordinasi Penyelenggaraan Penataan Ruang (Berita Negara Republik Indonesia Tahun 2021 Nomor 327); dan \n9. Peraturan Menteri Agraria dan Tata Ruang/Kepala Badan Pertanahan Nasional Nomor 9 Tahun 2022 tentang Perubahan atas Peraturan Menteri Agraria dan Tata Ruang/ Kepala Badan Pertanahan Nasional Nomor 15 Tahun 2021 Tentang Koordinasi Penyelenggaraan Penataan Ruang (Berita Negara Republik Indonesia Tahun 2022 Nomor 530);\n10. Peraturan Menteri Agraria dan Tata Ruang/Kepala Badan Pertanahan Nasional Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Kementerian Agraria dan Tata Ruang/Badan Pertanahan Nasional (Berita Negara Republik Indonesia Tahun 2025 Nomor 309).\n",
+      createdAt: "2026-01-20T02:46:49.919Z",
+      timestampUnix: "1768902409919",
+      sequenceNumber: "2",
+    },
+  ],
+};
 
 const generate1D = () => {
   let v23 = 80;

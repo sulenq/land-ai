@@ -25,7 +25,7 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
 import { CHAT_API_CHAT_AI_INDEX } from "@/constants/apis";
-import { DUMMY_YOUR_CHATS } from "@/constants/dummyData";
+import { DUMMY_CHAT_SESSIONS } from "@/constants/dummyData";
 import { Interface__ChatSession } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -54,7 +54,7 @@ export const ChatSessions = (props: any) => {
   const { error, initialLoading, data, onRetry } = useDataState<
     Interface__ChatSession[]
   >({
-    initialData: DUMMY_YOUR_CHATS,
+    initialData: DUMMY_CHAT_SESSIONS,
     url: CHAT_API_CHAT_AI_INDEX,
     dataResource: false,
     loadingBar: false,
