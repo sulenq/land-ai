@@ -33,7 +33,7 @@ import useBackOnClose from "@/hooks/useBackOnClose";
 import useDataState from "@/hooks/useDataState";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
-import { HStack, useDisclosure } from "@chakra-ui/react";
+import { HStack, StackProps, useDisclosure } from "@chakra-ui/react";
 import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
@@ -158,10 +158,7 @@ export const ChatSessions = (props: any) => {
   );
 };
 
-export const ChatSessionsDisclosureTrigger = (props: any) => {
-  // Props
-  const { ...restProps } = props;
-
+export const ChatSessionsDisclosureTrigger = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
 
@@ -171,7 +168,7 @@ export const ChatSessionsDisclosureTrigger = (props: any) => {
 
   return (
     <>
-      <CContainer w={"fit"} onClick={onOpen} {...restProps}></CContainer>
+      <CContainer w={"fit"} onClick={onOpen} {...props} />
 
       <DisclosureRoot open={open} lazyLoad size={"xs"}>
         <DisclosureContent>

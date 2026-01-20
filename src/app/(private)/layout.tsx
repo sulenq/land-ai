@@ -78,7 +78,14 @@ import {
 import { buildPrivateNavsFromChats } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
-import { Box, Center, HStack, Icon, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  HStack,
+  Icon,
+  StackProps,
+  VStack,
+} from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
@@ -89,6 +96,46 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useRef, useState } from "react";
+
+const MiniMyProfilePopoverTrigger = (props: StackProps) => {
+  // Refs
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Hooks
+  useClickOutside(containerRef, onClose);
+
+  // States
+  const [open, setOpen] = useState<boolean>(false);
+
+  // Utils
+  function onOpen() {
+    setOpen(true);
+  }
+  function onClose() {
+    setOpen(false);
+  }
+
+  return (
+    <PopoverRoot
+      open={open}
+      positioning={{
+        placement: "right-end",
+        offset: {
+          mainAxis: DESKTOP_POPOVER_MAIN_AXIS,
+          crossAxis: 4,
+        },
+      }}
+    >
+      <PopoverTrigger asChild>
+        <CContainer w={"fit"} onClick={onOpen} {...props} />
+      </PopoverTrigger>
+
+      <PopoverContent ref={containerRef} w={"235px"} zIndex={10}>
+        <MiniMyProfile onClose={onClose} />
+      </PopoverContent>
+    </PopoverRoot>
+  );
+};
 
 // Mobile Area
 const MobileNavLink = (props: Props__NavLink) => {
@@ -281,8 +328,10 @@ const MobileLayout = (props: Props__Layout) => {
             );
           })}
 
-          <ChatSessionsDisclosureTrigger mr={"auto"}>
-            <MobileNavLink>
+          <ChatSessionsDisclosureTrigger flex={1}>
+            <MobileNavLink
+              color={pathname.includes("/c/") ? "" : MOBILE_NAVS_COLOR}
+            >
               <AppIcon icon={MessageSquareIcon} boxSize={5} />
 
               <P
@@ -295,50 +344,38 @@ const MobileLayout = (props: Props__Layout) => {
             </MobileNavLink>
           </ChatSessionsDisclosureTrigger>
 
-          <PopoverRoot
-            positioning={{
-              placement: "top",
-              offset: {
-                mainAxis: MOBILE_POPOVER_MAIN_AXIS,
-              },
-            }}
-          >
-            <PopoverTrigger asChild>
-              <VStack
-                flex={1}
-                color={MOBILE_NAVS_COLOR}
-                onClick={() => {
-                  console.debug("Jembot");
-                }}
-                cursor={"pointer"}
+          <MiniMyProfilePopoverTrigger flex={1}>
+            <VStack
+              flex={1}
+              color={MOBILE_NAVS_COLOR}
+              onClick={() => {
+                console.debug("Jembot");
+              }}
+              cursor={"pointer"}
+              gap={1}
+            >
+              {!user?.avatar?.filePath && (
+                <AppIcon icon={UserIcon} boxSize={5} />
+              )}
+
+              {user?.avatar?.filePath && (
+                <Avatar
+                  src={imgUrl(user?.avatar?.filePath)}
+                  name={user?.name}
+                  size={"2xs"}
+                />
+              )}
+
+              <P
+                fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
+                textAlign={"center"}
+                color={isInProfileRoute ? "" : MOBILE_NAVS_COLOR}
+                lineClamp={1}
               >
-                {!user?.avatar?.filePath && (
-                  <AppIcon icon={UserIcon} boxSize={6} />
-                )}
-
-                {user?.avatar?.filePath && (
-                  <Avatar
-                    src={imgUrl(user?.avatar?.filePath)}
-                    name={user?.name}
-                    size={"2xs"}
-                  />
-                )}
-
-                <P
-                  fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
-                  textAlign={"center"}
-                  color={isInProfileRoute ? "" : MOBILE_NAVS_COLOR}
-                  lineClamp={1}
-                >
-                  {l.profile}
-                </P>
-              </VStack>
-            </PopoverTrigger>
-
-            <PopoverContent w={"200px"} zIndex={10}>
-              <MiniMyProfile />
-            </PopoverContent>
-          </PopoverRoot>
+                {l.profile}
+              </P>
+            </VStack>
+          </MiniMyProfilePopoverTrigger>
         </HStack>
       </HScroll>
     </CContainer>
@@ -346,94 +383,6 @@ const MobileLayout = (props: Props__Layout) => {
 };
 
 // Desktop Area
-const DesktoMiniMyProfile = (props: any) => {
-  // Props
-  const { navsExpanded, ...restProps } = props;
-
-  // Contexts
-  const { themeConfig } = useThemeConfig();
-
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Hooks
-  useClickOutside(containerRef, onClose);
-
-  // States
-  const user = getUserData();
-  const [open, setOpen] = useState<boolean>(false);
-
-  // Utils
-  function onOpen() {
-    setOpen(true);
-  }
-  function onClose() {
-    setOpen(false);
-  }
-
-  return (
-    <PopoverRoot
-      open={open}
-      positioning={{
-        placement: "right-end",
-        offset: {
-          mainAxis: DESKTOP_POPOVER_MAIN_AXIS,
-          crossAxis: 4,
-        },
-      }}
-      {...restProps}
-    >
-      <PopoverTrigger asChild>
-        <HStack
-          gap={4}
-          w={navsExpanded ? "full" : "36px"}
-          px={"6px"}
-          py={2}
-          rounded={themeConfig.radii.component}
-          cursor={"pointer"}
-          _hover={{
-            bg: "gray.subtle",
-          }}
-          justify={navsExpanded ? "" : "center"}
-          transition={"200ms"}
-          pos={"relative"}
-          onClick={onOpen}
-        >
-          <Avatar
-            src={imgUrl(user?.avatar?.filePath)}
-            name={user?.name}
-            size={navsExpanded ? "md" : "2xs"}
-            mr={"auto"}
-          />
-
-          {navsExpanded && (
-            <>
-              <CContainer>
-                <P lineClamp={1} fontWeight={"semibold"}>
-                  {user?.name || user?.email || "Signed out"}
-                </P>
-                <P lineClamp={1} color={"fg.subtle"}>
-                  {user?.name ? user?.email || user?.username : "-"}
-                </P>
-              </CContainer>
-
-              <AppIcon
-                icon={ChevronsUpDownIcon}
-                boxSize={BASE_ICON_BOX_SIZE}
-                color={"fg.subtle"}
-                mr={1}
-              />
-            </>
-          )}
-        </HStack>
-      </PopoverTrigger>
-
-      <PopoverContent ref={containerRef} w={"235px"} zIndex={10}>
-        <MiniMyProfile onClose={onClose} />
-      </PopoverContent>
-    </PopoverRoot>
-  );
-};
 const DesktopLayout = (props: Props__Layout) => {
   // Props
   const { children, navs, ...restProps } = props;
@@ -994,7 +943,49 @@ const DesktopLayout = (props: Props__Layout) => {
         <Divider />
 
         <CContainer p={3}>
-          <DesktoMiniMyProfile navsExpanded={navsExpanded} />
+          <MiniMyProfilePopoverTrigger>
+            <HStack
+              gap={4}
+              w={navsExpanded ? "full" : "36px"}
+              px={"6px"}
+              py={2}
+              rounded={themeConfig.radii.component}
+              cursor={"pointer"}
+              _hover={{
+                bg: "gray.subtle",
+              }}
+              justify={navsExpanded ? "" : "center"}
+              transition={"200ms"}
+              pos={"relative"}
+            >
+              <Avatar
+                src={imgUrl(user?.avatar?.filePath)}
+                name={user?.name}
+                size={navsExpanded ? "md" : "2xs"}
+                mr={"auto"}
+              />
+
+              {navsExpanded && (
+                <>
+                  <CContainer>
+                    <P lineClamp={1} fontWeight={"semibold"}>
+                      {user?.name || user?.email || "Signed out"}
+                    </P>
+                    <P lineClamp={1} color={"fg.subtle"}>
+                      {user?.name ? user?.email || user?.username : "-"}
+                    </P>
+                  </CContainer>
+
+                  <AppIcon
+                    icon={ChevronsUpDownIcon}
+                    boxSize={BASE_ICON_BOX_SIZE}
+                    color={"fg.subtle"}
+                    mr={1}
+                  />
+                </>
+              )}
+            </HStack>
+          </MiniMyProfilePopoverTrigger>
         </CContainer>
       </CContainer>
 
