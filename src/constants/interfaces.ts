@@ -170,7 +170,7 @@ export interface Interface__SelectOption {
 // Chats
 export interface Interface__ChatSession extends Interface__CUD {
   id: string;
-  title: string | null;
+  title: string;
 }
 export interface Interface__ChatMessage extends Interface__CUD {
   id: string;

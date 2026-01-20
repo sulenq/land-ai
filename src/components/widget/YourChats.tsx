@@ -22,8 +22,9 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
+import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
-import { CHAT_API_YOUR_CHATS } from "@/constants/apis";
+import { CHAT_API_CHAT_AI_INDEX } from "@/constants/apis";
 import { DUMMY_YOUR_CHATS } from "@/constants/dummyData";
 import { Interface__ChatSession } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
@@ -34,6 +35,7 @@ import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
 import { HStack, useDisclosure } from "@chakra-ui/react";
 import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
 export const YourChats = (props: any) => {
@@ -46,13 +48,14 @@ export const YourChats = (props: any) => {
 
   // Refs
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<
     Interface__ChatSession[]
   >({
     initialData: DUMMY_YOUR_CHATS,
-    url: CHAT_API_YOUR_CHATS,
+    url: CHAT_API_CHAT_AI_INDEX,
     dataResource: false,
     loadingBar: false,
   });
@@ -71,51 +74,59 @@ export const YourChats = (props: any) => {
   if (isEmptyArray(resolvedData)) {
     loadedContent = <FeedbackNotFound />;
   } else {
-    loadedContent = resolvedData?.map((chat) => (
-      <DesktopNavTooltip key={chat.id} content={chat.title}>
-        <NavLink to={`/chats/${chat.id}`} w={"full"}>
-          <HStack
-            h={["44px", null, "36px"]}
-            pl={2}
-            justifyContent={"space-between"}
-            rounded={themeConfig.radii.component}
-            _hover={{ bg: "bg.muted" }}
-            transition={"200ms"}
-          >
-            <P lineClamp={1} textAlign={"left"}>
-              {chat.title}
-            </P>
+    loadedContent = resolvedData?.map((chat) => {
+      const isActive = pathname?.includes(`/chats/${chat.id}`);
 
-            <MenuRoot>
-              <MenuTrigger
-                asChild
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <Btn iconButton size={"xs"} variant={"plain"}>
-                  <AppIcon icon={EllipsisIcon} />
-                </Btn>
-              </MenuTrigger>
+      return (
+        <DesktopNavTooltip key={chat.id} content={chat.title}>
+          <NavLink to={`/chats/${chat.id}`} w={"full"}>
+            <HStack
+              h={["44px", null, "36px"]}
+              pl={2}
+              justifyContent={"space-between"}
+              rounded={themeConfig.radii.component}
+              _hover={{ bg: "bg.muted" }}
+              transition={"200ms"}
+              pos={"relative"}
+            >
+              {isActive && <LeftIndicator />}
 
-              <MenuContent zIndex={"modal"}>
-                <MenuItem value="rename">
-                  <AppIcon icon={PenIcon} /> {l.rename}
-                </MenuItem>
+              <P lineClamp={1} textAlign={"left"}>
+                {chat.title}
+              </P>
 
-                <MenuItem value="protect">
-                  <AppIcon icon={ShieldIcon} /> {l.protect}
-                </MenuItem>
+              {/* Options */}
+              <MenuRoot>
+                <MenuTrigger
+                  asChild
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Btn iconButton size={"xs"} variant={"plain"}>
+                    <AppIcon icon={EllipsisIcon} />
+                  </Btn>
+                </MenuTrigger>
 
-                <MenuItem value="delete" _hover={{ color: "fg.error" }}>
-                  <AppIcon icon={TrashIcon} /> {l.delete_}
-                </MenuItem>
-              </MenuContent>
-            </MenuRoot>
-          </HStack>
-        </NavLink>
-      </DesktopNavTooltip>
-    ));
+                <MenuContent zIndex={"modal"}>
+                  <MenuItem value="rename">
+                    <AppIcon icon={PenIcon} /> {l.rename}
+                  </MenuItem>
+
+                  <MenuItem value="protect">
+                    <AppIcon icon={ShieldIcon} /> {l.protect}
+                  </MenuItem>
+
+                  <MenuItem value="delete" _hover={{ color: "fg.error" }}>
+                    <AppIcon icon={TrashIcon} /> {l.delete_}
+                  </MenuItem>
+                </MenuContent>
+              </MenuRoot>
+            </HStack>
+          </NavLink>
+        </DesktopNavTooltip>
+      );
+    });
   }
   let content = null;
   if (initialLoading) {

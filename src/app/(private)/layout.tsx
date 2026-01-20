@@ -977,6 +977,8 @@ const DesktopLayout = (props: Props__Layout) => {
                 <YourChatsDisclosureTrigger mr={"auto"}>
                   <DesktopNavTooltip content={l.your_chats}>
                     <Btn iconButton clicky={false} variant={"ghost"}>
+                      {pathname.includes("/chats/") && <LeftIndicator />}
+
                       <AppIcon icon={MessageSquareIcon} />
                     </Btn>
                   </DesktopNavTooltip>
