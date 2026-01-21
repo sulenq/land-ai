@@ -34,7 +34,7 @@ export default function Page() {
 
   // Hooks
   const scrollBottom = useScrollBottom(containerRef);
-  const { sessionId } = useParams();
+  const { sessionId: _sessionId } = useParams();
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<any>({
