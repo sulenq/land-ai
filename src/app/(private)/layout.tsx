@@ -929,7 +929,7 @@ const DesktopLayout = (props: Props__Layout) => {
                 <ChatSessionsDisclosureTrigger mr={"auto"}>
                   <DesktopNavTooltip content={l.your_chats}>
                     <Btn iconButton clicky={false} variant={"ghost"}>
-                      {pathname.includes("/chats/") && <LeftIndicator />}
+                      {pathname.includes("/c/") && <LeftIndicator />}
 
                       <AppIcon icon={MessageSquareIcon} />
                     </Btn>
