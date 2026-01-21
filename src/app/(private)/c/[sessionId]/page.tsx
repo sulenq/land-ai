@@ -12,6 +12,7 @@ import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
+import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import useActiveChatSession from "@/context/useActiveChatSession";
 import useDataState from "@/hooks/useDataState";
@@ -33,7 +34,7 @@ export default function Page() {
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<any>({
-    // url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
+    url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
   });
   const activeChat = useActiveChatSession((s) => s.activeChat);
