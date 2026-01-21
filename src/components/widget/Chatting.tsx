@@ -22,7 +22,8 @@ export const UserBubbleChat = (props: Props__UserBubbleChat) => {
     <CContainer
       justify={"space-between"}
       align={"start"}
-      p={4}
+      px={4}
+      py={3}
       bg={`${themeConfig.colorPalette}.solid`}
       roundedTopLeft={themeConfig.radii.component}
       roundedTopRight={0}
