@@ -15,6 +15,7 @@ import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import useActiveChatSession from "@/context/useActiveChatSession";
+import usePromptInput from "@/context/usePromptInput";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
@@ -25,6 +26,9 @@ import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 export default function Page() {
+  // Contexts
+  const promptInputStyle = usePromptInput((s) => s.style);
+
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -110,7 +114,11 @@ export default function Page() {
         overflowY={"auto"}
         scrollBehavior={"smooth"}
       >
-        <ContainerLayout justify={"space-between"} gap={8} pb={"360px"}>
+        <ContainerLayout
+          justify={"space-between"}
+          gap={8}
+          pb={`calc(${promptInputStyle?.h} + 30px)`}
+        >
           <CContainer>
             <P fontSize={"xl"} fontWeight={"semibold"}>
               {activeChat.session?.title}
