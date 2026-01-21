@@ -1,6 +1,6 @@
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
-import { CSpinner } from "@/components/ui/c-spinner";
+import { CSpinner } from "@/components/ui/c-loader";
 import {
   DisclosureBody,
   DisclosureContent,

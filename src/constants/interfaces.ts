@@ -174,10 +174,13 @@ export interface Interface__ChatSession extends Interface__CUD {
   isStreaming: boolean;
 }
 export interface Interface__ChatMessage extends Interface__CUD {
+  sessionId?: string;
   id: string;
-  sessionId: string;
   role: "user" | "assistant";
   content: string;
+  createdAt: string;
+  timestampUnix: string;
+  sequenceNumber: string;
 }
 export interface Interface__ChatStreamingState {
   messageId: string | null;
@@ -186,8 +189,10 @@ export interface Interface__ChatStreamingState {
 export interface Interface__ChatState {
   session: Interface__ChatSession | null;
   messages: Interface__ChatMessage[];
-  streaming: Interface__ChatStreamingState;
-  loadingSession: boolean;
-  sendingPrompt: boolean;
-  error: boolean;
+  totalMessages: number;
+  isNewSession: boolean;
+  // streaming: Interface__ChatStreamingState;
+  // loadingSession: boolean;
+  // sendingPrompt: boolean;
+  // error: boolean;
 }

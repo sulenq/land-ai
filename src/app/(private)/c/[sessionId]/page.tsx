@@ -1,6 +1,8 @@
 "use client";
 
-import { CSpinner } from "@/components/ui/c-spinner";
+import { CContainer } from "@/components/ui/c-container";
+import { ChatSkeleton } from "@/components/ui/c-loader";
+import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
@@ -9,13 +11,12 @@ import {
   PromptHelperText,
   PromptInput,
 } from "@/components/widget/PromptComposer";
-import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
-import { DUMMY_CHAT_SESSION } from "@/constants/dummyData";
-import { Interface__ChatState } from "@/constants/interfaces";
+import { Interface__ChatMessage } from "@/constants/interfaces";
+import useActiveChatSession from "@/context/useActiveChatSession";
 import useDataState from "@/hooks/useDataState";
 import { isEmptyArray } from "@/utils/array";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Page() {
   // Hooks
@@ -25,19 +26,12 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // States
+  // const initialLoading = true;
   const { error, initialLoading, data, onRetry } = useDataState<any>({
-    initialData: DUMMY_CHAT_SESSION,
-    url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
+    // url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
   });
-  const [chat, setChat] = useState<Interface__ChatState>({
-    session: null,
-    messages: [],
-    streaming: { active: false, messageId: null },
-    loadingSession: true,
-    sendingPrompt: false,
-    error: false,
-  });
+  const { activeChat, setActiveChat } = useActiveChatSession();
 
   // Scroll to bottom on load
   useEffect(() => {
@@ -46,33 +40,57 @@ export default function Page() {
     }
   }, []);
 
+  // console.debug(activeChat);
+
   const render = {
-    loading: <CSpinner />,
+    loading: <ChatSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
-    loaded: <></>,
+    loaded: (
+      <CContainer flex={1} gap={4}>
+        {activeChat.messages.map((message: Interface__ChatMessage) => {
+          if (message.role === "user") {
+            return (
+              <UserBubbleChat key={message.id}>
+                {message.content}
+              </UserBubbleChat>
+            );
+          }
+
+          if (message.role === "assistant") {
+            return (
+              <MarkdownChat key={message.id}>{message.content}</MarkdownChat>
+            );
+          }
+        })}
+      </CContainer>
+    ),
   };
 
   let content = null;
-  if (initialLoading) {
-    content = render.loading;
-  } else if (error) {
-    content = render.error;
-  } else if (!data || isEmptyArray(data)) {
-    content = render.empty;
-  } else {
+  if (activeChat.isNewSession) {
     content = render.loaded;
+  } else {
+    if (initialLoading) {
+      content = render.loading;
+    } else if (error) {
+      content = render.error;
+    } else if (!data || isEmptyArray(data)) {
+      content = render.empty;
+    } else {
+      content = render.loaded;
+    }
   }
 
   return (
     <PageContainer ref={containerRef} p={4}>
-      <PageLayout>
+      <PageLayout justify={"space-between"} gap={4}>
         {content}
 
         <PromptInput />
 
-        <PromptHelperText mt={4} />
+        <PromptHelperText />
       </PageLayout>
     </PageContainer>
   );

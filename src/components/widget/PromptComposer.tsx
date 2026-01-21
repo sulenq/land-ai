@@ -19,6 +19,7 @@ import BackButton from "@/components/widget/BackButton";
 import { APP } from "@/constants/_meta";
 import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
 import { Props__PromptInput } from "@/constants/props";
+import useActiveChatSession from "@/context/useActiveChatSession";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
@@ -193,6 +194,7 @@ export const NewPrompt = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
   const router = useRouter();
+  const setActiveChat = useActiveChatSession((state) => state.setActiveChat);
 
   // Hooks
   const { req, loading } = useRequest({
@@ -223,6 +225,13 @@ export const NewPrompt = (props: StackProps) => {
         config,
         onResolve: {
           onSuccess: (r) => {
+            setActiveChat({
+              session: r?.data?.data?.session,
+              messages: r?.data?.data?.messages,
+              totalMessages: r?.data?.data?.totalMessages,
+              isNewSession: true,
+            });
+
             const sessionId = r?.data?.data?.id;
             router.push(`/c/${sessionId}`);
           },

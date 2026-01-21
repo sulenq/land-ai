@@ -32,6 +32,10 @@ import {
   Type__Period,
 } from "./types";
 
+export interface Props__UserBubbleChat {
+  children: string;
+}
+
 export interface Props__PromptInput extends Omit<
   StackProps,
   "inputValue" | "onChange" | "onSubmit"

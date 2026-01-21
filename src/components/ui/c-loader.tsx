@@ -1,4 +1,5 @@
 import { CContainer } from "@/components/ui/c-container";
+import { Skeleton } from "@/components/ui/skeleton";
 import Spinner from "@/components/ui/spinner";
 import { SpinnerProps, StackProps } from "@chakra-ui/react";
 
@@ -18,6 +19,15 @@ export const CSpinner = ({ spinnerProps, ...props }: Props) => {
       {...props}
     >
       <Spinner {...spinnerProps} />
+    </CContainer>
+  );
+};
+
+export const ChatSkeleton = () => {
+  return (
+    <CContainer m={"auto"} gap={4}>
+      <Skeleton w={"70%"} h={"100px"} ml={"auto"} />
+      <Skeleton w={"full"} h={"200px"} mr={"auto"} />
     </CContainer>
   );
 };

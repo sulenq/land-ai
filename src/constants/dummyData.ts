@@ -1,4 +1,7 @@
-import { Interface__ChatSession } from "@/constants/interfaces";
+import {
+  Interface__ChatMessage,
+  Interface__ChatSession,
+} from "@/constants/interfaces";
 
 export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
   {
@@ -63,17 +66,23 @@ export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
   },
 ];
 
-export const DUMMY_CHAT_SESSION = {
+export const DUMMY_CHAT_SESSION: {
+  session: Interface__ChatSession;
+  totalMessages: number;
+  messages: Interface__ChatMessage[];
+} = {
   session: {
     id: "f8e025f0-10cf-4815-a6bf-5d19405e0ccc",
     title: "apa saja dasar hukum yang mendasari petunjuk tekni...",
+    isStreaming: false,
   },
   totalMessages: 2,
   messages: [
     {
       id: "1d901f95-cda7-4e1b-85bf-a6654dedea6e",
       role: "user",
-      content: "apa saja dasar hukum yang mendasari petunjuk teknis?",
+      content:
+        "Lorem ipsum dolor sit amet, apa saja dasar hukum yang mendasari petunjuk teknis?",
       createdAt: "2026-01-20T02:46:38.866Z",
       timestampUnix: "1768902398867",
       sequenceNumber: "1",
