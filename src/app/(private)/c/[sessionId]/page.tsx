@@ -3,7 +3,6 @@
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { ChatSkeleton } from "@/components/ui/c-loader";
-import { HelperText } from "@/components/ui/helper-text";
 import { P } from "@/components/ui/p";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
@@ -11,12 +10,8 @@ import { Clipboard } from "@/components/widget/Clipboard";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { PageContainer, ContainerLayout } from "@/components/widget/Page";
-import {
-  ContinuePrompt,
-  PromptHelperText,
-  PromptInput,
-} from "@/components/widget/PromptComposer";
+import { ContainerLayout, PageContainer } from "@/components/widget/Page";
+import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import useActiveChatSession from "@/context/useActiveChatSession";
 import useDataState from "@/hooks/useDataState";
