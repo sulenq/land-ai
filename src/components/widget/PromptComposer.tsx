@@ -35,7 +35,7 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as yup from "yup";
 
@@ -115,6 +115,7 @@ export const PromptInput = (props: Props__PromptInput) => {
       bg={"bg.muted"}
       rounded={themeConfig.radii.container}
       mx={"auto"}
+      maxH={"300px"}
       {...restProps}
     >
       <Textarea
@@ -189,12 +190,12 @@ export const PromptHelperText = (props: TextProps) => {
 };
 
 export const NewPrompt = (props: StackProps) => {
-  const ID = "prompt_composer";
+  const ID = "new_prompt";
 
   // Contexts
   const { l } = useLang();
   const router = useRouter();
-  const setActiveChat = useActiveChatSession((state) => state.setActiveChat);
+  const initNewChat = useActiveChatSession((state) => state.initNewChat);
 
   // Hooks
   const { req, loading } = useRequest({
@@ -225,7 +226,7 @@ export const NewPrompt = (props: StackProps) => {
         config,
         onResolve: {
           onSuccess: (r) => {
-            setActiveChat({
+            initNewChat({
               session: r?.data?.data?.session,
               messages: r?.data?.data?.messages,
               totalMessages: r?.data?.data?.totalMessages,
@@ -275,6 +276,78 @@ export const NewPrompt = (props: StackProps) => {
       />
 
       <PromptHelperText mt={4} />
+    </CContainer>
+  );
+};
+
+export const ContinuePrompt = (props: StackProps) => {
+  const ID = "continue_prompt";
+
+  // Contexts
+  const { l } = useLang();
+  const router = useRouter();
+  const initNewChat = useActiveChatSession((state) => state.initNewChat);
+
+  // Hooks
+  const { sessionId } = useParams();
+  const { req, loading } = useRequest({
+    id: ID,
+    showLoadingToast: false,
+    showSuccessToast: false,
+  });
+
+  // States
+  const formik = useFormik({
+    validateOnChange: false,
+    initialValues: { prompt: "" },
+    validationSchema: yup
+      .object()
+      .shape({ prompt: yup.string().required(l.msg_required_form) }),
+    onSubmit: (values) => {
+      const payload = {
+        sessionId: sessionId,
+        prompt: values.prompt,
+      };
+
+      const config = {
+        url: CHAT_API_CHAT_AI_STREAM,
+        method: "POST",
+        data: payload,
+      };
+
+      req({
+        config,
+        onResolve: {
+          onSuccess: (r) => {
+            initNewChat({
+              session: r?.data?.data?.session,
+              messages: r?.data?.data?.messages,
+              totalMessages: r?.data?.data?.totalMessages,
+              isNewSession: true,
+            });
+
+            const sessionId = r?.data?.data?.id;
+            router.push(`/c/${sessionId}`);
+          },
+        },
+      });
+    },
+  });
+
+  return (
+    <CContainer gap={2} {...props}>
+      <PromptInput
+        inputValue={formik.values.prompt}
+        onChange={(inputValue) => {
+          formik.setFieldValue("prompt", inputValue);
+        }}
+        onSubmit={() => {
+          formik.handleSubmit();
+        }}
+        loading={loading}
+      />
+
+      <PromptHelperText />
     </CContainer>
   );
 };

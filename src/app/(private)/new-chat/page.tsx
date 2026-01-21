@@ -1,14 +1,14 @@
 "use client";
 
-import { PageContainer, PageLayout } from "@/components/widget/Page";
+import { PageContainer, ContainerLayout } from "@/components/widget/Page";
 import { NewPrompt } from "@/components/widget/PromptComposer";
 
 export default function Page() {
   return (
     <PageContainer p={4}>
-      <PageLayout justify={"center"}>
+      <ContainerLayout justify={"center"}>
         <NewPrompt />
-      </PageLayout>
+      </ContainerLayout>
     </PageContainer>
   );
 }

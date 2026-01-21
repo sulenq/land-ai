@@ -1,46 +1,59 @@
 "use client";
 
+import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { ChatSkeleton } from "@/components/ui/c-loader";
+import { HelperText } from "@/components/ui/helper-text";
+import { P } from "@/components/ui/p";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
+import { Clipboard } from "@/components/widget/Clipboard";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { PageContainer, PageLayout } from "@/components/widget/Page";
+import { PageContainer, ContainerLayout } from "@/components/widget/Page";
 import {
+  ContinuePrompt,
   PromptHelperText,
   PromptInput,
 } from "@/components/widget/PromptComposer";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import useActiveChatSession from "@/context/useActiveChatSession";
 import useDataState from "@/hooks/useDataState";
+import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
+import { formatDate } from "@/utils/formatter";
+import { HStack } from "@chakra-ui/react";
+import { ArrowDownIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 export default function Page() {
-  // Hooks
-  const { sessionId } = useParams();
-
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Hooks
+  const scrollBottom = useScrollBottom(containerRef);
+  const { sessionId } = useParams();
+
   // States
-  // const initialLoading = true;
   const { error, initialLoading, data, onRetry } = useDataState<any>({
     // url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
   });
-  const { activeChat, setActiveChat } = useActiveChatSession();
+  const activeChat = useActiveChatSession((s) => s.activeChat);
 
-  // Scroll to bottom on load
-  useEffect(() => {
+  // Utils
+  function scrollToBottom() {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, []);
+  }
 
-  // console.debug(activeChat);
+  // Scroll to bottom on load
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
 
   const render = {
     loading: <ChatSkeleton />,
@@ -52,15 +65,25 @@ export default function Page() {
         {activeChat.messages.map((message: Interface__ChatMessage) => {
           if (message.role === "user") {
             return (
-              <UserBubbleChat key={message.id}>
-                {message.content}
-              </UserBubbleChat>
+              <CContainer key={message.id} gap={2}>
+                <UserBubbleChat>{message.content}</UserBubbleChat>
+
+                <HStack wrap={"wrap"} justify={"end"}>
+                  <Clipboard>{message.content}</Clipboard>
+                </HStack>
+              </CContainer>
             );
           }
 
           if (message.role === "assistant") {
             return (
-              <MarkdownChat key={message.id}>{message.content}</MarkdownChat>
+              <CContainer key={message.id} gap={2}>
+                <MarkdownChat>{message.content}</MarkdownChat>
+
+                <HStack wrap={"wrap"}>
+                  <Clipboard>{message.content}</Clipboard>
+                </HStack>
+              </CContainer>
             );
           }
         })}
@@ -84,14 +107,55 @@ export default function Page() {
   }
 
   return (
-    <PageContainer ref={containerRef} p={4}>
-      <PageLayout justify={"space-between"} gap={4}>
-        {content}
+    <PageContainer pos={"relative"}>
+      <CContainer
+        ref={containerRef}
+        p={4}
+        overflowY={"auto"}
+        scrollBehavior={"smooth"}
+      >
+        <ContainerLayout justify={"space-between"} gap={8} pb={"360px"}>
+          <CContainer>
+            <P fontSize={"xl"} fontWeight={"semibold"}>
+              {activeChat.session?.title}
+            </P>
 
-        <PromptInput />
+            <P color={"fg.subtle"}>
+              {formatDate(activeChat.session?.createdAt)}
+            </P>
+          </CContainer>
 
-        <PromptHelperText />
-      </PageLayout>
+          {content}
+        </ContainerLayout>
+
+        <CContainer
+          align={"center"}
+          gap={4}
+          position={"absolute"}
+          left={0}
+          bottom={0}
+        >
+          <ContainerLayout gap={4} align={"center"}>
+            {scrollBottom > 1 && (
+              <Btn
+                iconButton
+                clicky={false}
+                onClick={scrollToBottom}
+                size={"xs"}
+                w={"fit"}
+                bg={"body"}
+                variant={"surface"}
+              >
+                <AppIcon icon={ArrowDownIcon} />
+              </Btn>
+            )}
+
+            <CContainer bg={"body"}>
+              <ContinuePrompt mb={2} />
+            </CContainer>
+          </ContainerLayout>
+        </CContainer>
+      </CContainer>
     </PageContainer>
   );
 }

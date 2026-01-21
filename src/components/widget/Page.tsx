@@ -23,7 +23,7 @@ import { forwardRef } from "react";
 
 const FONT_SIZE = "md";
 
-export const PageLayout = forwardRef<HTMLDivElement, StackProps>(
+export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {
     // Props
     const { children, ...restProps } = props;
@@ -42,7 +42,7 @@ export const PageLayout = forwardRef<HTMLDivElement, StackProps>(
     );
   },
 );
-PageLayout.displayName = "PageLayout";
+ContainerLayout.displayName = "ContainerLayout";
 
 export const PageContainer = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {

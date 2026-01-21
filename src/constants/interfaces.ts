@@ -172,27 +172,21 @@ export interface Interface__ChatSession extends Interface__CUD {
   id: string;
   title: string;
   isStreaming: boolean;
+  createdAt: string;
 }
-export interface Interface__ChatMessage extends Interface__CUD {
-  sessionId?: string;
+
+export interface Interface__ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
-  createdAt: string;
-  timestampUnix: string;
-  sequenceNumber: string;
+  isStreaming?: boolean;
+  sources?: string[];
+  sequenceNumber?: number;
 }
-export interface Interface__ChatStreamingState {
-  messageId: string | null;
-  active: boolean;
-}
+
 export interface Interface__ChatState {
   session: Interface__ChatSession | null;
   messages: Interface__ChatMessage[];
   totalMessages: number;
   isNewSession: boolean;
-  // streaming: Interface__ChatStreamingState;
-  // loadingSession: boolean;
-  // sendingPrompt: boolean;
-  // error: boolean;
 }

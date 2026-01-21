@@ -943,7 +943,7 @@ const DesktopLayout = (props: Props__Layout) => {
         <Divider />
 
         <CContainer p={3}>
-          <MiniMyProfilePopoverTrigger>
+          <MiniMyProfilePopoverTrigger w={"full"}>
             <HStack
               gap={4}
               w={navsExpanded ? "full" : "36px"}
@@ -995,7 +995,7 @@ const DesktopLayout = (props: Props__Layout) => {
         pl={0}
         bg={DESKTOP_CONTENT_CONTAINER_BG}
         overflowY={"auto"}
-        color={"ibody"}
+        color={"text"}
       >
         <CContainer
           flex={1}

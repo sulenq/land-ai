@@ -393,7 +393,7 @@ export function buildPrivateNavsFromChats(
               list: chats.map((chat) => ({
                 labelKey: chat.title,
                 label: chat.title,
-                path: `/chats/${chat.id}`,
+                path: `/c/${chat.id}`,
                 allowedRoles: [],
               })),
             },
