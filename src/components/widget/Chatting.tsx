@@ -142,7 +142,13 @@ export const MarkdownChat = (props: StackProps) => {
   };
 
   return (
-    <Box fontSize="sm" lineHeight={1.7} color="fg.default" {...restProps}>
+    <Box
+      className="markdown"
+      fontSize="sm"
+      lineHeight={1.7}
+      color="fg.default"
+      {...restProps}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight, [rehypeSanitize, sanitizeSchema]]}

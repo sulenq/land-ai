@@ -19,8 +19,13 @@ nextjs-portal {
 * {
   font-optical-sizing: auto;
   box-sizing: border-box !important;
-  font-family: "Figtree", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif !important;
+  font-family:
+    "Figtree",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif !important;
 }
 *::selection {
   background: var(--d3);
@@ -125,6 +130,10 @@ nextjs-portal {
   --darktrans: #202020cf;
 }
 
+.markdown * {
+  line-height: 1.8;
+}
+
 /* Group table */
 [role="group"]:hover .td-content-group-hover {
   background-color: var(--d0) !important;
@@ -132,7 +141,9 @@ nextjs-portal {
 
 /* Smooth shadow */
 .ss {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 4px rgba(0, 0, 0, 0.02) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.03),
+    0 1px 4px rgba(0, 0, 0, 0.02) !important;
 }
 
 /* Dark Transparent Blured */
