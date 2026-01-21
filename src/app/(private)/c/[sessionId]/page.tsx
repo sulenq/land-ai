@@ -15,16 +15,20 @@ import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import useActiveChatSession from "@/context/useActiveChatSession";
+import usePromptInput from "@/context/usePromptInput";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
-import { HStack } from "@chakra-ui/react";
+import { Badge, HStack } from "@chakra-ui/react";
 import { ArrowDownIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 export default function Page() {
+  // Contexts
+  const promptInputStyle = usePromptInput((s) => s.style);
+
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +61,7 @@ export default function Page() {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <CContainer flex={1} gap={4}>
+      <CContainer flex={1} gap={4} px={2}>
         {activeChat.messages.map((message: Interface__ChatMessage) => {
           if (message.role === "user") {
             return (
@@ -75,6 +79,12 @@ export default function Page() {
             return (
               <CContainer key={message.id} gap={2}>
                 <MarkdownChat>{message.content}</MarkdownChat>
+
+                <HStack>
+                  {message?.sources?.map((source, index) => {
+                    return <Badge key={index}>{source}</Badge>;
+                  })}
+                </HStack>
 
                 <HStack wrap={"wrap"}>
                   <Clipboard>{message.content}</Clipboard>
@@ -110,7 +120,11 @@ export default function Page() {
         overflowY={"auto"}
         scrollBehavior={"smooth"}
       >
-        <ContainerLayout justify={"space-between"} gap={8} pb={"360px"}>
+        <ContainerLayout
+          justify={"space-between"}
+          gap={8}
+          pb={`calc(${promptInputStyle?.h} + 30px)`}
+        >
           <CContainer>
             <P fontSize={"xl"} fontWeight={"semibold"}>
               {activeChat.session?.title}

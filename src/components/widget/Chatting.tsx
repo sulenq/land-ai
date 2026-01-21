@@ -8,6 +8,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
+import { Box, List, ListItem, Text } from "@chakra-ui/react";
+import { defaultSchema } from "rehype-sanitize";
 
 export const UserBubbleChat = (props: Props__UserBubbleChat) => {
   // Props
@@ -30,9 +32,19 @@ export const UserBubbleChat = (props: Props__UserBubbleChat) => {
       ml={"auto"}
       {...restProps}
     >
-      <P color={`${themeConfig.colorPalette}.contrast`}>{children}</P>
+      <P fontWeight={"medium"} color={`${themeConfig.colorPalette}.contrast`}>
+        {children}
+      </P>
     </CContainer>
   );
+};
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    code: [...(defaultSchema.attributes?.code || []), ["className"]],
+  },
 };
 
 export const MarkdownChat = (props: StackProps) => {
@@ -40,63 +52,63 @@ export const MarkdownChat = (props: StackProps) => {
 
   const components: Components = {
     p({ children }) {
-      return <P>{children}</P>;
+      return <Text>{children}</Text>;
     },
 
     h1({ children }) {
       return (
-        <P fontSize="xl" fontWeight="bold">
+        <Text fontSize="2xl" fontWeight="bold">
           {children}
-        </P>
+        </Text>
       );
     },
 
     h2({ children }) {
       return (
-        <P fontSize="lg" fontWeight="semibold">
+        <Text fontSize="xl" fontWeight="bold">
           {children}
-        </P>
+        </Text>
       );
     },
 
     h3({ children }) {
       return (
-        <P fontSize="md" fontWeight="semibold">
+        <Text fontSize="lg" fontWeight="semibold">
           {children}
-        </P>
+        </Text>
       );
     },
 
     ul({ children }) {
       return (
-        <CContainer as="ul" pl={4}>
+        <List.Root listStyleType="disc" pl={6}>
           {children}
-        </CContainer>
+        </List.Root>
       );
     },
 
     ol({ children }) {
       return (
-        <CContainer as="ol" pl={4}>
+        <List.Root as="ol" listStyleType="decimal" pl={6}>
           {children}
-        </CContainer>
+        </List.Root>
       );
     },
 
     li({ children }) {
-      return <li>{children}</li>;
+      return <ListItem>{children}</ListItem>;
     },
 
     blockquote({ children }) {
       return (
-        <CContainer
+        <Box
           pl={3}
           borderLeftWidth="2px"
           borderColor="border.muted"
           color="fg.subtle"
         >
           {children}
-        </CContainer>
+        </Box>
       );
     },
 
@@ -106,19 +118,22 @@ export const MarkdownChat = (props: StackProps) => {
           {children}
         </Code>
       );
-    },
 
-    pre({ children }) {
-      return (
-        <CContainer as="pre" p={3} rounded="md" overflowX="auto" bg="bg.subtle">
-          {children}
-        </CContainer>
-      );
+      // return (
+      //   <Box as="pre" p={3} rounded="md" overflowX="auto" bg="bg.subtle">
+      //     <code className={className}>{children}</code>
+      //   </Box>
+      // );
     },
 
     a({ href, children }) {
       return (
-        <Link href={href} color="fg.accent" target="_blank">
+        <Link
+          href={href}
+          color="fg.accent"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {children}
         </Link>
       );
@@ -126,20 +141,14 @@ export const MarkdownChat = (props: StackProps) => {
   };
 
   return (
-    <CContainer
-      gap={3}
-      fontSize="sm"
-      lineHeight={1.7}
-      color="fg.default"
-      {...restProps}
-    >
+    <Box fontSize="sm" lineHeight={1.7} color="fg.default" {...restProps}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight, rehypeSanitize]}
+        rehypePlugins={[rehypeHighlight, [rehypeSanitize, sanitizeSchema]]}
         components={components}
       >
         {String(children ?? "")}
       </ReactMarkdown>
-    </CContainer>
+    </Box>
   );
 };

@@ -21,6 +21,7 @@ import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
 import { Props__PromptInput } from "@/constants/props";
 import useActiveChatSession from "@/context/useActiveChatSession";
 import useLang from "@/context/useLang";
+import usePromptInput from "@/context/usePromptInput";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
 import useRequest from "@/hooks/useRequest";
@@ -36,7 +37,7 @@ import {
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 
 // Unused but exported for consistency
@@ -103,14 +104,40 @@ export const PromptInput = (props: Props__PromptInput) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+  const setStyle = usePromptInput((s) => s.setStyle);
+
+  // Refs
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // States
   const inputLength = inputValue?.length;
   const isExceedCharLimit = inputLength > maxChar;
   const isEmpty = !inputValue;
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const el = containerRef.current;
+
+    const updateHeight = () => {
+      setStyle({ h: `${el.clientHeight}px` });
+    };
+
+    updateHeight();
+
+    // Observe changes in size
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    resizeObserver.observe(el);
+
+    return () => resizeObserver.disconnect();
+  }, [setStyle]);
+
   return (
     <CContainer
+      ref={containerRef}
       p={3}
       bg={"bg.muted"}
       rounded={themeConfig.radii.container}
