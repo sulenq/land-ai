@@ -104,7 +104,6 @@ export const PromptInput = (props: Props__PromptInput) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const style = usePromptInput((s) => s.style);
   const setStyle = usePromptInput((s) => s.setStyle);
 
   // Refs
@@ -135,8 +134,6 @@ export const PromptInput = (props: Props__PromptInput) => {
 
     return () => resizeObserver.disconnect();
   }, [setStyle]);
-
-  console.debug(style.h);
 
   return (
     <CContainer
