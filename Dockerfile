@@ -30,19 +30,23 @@ RUN npm ci --legacy-peer-deps
 FROM node:20-slim AS builder
 WORKDIR /app
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Build arguments for NEXT_PUBLIC_* env vars (must be available at build time)
+ARG NEXT_PUBLIC_API_BASE_URL
+ARG NEXT_PUBLIC_IMG_STORAGE_BASE_URL
+ARG NEXT_PUBLIC_STORAGE_BASE_URL
 
-# Copy all source files including .env for build-time env vars
-COPY . .
-
-# Set environment variables for build
+# Set as environment variables for the build
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_IMG_STORAGE_BASE_URL=$NEXT_PUBLIC_IMG_STORAGE_BASE_URL
+ENV NEXT_PUBLIC_STORAGE_BASE_URL=$NEXT_PUBLIC_STORAGE_BASE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# NEXT_PUBLIC_* vars must be available at build time
-# These are read from .env file during build
-# Make sure .env exists in the build context
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy all source files
+COPY . .
 
 # Build the application
 RUN npm run build
