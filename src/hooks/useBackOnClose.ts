@@ -4,7 +4,7 @@ const useBackOnClose = (
   id: string,
   isOpen: boolean,
   onOpen: () => void,
-  onClose: () => void
+  onClose: () => void,
 ) => {
   const url = typeof window !== "undefined" ? window.location.href : "";
 

@@ -30,7 +30,9 @@ export const UserBubbleChat = (props: Props__UserBubbleChat) => {
       ml={"auto"}
       {...restProps}
     >
-      <P color={`${themeConfig.colorPalette}.contrast`}>{children}</P>
+      <P fontWeight={"medium"} color={`${themeConfig.colorPalette}.contrast`}>
+        {children}
+      </P>
     </CContainer>
   );
 };
