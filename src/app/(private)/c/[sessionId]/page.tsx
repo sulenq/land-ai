@@ -123,7 +123,7 @@ export default function Page() {
         <ContainerLayout
           justify={"space-between"}
           gap={8}
-          pb={`calc(${promptInputStyle?.h} + 30px)`}
+          pb={`calc(${promptInputStyle?.h} + 56px)`}
         >
           <CContainer>
             <P fontSize={"xl"} fontWeight={"semibold"}>
@@ -140,6 +140,7 @@ export default function Page() {
 
         <CContainer
           align={"center"}
+          px={4}
           gap={4}
           position={"absolute"}
           left={0}
