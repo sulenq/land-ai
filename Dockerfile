@@ -32,11 +32,17 @@ WORKDIR /app
 
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy all source files including .env for build-time env vars
 COPY . .
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+
+# NEXT_PUBLIC_* vars must be available at build time
+# These are read from .env file during build
+# Make sure .env exists in the build context
 
 # Build the application
 RUN npm run build

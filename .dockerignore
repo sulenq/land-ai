@@ -22,11 +22,6 @@ out
 .DS_Store
 Thumbs.db
 
-# Environment files
-.env
-.env.*
-!.env.example
-
 # Docker
 Dockerfile
 docker-compose*.yml
