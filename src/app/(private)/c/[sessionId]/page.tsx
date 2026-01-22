@@ -36,14 +36,13 @@ const Messages = (props: StackProps) => {
   const activeChat = useActiveChatSession((s) => s.activeChat);
   const setMessages = useActiveChatSession((s) => s.setMessages);
   const setSession = useActiveChatSession((s) => s.setSession);
+  const resetChat = useActiveChatSession((s) => s.resetChat);
   const removeActiveChatSession = useActiveChatSessions(
     (s) => s.removeActiveChatSession,
   );
   const updateHasLoadedHistory = useActiveChatSession(
     (s) => s.updateHasLoadedHistory,
   );
-
-  // const resetChat = useActiveChatSession((s) => s.resetChat);
 
   // Hooks
   const { sessionId } = useParams();
@@ -65,6 +64,7 @@ const Messages = (props: StackProps) => {
   useEffect(() => {
     if (activeChatSessionId !== sessionId) {
       updateHasLoadedHistory(false);
+      resetChat();
     }
   }, [sessionId]);
 
