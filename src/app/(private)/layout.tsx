@@ -59,7 +59,7 @@ import {
   MOBILE_POPOVER_MAIN_AXIS,
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
-import useActiveChatSessions from "@/context/useActiveChatSessions";
+import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";

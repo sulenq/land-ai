@@ -27,7 +27,7 @@ import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
 import { CHAT_API_CHAT_AI_INDEX } from "@/constants/apis";
 import { Interface__ChatSession } from "@/constants/interfaces";
-import useActiveChatSessions from "@/context/useActiveChatSessions";
+import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
@@ -154,8 +154,6 @@ export const ChatSessions = (props: any) => {
       setActiveChatSessions(data);
     }
   }, [data]);
-
-  console.debug(activeChatSessions);
 
   return (
     <CContainer gap={2} {...restProps}>

@@ -19,6 +19,7 @@ import BackButton from "@/components/widget/BackButton";
 import { APP } from "@/constants/_meta";
 import { Props__PromptInput } from "@/constants/props";
 import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -221,6 +222,9 @@ export const NewPrompt = (props: StackProps) => {
   const resetChat = useActiveChatSession((s) => s.resetChat);
   const setSession = useActiveChatSession((s) => s.setSession);
   const appendMessage = useActiveChatSession((s) => s.appendMessage);
+  const prependActiveChatSession = useActiveChatSessions(
+    (s) => s.prependActiveChatSession,
+  );
 
   // Hooks
   const router = useRouter();
@@ -236,12 +240,15 @@ export const NewPrompt = (props: StackProps) => {
       resetChat();
 
       const sessionIdPlaceholder = crypto.randomUUID();
-
-      setSession({
+      const sessionPlaceholder = {
         id: sessionIdPlaceholder,
         title: l.new_chat,
         createdAt: new Date().toISOString(),
-      });
+      };
+
+      prependActiveChatSession(sessionPlaceholder);
+
+      setSession(sessionPlaceholder);
 
       appendMessage({
         id: crypto.randomUUID(),
