@@ -15,7 +15,7 @@ import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import { useActiveChatSession } from "@/context/useActiveChatSession";
-
+import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -25,7 +25,7 @@ import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
 import { Alert, Badge, HStack, StackProps } from "@chakra-ui/react";
 import { ArrowDownIcon, RefreshCwIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 const Messages = (props: StackProps) => {
@@ -35,15 +35,23 @@ const Messages = (props: StackProps) => {
   const activeChat = useActiveChatSession((s) => s.activeChat);
   const setMessages = useActiveChatSession((s) => s.setMessages);
   const setSession = useActiveChatSession((s) => s.setSession);
+  const removeActiveChatSession = useActiveChatSessions(
+    (s) => s.removeActiveChatSession,
+  );
+  const updateHasLoadedHistory = useActiveChatSession(
+    (s) => s.updateHasLoadedHistory,
+  );
+
   // const resetChat = useActiveChatSession((s) => s.resetChat);
 
   // Hooks
   const { sessionId } = useParams();
-  const shouldFetchHistory = activeChat.hasLoadedHistory;
-  // console.debug(activeChat);
+  const router = useRouter();
 
   // States
-  const { error, initialLoading, data, onRetry } = useDataState<any>({
+  const activeChatSessionId = activeChat?.session?.id;
+  const shouldFetchHistory = !activeChat.hasLoadedHistory;
+  const { error, status, initialLoading, data, onRetry } = useDataState<any>({
     url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
     dependencies: [shouldFetchHistory],
@@ -53,6 +61,12 @@ const Messages = (props: StackProps) => {
   const lastMessage = messages[messages.length - 1];
   const canRegenerate = lastMessage && lastMessage.role === "assistant";
 
+  useEffect(() => {
+    if (activeChatSessionId !== sessionId) {
+      updateHasLoadedHistory(false);
+    }
+  }, [sessionId]);
+
   // Set active chat on data load
   useEffect(() => {
     if (data) {
@@ -60,6 +74,14 @@ const Messages = (props: StackProps) => {
       setMessages(data?.messages);
     }
   }, [data]);
+
+  // Handle 404 - redirect and remove session
+  useEffect(() => {
+    if (status === 404) {
+      removeActiveChatSession(sessionId as string);
+      router.push("/new-chat");
+    }
+  }, [status]);
 
   const render = {
     loading: <ChatSkeleton />,
@@ -191,7 +213,7 @@ export default function Page() {
         overflowY={"auto"}
         scrollBehavior={"smooth"}
       >
-        <ContainerLayout gap={8} pb={`calc(${promptInputStyle?.h} + 54px)`}>
+        <ContainerLayout gap={8} pb={`calc(${promptInputStyle?.h} + 64px)`}>
           <Messages />
         </ContainerLayout>
 
@@ -219,7 +241,7 @@ export default function Page() {
             )}
 
             <CContainer bg={"body"}>
-              <ContinuePrompt mb={2} />
+              <ContinuePrompt mb={4} />
             </CContainer>
           </ContainerLayout>
         </CContainer>

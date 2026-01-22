@@ -219,11 +219,15 @@ export const PromptHelperText = (props: TextProps) => {
 export const NewPrompt = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
-  const resetChat = useActiveChatSession((s) => s.resetChat);
-  const setSession = useActiveChatSession((s) => s.setSession);
-  const appendMessage = useActiveChatSession((s) => s.appendMessage);
   const prependActiveChatSession = useActiveChatSessions(
     (s) => s.prependActiveChatSession,
+  );
+  const resetChat = useActiveChatSession((s) => s.resetChat);
+  const initSession = useActiveChatSession((s) => s.initSession);
+  const setSession = useActiveChatSession((s) => s.setSession);
+  const appendMessage = useActiveChatSession((s) => s.appendMessage);
+  const startAssistantStreaming = useActiveChatSession(
+    (s) => s.startAssistantStreaming,
   );
 
   // Hooks
@@ -237,8 +241,6 @@ export const NewPrompt = (props: StackProps) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values) => {
-      resetChat();
-
       const sessionIdPlaceholder = crypto.randomUUID();
       const sessionPlaceholder = {
         id: sessionIdPlaceholder,
@@ -248,13 +250,19 @@ export const NewPrompt = (props: StackProps) => {
 
       prependActiveChatSession(sessionPlaceholder);
 
-      setSession(sessionPlaceholder);
+      resetChat();
+
+      initSession();
+
+      setSession({ ...sessionPlaceholder });
 
       appendMessage({
         id: crypto.randomUUID(),
         role: "user",
         content: values.prompt,
       });
+
+      startAssistantStreaming();
 
       router.push(`/c/${sessionIdPlaceholder}`);
     },
@@ -323,7 +331,7 @@ export const ContinuePrompt = (props: StackProps) => {
   });
 
   return (
-    <CContainer gap={2} {...props}>
+    <CContainer gap={4} {...props}>
       <PromptInput
         inputValue={formik.values.prompt}
         onChange={(inputValue) => {

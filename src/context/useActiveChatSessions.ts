@@ -7,6 +7,7 @@ interface State_Actions {
     chatSessions: State_Actions["activeChatSessions"],
   ) => void;
   prependActiveChatSession: (session: Interface__ChatSession) => void;
+  removeActiveChatSession: (sessionId: string) => void;
   clearActiveChatSessions: () => void;
 }
 
@@ -28,6 +29,21 @@ export const useActiveChatSessions = create<State_Actions>((set) => ({
 
       return {
         activeChatSessions: [session, ...filtered],
+      };
+    }),
+
+  removeActiveChatSession: (sessionId) =>
+    set((state) => {
+      if (!state.activeChatSessions) {
+        return { activeChatSessions: null };
+      }
+
+      const filtered = state.activeChatSessions.filter(
+        (s) => s.id !== sessionId,
+      );
+
+      return {
+        activeChatSessions: filtered.length > 0 ? filtered : null,
       };
     }),
 

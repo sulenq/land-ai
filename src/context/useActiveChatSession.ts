@@ -8,9 +8,13 @@ import {
 interface ChatActions {
   activeChat: Interface__ChatState;
 
+  initSession: () => void;
+  setActiveChat: (activeChat: Interface__ChatState) => void;
+
   setSession: (session: Interface__ChatSession | null) => void;
-  resetChat: () => void;
   setMessages: (messages: Interface__ChatMessage[]) => void;
+  updateHasLoadedHistory: (value: boolean) => void;
+  resetChat: () => void;
 
   appendMessage: (message: Interface__ChatMessage) => void;
 
@@ -23,12 +27,23 @@ export const DEFAULT_CHAT_STATE: Interface__ChatState = {
   session: null,
   messages: [],
   totalMessages: 0,
-  isStreaming: true,
+  isStreaming: false,
   hasLoadedHistory: false,
 };
 
 export const useActiveChatSession = create<ChatActions>((set) => ({
   activeChat: DEFAULT_CHAT_STATE,
+
+  initSession: () =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        isStreaming: true,
+        hasLoadedHistory: true,
+      },
+    })),
+
+  setActiveChat: (activeChat) => set({ activeChat }),
 
   setSession: (session) =>
     set((state) => ({
@@ -38,16 +53,24 @@ export const useActiveChatSession = create<ChatActions>((set) => ({
       },
     })),
 
-  resetChat: () =>
-    set(() => ({
-      activeChat: DEFAULT_CHAT_STATE,
-    })),
-
   setMessages: (messages: Interface__ChatMessage[]) =>
     set((state) => ({
       activeChat: {
         ...state.activeChat,
         messages: messages,
+      },
+    })),
+
+  resetChat: () =>
+    set(() => ({
+      activeChat: DEFAULT_CHAT_STATE,
+    })),
+
+  updateHasLoadedHistory: (value) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        hasLoadedHistory: value,
       },
     })),
 
@@ -74,7 +97,7 @@ export const useActiveChatSession = create<ChatActions>((set) => ({
           {
             id,
             role: "assistant",
-            content: "",
+            content: "iya",
             isStreaming: true,
           },
         ],

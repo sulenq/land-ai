@@ -171,8 +171,8 @@ export interface Interface__SelectOption {
 export interface Interface__ChatSession extends Interface__CUD {
   id: string;
   title: string;
-  // isStreaming: boolean;
   createdAt: string;
+  // isStreaming: boolean;
 }
 export interface Interface__ChatMessage {
   id: string;
