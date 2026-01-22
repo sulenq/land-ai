@@ -18,6 +18,7 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { APP } from "@/constants/_meta";
 import { Props__PromptInput } from "@/constants/props";
+import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import { useActiveChatSession } from "@/context/useActiveChatSession";
 import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import useLang from "@/context/useLang";
@@ -35,7 +36,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { ArrowUpIcon, PaperclipIcon } from "lucide-react";
+import { ArrowUpIcon, PaperclipIcon, SquareIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
@@ -98,6 +99,8 @@ export const PromptInput = (props: Props__PromptInput) => {
     onSubmit,
     loading = false,
     maxChar = MAX_CHAR,
+    disabled,
+    canAbort,
     ...restProps
   } = props;
 
@@ -105,6 +108,7 @@ export const PromptInput = (props: Props__PromptInput) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const setStyle = usePromptInput((s) => s.setStyle);
+  const finishStreaming = useActiveChatSession((s) => s.finishStreaming);
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -161,6 +165,7 @@ export const PromptInput = (props: Props__PromptInput) => {
           }
         }}
         maxChar={maxChar}
+        disabled={disabled}
       />
 
       <HStack wrap={"wrap"} justify={"space-between"}>
@@ -180,23 +185,32 @@ export const PromptInput = (props: Props__PromptInput) => {
 
           <Tooltip
             content={
-              isEmpty
-                ? l.empty_prompt
-                : isExceedCharLimit
-                  ? l.exceed_char_limit
-                  : l.submit
+              canAbort
+                ? l.abort
+                : isEmpty
+                  ? l.empty_prompt
+                  : isExceedCharLimit
+                    ? l.exceed_char_limit
+                    : l.submit
             }
           >
             <Btn
               iconButton
               colorPalette={themeConfig.colorPalette}
               loading={loading}
-              disabled={!inputValue || isExceedCharLimit}
+              disabled={canAbort ? false : !inputValue || isExceedCharLimit}
               onClick={() => {
-                onSubmit?.();
+                if (canAbort) {
+                  onSubmit?.();
+                } else {
+                  finishStreaming();
+                }
               }}
             >
-              <AppIcon icon={ArrowUpIcon} />
+              <AppIcon
+                icon={canAbort ? SquareIcon : ArrowUpIcon}
+                boxSize={canAbort ? 4 : BASE_ICON_BOX_SIZE}
+              />
             </Btn>
           </Tooltip>
         </Group>
@@ -309,6 +323,7 @@ export const NewPrompt = (props: StackProps) => {
 export const ContinuePrompt = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
+  const activeChat = useActiveChatSession((s) => s.activeChat);
 
   // Hooks
   const { sessionId } = useParams();
@@ -340,6 +355,8 @@ export const ContinuePrompt = (props: StackProps) => {
         onSubmit={() => {
           formik.handleSubmit();
         }}
+        disabled={activeChat.isStreaming}
+        canAbort={activeChat.isStreaming}
       />
 
       <PromptHelperText />

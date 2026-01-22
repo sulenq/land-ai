@@ -50,6 +50,8 @@ export interface Props__PromptInput extends Omit<
   onSubmit?: () => void;
   loading?: boolean;
   maxChar?: number;
+  disabled?: boolean;
+  canAbort?: boolean;
 }
 
 export interface Props__PdfViewer extends StackProps {

@@ -4,6 +4,7 @@ import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { ChatSkeleton } from "@/components/ui/c-loader";
 import { P } from "@/components/ui/p";
+import Spinner from "@/components/ui/spinner";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
@@ -100,6 +101,9 @@ const Messages = (props: StackProps) => {
 
         <CContainer gap={4}>
           {activeChat.messages.map((message: Interface__ChatMessage) => {
+            const emptyMessage = !message.content;
+            const isStreaming = activeChat.isStreaming;
+
             // User Message
             if (message.role === "user") {
               return (
@@ -117,38 +121,46 @@ const Messages = (props: StackProps) => {
             if (message.role === "assistant") {
               return (
                 <CContainer key={message.id} gap={2}>
-                  <MarkdownChat error={true}>{message.content}</MarkdownChat>
+                  {isStreaming && emptyMessage ? (
+                    <Spinner size={"sm"} ml={2} />
+                  ) : (
+                    <>
+                      <MarkdownChat error={true}>
+                        {message.content}
+                      </MarkdownChat>
 
-                  <HStack>
-                    {message?.sources?.map((source, index) => {
-                      return <Badge key={index}>{source}</Badge>;
-                    })}
-                  </HStack>
+                      <HStack>
+                        {message?.sources?.map((source, index) => {
+                          return <Badge key={index}>{source}</Badge>;
+                        })}
+                      </HStack>
 
-                  {message.error && (
-                    <CContainer key={message.id} gap={2}>
-                      <Alert.Root
-                        status="error"
-                        maxW={"70%"}
-                        rounded={themeConfig.radii.component}
-                      >
-                        <Alert.Indicator />
-                        <Alert.Title>
-                          {l.msg_assistant_response_error}
-                        </Alert.Title>
-                      </Alert.Root>
-                    </CContainer>
+                      {message.error && (
+                        <CContainer key={message.id} gap={2}>
+                          <Alert.Root
+                            status="error"
+                            maxW={"70%"}
+                            rounded={themeConfig.radii.component}
+                          >
+                            <Alert.Indicator />
+                            <Alert.Title>
+                              {l.msg_assistant_response_error}
+                            </Alert.Title>
+                          </Alert.Root>
+                        </CContainer>
+                      )}
+
+                      <HStack wrap={"wrap"}>
+                        <Clipboard>{message.content}</Clipboard>
+
+                        {canRegenerate && (
+                          <Btn iconButton size={"xs"} variant={"ghost"}>
+                            <AppIcon icon={RefreshCwIcon} />
+                          </Btn>
+                        )}
+                      </HStack>
+                    </>
                   )}
-
-                  <HStack wrap={"wrap"}>
-                    <Clipboard>{message.content}</Clipboard>
-
-                    {canRegenerate && (
-                      <Btn iconButton size={"xs"} variant={"ghost"}>
-                        <AppIcon icon={RefreshCwIcon} />
-                      </Btn>
-                    )}
-                  </HStack>
                 </CContainer>
               );
             }

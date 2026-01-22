@@ -123,6 +123,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const abort = {
+  id: "Batal",
+  en: "Abort",
+};
 export const new_chat = {
   id: "Obrolan baru",
   en: "New chat",

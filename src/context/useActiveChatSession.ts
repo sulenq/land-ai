@@ -5,7 +5,7 @@ import {
   Interface__ChatSession,
 } from "@/constants/interfaces";
 
-interface ChatActions {
+interface State_Actions {
   activeChat: Interface__ChatState;
 
   initSession: () => void;
@@ -20,7 +20,7 @@ interface ChatActions {
 
   startAssistantStreaming: () => string;
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;
-  finishStreaming: (messageId: string) => void;
+  finishStreaming: () => void;
 }
 
 export const DEFAULT_CHAT_STATE: Interface__ChatState = {
@@ -31,7 +31,7 @@ export const DEFAULT_CHAT_STATE: Interface__ChatState = {
   hasLoadedHistory: false,
 };
 
-export const useActiveChatSession = create<ChatActions>((set) => ({
+export const useActiveChatSession = create<State_Actions>((set) => ({
   activeChat: DEFAULT_CHAT_STATE,
 
   initSession: () =>
@@ -119,15 +119,17 @@ export const useActiveChatSession = create<ChatActions>((set) => ({
       },
     })),
 
-  finishStreaming: (messageId) =>
+  finishStreaming: () =>
     set((state) => ({
       activeChat: {
         ...state.activeChat,
         session: state.activeChat.session
           ? { ...state.activeChat.session, isStreaming: false }
           : null,
-        messages: state.activeChat.messages.map((m) =>
-          m.id === messageId ? { ...m, isStreaming: false } : m,
+        messages: state.activeChat.messages.map((m, idx) =>
+          idx === state.activeChat.messages.length - 1
+            ? { ...m, isStreaming: false }
+            : m,
         ),
       },
     })),
