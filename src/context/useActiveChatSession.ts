@@ -97,7 +97,7 @@ export const useActiveChatSession = create<ChatActions>((set) => ({
           {
             id,
             role: "assistant",
-            content: "iya",
+            content: "",
             isStreaming: true,
           },
         ],
