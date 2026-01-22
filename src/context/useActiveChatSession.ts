@@ -1,41 +1,37 @@
-import { DUMMY_CHAT_SESSION } from "@/constants/dummyData";
-import {
-  Interface__ChatMessage,
-  Interface__ChatState,
-} from "@/constants/interfaces";
+import { Interface__ChatState } from "@/constants/interfaces";
 import { create } from "zustand";
 
 interface State_Actions {
   activeChat: Interface__ChatState;
-  appendUserMessage: (userMessage: Interface__ChatMessage) => void;
+  // appendUserMessage: (userMessage: Interface__ChatMessage) => void;
   startAssistantStreaming: () => string; // return assistantMessage id
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;
   finishStreaming: (messageId: string) => void;
-  initNewChat: (newActiveChat: Interface__ChatState) => void;
+  setActiveChat: (newActiveChat: Interface__ChatState) => void;
 }
 
 const useActiveChatSession = create<State_Actions>((set) => ({
   activeChat: {
-    session: DUMMY_CHAT_SESSION.session,
-    messages: DUMMY_CHAT_SESSION.messages || [],
-    totalMessages: DUMMY_CHAT_SESSION.totalMessages,
-    isNewSession: true,
+    session: null,
+    messages: [],
+    totalMessages: 0,
+    isNewSession: false,
   },
 
-  initNewChat: (newActiveChat) =>
+  setActiveChat: (newActiveChat) =>
     set(() => ({
       activeChat: newActiveChat,
     })),
 
-  appendUserMessage: (userMessage) =>
-    set((state) => ({
-      activeChat: {
-        ...state.activeChat,
-        messages: [...state.activeChat.messages, userMessage],
-        totalMessages: state.activeChat.totalMessages + 1,
-        isNewSession: false,
-      },
-    })),
+  // appendUserMessage: (userMessage) =>
+  //   set((state) => ({
+  //     activeChat: {
+  //       ...state.activeChat,
+  //       messages: [...state.activeChat.messages, userMessage],
+  //       totalMessages: state.activeChat.totalMessages + 1,
+  //       isNewSession: false,
+  //     },
+  //   })),
 
   startAssistantStreaming: () => {
     const id = crypto.randomUUID();

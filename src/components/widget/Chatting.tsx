@@ -1,15 +1,14 @@
 import { CContainer } from "@/components/ui/c-container";
 import { P } from "@/components/ui/p";
-import { Props__UserBubbleChat } from "@/constants/props";
+import { Props__MarkdownChat, Props__UserBubbleChat } from "@/constants/props";
+import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import { Code, Link, StackProps } from "@chakra-ui/react";
+import { Box, Code, Link, List, ListItem, Text } from "@chakra-ui/react";
 import type { Components } from "react-markdown";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
-import rehypeSanitize from "rehype-sanitize";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
-import { Box, List, ListItem, Text } from "@chakra-ui/react";
-import { defaultSchema } from "rehype-sanitize";
 
 export const UserBubbleChat = (props: Props__UserBubbleChat) => {
   // Props
@@ -29,7 +28,8 @@ export const UserBubbleChat = (props: Props__UserBubbleChat) => {
       roundedTopRight={0}
       roundedBottomLeft={themeConfig.radii.component}
       roundedBottomRight={themeConfig.radii.component}
-      w={"70%"}
+      w={"fit"}
+      maxW={"70%"}
       ml={"auto"}
       {...restProps}
     >
@@ -48,9 +48,14 @@ const sanitizeSchema = {
   },
 };
 
-export const MarkdownChat = (props: StackProps) => {
-  const { children, ...restProps } = props;
+export const MarkdownChat = (props: Props__MarkdownChat) => {
+  // Props
+  const { children, error, ...restProps } = props;
 
+  // Contexts
+  const { l } = useLang();
+
+  // States
   const components: Components = {
     p({ children }) {
       return <Text>{children}</Text>;
@@ -156,6 +161,8 @@ export const MarkdownChat = (props: StackProps) => {
       >
         {String(children ?? "")}
       </ReactMarkdown>
+
+      {error && <P color={"fg.error"}>{l.msg_assistant_response_error}</P>}
     </Box>
   );
 };

@@ -222,7 +222,7 @@ export const NewPrompt = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
   const router = useRouter();
-  const initNewChat = useActiveChatSession((state) => state.initNewChat);
+  const setActiveChat = useActiveChatSession((state) => state.setActiveChat);
 
   // Hooks
   const { req, loading } = useRequest({
@@ -253,7 +253,7 @@ export const NewPrompt = (props: StackProps) => {
         config,
         onResolve: {
           onSuccess: (r) => {
-            initNewChat({
+            setActiveChat({
               session: r?.data?.data?.[0]?.sessionId,
               messages: r?.data?.data?.messages,
               totalMessages: r?.data?.data?.totalMessages,
@@ -313,7 +313,7 @@ export const ContinuePrompt = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
   const router = useRouter();
-  const initNewChat = useActiveChatSession((state) => state.initNewChat);
+  const setActiveChat = useActiveChatSession((state) => state.setActiveChat);
 
   // Hooks
   const { sessionId } = useParams();
@@ -346,7 +346,7 @@ export const ContinuePrompt = (props: StackProps) => {
         config,
         onResolve: {
           onSuccess: (r) => {
-            initNewChat({
+            setActiveChat({
               session: r?.data?.data?.session,
               messages: r?.data?.data?.messages,
               totalMessages: r?.data?.data?.totalMessages,

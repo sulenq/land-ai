@@ -889,6 +889,10 @@ export const yearly_sales = {
 };
 
 // Message
+export const msg_assistant_response_error = {
+  id: "Terjadi kesalahan saat memproses respons asisten. Silakan coba lagi.",
+  en: "An error occurred while processing the assistant's response. Please try again.",
+};
 export const msg_welcome_to_the_app = {
   id: "Selamat datang di ${appName}",
   en: "Welcome to ${appName}",

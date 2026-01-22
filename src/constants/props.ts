@@ -34,6 +34,11 @@ import {
 
 export interface Props__UserBubbleChat {
   children: string;
+  error?: any;
+}
+export interface Props__MarkdownChat extends StackProps {
+  children: string;
+  error?: any;
 }
 
 export interface Props__PromptInput extends Omit<

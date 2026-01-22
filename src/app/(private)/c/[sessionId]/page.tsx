@@ -21,7 +21,7 @@ import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
 import { Badge, HStack } from "@chakra-ui/react";
-import { ArrowDownIcon } from "lucide-react";
+import { ArrowDownIcon, RefreshCwIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
@@ -42,6 +42,7 @@ export default function Page() {
     dataResource: false,
   });
   const activeChat = useActiveChatSession((s) => s.activeChat);
+  const setActiveChat = useActiveChatSession((s) => s.setActiveChat);
 
   // Utils
   function scrollToBottom() {
@@ -54,6 +55,18 @@ export default function Page() {
   useEffect(() => {
     scrollToBottom();
   }, []);
+
+  // Set active chat on data load
+  useEffect(() => {
+    if (!activeChat.isNewSession && data) {
+      setActiveChat({
+        session: data.session,
+        messages: data.messages || [],
+        totalMessages: data.totalMessage || data.messages?.length || 0,
+        isNewSession: false,
+      });
+    }
+  }, [data]);
 
   const render = {
     loading: <ChatSkeleton />,
@@ -78,7 +91,7 @@ export default function Page() {
           if (message.role === "assistant") {
             return (
               <CContainer key={message.id} gap={2}>
-                <MarkdownChat>{message.content}</MarkdownChat>
+                <MarkdownChat error={true}>{message.content}</MarkdownChat>
 
                 <HStack>
                   {message?.sources?.map((source, index) => {
@@ -88,6 +101,10 @@ export default function Page() {
 
                 <HStack wrap={"wrap"}>
                   <Clipboard>{message.content}</Clipboard>
+
+                  <Btn iconButton size={"xs"} variant={"ghost"}>
+                    <AppIcon icon={RefreshCwIcon} />
+                  </Btn>
                 </HStack>
               </CContainer>
             );

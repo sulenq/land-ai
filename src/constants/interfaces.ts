@@ -182,6 +182,8 @@ export interface Interface__ChatMessage {
   isStreaming?: boolean;
   sources?: string[];
   sequenceNumber?: number;
+  error?: boolean;
+  createdAt?: string;
 }
 
 export interface Interface__ChatState {

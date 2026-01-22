@@ -28,11 +28,11 @@ import { CHAT_API_CHAT_AI_INDEX } from "@/constants/apis";
 import { Interface__ChatSession } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import useBackOnClose from "@/hooks/useBackOnClose";
 import useDataState from "@/hooks/useDataState";
+import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
-import { HStack, StackProps, useDisclosure } from "@chakra-ui/react";
+import { HStack, StackProps } from "@chakra-ui/react";
 import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
@@ -162,14 +162,15 @@ export const ChatSessionsDisclosureTrigger = (props: StackProps) => {
   const { l } = useLang();
 
   // Hooks
-  const { open, onOpen, onClose } = useDisclosure();
-  useBackOnClose(disclosureId(`chat_sessions`), open, onOpen, onClose);
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId("disclosure_chat_sessions"),
+  );
 
   return (
     <>
       <CContainer w={"fit"} onClick={onOpen} {...props} />
 
-      <DisclosureRoot open={open} lazyLoad size={"xs"}>
+      <DisclosureRoot open={isOpen} lazyLoad size={"xs"}>
         <DisclosureContent>
           <DisclosureHeader>
             <DisclosureHeaderContent title={`${l.your_chats}`} />
