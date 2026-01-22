@@ -17,7 +17,7 @@ interface State_Actions {
 const useActiveChatSession = create<State_Actions>((set) => ({
   activeChat: {
     session: DUMMY_CHAT_SESSION.session,
-    messages: DUMMY_CHAT_SESSION.messages,
+    messages: DUMMY_CHAT_SESSION.messages || [],
     totalMessages: DUMMY_CHAT_SESSION.totalMessages,
     isNewSession: true,
   },

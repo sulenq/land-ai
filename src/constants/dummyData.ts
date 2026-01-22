@@ -5,64 +5,10 @@ import {
 
 export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
   {
-    id: "1",
+    id: "30e23784-d63a-4e41-bc5f-01e69d7b6308",
     isStreaming: false,
     title: "Analisis SHM Jakarta Selatan",
     createdAt: "2026-01-10T10:12:00Z",
-  },
-  {
-    id: "2",
-    isStreaming: false,
-    title: "Status tanah warisan orang tua",
-    createdAt: "2026-01-09T08:30:00Z",
-  },
-  {
-    id: "3",
-    isStreaming: false,
-    title: "Proses balik nama sertifikat",
-    createdAt: "2026-01-08T14:45:00Z",
-  },
-  {
-    id: "4",
-    isStreaming: false,
-    title: "Perbedaan SHM dan HGB",
-    createdAt: "2026-01-08T09:10:00Z",
-  },
-  {
-    id: "5",
-    isStreaming: false,
-    title: "Pajak jual beli tanah",
-    createdAt: "2026-01-07T16:20:00Z",
-  },
-  {
-    id: "6",
-    isStreaming: false,
-    title: "Legalitas tanah girik",
-    createdAt: "2026-01-07T11:05:00Z",
-  },
-  {
-    id: "7",
-    isStreaming: false,
-    title: "Sengketa batas tanah tetangga",
-    createdAt: "2026-01-06T19:40:00Z",
-  },
-  {
-    id: "8",
-    isStreaming: false,
-    title: "Syarat pemecahan sertifikat",
-    createdAt: "2026-01-06T13:15:00Z",
-  },
-  {
-    id: "9",
-    isStreaming: false,
-    title: "Tanah wakaf dan status hukumnya",
-    createdAt: "2026-01-05T10:00:00Z",
-  },
-  {
-    id: "10",
-    isStreaming: false,
-    title: "IMB dan perizinan bangunan",
-    createdAt: "2026-01-04T17:25:00Z",
   },
 ];
 

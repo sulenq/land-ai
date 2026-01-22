@@ -254,7 +254,7 @@ export const NewPrompt = (props: StackProps) => {
         onResolve: {
           onSuccess: (r) => {
             initNewChat({
-              session: r?.data?.data?.session,
+              session: r?.data?.data?.[0]?.sessionId,
               messages: r?.data?.data?.messages,
               totalMessages: r?.data?.data?.totalMessages,
               isNewSession: true,
