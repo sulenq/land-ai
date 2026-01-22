@@ -1,7 +1,6 @@
 import { CContainer } from "@/components/ui/c-container";
 import { P } from "@/components/ui/p";
 import { Props__MarkdownChat, Props__UserBubbleChat } from "@/constants/props";
-import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { Box, Code, Link, List, ListItem, Text } from "@chakra-ui/react";
 import type { Components } from "react-markdown";
@@ -50,10 +49,7 @@ const sanitizeSchema = {
 
 export const MarkdownChat = (props: Props__MarkdownChat) => {
   // Props
-  const { children, error, ...restProps } = props;
-
-  // Contexts
-  const { l } = useLang();
+  const { children, ...restProps } = props;
 
   // States
   const components: Components = {
@@ -161,8 +157,6 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
       >
         {String(children ?? "")}
       </ReactMarkdown>
-
-      {error && <P color={"fg.error"}>{l.msg_assistant_response_error}</P>}
     </Box>
   );
 };

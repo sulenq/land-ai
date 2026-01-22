@@ -14,7 +14,10 @@ import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { Interface__ChatMessage } from "@/constants/interfaces";
-import useActiveChatSession from "@/context/useActiveChatSession";
+import useActiveChatSession, {
+  DEFAULT_ACTIVE_CHAT,
+} from "@/context/useActiveChatSession";
+import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
@@ -25,36 +28,28 @@ import { ArrowDownIcon, RefreshCwIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-export default function Page() {
+const Messages = () => {
   // Contexts
-  const promptInputStyle = usePromptInput((s) => s.style);
-
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { l } = useLang();
+  const activeChat = useActiveChatSession((s) => s.activeChat);
+  const setActiveChat = useActiveChatSession((s) => s.setActiveChat);
 
   // Hooks
-  const scrollBottom = useScrollBottom(containerRef);
   const { sessionId } = useParams();
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<any>({
     url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
+    dependencies: [activeChat.isNewSession],
+    conditions: !activeChat.isNewSession || !activeChat.session,
   });
-  const activeChat = useActiveChatSession((s) => s.activeChat);
-  const setActiveChat = useActiveChatSession((s) => s.setActiveChat);
+  const messages = activeChat.messages;
 
-  // Utils
-  function scrollToBottom() {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }
-
-  // Scroll to bottom on load
+  // Reset active chat on sessionId change
   useEffect(() => {
-    scrollToBottom();
-  }, []);
+    setActiveChat(DEFAULT_ACTIVE_CHAT);
+  }, [sessionId]);
 
   // Set active chat on data load
   useEffect(() => {
@@ -76,6 +71,7 @@ export default function Page() {
     loaded: (
       <CContainer flex={1} gap={4} px={2}>
         {activeChat.messages.map((message: Interface__ChatMessage) => {
+          // User Message
           if (message.role === "user") {
             return (
               <CContainer key={message.id} gap={2}>
@@ -88,6 +84,7 @@ export default function Page() {
             );
           }
 
+          // Assistant Message
           if (message.role === "assistant") {
             return (
               <CContainer key={message.id} gap={2}>
@@ -98,6 +95,10 @@ export default function Page() {
                     return <Badge key={index}>{source}</Badge>;
                   })}
                 </HStack>
+
+                {message.error && (
+                  <P color={"fg.error"}>{l.msg_assistant_response_error}</P>
+                )}
 
                 <HStack wrap={"wrap"}>
                   <Clipboard>{message.content}</Clipboard>
@@ -114,20 +115,46 @@ export default function Page() {
     ),
   };
 
-  let content = null;
-  if (activeChat.isNewSession) {
-    content = render.loaded;
-  } else {
-    if (initialLoading) {
-      content = render.loading;
-    } else if (error) {
-      content = render.error;
-    } else if (!data || isEmptyArray(data)) {
-      content = render.empty;
-    } else {
-      content = render.loaded;
+  return (
+    <>
+      {initialLoading && render.loading}
+      {!initialLoading && (
+        <>
+          {error && render.error}
+          {!error && (
+            <>
+              {messages && render.loaded}
+              {(!messages || isEmptyArray(messages)) && render.empty}
+            </>
+          )}
+        </>
+      )}
+    </>
+  );
+};
+
+export default function Page() {
+  // Contexts
+  const promptInputStyle = usePromptInput((s) => s.style);
+  const activeChat = useActiveChatSession((s) => s.activeChat);
+
+  // Refs
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Hooks
+  const scrollBottom = useScrollBottom(containerRef);
+
+  // Utils
+  function scrollToBottom() {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }
+
+  // Scroll to bottom on load
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
 
   return (
     <PageContainer pos={"relative"}>
@@ -152,7 +179,7 @@ export default function Page() {
             </P>
           </CContainer>
 
-          {content}
+          <Messages />
         </ContainerLayout>
 
         <CContainer

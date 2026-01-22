@@ -10,13 +10,15 @@ interface State_Actions {
   setActiveChat: (newActiveChat: Interface__ChatState) => void;
 }
 
+export const DEFAULT_ACTIVE_CHAT = {
+  session: null,
+  messages: [],
+  totalMessages: 0,
+  isNewSession: false,
+};
+
 const useActiveChatSession = create<State_Actions>((set) => ({
-  activeChat: {
-    session: null,
-    messages: [],
-    totalMessages: 0,
-    isNewSession: false,
-  },
+  activeChat: DEFAULT_ACTIVE_CHAT,
 
   setActiveChat: (newActiveChat) =>
     set(() => ({
