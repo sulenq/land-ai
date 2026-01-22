@@ -6,7 +6,6 @@ import {
 export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
   {
     id: "30e23784-d63a-4e41-bc5f-01e69d7b6308",
-    isStreaming: false,
     title: "Analisis SHM Jakarta Selatan",
     createdAt: "2026-01-10T10:12:00Z",
   },
@@ -20,7 +19,6 @@ export const DUMMY_CHAT_SESSION: {
   session: {
     id: "f8e025f0-10cf-4815-a6bf-5d19405e0ccc",
     title: "Dasar Hukum Yang Mendasari Teknis",
-    isStreaming: false,
     createdAt: "2025-11-12T04:20:00Z",
   },
   totalMessages: 2,

@@ -257,7 +257,7 @@ const translations = {
   "more_info": "Info lebih",
   "msg_ADM_active": "Mode gelap adaptif aktif",
   "msg_activate": "Akun akan diaktifkan kembali dan bisa digunakan.",
-  "msg_assistant_response_error": "Terjadi kesalahan saat memproses respons asisten. Silakan coba lagi.",
+  "msg_assistant_response_error": "Terjadi kesalahan saat memproses respons. Silakan coba lagi.",
   "msg_cannot_be_undone": "Aksi ini tidak dapat dibatalkan, harap hati-hati.",
   "msg_chrome_permissions_settings_link": "Pengaturan → Privasi & Keamanan → Pengaturan Situs → ",
   "msg_deactivate": "Akun akan dinonaktifkan dan tidak bisa digunakan sementara.",
@@ -324,6 +324,7 @@ const translations = {
     "settings": "Pengaturan",
     "profile": "Profil"
   },
+  "new_chat": "Obrolan baru",
   "next": "Selanjutnya",
   "next_page": "Halaman selanjutnya",
   "no": "Tidak",

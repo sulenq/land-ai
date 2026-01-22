@@ -370,7 +370,7 @@ export const formatDuration = (
   }
 };
 
-export function buildPrivateNavsFromChats(
+export function buildPrivateNavsFromChatSessions(
   chats: Interface__ChatSession[],
 ): Interface__NavItem[] {
   return [

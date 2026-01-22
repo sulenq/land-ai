@@ -114,7 +114,7 @@ const useDataState = <T = any>(props: Props<T>) => {
                   ? Array.isArray(r?.data?.data)
                     ? r?.data?.data
                     : r?.data?.data?.data
-                  : r?.data?.data
+                  : r?.data?.data,
               );
             }
           },
@@ -187,8 +187,8 @@ const useDataState = <T = any>(props: Props<T>) => {
 
   // trigger loading bar on initialLoading | loading  is true
   useEffect(() => {
-    if (loadingBar) setLoadingBar(initialLoading || loading);
-  }, [loading, initialLoading]);
+    if (loadingBar && conditions) setLoadingBar(initialLoading || loading);
+  }, [loading, initialLoading, conditions]);
 
   return {
     makeRequest,

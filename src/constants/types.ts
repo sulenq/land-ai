@@ -1,5 +1,17 @@
 import { ButtonProps, ConditionalValue, MenuItemProps } from "@chakra-ui/react";
 
+export type Type__ChatStreamEvent =
+  | {
+      type: "meta";
+      sessionId: string;
+      title: string;
+      sources?: string[];
+    }
+  | {
+      type: "chunk";
+      content: string;
+    };
+
 export type Type__ChartData = Record<string, number | string>;
 
 export type Type__ButtonSize = ConditionalValue<
@@ -24,7 +36,7 @@ export type Type__ContainerDimension = {
 export type Type__SortHandler = (
   aValue: any,
   bValue: any,
-  direction: "asc" | "desc"
+  direction: "asc" | "desc",
 ) => number;
 
 export type Type__Period = {

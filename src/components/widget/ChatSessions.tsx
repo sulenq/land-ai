@@ -27,6 +27,7 @@ import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
 import { CHAT_API_CHAT_AI_INDEX } from "@/constants/apis";
 import { Interface__ChatSession } from "@/constants/interfaces";
+import useActiveChatSessions from "@/context/useActiveChatSessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
@@ -36,7 +37,7 @@ import { disclosureId } from "@/utils/disclosure";
 import { HStack, StackProps } from "@chakra-ui/react";
 import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export const ChatSessions = (props: any) => {
   // Props
@@ -45,6 +46,10 @@ export const ChatSessions = (props: any) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+  const activeChatSessions = useActiveChatSessions((s) => s.activeChatSessions);
+  const setActiveChatSessions = useActiveChatSessions(
+    (s) => s.setActiveChatSessions,
+  );
 
   // Refs
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -58,16 +63,17 @@ export const ChatSessions = (props: any) => {
     url: CHAT_API_CHAT_AI_INDEX,
     dataResource: false,
     loadingBar: false,
+    conditions: !activeChatSessions,
   });
   const [search, setSearch] = useState<string>("");
   const q = (search ?? "").toLowerCase();
   const qNormalized = q?.toLowerCase().trim();
   const resolvedData = useMemo(() => {
-    if (qNormalized === "") return data;
-    return data?.filter((chat) =>
+    if (qNormalized === "") return activeChatSessions;
+    return activeChatSessions?.filter((chat) =>
       chat.title.toLowerCase().includes(qNormalized),
     );
-  }, [data, qNormalized]);
+  }, [activeChatSessions, qNormalized]);
 
   // Render
   let loadedContent = null;
@@ -143,6 +149,14 @@ export const ChatSessions = (props: any) => {
     loaded: loadedContent,
   };
 
+  useEffect(() => {
+    if (data) {
+      setActiveChatSessions(data);
+    }
+  }, [data]);
+
+  console.debug(activeChatSessions);
+
   return (
     <CContainer gap={2} {...restProps}>
       <CContainer>
@@ -157,18 +171,27 @@ export const ChatSessions = (props: any) => {
       </CContainer>
 
       <CContainer gap={1}>
-        {initialLoading && render.loading}
-        {!initialLoading && (
+        {!activeChatSessions && (
           <>
-            {error && render.error}
-            {!error && (
+            {initialLoading && render.loading}
+            {!initialLoading && (
               <>
-                {data && render.loaded}
-                {(!data || isEmptyArray(data)) && render.empty}
+                {error && render.error}
+                {!error && (
+                  <>
+                    {activeChatSessions && render.loaded}
+
+                    {(!activeChatSessions ||
+                      isEmptyArray(activeChatSessions)) &&
+                      render.empty}
+                  </>
+                )}
               </>
             )}
           </>
         )}
+
+        {activeChatSessions && render.loaded}
       </CContainer>
     </CContainer>
   );

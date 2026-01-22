@@ -171,10 +171,9 @@ export interface Interface__SelectOption {
 export interface Interface__ChatSession extends Interface__CUD {
   id: string;
   title: string;
-  isStreaming: boolean;
+  // isStreaming: boolean;
   createdAt: string;
 }
-
 export interface Interface__ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -185,10 +184,11 @@ export interface Interface__ChatMessage {
   error?: boolean;
   createdAt?: string;
 }
-
 export interface Interface__ChatState {
   session: Interface__ChatSession | null;
   messages: Interface__ChatMessage[];
   totalMessages: number;
-  isNewSession: boolean;
+  isStreaming: boolean;
+  hasLoadedHistory: boolean;
+  // isNewSession: boolean;
 }

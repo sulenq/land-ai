@@ -1,55 +1,88 @@
-import { Interface__ChatState } from "@/constants/interfaces";
 import { create } from "zustand";
+import {
+  Interface__ChatState,
+  Interface__ChatMessage,
+  Interface__ChatSession,
+} from "@/constants/interfaces";
 
-interface State_Actions {
+interface ChatActions {
   activeChat: Interface__ChatState;
-  // appendUserMessage: (userMessage: Interface__ChatMessage) => void;
-  startAssistantStreaming: () => string; // return assistantMessage id
+
+  setSession: (session: Interface__ChatSession | null) => void;
+  resetChat: () => void;
+  setMessages: (messages: Interface__ChatMessage[]) => void;
+
+  appendMessage: (message: Interface__ChatMessage) => void;
+
+  startAssistantStreaming: () => string;
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;
   finishStreaming: (messageId: string) => void;
-  setActiveChat: (newActiveChat: Interface__ChatState) => void;
 }
 
-export const DEFAULT_ACTIVE_CHAT = {
+export const DEFAULT_CHAT_STATE: Interface__ChatState = {
   session: null,
   messages: [],
   totalMessages: 0,
-  isNewSession: false,
+  isStreaming: true,
+  hasLoadedHistory: false,
 };
 
-const useActiveChatSession = create<State_Actions>((set) => ({
-  activeChat: DEFAULT_ACTIVE_CHAT,
+export const useActiveChatSession = create<ChatActions>((set) => ({
+  activeChat: DEFAULT_CHAT_STATE,
 
-  setActiveChat: (newActiveChat) =>
-    set(() => ({
-      activeChat: newActiveChat,
+  setSession: (session) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        session,
+      },
     })),
 
-  // appendUserMessage: (userMessage) =>
-  //   set((state) => ({
-  //     activeChat: {
-  //       ...state.activeChat,
-  //       messages: [...state.activeChat.messages, userMessage],
-  //       totalMessages: state.activeChat.totalMessages + 1,
-  //       isNewSession: false,
-  //     },
-  //   })),
+  resetChat: () =>
+    set(() => ({
+      activeChat: DEFAULT_CHAT_STATE,
+    })),
+
+  setMessages: (messages: Interface__ChatMessage[]) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        messages: messages,
+      },
+    })),
+
+  appendMessage: (message) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        messages: [...state.activeChat.messages, message],
+        totalMessages: state.activeChat.totalMessages + 1,
+      },
+    })),
 
   startAssistantStreaming: () => {
     const id = crypto.randomUUID();
+
     set((state) => ({
       activeChat: {
         ...state.activeChat,
         session: state.activeChat.session
-          ? { ...state.activeChat.session, isStreaming: true }
+          ? { ...state.activeChat.session }
           : null,
         messages: [
           ...state.activeChat.messages,
-          { id, role: "assistant", content: "", isStreaming: true },
+          {
+            id,
+            role: "assistant",
+            content: "",
+            isStreaming: true,
+          },
         ],
         totalMessages: state.activeChat.totalMessages + 1,
+        isStreaming: true,
       },
     }));
+
     return id;
   },
 
@@ -76,5 +109,3 @@ const useActiveChatSession = create<State_Actions>((set) => ({
       },
     })),
 }));
-
-export default useActiveChatSession;

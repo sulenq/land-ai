@@ -17,7 +17,6 @@ import { capitalizeWords, pluckString } from "@/utils/string";
 import { getActiveNavs } from "@/utils/url";
 import { HStack, Icon, StackProps } from "@chakra-ui/react";
 import { IconSlash } from "@tabler/icons-react";
-import { isEmptyArray } from "formik";
 import { usePathname } from "next/navigation";
 import { forwardRef } from "react";
 
@@ -80,7 +79,7 @@ export const NavBreadcrumb = (props: any) => {
           <IconSlash stroke={1.5} />
         </Icon>
 
-        {isEmptyArray(resolvedActiveNavs) && <P>{l.navs.welcome}</P>}
+        {/* {isEmptyArray(resolvedActiveNavs) && <P>{l.navs.welcome}</P>} */}
 
         {resolvedActiveNavs.map((nav: Interface__NavListItem, idx: number) => {
           return (

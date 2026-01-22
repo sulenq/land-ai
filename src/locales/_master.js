@@ -123,6 +123,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const new_chat = {
+  id: "Obrolan baru",
+  en: "New chat",
+};
 export const empty_prompt = {
   id: "Prompt kosong",
   en: "Empty prompt",
@@ -890,8 +894,8 @@ export const yearly_sales = {
 
 // Message
 export const msg_assistant_response_error = {
-  id: "Terjadi kesalahan saat memproses respons asisten. Silakan coba lagi.",
-  en: "An error occurred while processing the assistant's response. Please try again.",
+  id: "Terjadi kesalahan saat memproses respons. Silakan coba lagi.",
+  en: "An error occurred while processing the response. Please try again.",
 };
 export const msg_welcome_to_the_app = {
   id: "Selamat datang di ${appName}",

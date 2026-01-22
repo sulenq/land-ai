@@ -41,7 +41,6 @@ import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_USER_PROFILE } from "@/constants/apis";
-import { DUMMY_CHAT_SESSIONS } from "@/constants/dummyData";
 import { PRIVATE_NAVS } from "@/constants/navs";
 import { Props__Layout, Props__NavLink } from "@/constants/props";
 import {
@@ -60,6 +59,7 @@ import {
   MOBILE_POPOVER_MAIN_AXIS,
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
+import useActiveChatSessions from "@/context/useActiveChatSessions";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
@@ -75,7 +75,7 @@ import {
   setAccessToken,
   setUserData,
 } from "@/utils/auth";
-import { buildPrivateNavsFromChats } from "@/utils/formatter";
+import { buildPrivateNavsFromChatSessions } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import {
@@ -1018,11 +1018,14 @@ const TheApp = (props: Props__Layout) => {
   // Props
   const { ...restProps } = props;
 
+  // Contexts
+  const activeChatSessions = useActiveChatSessions((s) => s.activeChatSessions);
+
   // Hooks
   const iss = useIsSmScreenWidth();
 
   // States
-  const NAVS = buildPrivateNavsFromChats(DUMMY_CHAT_SESSIONS);
+  const NAVS = buildPrivateNavsFromChatSessions(activeChatSessions || []);
 
   return (
     <CContainer id="app_layout" h={"100dvh"} {...restProps}>

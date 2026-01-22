@@ -14,52 +14,50 @@ import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { Interface__ChatMessage } from "@/constants/interfaces";
-import useActiveChatSession, {
-  DEFAULT_ACTIVE_CHAT,
-} from "@/context/useActiveChatSession";
+import { useActiveChatSession } from "@/context/useActiveChatSession";
+
 import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
-import { Badge, HStack } from "@chakra-ui/react";
+import { Alert, Badge, HStack, StackProps } from "@chakra-ui/react";
 import { ArrowDownIcon, RefreshCwIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-const Messages = () => {
+const Messages = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
   const activeChat = useActiveChatSession((s) => s.activeChat);
-  const setActiveChat = useActiveChatSession((s) => s.setActiveChat);
+  const setMessages = useActiveChatSession((s) => s.setMessages);
+  const setSession = useActiveChatSession((s) => s.setSession);
+  // const resetChat = useActiveChatSession((s) => s.resetChat);
 
   // Hooks
   const { sessionId } = useParams();
+  const shouldFetchHistory = activeChat.hasLoadedHistory;
+  // console.debug(activeChat);
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<any>({
     url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
     dataResource: false,
-    dependencies: [activeChat.isNewSession],
-    conditions: !activeChat.isNewSession || !activeChat.session,
+    dependencies: [shouldFetchHistory],
+    conditions: shouldFetchHistory,
   });
   const messages = activeChat.messages;
-
-  // Reset active chat on sessionId change
-  useEffect(() => {
-    setActiveChat(DEFAULT_ACTIVE_CHAT);
-  }, [sessionId]);
+  const lastMessage = messages[messages.length - 1];
+  const canRegenerate = lastMessage && lastMessage.role === "assistant";
 
   // Set active chat on data load
   useEffect(() => {
-    if (!activeChat.isNewSession && data) {
-      setActiveChat({
-        session: data.session,
-        messages: data.messages || [],
-        totalMessages: data.totalMessage || data.messages?.length || 0,
-        isNewSession: false,
-      });
+    if (data) {
+      setSession(data?.session);
+      setMessages(data?.messages);
     }
   }, [data]);
 
@@ -69,74 +67,102 @@ const Messages = () => {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <CContainer flex={1} gap={4} px={2}>
-        {activeChat.messages.map((message: Interface__ChatMessage) => {
-          // User Message
-          if (message.role === "user") {
-            return (
-              <CContainer key={message.id} gap={2}>
-                <UserBubbleChat>{message.content}</UserBubbleChat>
+      <CContainer flex={1} gap={4}>
+        <CContainer>
+          <P fontSize={"xl"} fontWeight={"semibold"}>
+            {activeChat.session?.title}
+          </P>
 
-                <HStack wrap={"wrap"} justify={"end"}>
-                  <Clipboard>{message.content}</Clipboard>
-                </HStack>
-              </CContainer>
-            );
-          }
+          <P color={"fg.subtle"}>{formatDate(activeChat.session?.createdAt)}</P>
+        </CContainer>
 
-          // Assistant Message
-          if (message.role === "assistant") {
-            return (
-              <CContainer key={message.id} gap={2}>
-                <MarkdownChat error={true}>{message.content}</MarkdownChat>
+        <CContainer gap={4}>
+          {activeChat.messages.map((message: Interface__ChatMessage) => {
+            // User Message
+            if (message.role === "user") {
+              return (
+                <CContainer key={message.id} gap={2}>
+                  <UserBubbleChat>{message.content}</UserBubbleChat>
 
-                <HStack>
-                  {message?.sources?.map((source, index) => {
-                    return <Badge key={index}>{source}</Badge>;
-                  })}
-                </HStack>
+                  <HStack wrap={"wrap"} justify={"end"}>
+                    <Clipboard>{message.content}</Clipboard>
+                  </HStack>
+                </CContainer>
+              );
+            }
 
-                {message.error && (
-                  <P color={"fg.error"}>{l.msg_assistant_response_error}</P>
-                )}
+            // Assistant Message
+            if (message.role === "assistant") {
+              return (
+                <CContainer key={message.id} gap={2}>
+                  <MarkdownChat error={true}>{message.content}</MarkdownChat>
 
-                <HStack wrap={"wrap"}>
-                  <Clipboard>{message.content}</Clipboard>
+                  <HStack>
+                    {message?.sources?.map((source, index) => {
+                      return <Badge key={index}>{source}</Badge>;
+                    })}
+                  </HStack>
 
-                  <Btn iconButton size={"xs"} variant={"ghost"}>
-                    <AppIcon icon={RefreshCwIcon} />
-                  </Btn>
-                </HStack>
-              </CContainer>
-            );
-          }
-        })}
+                  {message.error && (
+                    <CContainer key={message.id} gap={2}>
+                      <Alert.Root
+                        status="error"
+                        maxW={"70%"}
+                        rounded={themeConfig.radii.component}
+                      >
+                        <Alert.Indicator />
+                        <Alert.Title>
+                          {l.msg_assistant_response_error}
+                        </Alert.Title>
+                      </Alert.Root>
+                    </CContainer>
+                  )}
+
+                  <HStack wrap={"wrap"}>
+                    <Clipboard>{message.content}</Clipboard>
+
+                    {canRegenerate && (
+                      <Btn iconButton size={"xs"} variant={"ghost"}>
+                        <AppIcon icon={RefreshCwIcon} />
+                      </Btn>
+                    )}
+                  </HStack>
+                </CContainer>
+              );
+            }
+          })}
+        </CContainer>
       </CContainer>
     ),
   };
 
   return (
-    <>
-      {initialLoading && render.loading}
-      {!initialLoading && (
+    <CContainer flex={1} {...props}>
+      {shouldFetchHistory && (
         <>
-          {error && render.error}
-          {!error && (
+          {initialLoading && render.loading}
+          {!initialLoading && (
             <>
-              {messages && render.loaded}
-              {(!messages || isEmptyArray(messages)) && render.empty}
+              {error && render.error}
+              {!error && (
+                <>
+                  {!isEmptyArray(messages) && render.loaded}
+                  {isEmptyArray(messages) && render.empty}
+                </>
+              )}
             </>
           )}
         </>
       )}
-    </>
+
+      {!shouldFetchHistory && <>{render.loaded}</>}
+    </CContainer>
   );
 };
 
 export default function Page() {
   // Contexts
   const promptInputStyle = usePromptInput((s) => s.style);
-  const activeChat = useActiveChatSession((s) => s.activeChat);
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -160,25 +186,12 @@ export default function Page() {
     <PageContainer pos={"relative"}>
       <CContainer
         ref={containerRef}
+        flex={1}
         p={4}
         overflowY={"auto"}
         scrollBehavior={"smooth"}
       >
-        <ContainerLayout
-          justify={"space-between"}
-          gap={8}
-          pb={`calc(${promptInputStyle?.h} + 56px)`}
-        >
-          <CContainer>
-            <P fontSize={"xl"} fontWeight={"semibold"}>
-              {activeChat.session?.title}
-            </P>
-
-            <P color={"fg.subtle"}>
-              {formatDate(activeChat.session?.createdAt)}
-            </P>
-          </CContainer>
-
+        <ContainerLayout gap={8} pb={`calc(${promptInputStyle?.h} + 54px)`}>
           <Messages />
         </ContainerLayout>
 

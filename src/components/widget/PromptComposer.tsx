@@ -17,15 +17,14 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { APP } from "@/constants/_meta";
-import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
 import { Props__PromptInput } from "@/constants/props";
-import useActiveChatSession from "@/context/useActiveChatSession";
+import { useActiveChatSession } from "@/context/useActiveChatSession";
 import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
-import useRequest from "@/hooks/useRequest";
 import { disclosureId } from "@/utils/disclosure";
+import { streamChat } from "@/utils/streamChat";
 import { interpolateString, pluckString } from "@/utils/string";
 import {
   Group,
@@ -217,19 +216,14 @@ export const PromptHelperText = (props: TextProps) => {
 };
 
 export const NewPrompt = (props: StackProps) => {
-  const ID = "new_prompt";
-
   // Contexts
   const { l } = useLang();
-  const router = useRouter();
-  const setActiveChat = useActiveChatSession((state) => state.setActiveChat);
+  const resetChat = useActiveChatSession((s) => s.resetChat);
+  const setSession = useActiveChatSession((s) => s.setSession);
+  const appendMessage = useActiveChatSession((s) => s.appendMessage);
 
   // Hooks
-  const { req, loading } = useRequest({
-    id: ID,
-    showLoadingToast: false,
-    showSuccessToast: false,
-  });
+  const router = useRouter();
 
   // States
   const formik = useFormik({
@@ -238,33 +232,24 @@ export const NewPrompt = (props: StackProps) => {
     validationSchema: yup
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
-    onSubmit: (values) => {
-      const payload = {
-        prompt: values.prompt,
-      };
+    onSubmit: async (values) => {
+      resetChat();
 
-      const config = {
-        url: CHAT_API_CHAT_AI_STREAM,
-        method: "POST",
-        data: payload,
-      };
+      const sessionIdPlaceholder = crypto.randomUUID();
 
-      req({
-        config,
-        onResolve: {
-          onSuccess: (r) => {
-            setActiveChat({
-              session: r?.data?.data?.[0]?.sessionId,
-              messages: r?.data?.data?.messages,
-              totalMessages: r?.data?.data?.totalMessages,
-              isNewSession: true,
-            });
-
-            const sessionId = r?.data?.data?.id;
-            router.push(`/c/${sessionId}`);
-          },
-        },
+      setSession({
+        id: sessionIdPlaceholder,
+        title: l.new_chat,
+        createdAt: new Date().toISOString(),
       });
+
+      appendMessage({
+        id: crypto.randomUUID(),
+        role: "user",
+        content: values.prompt,
+      });
+
+      router.push(`/c/${sessionIdPlaceholder}`);
     },
   });
 
@@ -299,7 +284,6 @@ export const NewPrompt = (props: StackProps) => {
         onSubmit={() => {
           formik.handleSubmit();
         }}
-        loading={loading}
       />
 
       <PromptHelperText mt={4} />
@@ -308,20 +292,11 @@ export const NewPrompt = (props: StackProps) => {
 };
 
 export const ContinuePrompt = (props: StackProps) => {
-  const ID = "continue_prompt";
-
   // Contexts
   const { l } = useLang();
-  const router = useRouter();
-  const setActiveChat = useActiveChatSession((state) => state.setActiveChat);
 
   // Hooks
   const { sessionId } = useParams();
-  const { req, loading } = useRequest({
-    id: ID,
-    showLoadingToast: false,
-    showSuccessToast: false,
-  });
 
   // States
   const formik = useFormik({
@@ -330,34 +305,13 @@ export const ContinuePrompt = (props: StackProps) => {
     validationSchema: yup
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
-    onSubmit: (values) => {
-      const payload = {
-        sessionId: sessionId,
+    onSubmit: async (values, { resetForm }) => {
+      await streamChat({
+        sessionId: sessionId as string,
         prompt: values.prompt,
-      };
-
-      const config = {
-        url: CHAT_API_CHAT_AI_STREAM,
-        method: "POST",
-        data: payload,
-      };
-
-      req({
-        config,
-        onResolve: {
-          onSuccess: (r) => {
-            setActiveChat({
-              session: r?.data?.data?.session,
-              messages: r?.data?.data?.messages,
-              totalMessages: r?.data?.data?.totalMessages,
-              isNewSession: true,
-            });
-
-            const sessionId = r?.data?.data?.id;
-            router.push(`/c/${sessionId}`);
-          },
-        },
       });
+
+      resetForm();
     },
   });
 
@@ -371,7 +325,6 @@ export const ContinuePrompt = (props: StackProps) => {
         onSubmit={() => {
           formik.handleSubmit();
         }}
-        loading={loading}
       />
 
       <PromptHelperText />
