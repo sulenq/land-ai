@@ -1,6 +1,5 @@
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
-import { CSpinner } from "@/components/ui/c-loader";
 import {
   DisclosureBody,
   DisclosureContent,
@@ -18,8 +17,10 @@ import {
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
+import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
@@ -128,16 +129,19 @@ export const ChatSessions = (props: any) => {
       );
     });
   }
-  let content = null;
-  if (initialLoading) {
-    content = <CSpinner />;
-  } else if (error) {
-    content = <FeedbackRetry onRetry={onRetry} />;
-  } else if (!data || isEmptyArray(data)) {
-    content = <FeedbackNotFound />;
-  } else {
-    content = loadedContent;
-  }
+  const render = {
+    loading: (
+      <CContainer gap={1}>
+        {Array.from({ length: 5 }).map((_, idx) => {
+          return <Skeleton key={idx} h={["44px", null, "36px"]} />;
+        })}
+      </CContainer>
+    ),
+    error: <FeedbackRetry onRetry={onRetry} />,
+    empty: <FeedbackNoData />,
+    notFound: <FeedbackNotFound />,
+    loaded: loadedContent,
+  };
 
   return (
     <CContainer gap={2} {...restProps}>
@@ -152,7 +156,20 @@ export const ChatSessions = (props: any) => {
         />
       </CContainer>
 
-      <CContainer>{content}</CContainer>
+      <CContainer gap={1}>
+        {initialLoading && render.loading}
+        {!initialLoading && (
+          <>
+            {error && render.error}
+            {!error && (
+              <>
+                {data && render.loaded}
+                {(!data || isEmptyArray(data)) && render.empty}
+              </>
+            )}
+          </>
+        )}
+      </CContainer>
     </CContainer>
   );
 };
