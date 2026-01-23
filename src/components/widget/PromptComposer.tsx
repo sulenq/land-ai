@@ -37,7 +37,7 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon, SquareIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 
@@ -237,7 +237,7 @@ export const NewPrompt = (props: StackProps) => {
   const prependActiveChatSession = useActiveChatSessions(
     (s) => s.prependActiveChatSession,
   );
-  const resetChat = useActiveChatSession((s) => s.resetChat);
+  const resetActiveChat = useActiveChatSession((s) => s.resetActiveChat);
   const initSession = useActiveChatSession((s) => s.initSession);
   const setSession = useActiveChatSession((s) => s.setSession);
   const appendMessage = useActiveChatSession((s) => s.appendMessage);
@@ -264,7 +264,7 @@ export const NewPrompt = (props: StackProps) => {
 
       prependActiveChatSession(sessionPlaceholder);
 
-      resetChat();
+      resetActiveChat();
       initSession();
       setSession(sessionPlaceholder);
 
@@ -326,7 +326,8 @@ export const ContinuePrompt = (props: StackProps) => {
   const activeChat = useActiveChatSession((s) => s.activeChat);
 
   // Hooks
-  // const { sessionId } = useParams();
+  const { sessionId } = useParams();
+  const appendMessage = useActiveChatSession((s) => s.appendMessage);
 
   // States
   const formik = useFormik({
@@ -336,8 +337,16 @@ export const ContinuePrompt = (props: StackProps) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values, { resetForm }) => {
-      console.debug(values);
-      // TODO stream chat
+      appendMessage({
+        id: crypto.randomUUID(),
+        role: "user",
+        content: values.prompt,
+      });
+
+      startChatStream({
+        prompt: values.prompt,
+        sessionId: sessionId as string,
+      });
 
       resetForm();
     },
