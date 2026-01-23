@@ -203,6 +203,7 @@ export const PromptInput = (props: Props__PromptInput) => {
                 if (canAbort) {
                   onSubmit?.();
                 } else {
+                  // TODO call abort stream request
                   finishStreaming();
                 }
               }}
