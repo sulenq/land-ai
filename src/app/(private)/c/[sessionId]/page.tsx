@@ -147,6 +147,7 @@ export default function Page() {
 
   // Hooks
   const router = useRouter();
+  const scrollBottom = useScrollBottom(containerRef);
 
   // States
   const { sessionId } = useParams();
@@ -166,9 +167,6 @@ export default function Page() {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }
-
-  const scrollBottom = useScrollBottom(containerRef);
-  // console.debug(scrollBottom);
 
   // Update has loaded history on session change
   useEffect(() => {
