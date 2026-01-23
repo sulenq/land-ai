@@ -61,6 +61,7 @@ const Messages = (props: StackProps) => {
   const lastMessage = messages[messages.length - 1];
   const canRegenerate = lastMessage && lastMessage.role === "assistant";
 
+  // Update has loaded history on session change
   useEffect(() => {
     if (activeChatSessionId !== sessionId) {
       updateHasLoadedHistory(false);
@@ -71,7 +72,10 @@ const Messages = (props: StackProps) => {
   // Set active chat on data load
   useEffect(() => {
     if (data) {
-      setSession(data?.session);
+      setSession({
+        ...data?.session,
+        isStreaming: false,
+      });
       setMessages(data?.messages);
     }
   }, [data]);
@@ -102,7 +106,7 @@ const Messages = (props: StackProps) => {
         <CContainer gap={4}>
           {activeChat.messages.map((message: Interface__ChatMessage) => {
             const emptyMessage = !message.content;
-            const isActiveSessionStreaming = activeChat.session?.isStreaming;
+            const isStreaming = message.isStreaming;
 
             // User Message
             if (message.role === "user") {
@@ -121,7 +125,7 @@ const Messages = (props: StackProps) => {
             if (message.role === "assistant") {
               return (
                 <CContainer key={message.id} gap={2}>
-                  {isActiveSessionStreaming && emptyMessage ? (
+                  {isStreaming && emptyMessage ? (
                     <Spinner size={"sm"} ml={2} />
                   ) : (
                     <>
@@ -150,7 +154,7 @@ const Messages = (props: StackProps) => {
                         </CContainer>
                       )}
 
-                      <HStack wrap={"wrap"}>
+                      <HStack wrap={"wrap"} gap={1}>
                         <Clipboard>{message.content}</Clipboard>
 
                         {canRegenerate && (
@@ -169,6 +173,8 @@ const Messages = (props: StackProps) => {
       </CContainer>
     ),
   };
+
+  console.debug(activeChat);
 
   return (
     <CContainer flex={1} {...props}>

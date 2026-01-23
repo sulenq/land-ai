@@ -1,5 +1,6 @@
 import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
 import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import { getAccessToken } from "@/utils/auth";
 
 export async function startChatStream({
@@ -14,6 +15,7 @@ export async function startChatStream({
 
   const { appendMessage, appendStreamingChunk, finishStreaming, setSession } =
     useActiveChatSession.getState();
+  const { renameActiveChatSession } = useActiveChatSessions.getState();
 
   const messageId = crypto.randomUUID();
 
@@ -54,6 +56,10 @@ export async function startChatStream({
         const payload = JSON.parse(line);
 
         if (payload.type === "meta") {
+          // Rename active session in chat session list
+          renameActiveChatSession(payload.sessionId, payload.title);
+
+          // Update active chat session
           setSession({
             id: payload.sessionId,
             title: payload.title,
@@ -61,6 +67,7 @@ export async function startChatStream({
             isStreaming: true,
           });
 
+          // Update first assistant message
           useActiveChatSession.setState((state) => ({
             activeChat: {
               ...state.activeChat,
@@ -71,6 +78,7 @@ export async function startChatStream({
           }));
         }
 
+        // Append assistant message
         if (payload.type === "chunk") {
           appendStreamingChunk({
             messageId,
