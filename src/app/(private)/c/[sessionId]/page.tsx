@@ -178,12 +178,7 @@ const Messages = (props: StackProps) => {
           {!initialLoading && (
             <>
               {error && render.error}
-              {!error && (
-                <>
-                  {!isEmptyArray(messages) && render.loaded}
-                  {isEmptyArray(messages) && render.empty}
-                </>
-              )}
+              {!error && <>{!isEmptyArray(messages) && render.loaded}</>}
             </>
           )}
         </>

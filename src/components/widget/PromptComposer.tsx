@@ -25,8 +25,8 @@ import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
+import { startChatStream } from "@/service/chatStream";
 import { disclosureId } from "@/utils/disclosure";
-import { streamChat } from "@/utils/streamChat";
 import { interpolateString, pluckString } from "@/utils/string";
 import {
   Group,
@@ -241,9 +241,6 @@ export const NewPrompt = (props: StackProps) => {
   const initSession = useActiveChatSession((s) => s.initSession);
   const setSession = useActiveChatSession((s) => s.setSession);
   const appendMessage = useActiveChatSession((s) => s.appendMessage);
-  const startAssistantStreaming = useActiveChatSession(
-    (s) => s.startAssistantStreaming,
-  );
 
   // Hooks
   const router = useRouter();
@@ -256,9 +253,10 @@ export const NewPrompt = (props: StackProps) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values) => {
-      const sessionIdPlaceholder = crypto.randomUUID();
+      const sessionId = crypto.randomUUID();
+
       const sessionPlaceholder = {
-        id: sessionIdPlaceholder,
+        id: sessionId,
         title: l.new_chat,
         createdAt: new Date().toISOString(),
       };
@@ -266,10 +264,8 @@ export const NewPrompt = (props: StackProps) => {
       prependActiveChatSession(sessionPlaceholder);
 
       resetChat();
-
       initSession();
-
-      setSession({ ...sessionPlaceholder });
+      setSession(sessionPlaceholder);
 
       appendMessage({
         id: crypto.randomUUID(),
@@ -277,9 +273,12 @@ export const NewPrompt = (props: StackProps) => {
         content: values.prompt,
       });
 
-      startAssistantStreaming();
+      startChatStream({
+        sessionId,
+        prompt: values.prompt,
+      });
 
-      router.push(`/c/${sessionIdPlaceholder}`);
+      router.push(`/c/${sessionId}`);
     },
   });
 
@@ -337,10 +336,7 @@ export const ContinuePrompt = (props: StackProps) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values, { resetForm }) => {
-      await streamChat({
-        sessionId: sessionId as string,
-        prompt: values.prompt,
-      });
+      // TODO stream chat
 
       resetForm();
     },
