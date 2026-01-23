@@ -51,7 +51,7 @@ export interface Props__PromptInput extends Omit<
   loading?: boolean;
   maxChar?: number;
   disabled?: boolean;
-  canAbort?: boolean;
+  abortMode?: boolean;
 }
 
 export interface Props__PdfViewer extends StackProps {

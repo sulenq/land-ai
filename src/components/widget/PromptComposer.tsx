@@ -100,7 +100,7 @@ export const PromptInput = (props: Props__PromptInput) => {
     loading = false,
     maxChar = MAX_CHAR,
     disabled,
-    canAbort,
+    abortMode,
     ...restProps
   } = props;
 
@@ -185,7 +185,7 @@ export const PromptInput = (props: Props__PromptInput) => {
 
           <Tooltip
             content={
-              canAbort
+              abortMode
                 ? l.abort
                 : isEmpty
                   ? l.empty_prompt
@@ -198,9 +198,9 @@ export const PromptInput = (props: Props__PromptInput) => {
               iconButton
               colorPalette={themeConfig.colorPalette}
               loading={loading}
-              disabled={canAbort ? false : !inputValue || isExceedCharLimit}
+              disabled={abortMode ? false : !inputValue || isExceedCharLimit}
               onClick={() => {
-                if (canAbort) {
+                if (abortMode) {
                   // TODO call abort stream request
                   finishStreaming();
                 } else {
@@ -209,8 +209,8 @@ export const PromptInput = (props: Props__PromptInput) => {
               }}
             >
               <AppIcon
-                icon={canAbort ? SquareIcon : ArrowUpIcon}
-                boxSize={canAbort ? 4 : BASE_ICON_BOX_SIZE}
+                icon={abortMode ? SquareIcon : ArrowUpIcon}
+                boxSize={abortMode ? 4 : BASE_ICON_BOX_SIZE}
               />
             </Btn>
           </Tooltip>
@@ -363,7 +363,7 @@ export const ContinuePrompt = (props: StackProps) => {
           formik.handleSubmit();
         }}
         disabled={activeChat.session?.isStreaming}
-        canAbort={activeChat.session?.isStreaming}
+        abortMode={activeChat.session?.isStreaming}
       />
 
       <PromptHelperText />
