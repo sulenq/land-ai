@@ -170,6 +170,8 @@ const Messages = (props: StackProps) => {
     ),
   };
 
+  console.debug(activeChat);
+
   return (
     <CContainer flex={1} {...props}>
       {shouldFetchHistory && (

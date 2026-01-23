@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useRequest from "@/hooks/useRequest";
 import useRenderTrigger from "@/context/useRenderTrigger";
 import { useLoadingBar } from "@/context/useLoadingBar";
@@ -22,195 +22,138 @@ interface Props<T> {
   // withPagination?: boolean;
 }
 
-const useDataState = <T = any>(props: Props<T>) => {
-  // Props
-  const {
-    initialData,
-    dummyData,
-    payload,
-    params,
-    url,
-    method,
-    dependencies = [],
-    conditions = true,
-    noRt = false,
-    initialPage = 1,
-    initialLimit = 15,
-    intialOffset = 0,
-    dataResource = true,
-    loadingBar = true,
-  } = props;
-
-  // Contexts
+const useDataState = <T = any>({
+  initialData,
+  dummyData,
+  payload,
+  params,
+  url,
+  method,
+  dependencies = [],
+  conditions = true,
+  noRt = false,
+  initialPage = 1,
+  initialLimit = 15,
+  dataResource = true,
+  loadingBar = true,
+}: Props<T>) => {
   const setLoadingBar = useLoadingBar((s) => s.setLoadingBar);
+  const { rt } = useRenderTrigger();
 
-  // Refs
   const abortControllerRef = useRef<AbortController | null>(null);
-  const latestUrlRef = useRef<string | null>(null);
+  const paginationRef = useRef<any>(null);
 
-  // States
   const [data, setData] = useState<T | undefined>(dummyData || initialData);
-  const [initialLoading, setInitialLoading] = useState<boolean>(true);
-  const [loadingLoadMore, setLoadingLoadMore] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(!!url);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
-  const [offset, setOffset] = useState(intialOffset);
-  const [pagination, setPagination] = useState<any>(undefined);
-  const { rt } = useRenderTrigger();
-  const { req, response, loading, error, status } = useRequest({
+  const [loadingLoadMore, setLoadingLoadMore] = useState(false);
+
+  const { req, loading, error, response, status } = useRequest({
     id: url || "data-state",
     showLoadingToast: false,
     showErrorToast: true,
     showSuccessToast: false,
   });
-  const payloadData = {
-    ...payload,
-    limit,
-    page,
-  };
-  const offsetData = {
-    limit,
-    page,
-  };
-  const baseConfig = {
-    url: url,
-    method,
-    data: payloadData,
-    params: { ...(dataResource ? offsetData : {}), ...params },
-  };
 
-  // Utils
-  function makeRequest() {
-    if (!url) return;
+  const config = useMemo(() => {
+    if (!url) return null;
 
-    latestUrlRef.current = url;
-
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
-
-    const config = {
-      ...baseConfig,
-      signal: abortController.signal,
+    return {
+      url,
+      method,
+      data: { ...payload, limit, page },
+      params: { ...(dataResource ? { limit, page } : {}), ...params },
     };
+  }, [url, method, payload, params, limit, page, dataResource]);
 
-    const currentUrl = url;
+  const makeRequest = useCallback(() => {
+    if (!config || !conditions) return;
 
-    Promise.resolve().then(() => {
-      if (latestUrlRef.current !== currentUrl) {
-        return; // Skip if outdated
-      }
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
-      req({
-        config,
-        onResolve: {
-          onSuccess: (r) => {
-            setPagination(r?.data?.data?.pagination);
-            setInitialLoading(false);
-            if (dummyData) {
-              setData(dummyData);
-            } else {
-              setData(
-                dataResource
-                  ? Array.isArray(r?.data?.data)
-                    ? r?.data?.data
-                    : r?.data?.data?.data
-                  : r?.data?.data,
-              );
-            }
-          },
-          onError: () => {
-            setInitialLoading(false);
-          },
+    setInitialLoading(true);
+
+    req({
+      config: { ...config, signal: controller.signal },
+      onResolve: {
+        onSuccess: (r) => {
+          paginationRef.current = r?.data?.data?.pagination;
+          setInitialLoading(false);
+          setData(
+            dummyData ??
+              (dataResource
+                ? Array.isArray(r?.data?.data)
+                  ? r?.data?.data
+                  : r?.data?.data?.data
+                : r?.data?.data),
+          );
         },
-      });
+        onError: () => {
+          setInitialLoading(false);
+        },
+      },
     });
-  }
-  function loadMore() {
+  }, [config, conditions, dummyData, dataResource, req]);
+
+  const onRetry = useCallback(() => {
+    makeRequest();
+  }, [makeRequest]);
+
+  const loadMore = useCallback(() => {
+    if (!config) return;
+
     setLoadingLoadMore(true);
 
-    const config = {
-      ...baseConfig,
-    };
     req({
       config,
       onResolve: {
         onSuccess: (r) => {
-          const newData = data
-            ? [...(data as any[]), ...r?.data?.data]
-            : r?.data?.data;
-          setData(newData);
-          setPagination(r?.data?.pagination);
+          setData((prev: any) =>
+            prev ? [...prev, ...r?.data?.data] : r?.data?.data,
+          );
+          paginationRef.current = r?.data?.pagination;
           setLoadingLoadMore(false);
         },
       },
     });
-  }
-  function onRetry() {
-    setInitialLoading(true);
-    makeRequest();
-  }
+  }, [config, req]);
 
-  // start request via useEffect
   useEffect(() => {
-    if (!conditions || !url) return;
+    if (!url || !conditions) return;
 
-    const timeout = setTimeout(() => {
-      makeRequest();
-    }, 50);
+    makeRequest();
 
     return () => {
-      clearTimeout(timeout);
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+      abortControllerRef.current?.abort();
     };
-  }, [
-    conditions,
-    url,
-    page,
-    limit,
-    ...(noRt ? [] : [rt]),
-    ...(dependencies || []),
-  ]);
+  }, [url, page, limit, ...(noRt ? [] : [rt]), ...dependencies]);
 
-  // set initial limit
   useEffect(() => {
-    setLimit(initialLimit);
-  }, [initialLimit]);
-
-  // initialLoading = true when no url
-  useEffect(() => {
-    if (!url) {
-      setInitialLoading(false);
+    if (loadingBar && conditions) {
+      setLoadingBar(initialLoading || loading);
     }
-  }, [url]);
-
-  // trigger loading bar on initialLoading | loading  is true
-  useEffect(() => {
-    if (loadingBar && conditions) setLoadingBar(initialLoading || loading);
-  }, [loading, initialLoading, conditions]);
+  }, [initialLoading, loading, conditions]);
 
   return {
-    makeRequest,
-    onRetry,
     data,
     setData,
     initialLoading,
-    setInitialLoading,
     loading,
     error,
     loadMore,
     loadingLoadMore,
-    setLoadingLoadMore,
-    pagination,
+    pagination: paginationRef.current,
     page,
     setPage,
     limit,
     setLimit,
-    offset,
-    setOffset,
     response,
     status,
+    makeRequest,
+    onRetry,
   };
 };
 

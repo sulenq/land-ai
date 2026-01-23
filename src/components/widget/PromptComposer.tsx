@@ -275,7 +275,6 @@ export const NewPrompt = (props: StackProps) => {
       });
 
       startChatStream({
-        sessionId,
         prompt: values.prompt,
       });
 
