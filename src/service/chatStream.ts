@@ -59,9 +59,6 @@ export async function startChatStream({
           // replace sessionId url
           window.history.replaceState(null, "", `/c/${payload.sessionId}`);
 
-          // Rename active session in chat session list
-          renameActiveChatSession(payload.sessionId, payload.title);
-
           // Update active chat session
           setSession({
             id: payload.sessionId,
@@ -69,6 +66,9 @@ export async function startChatStream({
             createdAt: payload.createdAt,
             isStreaming: true,
           });
+
+          // Rename active session in chat session list
+          renameActiveChatSession(sessionId as string, payload.title);
 
           // Update first assistant message
           useActiveChatSession.setState((state) => ({
