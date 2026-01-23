@@ -37,7 +37,7 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon, SquareIcon } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 
@@ -326,7 +326,7 @@ export const ContinuePrompt = (props: StackProps) => {
   const activeChat = useActiveChatSession((s) => s.activeChat);
 
   // Hooks
-  const { sessionId } = useParams();
+  // const { sessionId } = useParams();
 
   // States
   const formik = useFormik({
@@ -336,6 +336,7 @@ export const ContinuePrompt = (props: StackProps) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values, { resetForm }) => {
+      console.debug(values);
       // TODO stream chat
 
       resetForm();
