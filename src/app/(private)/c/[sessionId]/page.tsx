@@ -29,73 +29,26 @@ import { ArrowDownIcon, RefreshCwIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-const Messages = (props: StackProps) => {
+interface Props__Messages extends StackProps {
+  messages: Interface__ChatMessage[];
+}
+const Messages = (props: Props__Messages) => {
+  // Props
+  const { messages, ...restProps } = props;
+
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const activeChat = useActiveChatSession((s) => s.activeChat);
-  const setMessages = useActiveChatSession((s) => s.setMessages);
-  const setSession = useActiveChatSession((s) => s.setSession);
-  const resetActiveChat = useActiveChatSession((s) => s.resetActiveChat);
-  const removeActiveChatSession = useActiveChatSessions(
-    (s) => s.removeActiveChatSession,
-  );
-  const updateHasLoadedHistory = useActiveChatSession(
-    (s) => s.updateHasLoadedHistory,
-  );
-
-  // Hooks
-  const { sessionId } = useParams();
-  const router = useRouter();
 
   // States
-  const activeChatSessionId = activeChat?.session?.id;
-  const shouldFetchHistory = !activeChat.hasLoadedHistory;
-  const { error, status, initialLoading, data, onRetry } = useDataState<any>({
-    url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
-    dataResource: false,
-    dependencies: [shouldFetchHistory],
-    conditions: shouldFetchHistory,
-  });
-  const messages = activeChat.messages;
   const lastMessage = messages[messages.length - 1];
   const canRegenerate = lastMessage && lastMessage.role === "assistant";
 
-  // Update has loaded history on session change
-  useEffect(() => {
-    if (activeChatSessionId !== sessionId) {
-      updateHasLoadedHistory(false);
-      resetActiveChat();
-    }
-  }, [sessionId]);
-
-  // Set active chat on data load
-  useEffect(() => {
-    if (data) {
-      setSession({
-        ...data?.session,
-        isStreaming: false,
-      });
-      setMessages(data?.messages);
-    }
-  }, [data]);
-
-  // Handle 404 - redirect and remove session
-  useEffect(() => {
-    if (status === 404) {
-      removeActiveChatSession(sessionId as string);
-      router.push("/new-chat");
-    }
-  }, [status]);
-
-  const render = {
-    loading: <ChatSkeleton />,
-    error: <FeedbackRetry onRetry={onRetry} />,
-    empty: <FeedbackNoData />,
-    notFound: <FeedbackNotFound />,
-    loaded: (
+  return (
+    <CContainer flex={1} {...restProps}>
       <CContainer flex={1} gap={4} px={2}>
-        <CContainer>
+        <CContainer mb={4}>
           <P fontSize={"xl"} fontWeight={"semibold"}>
             {activeChat.session?.title}
           </P>
@@ -171,26 +124,6 @@ const Messages = (props: StackProps) => {
           })}
         </CContainer>
       </CContainer>
-    ),
-  };
-
-  console.debug(activeChat);
-
-  return (
-    <CContainer flex={1} {...props}>
-      {shouldFetchHistory && (
-        <>
-          {initialLoading && render.loading}
-          {!initialLoading && (
-            <>
-              {error && render.error}
-              {!error && <>{!isEmptyArray(messages) && render.loaded}</>}
-            </>
-          )}
-        </>
-      )}
-
-      {!shouldFetchHistory && <>{render.loaded}</>}
     </CContainer>
   );
 };
@@ -198,12 +131,34 @@ const Messages = (props: StackProps) => {
 export default function Page() {
   // Contexts
   const promptInputStyle = usePromptInput((s) => s.style);
+  const activeChat = useActiveChatSession((s) => s.activeChat);
+  const setMessages = useActiveChatSession((s) => s.setMessages);
+  const setSession = useActiveChatSession((s) => s.setSession);
+  const resetActiveChat = useActiveChatSession((s) => s.resetActiveChat);
+  const updateHasLoadedHistory = useActiveChatSession(
+    (s) => s.updateHasLoadedHistory,
+  );
+  const removeActiveChatSession = useActiveChatSessions(
+    (s) => s.removeActiveChatSession,
+  );
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Hooks
-  const scrollBottom = useScrollBottom(containerRef);
+  const router = useRouter();
+
+  // States
+  const { sessionId } = useParams();
+  const activeChatSessionId = activeChat?.session?.id;
+  const shouldFetchHistory = !activeChat.hasLoadedHistory;
+  const { error, status, initialLoading, data, onRetry } = useDataState<any>({
+    url: `${CHAT_API_SHOW_CHAT}/${sessionId}`,
+    dataResource: false,
+    dependencies: [shouldFetchHistory],
+    conditions: shouldFetchHistory,
+  });
+  const messages = activeChat.messages;
 
   // Utils
   function scrollToBottom() {
@@ -212,10 +167,47 @@ export default function Page() {
     }
   }
 
-  // Scroll to bottom on load
+  const scrollBottom = useScrollBottom(containerRef, [data]);
+
+  // Update has loaded history on session change
   useEffect(() => {
-    scrollToBottom();
-  }, []);
+    if (activeChatSessionId !== sessionId) {
+      updateHasLoadedHistory(false);
+      resetActiveChat();
+    }
+  }, [sessionId]);
+
+  // Set active chat on data load
+  useEffect(() => {
+    if (data) {
+      setSession({
+        ...data?.session,
+        isStreaming: false,
+      });
+      setMessages(data?.messages);
+    }
+  }, [data]);
+
+  // Handle 404 - redirect and remove session
+  useEffect(() => {
+    if (status === 404) {
+      removeActiveChatSession(sessionId as string);
+      router.push("/new-chat");
+    }
+  }, [status]);
+
+  // Scroll to bottom on load
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, []);
+
+  const render = {
+    loading: <ChatSkeleton />,
+    error: <FeedbackRetry onRetry={onRetry} />,
+    empty: <FeedbackNoData />,
+    notFound: <FeedbackNotFound />,
+    loaded: <Messages messages={messages} />,
+  };
 
   return (
     <PageContainer pos={"relative"}>
@@ -227,7 +219,19 @@ export default function Page() {
         scrollBehavior={"smooth"}
       >
         <ContainerLayout gap={8} pb={`calc(${promptInputStyle?.h} + 64px)`}>
-          <Messages />
+          {shouldFetchHistory && (
+            <>
+              {initialLoading && render.loading}
+              {!initialLoading && (
+                <>
+                  {error && render.error}
+                  {!error && <>{!isEmptyArray(messages) && render.loaded}</>}
+                </>
+              )}
+            </>
+          )}
+
+          {!shouldFetchHistory && <>{render.loaded}</>}
         </ContainerLayout>
 
         <CContainer

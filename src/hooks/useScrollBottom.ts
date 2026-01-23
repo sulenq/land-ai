@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 export function useScrollBottom(
   containerRef: React.RefObject<HTMLElement | null>,
+  dependencies: any[] = [],
 ) {
   const [scrollBottom, setScrollBottom] = useState(0);
 
@@ -18,7 +19,7 @@ export function useScrollBottom(
     handleScroll(); // initial update
 
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [containerRef]);
+  }, [containerRef, ...dependencies]);
 
   return scrollBottom;
 }

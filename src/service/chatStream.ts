@@ -56,6 +56,9 @@ export async function startChatStream({
         const payload = JSON.parse(line);
 
         if (payload.type === "meta") {
+          // replace sessionId url
+          window.history.replaceState(null, "", `/c/${payload.sessionId}`);
+
           // Rename active session in chat session list
           renameActiveChatSession(payload.sessionId, payload.title);
 
@@ -63,7 +66,7 @@ export async function startChatStream({
           setSession({
             id: payload.sessionId,
             title: payload.title,
-            createdAt: new Date().toISOString(),
+            createdAt: payload.createdAt,
             isStreaming: true,
           });
 
