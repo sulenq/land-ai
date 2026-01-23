@@ -201,10 +201,10 @@ export const PromptInput = (props: Props__PromptInput) => {
               disabled={canAbort ? false : !inputValue || isExceedCharLimit}
               onClick={() => {
                 if (canAbort) {
-                  onSubmit?.();
-                } else {
                   // TODO call abort stream request
                   finishStreaming();
+                } else {
+                  onSubmit?.();
                 }
               }}
             >
@@ -258,6 +258,7 @@ export const NewPrompt = (props: StackProps) => {
       const sessionPlaceholder = {
         id: sessionId,
         title: l.new_chat,
+        isStreaming: true,
         createdAt: new Date().toISOString(),
       };
 
@@ -353,8 +354,8 @@ export const ContinuePrompt = (props: StackProps) => {
         onSubmit={() => {
           formik.handleSubmit();
         }}
-        disabled={activeChat.isStreaming}
-        canAbort={activeChat.isStreaming}
+        disabled={activeChat.session?.isStreaming}
+        canAbort={activeChat.session?.isStreaming}
       />
 
       <PromptHelperText />

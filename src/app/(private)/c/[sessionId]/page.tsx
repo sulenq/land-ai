@@ -90,7 +90,7 @@ const Messages = (props: StackProps) => {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <CContainer flex={1} gap={4}>
+      <CContainer flex={1} gap={4} px={2}>
         <CContainer>
           <P fontSize={"xl"} fontWeight={"semibold"}>
             {activeChat.session?.title}
@@ -102,7 +102,7 @@ const Messages = (props: StackProps) => {
         <CContainer gap={4}>
           {activeChat.messages.map((message: Interface__ChatMessage) => {
             const emptyMessage = !message.content;
-            const isStreaming = activeChat.isStreaming;
+            const isActiveSessionStreaming = activeChat.session?.isStreaming;
 
             // User Message
             if (message.role === "user") {
@@ -121,7 +121,7 @@ const Messages = (props: StackProps) => {
             if (message.role === "assistant") {
               return (
                 <CContainer key={message.id} gap={2}>
-                  {isStreaming && emptyMessage ? (
+                  {isActiveSessionStreaming && emptyMessage ? (
                     <Spinner size={"sm"} ml={2} />
                   ) : (
                     <>

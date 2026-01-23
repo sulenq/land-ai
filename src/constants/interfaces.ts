@@ -172,7 +172,7 @@ export interface Interface__ChatSession extends Interface__CUD {
   id: string;
   title: string;
   createdAt: string;
-  // isStreaming: boolean;
+  isStreaming: boolean;
 }
 export interface Interface__ChatMessage {
   id: string;
@@ -188,7 +188,7 @@ export interface Interface__ChatState {
   session: Interface__ChatSession | null;
   messages: Interface__ChatMessage[];
   totalMessages: number;
-  isStreaming: boolean;
   hasLoadedHistory: boolean;
+  // isStreaming: boolean;
   // isNewSession: boolean;
 }

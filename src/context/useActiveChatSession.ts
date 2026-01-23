@@ -27,7 +27,6 @@ export const DEFAULT_CHAT_STATE: Interface__ChatState = {
   session: null,
   messages: [],
   totalMessages: 0,
-  isStreaming: false,
   hasLoadedHistory: false,
 };
 
