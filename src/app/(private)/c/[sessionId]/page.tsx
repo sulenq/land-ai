@@ -167,7 +167,8 @@ export default function Page() {
     }
   }
 
-  const scrollBottom = useScrollBottom(containerRef, [data]);
+  const scrollBottom = useScrollBottom(containerRef);
+  // console.debug(scrollBottom);
 
   // Update has loaded history on session change
   useEffect(() => {

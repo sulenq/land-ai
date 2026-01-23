@@ -1,25 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect, useCallback } from "react";
 
 export function useScrollBottom(
   containerRef: React.RefObject<HTMLElement | null>,
-  dependencies: any[] = [],
 ) {
   const [scrollBottom, setScrollBottom] = useState(0);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+  const calculate = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    setScrollBottom(el.scrollHeight - el.scrollTop - el.clientHeight);
+  }, [containerRef]);
 
-    const handleScroll = () => {
-      const { scrollHeight, scrollTop, clientHeight } = container;
-      setScrollBottom(scrollHeight - scrollTop - clientHeight);
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    calculate();
+
+    el.addEventListener("scroll", calculate);
+
+    const mo = new MutationObserver(calculate);
+    mo.observe(el, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => {
+      el.removeEventListener("scroll", calculate);
+      mo.disconnect();
     };
-
-    container.addEventListener("scroll", handleScroll);
-    handleScroll(); // initial update
-
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [containerRef, ...dependencies]);
+  }, [calculate]);
 
   return scrollBottom;
 }
