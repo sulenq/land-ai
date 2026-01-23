@@ -1,7 +1,8 @@
 import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
 import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { getAccessToken } from "@/utils/auth";
 
-export function startChatStream({
+export async function startChatStream({
   sessionId,
   prompt,
 }: {
@@ -11,79 +12,76 @@ export function startChatStream({
   const controller = new AbortController();
   const signal = controller.signal;
 
-  const store = useActiveChatSession.getState();
-  const messageId = store.startAssistantStreaming();
+  const { appendMessage, appendStreamingChunk, finishStreaming, setSession } =
+    useActiveChatSession.getState();
 
-  fetch(CHAT_API_CHAT_AI_STREAM, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sessionId, prompt }),
-    signal,
-  })
-    .then(async (res) => {
-      if (!res.body) throw new Error("Stream not supported");
+  const messageId = crypto.randomUUID();
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
+  appendMessage({
+    id: messageId,
+    role: "assistant",
+    content: "",
+    isStreaming: true,
+  });
 
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}${CHAT_API_CHAT_AI_STREAM}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAccessToken()}`,
+      },
+      body: JSON.stringify({ sessionId, prompt }),
+      signal,
+    },
+  );
 
-        buffer += decoder.decode(value, { stream: true });
+  if (!res.body) throw new Error("Stream not supported");
 
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
 
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
 
-          let payload;
-          try {
-            payload = JSON.parse(trimmed);
-          } catch {
-            continue;
-          }
+      const text = decoder.decode(value, { stream: true });
+      const lines = text.split("\n").filter(Boolean);
 
-          if (payload.type === "meta") {
-            store.setSession({
-              id: payload.sessionId,
-              title: payload.title,
-              createdAt: new Date().toISOString(),
-              isStreaming: true,
-            });
+      for (const line of lines) {
+        const payload = JSON.parse(line);
 
-            const messages = store.activeChat.messages;
-            const lastIndex = messages.length - 1;
+        if (payload.type === "meta") {
+          setSession({
+            id: payload.sessionId,
+            title: payload.title,
+            createdAt: new Date().toISOString(),
+            isStreaming: true,
+          });
 
-            if (lastIndex >= 0 && payload.sources) {
-              store.setMessages(
-                messages.map((m, idx) =>
-                  idx === lastIndex ? { ...m, sources: payload.sources } : m,
-                ),
-              );
-            }
-          }
+          useActiveChatSession.setState((state) => ({
+            activeChat: {
+              ...state.activeChat,
+              messages: state.activeChat.messages.map((m) =>
+                m.id === messageId ? { ...m, sources: payload.sources } : m,
+              ),
+            },
+          }));
+        }
 
-          if (payload.type === "chunk" && payload.content) {
-            store.appendStreamingChunk({
-              messageId,
-              chunk: payload.content,
-            });
-          }
+        if (payload.type === "chunk") {
+          appendStreamingChunk({
+            messageId,
+            chunk: payload.content,
+          });
         }
       }
-    })
-    .catch((err) => {
-      if (err.name !== "AbortError") {
-        throw err;
-      }
-    })
-    .finally(() => {
-      store.finishStreaming();
-    });
+    }
+  } finally {
+    finishStreaming();
+  }
 
   return controller;
 }
