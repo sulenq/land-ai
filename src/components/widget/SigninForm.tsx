@@ -273,7 +273,7 @@ export const SigninForm = (props: Props) => {
       m={"auto"}
       w={"full"}
       maxW={"380px"}
-      p={6}
+      p={4}
       gap={4}
       rounded={themeConfig.radii.container}
       {...restProps}

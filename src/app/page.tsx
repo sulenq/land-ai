@@ -8,45 +8,23 @@ import BrandWatermark from "@/components/widget/BrandWatermark";
 import { Logo } from "@/components/widget/Logo";
 import { RandomQuote } from "@/components/widget/RandomQuote";
 import { SigninForm } from "@/components/widget/SigninForm";
+import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import { Box, HStack, SimpleGrid } from "@chakra-ui/react";
 
 export default function Page() {
   // Contexts
+  const { l } = useLang();
   const { themeConfig } = useThemeConfig();
 
   // Hooks
   const iss = useIsSmScreenWidth();
 
   return (
-    <CContainer
-      h={"100dvh"}
-      align={"start"}
-      bg={themeConfig.primaryColor}
-      overflowY={"auto"}
-    >
-      <CContainer pos={"relative"} overflow={"clip"}>
-        <>
-          <Box
-            w={"50%"}
-            aspectRatio={1.2}
-            rounded={"40%"}
-            bg={`${themeConfig.colorPalette}.300`}
-            animation={"rotate360 5s linear infinite"}
-          />
-          <Box
-            w={"50%"}
-            aspectRatio={1.2}
-            rounded={"40%"}
-            bg={`${themeConfig.colorPalette}.600`}
-            animation={"rotate360 5s linear infinite"}
-          />
-        </>
-      </CContainer>
-
+    <CContainer h={"100dvh"} align={"start"} bg={"body"} overflowY={"auto"}>
       <SimpleGrid
-        p={[2, null, 4]}
+        p={2}
         columns={[1, null, 2]}
         flex={1}
         w={"full"}
@@ -54,56 +32,82 @@ export default function Page() {
         overflowY={"auto"}
         pos={"absolute"}
         zIndex={10}
-        bg={"blackAlpha.300"}
-        backdropFilter={"blur(70px)"}
+        // backdropFilter={"blur(100px)"}
         gap={4}
       >
         {!iss && (
           <CContainer
-            bgPos={"center"}
-            bgSize={"cover"}
-            pos={"relative"}
-            overflow={"clip"}
+            justify={"space-between"}
             rounded={themeConfig.radii.container}
             maxH={"calc(100dvh - 16px)"}
-            justify={"space-between"}
-            gap={8}
-            p={4}
+            overflow={"clip"}
+            pos={"relative"}
           >
-            <Logo color={"white"} />
+            <CContainer h={"full"} bg={`${themeConfig.colorPalette}.900`}>
+              <CContainer flex={1} pos={"relative"}>
+                <Box
+                  w="full"
+                  h="full"
+                  aspectRatio={1}
+                  bg={`${themeConfig.colorPalette}.500`}
+                  borderRadius="60% 40% 70% 30% / 50% 60% 40% 70%"
+                  animation="rotate360 5s linear infinite"
+                  pos={"absolute"}
+                  bottom={"-20%"}
+                  right={"-20%"}
+                />
 
-            <CContainer color={"light"}>
-              <RandomQuote
-                fontSize={"lg"}
-                fontWeight={"medium"}
-                maxW={"500px"}
-                mb={4}
-              />
+                <Box
+                  w="80%"
+                  h="80%"
+                  aspectRatio={1}
+                  bg={`${themeConfig.colorPalette}.800`}
+                  borderRadius="30% 70% 40% 60% / 60% 40% 70% 30%"
+                  animation="rotate360 7s linear infinite"
+                  pos={"absolute"}
+                  bottom={"-20%"}
+                  left={"-20%"}
+                />
 
-              <P>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio
-                magnam laudantium velit repellat assumenda maiores perspiciatis
-                delectus? Quae quo dignissimos tempore labore illo sapiente
-                voluptates, inventore, alias repudiandae laboriosam voluptatem.
-              </P>
+                <Box
+                  w="40%"
+                  h="40%"
+                  aspectRatio={1}
+                  bg={`${themeConfig.colorPalette}.600`}
+                  borderRadius="60% 40% 70% 30% / 100% 60% 40% 70%"
+                  animation="rotate360 5s linear infinite"
+                  pos={"absolute"}
+                  top={"10%"}
+                  left={"-10%"}
+                />
+              </CContainer>
+            </CContainer>
 
-              {/* <P fontSize={"lg"} fontWeight={"medium"}>
-                User these credentials to sign in,
-              </P>
-              <P fontSize={"lg"} fontWeight={"medium"}>
-                Email: super.admin
-              </P>
-              <P fontSize={"lg"} fontWeight={"medium"}>
-                Password: superadmin123
-              </P> */}
+            <CContainer
+              h={"full"}
+              p={5}
+              backdropFilter={"blur(100px)"}
+              pos={"absolute"}
+            >
+              <Logo color={"white"} />
+
+              <CContainer color={"light"} mt={"auto"}>
+                <RandomQuote
+                  fontSize={"lg"}
+                  fontWeight={"medium"}
+                  maxW={"500px"}
+                  mb={4}
+                />
+
+                <P>{l.msg_app_desc}</P>
+              </CContainer>
             </CContainer>
           </CContainer>
         )}
 
         <CContainer
-          p={8}
+          p={4}
           gap={16}
-          overflowY={"auto"}
           bg={"body"}
           rounded={themeConfig.radii.container}
         >

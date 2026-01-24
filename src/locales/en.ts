@@ -258,6 +258,7 @@ const translations = {
   "more_info": "More info",
   "msg_ADM_active": "Adaptive dark mode is active",
   "msg_activate": "The account will be activated again and can be used.",
+  "msg_app_desc": "Land.ai is an AI-powered application for land and land-use consultation and document analysis. It provides two main features: Chat for interactive consultations on land regulations and procedures, and Analysis for structured, regulation-based review of land-related documents.",
   "msg_assistant_response_error": "An error occurred while processing the response. Please try again.",
   "msg_cannot_be_undone": "This action cannot be undone, please be careful.",
   "msg_chrome_permissions_settings_link": "Settings → Privacy & Security → Site Settings → ",
