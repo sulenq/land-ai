@@ -42,7 +42,7 @@ const translations = {
   "all": "All",
   "apply": "Apply",
   "april": "April",
-  "ask_land_ai": "Ask Land.ai (ctrl + Enter to submit)",
+  "ask_land_ai": "Ask Land.ai (Enter to submit)",
   "august": "August",
   "back": "Back",
   "before": "Before",

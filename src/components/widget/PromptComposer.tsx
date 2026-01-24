@@ -17,10 +17,13 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { APP } from "@/constants/_meta";
-import { Props__PromptInput } from "@/constants/props";
+import {
+  Props__ContinueChat,
+  Props__NewChat,
+  Props__PromptInput,
+} from "@/constants/props";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import { useActiveChatSession } from "@/context/useActiveChatSession";
-import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -37,7 +40,7 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, PaperclipIcon, SquareIcon } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 
@@ -160,7 +163,8 @@ export const PromptInput = (props: Props__PromptInput) => {
         placeholder={l.ask_land_ai}
         mb={4}
         onKeyUp={(e) => {
-          if (e.ctrlKey && e.key === "Enter") {
+          e.preventDefault();
+          if (e.key === "Enter") {
             onSubmit?.();
           }
         }}
@@ -231,19 +235,15 @@ export const PromptHelperText = (props: TextProps) => {
   );
 };
 
-export const NewPrompt = (props: StackProps) => {
+export const NewPrompt = (props: Props__NewChat) => {
+  // Props
+  const { disabled, ...restProps } = props;
+
   // Contexts
   const { l } = useLang();
-  const prependActiveChatSession = useActiveChatSessions(
-    (s) => s.prependActiveChatSession,
-  );
   const resetActiveChat = useActiveChatSession((s) => s.resetActiveChat);
   const initSession = useActiveChatSession((s) => s.initSession);
-  const setSession = useActiveChatSession((s) => s.setSession);
   const appendMessage = useActiveChatSession((s) => s.appendMessage);
-
-  // Hooks
-  const router = useRouter();
 
   // States
   const formik = useFormik({
@@ -253,37 +253,28 @@ export const NewPrompt = (props: StackProps) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values) => {
-      const sessionId = crypto.randomUUID();
+      console.debug("submit");
 
-      const sessionPlaceholder = {
-        id: sessionId,
-        title: l.new_chat,
-        isStreaming: true,
-        createdAt: new Date().toISOString(),
-      };
-
-      prependActiveChatSession(sessionPlaceholder);
-
+      // Init active Chat
       resetActiveChat();
       initSession();
-      setSession(sessionPlaceholder);
 
+      // Append initial prompt
       appendMessage({
         id: crypto.randomUUID(),
         role: "user",
         content: values.prompt,
       });
 
+      // Call startStream
       startChatStream({
         prompt: values.prompt,
       });
-
-      router.push(`/c/${sessionId}`);
     },
   });
 
   return (
-    <CContainer {...props}>
+    <CContainer {...restProps}>
       <P
         fontSize={"lg"}
         fontWeight={"medium"}
@@ -313,6 +304,7 @@ export const NewPrompt = (props: StackProps) => {
         onSubmit={() => {
           formik.handleSubmit();
         }}
+        disabled={disabled}
       />
 
       <PromptHelperText mt={4} />
@@ -320,7 +312,10 @@ export const NewPrompt = (props: StackProps) => {
   );
 };
 
-export const ContinuePrompt = (props: StackProps) => {
+export const ContinuePrompt = (props: Props__ContinueChat) => {
+  // Props
+  const { disabled, ...restProps } = props;
+
   // Contexts
   const { l } = useLang();
   const activeChat = useActiveChatSession((s) => s.activeChat);
@@ -353,7 +348,7 @@ export const ContinuePrompt = (props: StackProps) => {
   });
 
   return (
-    <CContainer gap={4} {...props}>
+    <CContainer gap={4} {...restProps}>
       <PromptInput
         inputValue={formik.values.prompt}
         onChange={(inputValue) => {
@@ -362,7 +357,7 @@ export const ContinuePrompt = (props: StackProps) => {
         onSubmit={() => {
           formik.handleSubmit();
         }}
-        disabled={activeChat.session?.isStreaming}
+        disabled={disabled || activeChat.session?.isStreaming}
         abortMode={activeChat.session?.isStreaming}
       />
 

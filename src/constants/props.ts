@@ -32,6 +32,14 @@ import {
   Type__Period,
 } from "./types";
 
+export interface Props__ContinueChat extends StackProps {
+  disabled?: boolean;
+}
+
+export interface Props__NewChat extends StackProps {
+  disabled?: boolean;
+}
+
 export interface Props__UserBubbleChat {
   children: string;
   error?: any;

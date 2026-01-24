@@ -156,8 +156,8 @@ export const upload_file = {
   en: "Upload file",
 };
 export const ask_land_ai = {
-  id: "Tanya Land.ai (ctrl + Enter untuk submit)",
-  en: "Ask Land.ai (ctrl + Enter to submit)",
+  id: "Tanya Land.ai (Enter untuk submit)",
+  en: "Ask Land.ai (Enter to submit)",
 };
 export const example_UI = {
   id: "Contoh UI",

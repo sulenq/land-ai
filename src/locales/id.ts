@@ -42,7 +42,7 @@ const translations = {
   "all": "Semua",
   "apply": "Terapkan",
   "april": "April",
-  "ask_land_ai": "Tanya Land.ai (ctrl + Enter untuk submit)",
+  "ask_land_ai": "Tanya Land.ai (Enter untuk submit)",
   "august": "Agustus",
   "back": "Kembali",
   "before": "Sebelum",

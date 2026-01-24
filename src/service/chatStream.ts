@@ -50,21 +50,20 @@ export async function startChatStream({
       if (done) break;
 
       const text = decoder.decode(value, { stream: true });
+      // Divide NDJSON
       const lines = text.split("\n").filter(Boolean);
 
       for (const line of lines) {
         const payload = JSON.parse(line);
 
         if (payload.type === "meta") {
-          // replace sessionId url
-          window.history.replaceState(null, "", `/c/${payload.sessionId}`);
-
           // Update active chat session
           setSession({
             id: payload.sessionId,
             title: payload.title,
-            createdAt: payload.createdAt,
             isStreaming: true,
+            controller: controller,
+            createdAt: payload.createdAt,
           });
 
           // Rename active session in chat session list

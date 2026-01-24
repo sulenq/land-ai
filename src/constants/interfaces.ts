@@ -172,6 +172,7 @@ export interface Interface__ChatSession extends Interface__CUD {
   id: string;
   title: string;
   isStreaming: boolean;
+  controller: AbortController;
   createdAt: string;
 }
 export interface Interface__ChatMessage {
