@@ -1,15 +1,19 @@
+import { Interface__ChatSession } from "@/constants/interfaces";
 import { ButtonProps, ConditionalValue, MenuItemProps } from "@chakra-ui/react";
 
 export type Type__ChatStreamEvent =
   | {
       type: "meta";
+      session: Interface__ChatSession;
       sessionId: string;
       title: string;
+      createdAt: string;
       sources?: string[];
     }
   | {
       type: "chunk";
       content: string;
+      sources?: string[];
     };
 
 export type Type__ChartData = Record<string, number | string>;

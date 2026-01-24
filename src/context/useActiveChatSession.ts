@@ -2,7 +2,7 @@ import { create } from "zustand";
 import {
   Interface__ChatState,
   Interface__ChatMessage,
-  Interface__ChatSession,
+  Interface__ContextChatSession,
 } from "@/constants/interfaces";
 
 interface State_Actions {
@@ -11,7 +11,7 @@ interface State_Actions {
   initSession: () => void;
   setActiveChat: (activeChat: Interface__ChatState) => void;
 
-  setSession: (session: Interface__ChatSession | null) => void;
+  setSession: (session: Interface__ContextChatSession | null) => void;
   setMessages: (messages: Interface__ChatMessage[]) => void;
   updateHasLoadedHistory: (value: boolean) => void;
   resetActiveChat: () => void;

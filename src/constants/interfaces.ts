@@ -27,21 +27,17 @@ export interface Interface__AuthLog extends Interface__CUD {
 }
 export interface Interface__User extends Interface__CUD {
   id: string;
+  role: number;
   avatar: Interface__StorageFile[];
   name: string;
   email: string;
-  role: Interface__Role;
-  accountStatus: string;
-  // optional
-  gender: boolean | null; // 1 male, 0 female
-  phoneNumber: string | null;
-  birthDate: string | null;
-  address: string | null;
-  // audit timestamps
-  registeredAt: string;
-  lastLogin: string | null;
-  lastChangePasswordAt: string | null;
-  deactiveAt: string | null;
+  isActive: boolean;
+
+  lastLogin: string;
+  lastChangePassword: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
 }
 export interface Interface__Role {
   id: string;
@@ -171,9 +167,13 @@ export interface Interface__SelectOption {
 export interface Interface__ChatSession extends Interface__CUD {
   id: string;
   title: string;
+  user?: Interface__User;
+  isProtected: boolean;
   isStreaming: boolean;
-  controller: AbortController;
   createdAt: string;
+}
+export interface Interface__ContextChatSession extends Interface__ChatSession {
+  controller: AbortController;
 }
 export interface Interface__ChatMessage {
   id: string;
@@ -186,7 +186,7 @@ export interface Interface__ChatMessage {
   createdAt?: string;
 }
 export interface Interface__ChatState {
-  session: Interface__ChatSession | null;
+  session: Interface__ContextChatSession | null;
   messages: Interface__ChatMessage[];
   totalMessages: number;
   hasLoadedHistory: boolean;

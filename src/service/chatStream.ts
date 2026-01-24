@@ -1,4 +1,5 @@
 import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
+import { Type__ChatStreamEvent } from "@/constants/types";
 import { useActiveChatSession } from "@/context/useActiveChatSession";
 import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import { getAccessToken } from "@/utils/auth";
@@ -54,20 +55,21 @@ export async function startChatStream({
       const lines = text.split("\n").filter(Boolean);
 
       for (const line of lines) {
-        const payload = JSON.parse(line);
+        const payload: Type__ChatStreamEvent = JSON.parse(line);
 
         if (payload.type === "meta") {
           // Update active chat session
           setSession({
-            id: payload.sessionId,
-            title: payload.title,
+            id: payload.session.id || payload.sessionId,
+            title: payload.session.title || payload.title,
+            isProtected: payload.session.isProtected,
             isStreaming: true,
             controller: controller,
-            createdAt: payload.createdAt,
+            createdAt: payload.session.createdAt,
           });
 
           // Rename active session in chat session list
-          renameActiveChatSession(sessionId as string, payload.title);
+          renameActiveChatSession(payload.sessionId, payload.title);
 
           // Update first assistant message
           useActiveChatSession.setState((state) => ({
