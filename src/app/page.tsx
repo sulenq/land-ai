@@ -43,7 +43,7 @@ export default function Page() {
             overflow={"clip"}
             pos={"relative"}
           >
-            <CContainer h={"full"} bg={`${themeConfig.colorPalette}.900`}>
+            <CContainer h={"full"} bg={`${themeConfig.colorPalette}.800`}>
               <CContainer flex={1} pos={"relative"}>
                 <Box
                   w="full"
@@ -61,7 +61,7 @@ export default function Page() {
                   w="80%"
                   h="80%"
                   aspectRatio={1}
-                  bg={`${themeConfig.colorPalette}.800`}
+                  bg={`${themeConfig.colorPalette}.700`}
                   borderRadius="30% 70% 40% 60% / 60% 40% 70% 30%"
                   animation="rotate360 7s linear infinite"
                   pos={"absolute"}
