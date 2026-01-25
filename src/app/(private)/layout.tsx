@@ -59,8 +59,8 @@ import {
   MOBILE_POPOVER_MAIN_AXIS,
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
-import { useChatSessions } from "@/context/useChatSessions";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
+import { useChatSessions } from "@/context/useChatSessions";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -413,7 +413,7 @@ const DesktopLayout = (props: Props__Layout) => {
       <CContainer
         flexShrink={0}
         w={navsExpanded ? "250px" : "60px"}
-        bg={navsExpanded ? "bgContent" : DESKTOP_NAVS_BG}
+        bg={DESKTOP_NAVS_BG}
         borderColor={"border.muted"}
         transition={"200ms"}
       >
