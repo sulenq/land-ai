@@ -34,10 +34,57 @@ import useDataState from "@/hooks/useDataState";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
-import { HStack, StackProps } from "@chakra-ui/react";
+import { HStack, MenuItemProps, StackProps } from "@chakra-ui/react";
 import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+
+interface Props__OptionItem extends MenuItemProps {
+  sessionId: string;
+}
+
+const Rename = (props: Props__OptionItem) => {
+  // Props
+  const { sessionId, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId(`rename_${sessionId}`),
+  );
+
+  return (
+    <>
+      <MenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpen();
+        }}
+        {...restProps}
+      >
+        <AppIcon icon={PenIcon} /> {l.rename}
+      </MenuItem>
+
+      <DisclosureRoot open={isOpen} lazyLoad size={"xs"}>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={`${l.rename}`} />
+          </DisclosureHeader>
+
+          <DisclosureBody>
+            <form></form>
+          </DisclosureBody>
+
+          <DisclosureFooter>
+            <BackButton />
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
+  );
+};
 
 export const ChatSessions = (props: any) => {
   // Props
@@ -114,9 +161,7 @@ export const ChatSessions = (props: any) => {
                 </MenuTrigger>
 
                 <MenuContent zIndex={"modal"}>
-                  <MenuItem value="rename">
-                    <AppIcon icon={PenIcon} /> {l.rename}
-                  </MenuItem>
+                  <Rename value="rename" sessionId={chat.id} />
 
                   <MenuItem value="protect">
                     <AppIcon icon={ShieldIcon} /> {l.protect}

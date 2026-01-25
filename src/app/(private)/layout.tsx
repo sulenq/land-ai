@@ -406,7 +406,6 @@ const DesktopLayout = (props: Props__Layout) => {
       align={"stretch"}
       gap={0}
       h={"100dvh"}
-      bg={DESKTOP_NAVS_BG}
       overflowY={"auto"}
       {...restProps}
     >
@@ -414,10 +413,9 @@ const DesktopLayout = (props: Props__Layout) => {
       <CContainer
         flexShrink={0}
         w={navsExpanded ? "250px" : "60px"}
-        transition={"200ms"}
-        // py={3}
-        // borderRight={"1px solid"}
+        bg={navsExpanded ? "bgContent" : DESKTOP_NAVS_BG}
         borderColor={"border.muted"}
+        transition={"200ms"}
       >
         {/* Logo & Sidebar Toggle */}
         <CContainer
