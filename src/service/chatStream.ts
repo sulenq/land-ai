@@ -1,6 +1,6 @@
 import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
 import { Type__ChatStreamEvent } from "@/constants/types";
-import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { useActiveChat } from "@/context/useActiveChat";
 import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import { getAccessToken } from "@/utils/auth";
 
@@ -15,8 +15,8 @@ export async function startChatStream({
   const signal = controller.signal;
 
   const { appendMessage, appendStreamingChunk, finishStreaming, setSession } =
-    useActiveChatSession.getState();
-  const { renameActiveChatSession } = useActiveChatSessions.getState();
+    useActiveChat.getState();
+  const { prependActiveChatSession } = useActiveChatSessions.getState();
 
   const messageId = crypto.randomUUID();
 
@@ -60,19 +60,25 @@ export async function startChatStream({
         if (payload.type === "meta") {
           // Update active chat session
           setSession({
-            id: payload.session.id || payload.sessionId,
-            title: payload.session.title || payload.title,
-            isProtected: payload.session.isProtected,
+            id: payload?.session?.id || payload.sessionId,
+            title: payload?.session?.title || payload.title,
+            isProtected: payload?.session?.isProtected,
             isStreaming: true,
             controller: controller,
-            createdAt: payload.session.createdAt,
+            createdAt: payload?.session?.createdAt,
           });
 
-          // Rename active session in chat session list
-          renameActiveChatSession(payload.sessionId, payload.title);
+          // Add new chat to active sessions - prepend
+          prependActiveChatSession({
+            id: payload?.session?.id || payload.sessionId,
+            title: payload?.session?.title || payload.title,
+            isProtected: payload?.session?.isProtected,
+            isStreaming: true,
+            createdAt: payload?.session?.createdAt,
+          });
 
           // Update first assistant message
-          useActiveChatSession.setState((state) => ({
+          useActiveChat.setState((state) => ({
             activeChat: {
               ...state.activeChat,
               messages: state.activeChat.messages.map((m) =>

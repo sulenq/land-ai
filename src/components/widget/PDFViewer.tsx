@@ -58,7 +58,6 @@ const PageJump = (props: any) => {
   // Utils
   function handleJumpPage(gotoPage: number | null) {
     if (gotoPage && gotoPage > 0 && gotoPage <= numPages) {
-      console.debug(gotoPage);
       setPageNumber(gotoPage);
     }
   }

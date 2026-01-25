@@ -4,7 +4,7 @@ import Spinner from "@/components/ui/spinner";
 import { UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
-import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import { formatDate } from "@/utils/formatter";
 import { HStack } from "@chakra-ui/react";
@@ -12,7 +12,7 @@ import { HStack } from "@chakra-ui/react";
 export const InitialPrompted = () => {
   // Contexts
   const { l } = useLang();
-  const activeChat = useActiveChatSession((s) => s.activeChat);
+  const activeChat = useActiveChat((s) => s.activeChat);
 
   // States
   const userInitialPrompt = activeChat.messages?.[0].content;

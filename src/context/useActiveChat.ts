@@ -14,6 +14,7 @@ interface State_Actions {
   setSession: (session: Interface__ContextChatSession | null) => void;
   setMessages: (messages: Interface__ChatMessage[]) => void;
   updateHasLoadedHistory: (value: boolean) => void;
+  updateIsNewChat: (value: boolean) => void;
   resetActiveChat: () => void;
 
   appendMessage: (message: Interface__ChatMessage) => void;
@@ -27,10 +28,12 @@ export const DEFAULT_CHAT_STATE: Interface__ChatState = {
   session: null,
   messages: [],
   totalMessages: 0,
+  isStreaming: false,
+  isNewChat: false,
   hasLoadedHistory: false,
 };
 
-export const useActiveChatSession = create<State_Actions>((set) => ({
+export const useActiveChat = create<State_Actions>((set) => ({
   activeChat: DEFAULT_CHAT_STATE,
 
   initSession: () =>
@@ -38,6 +41,7 @@ export const useActiveChatSession = create<State_Actions>((set) => ({
       activeChat: {
         ...state.activeChat,
         isStreaming: true,
+        isNewChat: true,
         hasLoadedHistory: true,
       },
     })),
@@ -70,6 +74,14 @@ export const useActiveChatSession = create<State_Actions>((set) => ({
       activeChat: {
         ...state.activeChat,
         hasLoadedHistory: value,
+      },
+    })),
+
+  updateIsNewChat: (value) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        isNewChat: value,
       },
     })),
 

@@ -23,7 +23,7 @@ import {
   Props__PromptInput,
 } from "@/constants/props";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
-import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import usePromptInput from "@/context/usePromptInput";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -111,7 +111,7 @@ export const PromptInput = (props: Props__PromptInput) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const setStyle = usePromptInput((s) => s.setStyle);
-  const finishStreaming = useActiveChatSession((s) => s.finishStreaming);
+  const finishStreaming = useActiveChat((s) => s.finishStreaming);
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -162,14 +162,14 @@ export const PromptInput = (props: Props__PromptInput) => {
         border={"none"}
         placeholder={l.ask_land_ai}
         mb={4}
-        onKeyUp={(e) => {
-          e.preventDefault();
-          if (e.key === "Enter") {
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
             onSubmit?.();
           }
         }}
         maxChar={maxChar}
-        disabled={disabled}
+        disabled={loading || disabled}
       />
 
       <HStack wrap={"wrap"} justify={"space-between"}>
@@ -241,9 +241,9 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   // Contexts
   const { l } = useLang();
-  const resetActiveChat = useActiveChatSession((s) => s.resetActiveChat);
-  const initSession = useActiveChatSession((s) => s.initSession);
-  const appendMessage = useActiveChatSession((s) => s.appendMessage);
+  const resetActiveChat = useActiveChat((s) => s.resetActiveChat);
+  const initSession = useActiveChat((s) => s.initSession);
+  const appendMessage = useActiveChat((s) => s.appendMessage);
 
   // States
   const formik = useFormik({
@@ -253,8 +253,6 @@ export const NewPrompt = (props: Props__NewChat) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values) => {
-      console.debug("submit");
-
       // Init active Chat
       resetActiveChat();
       initSession();
@@ -319,11 +317,11 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
 
   // Contexts
   const { l } = useLang();
-  const activeChat = useActiveChatSession((s) => s.activeChat);
+  const activeChat = useActiveChat((s) => s.activeChat);
 
   // Hooks
   const { sessionId } = useParams();
-  const appendMessage = useActiveChatSession((s) => s.appendMessage);
+  const appendMessage = useActiveChat((s) => s.appendMessage);
 
   // States
   const formik = useFormik({

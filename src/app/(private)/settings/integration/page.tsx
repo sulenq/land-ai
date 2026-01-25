@@ -50,8 +50,6 @@ const APIKeys = (props: any) => {
       tinyMceToken: yup.string().required(l.msg_required_form),
     }),
     onSubmit: (values) => {
-      // console.debug(values);
-
       const config = {
         url: ``,
         method: "PATCH",

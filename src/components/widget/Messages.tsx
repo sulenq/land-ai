@@ -6,7 +6,7 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
 import { Interface__ChatMessage } from "@/constants/interfaces";
-import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { formatDate } from "@/utils/formatter";
@@ -23,7 +23,7 @@ export const Messages = (props: Props__Messages) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const activeChat = useActiveChatSession((s) => s.activeChat);
+  const activeChat = useActiveChat((s) => s.activeChat);
 
   // States
   const lastMessage = messages[messages.length - 1];

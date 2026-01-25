@@ -348,9 +348,6 @@ const MobileLayout = (props: Props__Layout) => {
             <VStack
               flex={1}
               color={MOBILE_NAVS_COLOR}
-              onClick={() => {
-                console.debug("Jembot");
-              }}
               cursor={"pointer"}
               gap={1}
             >

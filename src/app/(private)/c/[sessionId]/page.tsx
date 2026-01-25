@@ -11,7 +11,7 @@ import { Messages } from "@/components/widget/Messages";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
-import { useActiveChatSession } from "@/context/useActiveChatSession";
+import { useActiveChat } from "@/context/useActiveChat";
 import { useActiveChatSessions } from "@/context/useActiveChatSessions";
 import usePromptInput from "@/context/usePromptInput";
 import useDataState from "@/hooks/useDataState";
@@ -24,13 +24,12 @@ import { useEffect, useRef } from "react";
 export default function Page() {
   // Contexts
   const promptInputStyle = usePromptInput((s) => s.style);
-  const activeChat = useActiveChatSession((s) => s.activeChat);
-  const setMessages = useActiveChatSession((s) => s.setMessages);
-  const setSession = useActiveChatSession((s) => s.setSession);
-  const resetActiveChat = useActiveChatSession((s) => s.resetActiveChat);
-  const updateHasLoadedHistory = useActiveChatSession(
-    (s) => s.updateHasLoadedHistory,
-  );
+  const activeChat = useActiveChat((s) => s.activeChat);
+  const setMessages = useActiveChat((s) => s.setMessages);
+  const setSession = useActiveChat((s) => s.setSession);
+  const resetActiveChat = useActiveChat((s) => s.resetActiveChat);
+  const updateHasLoadedHistory = useActiveChat((s) => s.updateHasLoadedHistory);
+  const updateIsNewChat = useActiveChat((s) => s.updateIsNewChat);
   const removeActiveChatSession = useActiveChatSessions(
     (s) => s.removeActiveChatSession,
   );
@@ -63,6 +62,7 @@ export default function Page() {
 
   // Update has loaded history on session change
   useEffect(() => {
+    updateIsNewChat(false);
     if (activeChatSessionId !== sessionId) {
       updateHasLoadedHistory(false);
       resetActiveChat();

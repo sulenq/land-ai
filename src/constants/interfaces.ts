@@ -189,7 +189,8 @@ export interface Interface__ChatState {
   session: Interface__ContextChatSession | null;
   messages: Interface__ChatMessage[];
   totalMessages: number;
+  isStreaming: boolean;
+  isNewChat: boolean;
   hasLoadedHistory: boolean;
-  // isStreaming: boolean;
   // isNewSession: boolean;
 }
