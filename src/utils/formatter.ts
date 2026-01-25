@@ -402,7 +402,7 @@ export function buildPrivateNavsFromChatSessions(
         {
           icon: FileTextIcon,
           labelKey: "navs.document_analysis",
-          path: "/document-analysis",
+          path: "/da",
           allowedRoles: [],
         },
       ],
