@@ -8,6 +8,8 @@ export const AUTH_API_SIGNOUT = `/api/logout`;
 export const CHAT_API_CHAT_AI_INDEX = `/api/ai/chat/index`;
 export const CHAT_API_CHAT_AI_STREAM = `/api/ai/chat-stream`;
 export const CHAT_API_SHOW_CHAT = `/api/ai/chat-stream`; // + /:id
+export const CHAT_API_RENAME = `/api/ai/chat-stream/rename`;
+export const CHAT_API_PROTECT = `/api/ai/chat-stream/protect`;
 export const CHAT_API_DELETE = `/api/ai/chat-stream/delete`;
 
 // Docs Analysis
