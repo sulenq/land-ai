@@ -9,18 +9,23 @@ import { useEffect } from "react";
 export default function Page() {
   // Contexts
   const activeChat = useActiveChatSession((s) => s.activeChat);
-  const isInitialPrompted = activeChat.messages?.length === 1;
-  const sessionId = activeChat.session?.id;
+  const resetActiveChat = useActiveChatSession((s) => s.resetActiveChat);
 
   // Hooks
   const router = useRouter();
 
+  // States
+  const isInitialPrompted = activeChat.messages?.length === 1;
+  const sessionId = activeChat.session?.id;
+
   // Reroute to new chat session on sessionId ready
   useEffect(() => {
-    if (sessionId) {
+    if (isInitialPrompted && sessionId) {
       router.push(`/c/${sessionId}`);
+    } else {
+      resetActiveChat();
     }
-  }, [sessionId]);
+  }, [isInitialPrompted, sessionId]);
 
   return (
     <PageContainer p={4}>
