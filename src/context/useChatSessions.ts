@@ -12,7 +12,7 @@ interface State_Actions {
   clearActiveChatSessions: () => void;
 }
 
-export const useActiveChatSessions = create<State_Actions>((set) => ({
+export const useChatSessions = create<State_Actions>((set) => ({
   activeChatSessions: null,
 
   setActiveChatSessions: (chatSessions) =>

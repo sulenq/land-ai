@@ -12,7 +12,7 @@ import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { useActiveChat } from "@/context/useActiveChat";
-import { useActiveChatSessions } from "@/context/useActiveChatSessions";
+import { useChatSessions } from "@/context/useChatSessions";
 import usePromptInput from "@/context/usePromptInput";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
@@ -30,7 +30,7 @@ export default function Page() {
   const resetActiveChat = useActiveChat((s) => s.resetActiveChat);
   const updateHasLoadedHistory = useActiveChat((s) => s.updateHasLoadedHistory);
   const updateIsNewChat = useActiveChat((s) => s.updateIsNewChat);
-  const removeActiveChatSession = useActiveChatSessions(
+  const removeActiveChatSession = useChatSessions(
     (s) => s.removeActiveChatSession,
   );
 

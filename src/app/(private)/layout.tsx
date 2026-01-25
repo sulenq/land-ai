@@ -59,7 +59,7 @@ import {
   MOBILE_POPOVER_MAIN_AXIS,
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
-import { useActiveChatSessions } from "@/context/useActiveChatSessions";
+import { useChatSessions } from "@/context/useChatSessions";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
@@ -1016,7 +1016,7 @@ const TheApp = (props: Props__Layout) => {
   const { ...restProps } = props;
 
   // Contexts
-  const activeChatSessions = useActiveChatSessions((s) => s.activeChatSessions);
+  const activeChatSessions = useChatSessions((s) => s.activeChatSessions);
 
   // Hooks
   const iss = useIsSmScreenWidth();

@@ -27,7 +27,7 @@ import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
 import { CHAT_API_CHAT_AI_INDEX } from "@/constants/apis";
 import { Interface__ChatSession } from "@/constants/interfaces";
-import { useActiveChatSessions } from "@/context/useActiveChatSessions";
+import { useChatSessions } from "@/context/useChatSessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
@@ -46,10 +46,8 @@ export const ChatSessions = (props: any) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const activeChatSessions = useActiveChatSessions((s) => s.activeChatSessions);
-  const setActiveChatSessions = useActiveChatSessions(
-    (s) => s.setActiveChatSessions,
-  );
+  const activeChatSessions = useChatSessions((s) => s.activeChatSessions);
+  const setActiveChatSessions = useChatSessions((s) => s.setActiveChatSessions);
 
   // Refs
   const searchInputRef = useRef<HTMLInputElement>(null);

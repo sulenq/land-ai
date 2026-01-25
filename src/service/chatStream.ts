@@ -1,7 +1,7 @@
 import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
 import { Type__ChatStreamEvent } from "@/constants/types";
 import { useActiveChat } from "@/context/useActiveChat";
-import { useActiveChatSessions } from "@/context/useActiveChatSessions";
+import { useChatSessions } from "@/context/useChatSessions";
 import { getAccessToken } from "@/utils/auth";
 
 export async function startChatStream({
@@ -16,7 +16,7 @@ export async function startChatStream({
 
   const { appendMessage, appendStreamingChunk, finishStreaming, setSession } =
     useActiveChat.getState();
-  const { prependActiveChatSession } = useActiveChatSessions.getState();
+  const { prependActiveChatSession } = useChatSessions.getState();
 
   const messageId = crypto.randomUUID();
 
