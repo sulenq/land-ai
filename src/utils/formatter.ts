@@ -1,4 +1,9 @@
+import {
+  Interface__ChatSession,
+  Interface__NavItem,
+} from "@/constants/interfaces";
 import { L_MONTHS } from "@/constants/months";
+import { PRIVATE_NAVS } from "@/constants/navs";
 import {
   Type__DateFormat,
   Type__DateVariant,
@@ -6,15 +11,11 @@ import {
 } from "@/constants/types";
 import { L_WEEKDAYS_0_BASED } from "@/constants/weekdays";
 import { getStorage } from "@/utils/client";
+import { isValid, parseISO } from "date-fns";
+import { format as formatTz, toZonedTime } from "date-fns-tz";
+import { MessageSquareIcon } from "lucide-react";
 import { isDateObject } from "./date";
 import { getTimezoneOffsetMs, getUserTimezone } from "./time";
-import { parseISO, isValid } from "date-fns";
-import { toZonedTime, format as formatTz } from "date-fns-tz";
-import { FileTextIcon, MessageSquareIcon, SquarePenIcon } from "lucide-react";
-import {
-  Interface__NavItem,
-  Interface__ChatSession,
-} from "@/constants/interfaces";
 
 export const formatDate = (
   date?: Date | string | undefined,
@@ -377,12 +378,8 @@ export function buildPrivateNavsFromChatSessions(
     {
       groupLabelKey: "main",
       list: [
-        {
-          icon: SquarePenIcon,
-          labelKey: "navs.new_chat",
-          path: "/new-chat",
-          allowedRoles: [],
-        },
+        PRIVATE_NAVS[0].list[0],
+        PRIVATE_NAVS[0].list[1],
         {
           icon: MessageSquareIcon,
           labelKey: "navs.your_chats",
@@ -398,12 +395,6 @@ export function buildPrivateNavsFromChatSessions(
               })),
             },
           ],
-        },
-        {
-          icon: FileTextIcon,
-          labelKey: "navs.document_analysis",
-          path: "/da",
-          allowedRoles: [],
         },
       ],
     },
