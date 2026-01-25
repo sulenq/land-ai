@@ -34,10 +34,12 @@ import {
 
 export interface Props__ContinueChat extends StackProps {
   disabled?: boolean;
+  loading?: boolean;
 }
 
 export interface Props__NewChat extends StackProps {
   disabled?: boolean;
+  loading?: boolean;
 }
 
 export interface Props__UserBubbleChat {

@@ -237,7 +237,7 @@ export const PromptHelperText = (props: TextProps) => {
 
 export const NewPrompt = (props: Props__NewChat) => {
   // Props
-  const { disabled, ...restProps } = props;
+  const { disabled, loading, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -305,6 +305,7 @@ export const NewPrompt = (props: Props__NewChat) => {
           formik.handleSubmit();
         }}
         disabled={disabled}
+        loading={loading}
       />
 
       <PromptHelperText mt={4} />
@@ -314,7 +315,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
 export const ContinuePrompt = (props: Props__ContinueChat) => {
   // Props
-  const { disabled, ...restProps } = props;
+  const { disabled, loading, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -359,6 +360,7 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
         }}
         disabled={disabled || activeChat.session?.isStreaming}
         abortMode={activeChat.session?.isStreaming}
+        loading={loading}
       />
 
       <PromptHelperText />
