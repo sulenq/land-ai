@@ -30,8 +30,8 @@ export default function Page() {
   const resetActiveChat = useActiveChat((s) => s.resetActiveChat);
   const updateHasLoadedHistory = useActiveChat((s) => s.updateHasLoadedHistory);
   const updateIsNewChat = useActiveChat((s) => s.updateIsNewChat);
-  const removeActiveChatSession = useChatSessions(
-    (s) => s.removeActiveChatSession,
+  const removeFromChatSessions = useChatSessions(
+    (s) => s.removeFromChatSessions,
   );
 
   // Refs
@@ -83,7 +83,7 @@ export default function Page() {
   // Handle 404 - redirect and remove session
   useEffect(() => {
     if (status === 404) {
-      removeActiveChatSession(sessionId as string);
+      removeFromChatSessions(sessionId as string);
       router.push("/new-chat");
     }
   }, [status]);

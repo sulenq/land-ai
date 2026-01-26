@@ -65,7 +65,7 @@ const ActivityLog = () => {
     pagination,
     page,
     setPage,
-  } = useDataState<Interface__ActivityLog[]>({
+  } = useDataState<any[]>({
     initialData: dummyAllActivityLogs,
     url: ``,
     dataResource: false,

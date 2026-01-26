@@ -6,10 +6,10 @@ interface State_Actions {
   setActiveChatSessions: (
     chatSessions: State_Actions["activeChatSessions"],
   ) => void;
-  renameActiveChatSession: (sessionId: string, title: string) => void;
-  prependActiveChatSession: (session: Interface__ChatSession) => void;
-  removeActiveChatSession: (sessionId: string) => void;
-  clearActiveChatSessions: () => void;
+  renameChatSession: (sessionId: string, title: string) => void;
+  prependToChatSessions: (session: Interface__ChatSession) => void;
+  removeFromChatSessions: (sessionId: string) => void;
+  clearChatSessions: () => void;
 }
 
 export const useChatSessions = create<State_Actions>((set) => ({
@@ -18,7 +18,7 @@ export const useChatSessions = create<State_Actions>((set) => ({
   setActiveChatSessions: (chatSessions) =>
     set({ activeChatSessions: chatSessions }),
 
-  prependActiveChatSession: (session) =>
+  prependToChatSessions: (session) =>
     set((state) => {
       if (!state.activeChatSessions) {
         return { activeChatSessions: [session] };
@@ -33,7 +33,7 @@ export const useChatSessions = create<State_Actions>((set) => ({
       };
     }),
 
-  renameActiveChatSession: (sessionId, title) =>
+  renameChatSession: (sessionId, title) =>
     set((state) => {
       if (!state.activeChatSessions) {
         return { activeChatSessions: null };
@@ -46,7 +46,7 @@ export const useChatSessions = create<State_Actions>((set) => ({
       };
     }),
 
-  removeActiveChatSession: (sessionId) =>
+  removeFromChatSessions: (sessionId) =>
     set((state) => {
       if (!state.activeChatSessions) {
         return { activeChatSessions: null };
@@ -61,5 +61,5 @@ export const useChatSessions = create<State_Actions>((set) => ({
       };
     }),
 
-  clearActiveChatSessions: () => set({ activeChatSessions: null }),
+  clearChatSessions: () => set({ activeChatSessions: null }),
 }));

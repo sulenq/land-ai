@@ -147,6 +147,10 @@ export const protect = {
   id: "Lindungi",
   en: "Protect",
 };
+export const unprotect = {
+  id: "Buka lindungan",
+  en: "Unprotect",
+};
 export const your_chats = {
   id: "Obrolan Anda",
   en: "Your Chats",
@@ -1029,9 +1033,17 @@ export const msg_cannot_be_undone = {
   id: "Aksi ini tidak dapat dibatalkan, harap hati-hati.",
   en: "This action cannot be undone, please be careful.",
 };
+export const msg_toggle_protect_session = {
+  id: "Status perlindungan sesi chat ini akan diubah. Saat dilindungi, sesi tidak dapat dihapus. Saat perlindungan dimatikan, sesi dapat dihapus kembali.",
+  en: "The protection status of this chat session will be toggled. When protected, the session cannot be deleted. When unprotected, it can be deleted again.",
+};
 export const msg_soft_delete = {
   id: "Data akan disembunyikan dan bisa dikembalikan nanti.",
   en: "Data will be hidden but can be restored later.",
+};
+export const msg_perma_delete = {
+  id: "Data akan dihapus secara permanen.",
+  en: "Data will be permanently deleted.",
 };
 export const msg_deactivate = {
   id: "Akun akan dinonaktifkan dan tidak bisa digunakan sementara.",

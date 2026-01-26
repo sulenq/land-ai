@@ -44,7 +44,7 @@ export const MenuTrigger = forwardRef<HTMLButtonElement, MenuTriggerProps>(
         {children}
       </ChakraMenu.Trigger>
     );
-  }
+  },
 );
 export interface MenuTriggerItemProps extends ChakraMenu.ItemProps {
   startIcon?: React.ReactNode;
@@ -66,7 +66,7 @@ export const MenuTriggerItem = forwardRef<HTMLDivElement, MenuTriggerItemProps>(
         <LuChevronRight />
       </ChakraMenu.TriggerItem>
     );
-  }
+  },
 );
 
 interface MenuContentProps extends ChakraMenu.ContentProps {
@@ -101,7 +101,7 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(
         </ChakraMenu.Positioner>
       </Portal>
     );
-  }
+  },
 );
 
 export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
@@ -130,7 +130,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
         </ChakraMenu.Item>
       </CContainer>
     );
-  }
+  },
 );
 
 export const MenuArrow = forwardRef<HTMLDivElement, ChakraMenu.ArrowProps>(
@@ -140,7 +140,7 @@ export const MenuArrow = forwardRef<HTMLDivElement, ChakraMenu.ArrowProps>(
         <ChakraMenu.ArrowTip />
       </ChakraMenu.Arrow>
     );
-  }
+  },
 );
 
 export const MenuCheckboxItem = forwardRef<

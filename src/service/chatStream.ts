@@ -16,7 +16,7 @@ export async function startChatStream({
 
   const { appendMessage, appendStreamingChunk, finishStreaming, setSession } =
     useActiveChat.getState();
-  const { prependActiveChatSession } = useChatSessions.getState();
+  const { prependToChatSessions } = useChatSessions.getState();
 
   const messageId = crypto.randomUUID();
 
@@ -69,7 +69,7 @@ export async function startChatStream({
           });
 
           // Add new chat to active sessions - prepend
-          prependActiveChatSession({
+          prependToChatSessions({
             id: payload?.session?.id || payload.sessionId,
             title: payload?.session?.title || payload.title,
             isProtected: payload?.session?.isProtected,
