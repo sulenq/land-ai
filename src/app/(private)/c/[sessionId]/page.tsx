@@ -27,7 +27,7 @@ export default function Page() {
   const activeChat = useActiveChat((s) => s.activeChat);
   const setMessages = useActiveChat((s) => s.setMessages);
   const setSession = useActiveChat((s) => s.setSession);
-  const resetActiveChat = useActiveChat((s) => s.resetActiveChat);
+  const clearActiveChat = useActiveChat((s) => s.clearActiveChat);
   const updateHasLoadedHistory = useActiveChat((s) => s.updateHasLoadedHistory);
   const updateIsNewChat = useActiveChat((s) => s.updateIsNewChat);
   const removeFromChatSessions = useChatSessions(
@@ -65,7 +65,7 @@ export default function Page() {
     updateIsNewChat(false);
     if (activeChatSessionId !== sessionId) {
       updateHasLoadedHistory(false);
-      resetActiveChat();
+      clearActiveChat();
     }
   }, [sessionId]);
 

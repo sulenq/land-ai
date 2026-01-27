@@ -240,7 +240,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   // Contexts
   const { l } = useLang();
-  const resetActiveChat = useActiveChat((s) => s.resetActiveChat);
+  const clearActiveChat = useActiveChat((s) => s.clearActiveChat);
   const initSession = useActiveChat((s) => s.initSession);
   const appendMessage = useActiveChat((s) => s.appendMessage);
 
@@ -253,7 +253,7 @@ export const NewPrompt = (props: Props__NewChat) => {
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values) => {
       // Init active Chat
-      resetActiveChat();
+      clearActiveChat();
       initSession();
 
       // Append initial prompt

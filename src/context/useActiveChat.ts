@@ -15,7 +15,7 @@ interface State_Actions {
   setMessages: (messages: Interface__ChatMessage[]) => void;
   updateHasLoadedHistory: (value: boolean) => void;
   updateIsNewChat: (value: boolean) => void;
-  resetActiveChat: () => void;
+  clearActiveChat: () => void;
 
   appendMessage: (message: Interface__ChatMessage) => void;
 
@@ -64,7 +64,7 @@ export const useActiveChat = create<State_Actions>((set) => ({
       },
     })),
 
-  resetActiveChat: () =>
+  clearActiveChat: () =>
     set(() => ({
       activeChat: DEFAULT_CHAT_STATE,
     })),

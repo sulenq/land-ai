@@ -35,6 +35,8 @@ import { PasswordInput } from "../ui/password-input";
 import { StringInput } from "../ui/string-input";
 import ResetPasswordDisclosureTrigger from "./ResetPasswordDisclosure";
 import { AUTH_API_SIGNIN, AUTH_API_SIGNOUT } from "@/constants/apis";
+import { useChatSessions } from "../../context/useChatSessions";
+import { useEffect } from "react";
 
 interface Props extends StackProps {}
 
@@ -264,9 +266,15 @@ export const SigninForm = (props: Props) => {
   const authToken = getAccessToken();
   const verifiedAuthToken = useAuthMiddleware((s) => s.verifiedAuthToken);
   const resolvedAuthToken = authToken || verifiedAuthToken;
+  const clearChatSessions = useChatSessions((s) => s.clearChatSessions);
 
   // States
   const signinAPI = AUTH_API_SIGNIN;
+
+  // Clear chat sessions on mount
+  useEffect(() => {
+    clearChatSessions();
+  }, []);
 
   return (
     <CContainer
