@@ -36,7 +36,7 @@ export const Messages = (props: Props__Messages) => {
   }, []);
 
   return (
-    <CContainer ref={containerRef} className="debug" flex={1} {...restProps}>
+    <CContainer ref={containerRef} flex={1} {...restProps}>
       <CContainer flex={1} gap={4} px={2}>
         <CContainer mb={4}>
           <P fontSize={"xl"} fontWeight={"semibold"}>

@@ -317,17 +317,12 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
   // Contexts
   const { l } = useLang();
   const activeChat = useActiveChat((s) => s.activeChat);
-  // const setMessageContainerStyle = useMessageContainer((s) => s.setStyle);
-  const messageContainerRef = useMessageContainer((s) => s.containerRef);
 
   // Hooks
   const { sessionId } = useParams();
   const appendMessage = useActiveChat((s) => s.appendMessage);
 
-  console.debug(messageContainerRef?.current?.offsetHeight);
-
   // States
-  // const messageContainerCurrentH = messageContainerRef?.current?.offsetHeight;
   const formik = useFormik({
     validateOnChange: false,
     initialValues: { prompt: "" },
@@ -347,12 +342,6 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
         prompt: values.prompt,
         sessionId: sessionId as string,
       });
-
-      // setTimeout(() => {
-      //   setMessageContainerStyle({
-      //     h: `calc(${messageContainerCurrentH}px + 70dvh)`,
-      //   });
-      // }, 50);
     },
   });
 
