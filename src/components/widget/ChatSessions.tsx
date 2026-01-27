@@ -176,6 +176,8 @@ const Protect = (props: Props__Protect) => {
   // Hooks
   const { req, loading } = useRequest({
     id: ID,
+    showLoadingToast: false,
+    showSuccessToast: false,
   });
 
   // States
@@ -242,10 +244,15 @@ const Delete = (props: Props__Delete) => {
 
   // Contexts
   const { l } = useLang();
+  const removeFromChatSessions = useChatSessions(
+    (s) => s.removeFromChatSessions,
+  );
 
   // Hooks
   const { req, loading } = useRequest({
     id: ID,
+    showLoadingToast: false,
+    showSuccessToast: false,
   });
   const { sessionId: activeSessionId } = useParams();
   const router = useRouter();
@@ -271,6 +278,7 @@ const Delete = (props: Props__Delete) => {
             if (sessionId === activeSessionId) {
               router.replace("/new-chat");
             }
+            removeFromChatSessions(sessionId);
           },
           onError: () => {},
         },
