@@ -376,6 +376,10 @@ export const ChatSessions = (props: any) => {
                 <P lineClamp={1} textAlign={"left"}>
                   {session.title}
                 </P>
+
+                {session.isProtected && (
+                  <AppIcon icon={ShieldIcon} color={"fg.subtle"} ml={"auto"} />
+                )}
               </HStack>
             </NavLink>
 
