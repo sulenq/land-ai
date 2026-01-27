@@ -90,7 +90,7 @@ export default function Page() {
 
   // Scroll to bottom on messages change
   useEffect(() => {
-    if (!isEmptyArray(messages)) {
+    if (!isEmptyArray(messages) && activeChat.isStreaming) {
       scrollToBottom();
     }
   }, [messages]);
