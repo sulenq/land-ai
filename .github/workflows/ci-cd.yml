@@ -19,5 +19,10 @@ jobs:
           script: |
             cd ${{ secrets.VPS_PATH }}
             git pull origin main
-            docker compose up -d --build
-            echo "✅ Frontend deployment completed!"
+            echo "🚀 Starting Docker Build and Deploy..."
+            if docker compose up -d --build; then
+              echo "✅ Docker build and deployment SUCCESSFUL!"
+            else
+              echo "❌ Docker build or deployment FAILED!"
+              exit 1
+            fi
