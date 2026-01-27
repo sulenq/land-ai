@@ -88,10 +88,12 @@ export default function Page() {
     }
   }, [status]);
 
-  // Scroll to bottom on load
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, []);
+  // Scroll to bottom on messages change
+  useEffect(() => {
+    if (!isEmptyArray(messages)) {
+      scrollToBottom();
+    }
+  }, [messages]);
 
   const render = {
     loading: <ChatSkeleton />,
