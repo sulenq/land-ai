@@ -1,6 +1,7 @@
 import {
   Interface__ChatMessage,
   Interface__ChatSession,
+  Interface__User,
 } from "@/constants/interfaces";
 
 export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
@@ -8,6 +9,8 @@ export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
     id: "30e23784-d63a-4e41-bc5f-01e69d7b6308",
     title: "Analisis SHM Jakarta Selatan",
     createdAt: "2026-01-10T10:12:00Z",
+    isProtected: false,
+    isStreaming: false,
   },
 ];
 
@@ -20,6 +23,8 @@ export const DUMMY_CHAT_SESSION: {
     id: "f8e025f0-10cf-4815-a6bf-5d19405e0ccc",
     title: "Dasar Hukum Yang Mendasari Teknis",
     createdAt: "2025-11-12T04:20:00Z",
+    isProtected: false,
+    isStreaming: false,
   },
   totalMessages: 2,
   messages: [
@@ -165,7 +170,7 @@ export const dummyChartData = {
   "3M": generate3M(),
 };
 
-export const dummyUser = {
+export const dummyUser: Interface__User = {
   id: "1",
   avatar: [
     {
@@ -184,24 +189,9 @@ export const dummyUser = {
   ],
   name: "Dr. Rani Kartika",
   email: "rani.kartika@rssehat.id",
-  role: {
-    id: "3",
-    name: "HR Manager",
-    description:
-      "Responsible for managing employee data, policies, and approvals",
-    permissions: [
-      "employee.read",
-      "employee.write",
-      "attendance.validate",
-      "leave.approve",
-      "role.manage",
-    ],
-    createdBy: "system",
-    updatedBy: "system",
-    createdAt: "2023-03-10T08:42:00Z",
-    updatedAt: "2025-11-12T04:20:00Z",
-    deletedAt: null,
-  },
+  role: 3,
+  isActive: true,
+  lastChangePassword: "2025-05-01T12:30:00Z",
   accountStatus: "active",
   gender: false, // female
   phoneNumber: "+6281234567890",
@@ -215,9 +205,10 @@ export const dummyUser = {
   updatedBy: "system",
   createdAt: "2023-03-10T08:42:00Z",
   updatedAt: "2025-11-12T04:20:00Z",
+  deletedAt: null,
 };
 
-export const dummyUsers = [
+export const dummyUsers: Interface__User[] = [
   {
     id: "101",
     avatar: [
@@ -237,17 +228,7 @@ export const dummyUsers = [
     ],
     name: "Asep Setiawan",
     email: "asep.setiawan@example.com",
-    role: {
-      id: "R001",
-      name: "ADMIN",
-      description: "Superuser with full administrative access.",
-      permissions: ["all.access", "user.manage", "system.config"],
-      createdBy: "system",
-      updatedBy: "system",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2025-01-01T00:00:00.000Z",
-      deletedAt: null,
-    },
+    role: 1,
     accountStatus: "active",
     gender: true,
     phoneNumber: "+6281234567890",
@@ -282,17 +263,7 @@ export const dummyUsers = [
     ],
     name: "Budi Wijaya",
     email: "budi.wijaya@example.com",
-    role: {
-      id: "R002",
-      name: "EDITOR",
-      description: "Content creator with limited write access.",
-      permissions: ["content.read", "content.write", "media.upload"],
-      createdBy: "system",
-      updatedBy: "system",
-      createdAt: "2023-03-01T00:00:00.000Z",
-      updatedAt: "2025-10-10T12:00:00.000Z",
-      deletedAt: null,
-    },
+    role: 2,
     accountStatus: "active",
     gender: true,
     phoneNumber: "+6281122334455",
@@ -327,17 +298,7 @@ export const dummyUsers = [
     ],
     name: "Cindy Lestari",
     email: "cindy.lestar@example.com",
-    role: {
-      id: "R003",
-      name: "VIEWER",
-      description: "Read-only access to all public data.",
-      permissions: ["content.read", "user.read_self"],
-      createdBy: "system",
-      updatedBy: "system",
-      createdAt: "2023-05-01T00:00:00.000Z",
-      updatedAt: "2025-05-01T00:00:00.000Z",
-      deletedAt: null,
-    },
+    role: 3,
     accountStatus: "inactive",
     gender: false,
     phoneNumber: "+6287788990011",
@@ -372,17 +333,7 @@ export const dummyUsers = [
     ],
     name: "David Pratama",
     email: "david.pratama@example.com",
-    role: {
-      id: "R001",
-      name: "ADMIN",
-      description: "Superuser with full administrative access.",
-      permissions: ["all.access", "user.manage", "system.config"],
-      createdBy: "system",
-      updatedBy: "system",
-      createdAt: "2023-01-01T00:00:00.000Z",
-      updatedAt: "2025-01-01T00:00:00.000Z",
-      deletedAt: null,
-    },
+    role: 1,
     accountStatus: "active",
     gender: true,
     phoneNumber: "+6289988776655",
@@ -417,17 +368,7 @@ export const dummyUsers = [
     ],
     name: "Eka Fitriani",
     email: "eka.fitriani@example.com",
-    role: {
-      id: "R002",
-      name: "EDITOR",
-      description: "Content creator with limited write access.",
-      permissions: ["content.read", "content.write", "media.upload"],
-      createdBy: "system",
-      updatedBy: "system",
-      createdAt: "2023-03-01T00:00:00.000Z",
-      updatedAt: "2025-10-10T12:00:00.000Z",
-      deletedAt: null,
-    },
+    role: 2,
     accountStatus: "active",
     gender: false,
     phoneNumber: "+6285544332211",
