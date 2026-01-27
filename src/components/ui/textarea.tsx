@@ -54,8 +54,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, Props__TextareaInput>(
           resolvedInvalid
             ? "border.error"
             : variant === "subtle"
-            ? "transparent"
-            : "border.muted"
+              ? "transparent"
+              : "border.muted"
         }
         bg={variant === "subtle" ? "d0" : ""}
         fontSize={"md"}
@@ -76,7 +76,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, Props__TextareaInput>(
         {...restProps}
       />
     );
-  }
+  },
 );
 
 Textarea.displayName = "Textarea";

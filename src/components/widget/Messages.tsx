@@ -8,10 +8,12 @@ import { Clipboard } from "@/components/widget/Clipboard";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
+import useMessageContainer from "@/context/useMessageContainer";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { formatDate } from "@/utils/formatter";
 import { Alert, Badge, HStack, StackProps } from "@chakra-ui/react";
 import { RefreshCwIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface Props__Messages extends StackProps {
   messages: Interface__ChatMessage[];
@@ -24,9 +26,17 @@ export const Messages = (props: Props__Messages) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const activeChat = useActiveChat((s) => s.activeChat);
+  const setMessageContainerRef = useMessageContainer((s) => s.setRef);
+
+  // Refs
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMessageContainerRef(containerRef);
+  }, []);
 
   return (
-    <CContainer flex={1} {...restProps}>
+    <CContainer ref={containerRef} className="debug" flex={1} {...restProps}>
       <CContainer flex={1} gap={4} px={2}>
         <CContainer mb={4}>
           <P fontSize={"xl"} fontWeight={"semibold"}>

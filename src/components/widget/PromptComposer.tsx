@@ -25,7 +25,7 @@ import {
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
-import usePromptInput from "@/context/usePromptInput";
+import useMessageContainer from "@/context/useMessageContainer";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
 import { startChatStream } from "@/service/chatStream";
@@ -39,7 +39,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { ArrowUpIcon, PaperclipIcon, SquareIcon } from "lucide-react";
+import { ArrowUpIcon, SquareIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
@@ -110,7 +110,7 @@ export const PromptInput = (props: Props__PromptInput) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const setStyle = usePromptInput((s) => s.setStyle);
+  const setMessageContainerStyle = useMessageContainer((s) => s.setStyle);
   const finishStreaming = useActiveChat((s) => s.finishStreaming);
 
   // Refs
@@ -127,7 +127,7 @@ export const PromptInput = (props: Props__PromptInput) => {
     const el = containerRef.current;
 
     const updateHeight = () => {
-      setStyle({ h: `${el.clientHeight}px` });
+      setMessageContainerStyle({ pb: `calc(${el.clientHeight}px + 64px)` });
     };
 
     updateHeight();
@@ -140,7 +140,7 @@ export const PromptInput = (props: Props__PromptInput) => {
     resizeObserver.observe(el);
 
     return () => resizeObserver.disconnect();
-  }, [setStyle]);
+  }, [setMessageContainerStyle]);
 
   return (
     <CContainer
@@ -181,11 +181,11 @@ export const PromptInput = (props: Props__PromptInput) => {
         >{`${inputLength}/${maxChar}`}</HelperText>
 
         <Group>
-          <Tooltip content={l.upload_file}>
+          {/* <Tooltip content={l.upload_file}>
             <Btn iconButton variant={"ghost"} disabled>
               <AppIcon icon={PaperclipIcon} />
             </Btn>
-          </Tooltip>
+          </Tooltip> */}
 
           <Tooltip
             content={
@@ -317,12 +317,17 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
   // Contexts
   const { l } = useLang();
   const activeChat = useActiveChat((s) => s.activeChat);
+  // const setMessageContainerStyle = useMessageContainer((s) => s.setStyle);
+  const messageContainerRef = useMessageContainer((s) => s.containerRef);
 
   // Hooks
   const { sessionId } = useParams();
   const appendMessage = useActiveChat((s) => s.appendMessage);
 
+  console.debug(messageContainerRef?.current?.offsetHeight);
+
   // States
+  // const messageContainerCurrentH = messageContainerRef?.current?.offsetHeight;
   const formik = useFormik({
     validateOnChange: false,
     initialValues: { prompt: "" },
@@ -330,6 +335,8 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
       .object()
       .shape({ prompt: yup.string().required(l.msg_required_form) }),
     onSubmit: async (values, { resetForm }) => {
+      resetForm();
+
       appendMessage({
         id: crypto.randomUUID(),
         role: "user",
@@ -341,11 +348,13 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
         sessionId: sessionId as string,
       });
 
-      resetForm();
+      // setTimeout(() => {
+      //   setMessageContainerStyle({
+      //     h: `calc(${messageContainerCurrentH}px + 70dvh)`,
+      //   });
+      // }, 50);
     },
   });
-
-  console.debug(activeChat);
 
   return (
     <CContainer gap={4} {...restProps}>

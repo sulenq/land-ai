@@ -13,7 +13,7 @@ import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useChatSessions } from "@/context/useChatSessions";
-import usePromptInput from "@/context/usePromptInput";
+import useMessageContainer from "@/context/useMessageContainer";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
@@ -23,7 +23,7 @@ import { useEffect, useRef } from "react";
 
 export default function Page() {
   // Contexts
-  const promptInputStyle = usePromptInput((s) => s.style);
+  const messageContainerStyle = useMessageContainer((s) => s.style);
   const activeChat = useActiveChat((s) => s.activeChat);
   const setMessages = useActiveChat((s) => s.setMessages);
   const setSession = useActiveChat((s) => s.setSession);
@@ -110,7 +110,7 @@ export default function Page() {
         overflowY={"auto"}
         scrollBehavior={"smooth"}
       >
-        <ContainerLayout gap={8} pb={`calc(${promptInputStyle?.h} + 64px)`}>
+        <ContainerLayout gap={8} pb={messageContainerStyle?.pb}>
           {shouldFetchHistory && (
             <>
               {initialLoading && render.loading}
