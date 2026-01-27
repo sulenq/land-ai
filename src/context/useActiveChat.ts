@@ -18,6 +18,7 @@ interface State_Actions {
   clearActiveChat: () => void;
 
   appendMessage: (message: Interface__ChatMessage) => void;
+  removeMessage: (messageId: string) => void;
 
   startAssistantStreaming: () => string;
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;
@@ -56,11 +57,11 @@ export const useActiveChat = create<State_Actions>((set) => ({
       },
     })),
 
-  setMessages: (messages: Interface__ChatMessage[]) =>
+  setMessages: (messages) =>
     set((state) => ({
       activeChat: {
         ...state.activeChat,
-        messages: messages,
+        messages,
       },
     })),
 
@@ -93,6 +94,21 @@ export const useActiveChat = create<State_Actions>((set) => ({
         totalMessages: state.activeChat.totalMessages + 1,
       },
     })),
+
+  removeMessage: (messageId) =>
+    set((state) => {
+      const messages = state.activeChat.messages.filter(
+        (m) => m.id !== messageId,
+      );
+
+      return {
+        activeChat: {
+          ...state.activeChat,
+          messages,
+          totalMessages: messages.length,
+        },
+      };
+    }),
 
   startAssistantStreaming: () => {
     const id = crypto.randomUUID();

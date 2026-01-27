@@ -28,6 +28,7 @@ export const Messages = (props: Props__Messages) => {
   const { themeConfig } = useThemeConfig();
   const activeChat = useActiveChat((s) => s.activeChat);
   const setMessageContainerRef = useMessageContainer((s) => s.setRef);
+  const removeMessage = useActiveChat((s) => s.removeMessage);
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -114,6 +115,7 @@ export const Messages = (props: Props__Messages) => {
                               size={"xs"}
                               variant={"ghost"}
                               onClick={() => {
+                                removeMessage(message.id);
                                 startChatStream({
                                   prompt: messages[index - 1].content,
                                   sessionId: activeChat?.session?.id,
