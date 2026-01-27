@@ -25,10 +25,6 @@ export const Messages = (props: Props__Messages) => {
   const { themeConfig } = useThemeConfig();
   const activeChat = useActiveChat((s) => s.activeChat);
 
-  // States
-  const lastMessage = messages[messages.length - 1];
-  const canRegenerate = lastMessage && lastMessage.role === "assistant";
-
   return (
     <CContainer flex={1} {...restProps}>
       <CContainer flex={1} gap={4} px={2}>
@@ -41,71 +37,79 @@ export const Messages = (props: Props__Messages) => {
         </CContainer>
 
         <CContainer gap={4}>
-          {activeChat.messages.map((message: Interface__ChatMessage) => {
-            const emptyMessage = !message.content;
-            const isStreaming = message.isStreaming;
+          {activeChat.messages.map(
+            (message: Interface__ChatMessage, index: number) => {
+              const emptyMessage = !message.content;
+              const isStreaming = message.isStreaming;
+              const lastMessage = messages[messages.length - 1];
+              const isLastMessage = index === messages.length - 1;
+              const canRegenerate =
+                isLastMessage &&
+                lastMessage &&
+                lastMessage.role === "assistant";
 
-            // User Message
-            if (message.role === "user") {
-              return (
-                <CContainer key={message.id} gap={2}>
-                  <UserBubbleChat>{message.content}</UserBubbleChat>
+              // User Message
+              if (message.role === "user") {
+                return (
+                  <CContainer key={message.id} gap={2}>
+                    <UserBubbleChat>{message.content}</UserBubbleChat>
 
-                  <HStack wrap={"wrap"} justify={"end"}>
-                    <Clipboard>{message.content}</Clipboard>
-                  </HStack>
-                </CContainer>
-              );
-            }
+                    <HStack wrap={"wrap"} justify={"end"}>
+                      <Clipboard>{message.content}</Clipboard>
+                    </HStack>
+                  </CContainer>
+                );
+              }
 
-            // Assistant Message
-            if (message.role === "assistant") {
-              return (
-                <CContainer key={message.id} gap={2}>
-                  {isStreaming && emptyMessage ? (
-                    <Spinner size={"sm"} ml={2} />
-                  ) : (
-                    <>
-                      <MarkdownChat error={true}>
-                        {message.content}
-                      </MarkdownChat>
+              // Assistant Message
+              if (message.role === "assistant") {
+                return (
+                  <CContainer key={message.id} gap={2}>
+                    {isStreaming && emptyMessage ? (
+                      <Spinner size={"sm"} ml={2} />
+                    ) : (
+                      <>
+                        <MarkdownChat error={true}>
+                          {message.content}
+                        </MarkdownChat>
 
-                      <HStack>
-                        {message?.sources?.map((source, index) => {
-                          return <Badge key={index}>{source}</Badge>;
-                        })}
-                      </HStack>
+                        <HStack>
+                          {message?.sources?.map((source, index) => {
+                            return <Badge key={index}>{source}</Badge>;
+                          })}
+                        </HStack>
 
-                      {message.error && (
-                        <CContainer key={message.id} gap={2}>
-                          <Alert.Root
-                            status="error"
-                            maxW={"70%"}
-                            rounded={themeConfig.radii.component}
-                          >
-                            <Alert.Indicator />
-                            <Alert.Title>
-                              {l.msg_assistant_response_error}
-                            </Alert.Title>
-                          </Alert.Root>
-                        </CContainer>
-                      )}
-
-                      <HStack wrap={"wrap"} gap={1}>
-                        <Clipboard>{message.content}</Clipboard>
-
-                        {canRegenerate && (
-                          <Btn iconButton size={"xs"} variant={"ghost"}>
-                            <AppIcon icon={RefreshCwIcon} />
-                          </Btn>
+                        {message.error && (
+                          <CContainer key={message.id} gap={2}>
+                            <Alert.Root
+                              status="error"
+                              maxW={"70%"}
+                              rounded={themeConfig.radii.component}
+                            >
+                              <Alert.Indicator />
+                              <Alert.Title>
+                                {l.msg_assistant_response_error}
+                              </Alert.Title>
+                            </Alert.Root>
+                          </CContainer>
                         )}
-                      </HStack>
-                    </>
-                  )}
-                </CContainer>
-              );
-            }
-          })}
+
+                        <HStack wrap={"wrap"} gap={1}>
+                          <Clipboard>{message.content}</Clipboard>
+
+                          {canRegenerate && (
+                            <Btn iconButton size={"xs"} variant={"ghost"}>
+                              <AppIcon icon={RefreshCwIcon} />
+                            </Btn>
+                          )}
+                        </HStack>
+                      </>
+                    )}
+                  </CContainer>
+                );
+              }
+            },
+          )}
         </CContainer>
       </CContainer>
     </CContainer>
