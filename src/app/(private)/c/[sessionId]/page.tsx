@@ -137,19 +137,20 @@ export default function Page() {
           bottom={0}
         >
           <ContainerLayout gap={4} align={"center"}>
-            {scrollBottom > 1 && (
-              <Btn
-                iconButton
-                clicky={false}
-                onClick={scrollToBottom}
-                size={"xs"}
-                w={"fit"}
-                bg={"body"}
-                variant={"surface"}
-              >
-                <AppIcon icon={ArrowDownIcon} />
-              </Btn>
-            )}
+            <Btn
+              iconButton
+              clicky={false}
+              w={"fit"}
+              variant={"surface"}
+              size={"xs"}
+              bg={"body"}
+              opacity={scrollBottom > 1 ? 1 : 0}
+              visibility={scrollBottom > 1 ? "visible" : "hidden"}
+              transition={"200ms"}
+              onClick={scrollToBottom}
+            >
+              <AppIcon icon={ArrowDownIcon} />
+            </Btn>
 
             <CContainer bg={"body"}>
               <ContinuePrompt mb={4} />
