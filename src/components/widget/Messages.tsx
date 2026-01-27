@@ -10,6 +10,7 @@ import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import useMessageContainer from "@/context/useMessageContainer";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import { startChatStream } from "@/service/chatStream";
 import { formatDate } from "@/utils/formatter";
 import { Alert, Badge, HStack, StackProps } from "@chakra-ui/react";
 import { RefreshCwIcon } from "lucide-react";
@@ -108,7 +109,18 @@ export const Messages = (props: Props__Messages) => {
                           <Clipboard>{message.content}</Clipboard>
 
                           {canRegenerate && (
-                            <Btn iconButton size={"xs"} variant={"ghost"}>
+                            <Btn
+                              iconButton
+                              size={"xs"}
+                              variant={"ghost"}
+                              onClick={() => {
+                                startChatStream({
+                                  prompt: messages[index - 1].content,
+                                  sessionId: activeChat?.session?.id,
+                                  isRegenerate: true,
+                                });
+                              }}
+                            >
                               <AppIcon icon={RefreshCwIcon} />
                             </Btn>
                           )}

@@ -7,9 +7,11 @@ import { getAccessToken } from "@/utils/auth";
 export async function startChatStream({
   sessionId,
   prompt,
+  isRegenerate = false,
 }: {
   prompt: string;
   sessionId?: string;
+  isRegenerate?: boolean;
 }) {
   const controller = new AbortController();
   const signal = controller.signal;
@@ -40,7 +42,7 @@ export async function startChatStream({
         "Content-Type": "application/json",
         Authorization: `Bearer ${getAccessToken()}`,
       },
-      body: JSON.stringify({ sessionId, prompt }),
+      body: JSON.stringify({ sessionId, prompt, isRegenerate }),
       signal,
     },
   );
