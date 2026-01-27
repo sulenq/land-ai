@@ -14,18 +14,23 @@ export async function startChatStream({
   const controller = new AbortController();
   const signal = controller.signal;
 
-  const { appendMessage, appendStreamingChunk, finishStreaming, setSession } =
-    useActiveChat.getState();
+  const {
+    appendStreamingChunk,
+    finishStreaming,
+    setSession,
+    startAssistantStreaming,
+  } = useActiveChat.getState();
   const { prependToChatSessions } = useChatSessions.getState();
 
   const messageId = crypto.randomUUID();
 
-  appendMessage({
-    id: messageId,
-    role: "assistant",
-    content: "",
-    isStreaming: true,
-  });
+  // appendMessage({
+  //   id: messageId,
+  //   role: "assistant",
+  //   content: "",
+  //   isStreaming: true,
+  // });
+  startAssistantStreaming();
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}${CHAT_API_CHAT_AI_STREAM}`,

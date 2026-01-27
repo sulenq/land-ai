@@ -142,6 +142,7 @@ export const useActiveChat = create<State_Actions>((set) => ({
             ? { ...m, isStreaming: false }
             : m,
         ),
+        isStreaming: false,
       },
     })),
 }));

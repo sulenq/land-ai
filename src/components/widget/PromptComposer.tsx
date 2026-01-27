@@ -205,7 +205,6 @@ export const PromptInput = (props: Props__PromptInput) => {
               disabled={abortMode ? false : !inputValue || isExceedCharLimit}
               onClick={() => {
                 if (abortMode) {
-                  // TODO call abort stream request
                   finishStreaming();
                 } else {
                   onSubmit?.();
@@ -346,6 +345,8 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
     },
   });
 
+  console.debug(activeChat);
+
   return (
     <CContainer gap={4} {...restProps}>
       <PromptInput
@@ -357,7 +358,7 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
           formik.handleSubmit();
         }}
         disabled={disabled || activeChat.session?.isStreaming}
-        abortMode={activeChat.session?.isStreaming}
+        abortMode={activeChat.isStreaming}
         loading={loading}
       />
 
