@@ -31,13 +31,21 @@ export interface Interface__User extends Interface__CUD {
   avatar: Interface__StorageFile[];
   name: string;
   email: string;
-  isActive: boolean;
+  isActive?: boolean;
+  accountStatus?: string;
+  gender?: boolean;
+  phoneNumber?: string;
+  birthDate?: string;
+  address?: string;
+  registeredAt?: string;
+  deactiveAt?: string | null;
 
   lastLogin: string;
-  lastChangePassword: string;
+  lastChangePassword?: string;
+  lastChangePasswordAt?: string | null;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 export interface Interface__Role {
   id: string;
@@ -139,7 +147,9 @@ export interface Interface__Req<T = any> {
 // CUD
 export interface Interface__CUD {
   createdAt?: string;
+  createdBy?: string;
   updatedAt?: string | null;
+  updatedBy?: string;
   deletedAt?: string | null;
 }
 
