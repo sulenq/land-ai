@@ -30,6 +30,18 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
         labelKey: "navs.document_analysis",
         path: "/da",
         allowedRoles: [],
+        subMenusInvisible: true,
+        subMenus: [
+          {
+            list: [
+              {
+                labelKey: "navs.da_service_1",
+                path: "/da/service1",
+                allowedRoles: [],
+              },
+            ],
+          },
+        ],
       },
       // {
       //   icon: LayoutDashboardIcon,

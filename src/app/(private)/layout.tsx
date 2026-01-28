@@ -510,7 +510,7 @@ const DesktopLayout = (props: Props__Layout) => {
                   {navItem.list.map((nav) => {
                     if (!isAllowed(nav.allowedRoles)) return null;
 
-                    const hasSubMenus = nav.subMenus;
+                    const hasSubMenus = nav.subMenus && !nav.subMenusInvisible;
                     const isMainNavsActive = pathname.includes(nav.path);
 
                     return (

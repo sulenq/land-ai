@@ -16,28 +16,15 @@ export const navs = {
     id: "Analisa Dokumen",
     en: "Document Analysis",
   },
+  da_service_1: {
+    id: "Layanan 1",
+    en: "Service 1",
+  },
   dashboard: {
     id: "Dashboard",
     en: "Dashboard",
   },
-  user: {
-    id: "Pengguna",
-    en: "User",
-  },
-  other: {
-    index: {
-      id: "Lainya",
-      en: "Other",
-    },
-    category: {
-      id: "Kategori",
-      en: "Category",
-    },
-    type: {
-      id: "Tipe",
-      en: "Type",
-    },
-  },
+
   master_data: {
     id: "Master Data",
     en: "Master Data",
@@ -1547,3 +1534,65 @@ export const offline_route = {
 };
 
 // Interfaces
+
+// DA Services
+export const document_analysis_service = {
+  id: "Layanan Analisis Dokumen",
+  en: "Document Analysis Service",
+};
+export const service_1_title = {
+  id: "Layanan 1",
+  en: "Service 1",
+};
+export const service_1_description = {
+  id: "Deskripsi layanan 1",
+  en: "Description for service 1",
+};
+export const service_2_title = {
+  id: "Layanan 2",
+  en: "Service 2",
+};
+export const service_2_description = {
+  id: "Deskripsi layanan 2",
+  en: "Description for service 2",
+};
+export const service_3_title = {
+  id: "Layanan 3",
+  en: "Service 3",
+};
+export const service_3_description = {
+  id: "Deskripsi layanan 3",
+  en: "Description for service 3",
+};
+export const service_4_title = {
+  id: "Layanan 4",
+  en: "Service 4",
+};
+export const service_4_description = {
+  id: "Deskripsi layanan 4",
+  en: "Description for service 4",
+};
+export const service_5_title = {
+  id: "Layanan 5",
+  en: "Service 5",
+};
+export const service_5_description = {
+  id: "Deskripsi layanan 5",
+  en: "Description for service 5",
+};
+export const service_6_title = {
+  id: "Layanan 6",
+  en: "Service 6",
+};
+export const service_6_description = {
+  id: "Deskripsi layanan 6",
+  en: "Description for service 6",
+};
+export const service_7_title = {
+  id: "Layanan 7",
+  en: "Service 7",
+};
+export const service_7_description = {
+  id: "Deskripsi layanan 7",
+  en: "Description for service 7",
+};

@@ -67,6 +67,7 @@ export interface Interface__NavListItem {
   allowedRoles?: string[];
   allowedPermissions?: string[];
   subMenus?: Interface__NavItem[];
+  subMenusInvisible?: boolean;
 }
 export interface Interface__NavItem {
   groupLabelKey?: string;

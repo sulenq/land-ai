@@ -51,6 +51,11 @@ const nextConfig: NextConfig = {
         hostname: "land-be.cunindonesia.web.id",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "api-landai.mapgis.cloud",
+        pathname: "/**",
+      },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
     ],
     qualities: [60, 70, 80, 90, 100],
