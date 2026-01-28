@@ -112,8 +112,8 @@ export default function Page() {
 
   return (
     <PageContainer p={4} pos={"relative"}>
-      <ContainerLayout className="scrollY" justify={"center"} gap={4}>
-        <P fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"}>
+      <ContainerLayout className="scrollY">
+        <P fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"} mb={4}>
           {l.document_analysis_service}
         </P>
 
