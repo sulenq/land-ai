@@ -70,8 +70,6 @@ export const NavBreadcrumb = (props: any) => {
   // Contexts
   const { l } = useLang();
 
-  console.debug(resolvedActiveNavs);
-
   return (
     <HStack gap={1} ml={"-4px"} h={"36px"} {...restProps}>
       {backPath && <BackButton iconButton clicky={false} backPath={backPath} />}

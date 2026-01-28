@@ -3,8 +3,8 @@ import {
   Interface__Req,
   Interface__RequestState,
 } from "@/constants/interfaces";
+import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
-import { clearAccessToken, clearUserData } from "@/utils/auth";
 import { request } from "@/utils/request";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
@@ -42,6 +42,7 @@ export default function useRequest<T = any>(props: Props) {
 
   // Contexts
   const { l } = useLang();
+  const removeAuth = useAuthMiddleware((s) => s.removeAuth);
 
   // Refs
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -218,8 +219,7 @@ export default function useRequest<T = any>(props: Props) {
           case 401:
           case 403:
             if (!absoluteUrl) {
-              clearAccessToken();
-              clearUserData();
+              removeAuth();
               router?.push(signinPath);
             }
             break;

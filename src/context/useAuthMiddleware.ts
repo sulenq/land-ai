@@ -1,4 +1,4 @@
-import { setAccessToken } from "@/utils/auth";
+import { clearAccessToken, clearUserData, setAccessToken } from "@/utils/auth";
 import { getStorage, removeStorage } from "@/utils/client";
 import { create } from "zustand";
 
@@ -45,12 +45,12 @@ const useAuthMiddleware = create<Props>((set, get) => ({
   },
 
   removeAuth: () => {
-    get().removeAuthToken();
     get().removePermissions();
     get().removeRole();
-    removeStorage("__user_data");
     get().setVerifiedAuthToken(null);
     get().setAccessToken(null);
+    clearAccessToken();
+    clearUserData();
   },
 
   removeAuthToken: () => {

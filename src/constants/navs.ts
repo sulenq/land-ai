@@ -38,6 +38,7 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
                 labelKey: "navs.da_service_1",
                 path: "/da/service1",
                 allowedRoles: [],
+                backPath: "/da",
               },
             ],
           },
