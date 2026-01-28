@@ -91,12 +91,6 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
     groupLabelKey: "other",
     list: [
       {
-        icon: UserIcon,
-        labelKey: "navs.profile",
-        path: `/settings/profile`,
-        allowedRoles: [],
-      },
-      {
         icon: DatabaseIcon,
         labelKey: "navs.master_data",
         path: `/master-data`,
