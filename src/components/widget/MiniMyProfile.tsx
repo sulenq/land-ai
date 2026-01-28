@@ -38,7 +38,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
 
   // Hooks
   const { req } = useRequest({
-    id: "sign_out",
+    id: "signout",
     loadingMessage: { ...l.loading_signout },
     successMessage: { ...l.success_signout },
   });
