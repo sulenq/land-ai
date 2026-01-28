@@ -197,8 +197,6 @@ const Protect = (props: Props__Protect) => {
     onSubmit: () => {
       back();
 
-      toggleProtectedSession(sessionId);
-
       const config = {
         method: "PATCH",
         url: `${CHAT_API_PROTECT}/${sessionId}`,
@@ -208,10 +206,10 @@ const Protect = (props: Props__Protect) => {
       req({
         config,
         onResolve: {
-          onSuccess: () => {},
-          onError: () => {
+          onSuccess: () => {
             toggleProtectedSession(sessionId);
           },
+          onError: () => {},
         },
       });
     },
