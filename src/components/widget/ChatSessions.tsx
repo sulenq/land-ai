@@ -240,7 +240,7 @@ const Protect = (props: Props__Protect) => {
       ></form>
 
       <MenuItem {...restProps}>
-        <AppIcon icon={isProtected ? ShieldOffIcon : ShieldIcon} />{" "}
+        <AppIcon icon={isProtected ? ShieldOffIcon : ShieldIcon} />
         {isProtected ? l.unprotect : l.protect}
       </MenuItem>
     </ConfirmationDisclosureTrigger>
