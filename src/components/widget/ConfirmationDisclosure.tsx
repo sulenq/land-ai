@@ -117,6 +117,7 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
           onClick?.();
           onOpen();
         }}
+        cursor={disabled ? "disabled" : "auto"}
         {...restProps}
       >
         {children}

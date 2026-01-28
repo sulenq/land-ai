@@ -180,6 +180,7 @@ export interface Interface__ChatSession extends Interface__CUD {
   title: string;
   user?: Interface__User;
   isProtected: boolean;
+  is_protected?: boolean;
   isStreaming: boolean;
   createdAt: string;
 }

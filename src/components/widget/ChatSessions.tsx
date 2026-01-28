@@ -249,12 +249,13 @@ const Protect = (props: Props__Protect) => {
 
 interface Props__Delete extends MenuItemProps {
   sessionId: string;
+  disabled?: boolean;
 }
 const Delete = (props: Props__Delete) => {
   const ID = `delete_${props.sessionId}`;
 
   // Props
-  const { sessionId, ...restProps } = props;
+  const { sessionId, disabled, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -315,6 +316,7 @@ const Delete = (props: Props__Delete) => {
       onConfirm={formik.handleSubmit}
       loading={loading}
       w={"full"}
+      disabled={disabled}
     >
       <form
         id={ID}
@@ -324,7 +326,12 @@ const Delete = (props: Props__Delete) => {
         }}
       ></form>
 
-      <MenuItem color={"fg.error"} {...restProps}>
+      <MenuItem
+        color={"fg.error"}
+        disabled={disabled}
+        cursor={disabled ? "disabled" : "auto"}
+        {...restProps}
+      >
         <AppIcon icon={TrashIcon} /> {l.delete_}
       </MenuItem>
     </ConfirmationDisclosureTrigger>
@@ -371,6 +378,8 @@ export const ChatSessions = (props: any) => {
   } else {
     loadedContent = resolvedData?.map((session) => {
       const isActive = pathname === `/c/${session.id}`;
+      const isProtected = (session.isProtected ||
+        session.is_protected) as boolean;
 
       return (
         <DesktopNavTooltip key={session.id} content={session.title}>
@@ -391,7 +400,7 @@ export const ChatSessions = (props: any) => {
                   {session.title}
                 </P>
 
-                {session.isProtected && (
+                {isProtected && (
                   <AppIcon icon={ShieldIcon} color={"fg.subtle"} ml={"auto"} />
                 )}
               </HStack>
@@ -420,10 +429,14 @@ export const ChatSessions = (props: any) => {
                 <Protect
                   value="protect"
                   sessionId={session.id}
-                  isProtected={session.isProtected}
+                  isProtected={isProtected}
                 />
 
-                <Delete value="delete" sessionId={session.id} />
+                <Delete
+                  value="delete"
+                  sessionId={session.id}
+                  disabled={isProtected}
+                />
               </MenuContent>
             </MenuRoot>
           </HStack>

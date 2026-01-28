@@ -55,7 +55,13 @@ export const useChatSessions = create<State_Actions>((set) => ({
 
       return {
         activeChatSessions: state.activeChatSessions.map((s) =>
-          s.id === sessionId ? { ...s, isProtected: !s.isProtected } : s,
+          s.id === sessionId
+            ? {
+                ...s,
+                isProtected: !s.isProtected,
+                is_protected: !s.is_protected,
+              }
+            : s,
         ),
       };
     }),
