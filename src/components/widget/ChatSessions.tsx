@@ -47,7 +47,13 @@ import { disclosureId } from "@/utils/disclosure";
 import { capitalizeWords } from "@/utils/string";
 import { HStack, MenuItemProps, StackProps } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { EllipsisIcon, PenIcon, ShieldIcon, TrashIcon } from "lucide-react";
+import {
+  EllipsisIcon,
+  PenIcon,
+  ShieldIcon,
+  ShieldOffIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as yup from "yup";
@@ -172,6 +178,9 @@ const Protect = (props: Props__Protect) => {
 
   // Contexts
   const { l } = useLang();
+  const toggleProtectedSession = useChatSessions(
+    (s) => s.toggleProtectedSession,
+  );
 
   // Hooks
   const { req, loading } = useRequest({
@@ -188,6 +197,8 @@ const Protect = (props: Props__Protect) => {
     onSubmit: () => {
       back();
 
+      toggleProtectedSession(sessionId);
+
       const config = {
         method: "PATCH",
         url: `${CHAT_API_PROTECT}/${sessionId}`,
@@ -198,7 +209,9 @@ const Protect = (props: Props__Protect) => {
         config,
         onResolve: {
           onSuccess: () => {},
-          onError: () => {},
+          onError: () => {
+            toggleProtectedSession(sessionId);
+          },
         },
       });
     },
@@ -227,7 +240,8 @@ const Protect = (props: Props__Protect) => {
       ></form>
 
       <MenuItem {...restProps}>
-        <AppIcon icon={ShieldIcon} /> {l.protect}
+        <AppIcon icon={isProtected ? ShieldOffIcon : ShieldIcon} />{" "}
+        {isProtected ? l.unprotect : l.protect}
       </MenuItem>
     </ConfirmationDisclosureTrigger>
   );

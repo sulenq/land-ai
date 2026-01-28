@@ -6,8 +6,9 @@ interface State_Actions {
   setActiveChatSessions: (
     chatSessions: State_Actions["activeChatSessions"],
   ) => void;
-  renameChatSession: (sessionId: string, title: string) => void;
   prependToChatSessions: (session: Interface__ChatSession) => void;
+  renameChatSession: (sessionId: string, title: string) => void;
+  toggleProtectedSession: (sessionId: string) => void;
   removeFromChatSessions: (sessionId: string) => void;
   clearChatSessions: () => void;
 }
@@ -42,6 +43,19 @@ export const useChatSessions = create<State_Actions>((set) => ({
       return {
         activeChatSessions: state.activeChatSessions.map((s) =>
           s.id === sessionId ? { ...s, title } : s,
+        ),
+      };
+    }),
+
+  toggleProtectedSession: (sessionId) =>
+    set((state) => {
+      if (!state.activeChatSessions) {
+        return { activeChatSessions: null };
+      }
+
+      return {
+        activeChatSessions: state.activeChatSessions.map((s) =>
+          s.id === sessionId ? { ...s, isProtected: !s.isProtected } : s,
         ),
       };
     }),
