@@ -9,7 +9,7 @@ interface Props extends Omit<SegmentGroupRootProps, "onChange"> {
   onChange?: (inputValue: string) => void;
 }
 
-export const Segmented = (props: Props) => {
+export const Segment = (props: Props) => {
   // Props
   const { items = [], inputValue, onChange, size = "md", ...restProps } = props;
 
@@ -30,6 +30,7 @@ export const Segmented = (props: Props) => {
     <SegmentGroup.Root
       value={inputValue}
       onValueChange={(e) => onChange?.(e.value as string)}
+      w={"fit"}
       bg={"body"}
       rounded={themeConfig.radii.component}
       overflow={"clip"}

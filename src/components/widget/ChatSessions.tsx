@@ -89,7 +89,7 @@ const Rename = (props: Props__Rename) => {
       renameChatSession(sessionId, values.title);
 
       const config = {
-        method: "POST",
+        method: "PATCH",
         url: `${CHAT_API_RENAME}/${sessionId}`,
         data: values,
       };
