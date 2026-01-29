@@ -376,8 +376,7 @@ export const ChatSessions = (props: any) => {
   } else {
     loadedContent = resolvedData?.map((session) => {
       const isActive = pathname === `/c/${session.id}`;
-      const isProtected = (session.isProtected ||
-        session.is_protected) as boolean;
+      const isProtected = session.isProtected as boolean;
 
       return (
         <DesktopNavTooltip key={session.id} content={session.title}>
