@@ -395,7 +395,7 @@ const DesktopLayout = (props: Props__Layout) => {
 
   // States
   const user = getUserData();
-  const roleId = user?.role?.id;
+  const roleId = user?.role;
   const isAllowed = (allowedRoles?: string[] | undefined) =>
     !allowedRoles ||
     allowedRoles.length === 0 ||
@@ -1034,7 +1034,7 @@ const TheApp = (props: Props__Layout) => {
 };
 export default function Layout(props: Props__Layout) {
   // Toggle auth guard
-  const ENABLE_AUTH_GUARD = true;
+  const ENABLE_AUTH_GUARD = process.env.NODE_ENV !== "development";
 
   // Context / stores
   const authToken = getAccessToken();

@@ -92,7 +92,7 @@ export default function Page() {
           onSuccess: (r) => {
             const result = r.data?.data?.result;
 
-            console.debug(result);
+            // console.debug(result);
           },
         },
       });
