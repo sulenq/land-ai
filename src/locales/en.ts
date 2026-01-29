@@ -40,9 +40,11 @@ const translations = {
     "description": "We're sorry. Please try again."
   },
   "all": "All",
+  "analyze": "Analyze",
   "apply": "Apply",
   "april": "April",
   "ask_land_ai": "Ask Land.ai (Enter to submit)",
+  "auction_schedule": "Auction schedule",
   "august": "August",
   "back": "Back",
   "before": "Before",
@@ -50,11 +52,13 @@ const translations = {
   "camera": "Camera",
   "cancel": "Cancel",
   "category": "Category",
+  "certificate": "Certificate",
   "clear": "Clear",
   "close": "Close",
   "component": "Component",
   "confirm": "Confirm",
   "count": "Count",
+  "cover_letter": "Cover letter",
   "created": "Created",
   "current_data": "Current data",
   "dark_mode": "Dark mode",
@@ -91,7 +95,7 @@ const translations = {
   },
   "error_404_default": {
     "title": "Not found",
-    "description": "The requested data or page is not available."
+    "description": "The requested resource is not available."
   },
   "error_406_default": {
     "title": "Not acceptable",
@@ -352,6 +356,7 @@ const translations = {
   "pending_data": "Pending data",
   "personal_information": "Personal information",
   "physical_progress": "Physical progress",
+  "power_of_attorney": "Power of attorney",
   "previous": "Previous",
   "previous_page": "Previous page",
   "problem": "Problem",
@@ -367,7 +372,7 @@ const translations = {
   "rename": "Rename",
   "reset": "Reset",
   "restore": "Restore",
-  "results": "Results",
+  "result": "Result",
   "retry": "Retry",
   "rounded": "Rounded",
   "sales": "Sales",

@@ -40,9 +40,11 @@ const translations = {
     "description": "Maaf, silakan coba lagi."
   },
   "all": "Semua",
+  "analyze": "Analisa",
   "apply": "Terapkan",
   "april": "April",
   "ask_land_ai": "Tanya Land.ai (Enter untuk submit)",
+  "auction_schedule": "Jadwal lelang",
   "august": "Agustus",
   "back": "Kembali",
   "before": "Sebelum",
@@ -50,11 +52,13 @@ const translations = {
   "camera": "Kamera",
   "cancel": "Batal",
   "category": "Kategori",
+  "certificate": "Sertipikat",
   "clear": "Clear",
   "close": "Tutup",
   "component": "Komponen",
   "confirm": "Konfirmasi",
   "count": "Jumlah",
+  "cover_letter": "Surat pengantar",
   "created": "Dibuat",
   "current_data": "Data saat ini",
   "dark_mode": "Mode gelap",
@@ -91,7 +95,7 @@ const translations = {
   },
   "error_404_default": {
     "title": "Not found",
-    "description": "Data atau halaman yang diminta tidak tersedia."
+    "description": "Sumber daya yang diminta tidak tersedia."
   },
   "error_406_default": {
     "title": "Not acceptable",
@@ -352,6 +356,7 @@ const translations = {
   "pending_data": "Data tertunda",
   "personal_information": "Informasi pribadi",
   "physical_progress": "Progres fisik",
+  "power_of_attorney": "Surat kuasa",
   "previous": "Sebelumnya",
   "previous_page": "Halaman sebelumnya",
   "problem": "Masalah",
@@ -367,7 +372,7 @@ const translations = {
   "rename": "Ganti nama",
   "reset": "Reset",
   "restore": "Pulihkan",
-  "results": "Hasil",
+  "result": "Hasil",
   "retry": "Coba lagi",
   "rounded": "Rounded",
   "sales": "Penjualan",

@@ -134,6 +134,26 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const analyze = {
+  id: "Analisa",
+  en: "Analyze",
+};
+export const cover_letter = {
+  id: "Surat pengantar",
+  en: "Cover letter",
+};
+export const certificate = {
+  id: "Sertipikat",
+  en: "Certificate",
+};
+export const auction_schedule = {
+  id: "Jadwal lelang",
+  en: "Auction schedule",
+};
+export const power_of_attorney = {
+  id: "Surat kuasa",
+  en: "Power of attorney",
+};
 export const abort = {
   id: "Batal",
   en: "Abort",
@@ -890,9 +910,9 @@ export const fit_to_page = {
   id: "Menyesuaikan halaman",
   en: "Fit to page",
 };
-export const results = {
+export const result = {
   id: "Hasil",
-  en: "Results",
+  en: "Result",
 };
 export const selected_date = {
   id: "Tanggal dipilih",
@@ -1407,8 +1427,8 @@ export const error_403_default = {
 export const error_404_default = {
   title: { id: "Not found", en: "Not found" },
   description: {
-    id: "Data atau halaman yang diminta tidak tersedia.",
-    en: "The requested data or page is not available.",
+    id: "Sumber daya yang diminta tidak tersedia.",
+    en: "The requested resource is not available.",
   },
 };
 export const error_406_default = {

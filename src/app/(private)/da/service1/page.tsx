@@ -1,6 +1,23 @@
 "use client";
 
+import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import { Field, FieldsetRoot } from "@/components/ui/field";
+import { FileInput } from "@/components/ui/file-input";
+import { P } from "@/components/ui/p";
+import {
+  ContainerLayout,
+  PageContainer,
+  PageTitle,
+} from "@/components/widget/Page";
+import { DA_API_SERVICE1 } from "@/constants/apis";
+import useLang from "@/context/useLang";
+import { useThemeConfig } from "@/context/useThemeConfig";
+import useRequest from "@/hooks/useRequest";
+import { fileValidation } from "@/utils/validationSchema";
+import { HStack } from "@chakra-ui/react";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 export default function Page() {
   const ID = "da_service1";
@@ -76,7 +93,7 @@ export default function Page() {
         <CContainer
           gap={4}
           p={4}
-          bg={"bg.subtle"}
+          // bg={"bg.subtle"}
           rounded={themeConfig.radii.container}
           border={"1px solid"}
           borderColor={"border.muted"}
@@ -92,6 +109,7 @@ export default function Page() {
                     onChange={(inputValue) => {
                       formik.setFieldValue("certificate", inputValue);
                     }}
+                    bg={"bg.subtle"}
                   />
                 </Field>
 

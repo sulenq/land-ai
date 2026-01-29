@@ -111,7 +111,7 @@ export default function Page() {
   const { l } = useLang();
 
   return (
-    <PageContainer p={4} pos={"relative"}>
+    <PageContainer p={4}>
       <ContainerLayout className="scrollY">
         <P fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"} mb={4}>
           {l.document_analysis_service}
