@@ -413,7 +413,7 @@ const DesktopLayout = (props: Props__Layout) => {
       <CContainer
         flexShrink={0}
         w={navsExpanded ? "250px" : "60px"}
-        bg={navsExpanded ? DESKTOP_NAVS_BG : "body"}
+        bg={navsExpanded ? "bgContent" : DESKTOP_NAVS_BG}
         borderColor={"border.muted"}
         transition={"200ms"}
       >
