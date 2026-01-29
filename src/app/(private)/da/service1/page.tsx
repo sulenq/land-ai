@@ -7,11 +7,13 @@ import { FileInput } from "@/components/ui/file-input";
 import { P } from "@/components/ui/p";
 import { Skeleton } from "@/components/ui/skeleton";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
+import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { PageContainer, PageTitle } from "@/components/widget/Page";
 import { DA_API_SERVICE1 } from "@/constants/apis";
 import useLang from "@/context/useLang";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useRequest from "@/hooks/useRequest";
+import { isEmptyArray } from "@/utils/array";
 import { getGridColumns } from "@/utils/style";
 import { fileValidation } from "@/utils/validationSchema";
 import { SimpleGrid } from "@chakra-ui/react";
@@ -21,19 +23,36 @@ import * as yup from "yup";
 
 interface Props__Result {
   result: any;
+  loading: boolean;
+  onRetry: () => void;
 }
 const Result = (props: Props__Result) => {
   // Props
-  const { result, ...restProps } = props;
-  console.debug({ result });
+  const { loading, onRetry, result, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
   // const { themeConfig } = useThemeConfig();
 
+  // States
+  const error = result === "error";
+  const render = {
+    loading: <Skeleton minH={"350px"} />,
+    error: <FeedbackRetry onRetry={onRetry} />,
+    empty: (
+      <FeedbackNoData
+        title={l.alert_no_result_yet.title}
+        description={l.alert_no_result_yet.description}
+      />
+    ),
+    loaded: <>Loaded</>,
+  };
+
+  // console.debug({ result });
+
   return (
     <CContainer
-      minH={"100px"}
+      gap={4}
       pt={4}
       // rounded={themeConfig.radii.container}
       borderTop={"1px solid"}
@@ -42,11 +61,17 @@ const Result = (props: Props__Result) => {
     >
       <P fontWeight={"medium"}>{l.result}</P>
 
-      {!result && (
-        <FeedbackNoData
-          title={l.alert_no_result_yet.title}
-          description={l.alert_no_result_yet.description}
-        />
+      {loading && render.loading}
+      {!loading && (
+        <>
+          {error && render.error}
+          {!error && (
+            <>
+              {result && render.loaded}
+              {(!result || isEmptyArray(result)) && render.empty}
+            </>
+          )}
+        </>
       )}
     </CContainer>
   );
@@ -127,6 +152,9 @@ export default function Page() {
             const result = r.data?.data?.result;
 
             setResult(result);
+          },
+          onError: () => {
+            setResult("error");
           },
         },
       });
@@ -228,7 +256,7 @@ export default function Page() {
         <Skeleton minH={"350px"} />
       )}
 
-      <Result result={result} />
+      <Result loading={loading} onRetry={formik.handleSubmit} result={result} />
     </PageContainer>
   );
 }
