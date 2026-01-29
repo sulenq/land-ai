@@ -32,7 +32,8 @@ export async function startChatStream({
   //   content: "",
   //   isStreaming: true,
   // });
-  startAssistantStreaming();
+
+  startAssistantStreaming(messageId);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}${CHAT_API_CHAT_AI_STREAM}`,

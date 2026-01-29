@@ -20,7 +20,7 @@ interface State_Actions {
   appendMessage: (message: Interface__ChatMessage) => void;
   removeMessage: (messageId: string) => void;
 
-  startAssistantStreaming: () => string;
+  startAssistantStreaming: (messageId: string) => string;
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;
   finishStreaming: () => void;
 }
@@ -110,9 +110,7 @@ export const useActiveChat = create<State_Actions>((set) => ({
       };
     }),
 
-  startAssistantStreaming: () => {
-    const id = crypto.randomUUID();
-
+  startAssistantStreaming: (messageId) => {
     set((state) => ({
       activeChat: {
         ...state.activeChat,
@@ -122,7 +120,7 @@ export const useActiveChat = create<State_Actions>((set) => ({
         messages: [
           ...state.activeChat.messages,
           {
-            id,
+            id: messageId,
             role: "assistant",
             content: "",
             isStreaming: true,
@@ -133,7 +131,7 @@ export const useActiveChat = create<State_Actions>((set) => ({
       },
     }));
 
-    return id;
+    return messageId;
   },
 
   appendStreamingChunk: ({ messageId, chunk }) =>
