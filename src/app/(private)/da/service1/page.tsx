@@ -92,7 +92,7 @@ export default function Page() {
           onSuccess: (r) => {
             const result = r.data?.data?.result;
 
-            // console.debug(result);
+            console.debug(result);
           },
         },
       });
@@ -101,11 +101,11 @@ export default function Page() {
   const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
 
   return (
-    <PageContainer ref={containerRef} className="scrollY" p={4}>
-      <PageTitle p={0} m={0} />
-      <P color={"fg.subtle"} mb={4}>
-        {l.service_1_description}
-      </P>
+    <PageContainer ref={containerRef} className={"scrollY"} gap={4} p={4}>
+      <CContainer>
+        <PageTitle p={0} m={0} />
+        <P color={"fg.subtle"}>{l.service_1_description}</P>
+      </CContainer>
 
       {containerDimension.width > 0 ? (
         <CContainer
@@ -116,7 +116,6 @@ export default function Page() {
           rounded={themeConfig.radii.container}
           border={"1px solid"}
           borderColor={"border.muted"}
-          mb={8}
         >
           <form id={ID} onSubmit={formik.handleSubmit}>
             <FieldsetRoot disabled={loading}>
@@ -195,8 +194,14 @@ export default function Page() {
         <Skeleton minH={"350px"} />
       )}
 
-      <CContainer minH={"100px"}>
-        <P fontSize={"xl"}>{l.result}</P>
+      <CContainer
+        minH={"100px"}
+        p={4}
+        rounded={themeConfig.radii.container}
+        border={"1px solid"}
+        borderColor={"border.muted"}
+      >
+        <P fontWeight={"medium"}>{l.result}</P>
       </CContainer>
     </PageContainer>
   );
