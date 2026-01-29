@@ -61,7 +61,7 @@ export const fileValidation = ({
 
           return allowedExtensions.includes(fileExtension);
         });
-      }
+      },
     )
     // zip contents check
     .test(
@@ -97,7 +97,7 @@ export const fileValidation = ({
         }
 
         return true;
-      }
+      },
     );
 
 type min1FileParams = {
