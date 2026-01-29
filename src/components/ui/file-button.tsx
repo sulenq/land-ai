@@ -13,6 +13,7 @@ import {
   Span,
   useFileUploadContext,
   useRecipe,
+  VStack,
 } from "@chakra-ui/react";
 import { UploadIcon, XIcon } from "lucide-react";
 import { forwardRef } from "react";
@@ -30,7 +31,7 @@ export const FileUploadRoot = forwardRef<HTMLInputElement, FileUploadRootProps>(
         {children}
       </ChakraFileUpload.Root>
     );
-  }
+  },
 );
 
 export interface FileUploadDropzoneProps
@@ -72,26 +73,28 @@ export const FileUploadDropzone = forwardRef<
       {...rest}
       _hover={{ bg: "gray.subtle" }}
     >
-      {showIcon && (
-        <Icon fontSize="2xl" color="fg.muted" opacity={disabled ? 0.4 : 1}>
-          {icon || <LucideIcon icon={UploadIcon} />}
-        </Icon>
-      )}
+      <VStack gap={4} pointerEvents={"none"}>
+        {showIcon && (
+          <Icon fontSize="2xl" color="fg.muted" opacity={disabled ? 0.4 : 1}>
+            {icon || <LucideIcon icon={UploadIcon} />}
+          </Icon>
+        )}
 
-      {children}
+        {children}
 
-      {(showLabel || showDescription) && (
-        <ChakraFileUpload.DropzoneContent
-          opacity={disabled ? 0.4 : 1}
-          mb={imgInput ? "28px" : ""}
-        >
-          {showLabel && <P>{label}</P>}
+        {(showLabel || showDescription) && (
+          <ChakraFileUpload.DropzoneContent
+            opacity={disabled ? 0.4 : 1}
+            mb={imgInput ? "28px" : ""}
+          >
+            {showLabel && <P>{label}</P>}
 
-          {showDescription && description && (
-            <P color="fg.muted">{description || ".* up to 5MB"}</P>
-          )}
-        </ChakraFileUpload.DropzoneContent>
-      )}
+            {showDescription && description && (
+              <P color="fg.muted">{description || ".* up to 5MB"}</P>
+            )}
+          </ChakraFileUpload.DropzoneContent>
+        )}
+      </VStack>
     </ChakraFileUpload.Dropzone>
   );
 });
@@ -154,8 +157,7 @@ const FileUploadItem = (props: FileUploadItemProps) => {
 };
 
 interface FileUploadListProps
-  extends VisibilityProps,
-    ChakraFileUpload.ItemGroupProps {
+  extends VisibilityProps, ChakraFileUpload.ItemGroupProps {
   files?: File[];
 }
 
@@ -180,7 +182,7 @@ export const FileUploadList = forwardRef<HTMLUListElement, FileUploadListProps>(
         ))}
       </ChakraFileUpload.ItemGroup>
     );
-  }
+  },
 );
 
 type Assign<T, U> = Omit<T, keyof U> & U;
@@ -217,7 +219,7 @@ export const ChakraFileInput = forwardRef<HTMLButtonElement, FileInputProps>(
         </Button>
       </ChakraFileUpload.Trigger>
     );
-  }
+  },
 );
 
 export const FileUploadLabel = ChakraFileUpload.Label;
