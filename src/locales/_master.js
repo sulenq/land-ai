@@ -1130,6 +1130,16 @@ export const msg_file_input_dropzone = {
 };
 
 // Alert
+export const alert_no_result_yet = {
+  title: {
+    id: "Belum ada hasil",
+    en: "No result yet",
+  },
+  description: {
+    id: "Silahkan upload dokumen yang diperlukan dan klik 'Analisa'.",
+    en: "Please upload the required documents and click 'Analyze'.",
+  },
+};
 export const alert_offline = {
   title: {
     id: "Koneksi Terputus",

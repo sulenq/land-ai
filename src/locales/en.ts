@@ -23,6 +23,10 @@ const translations = {
     "title": "No data available",
     "description": "Update data or adjust filters."
   },
+  "alert_no_result_yet": {
+    "title": "No result yet",
+    "description": "Please upload the required documents and click 'Analyze'."
+  },
   "alert_not_found": {
     "title": "Not found",
     "description": "The requested data could not be found."

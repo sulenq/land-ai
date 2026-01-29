@@ -6,7 +6,6 @@ import { LangMenu } from "@/components/ui/lang-menu";
 import { P } from "@/components/ui/p";
 import BrandWatermark from "@/components/widget/BrandWatermark";
 import { Logo } from "@/components/widget/Logo";
-import { RandomQuote } from "@/components/widget/RandomQuote";
 import { SigninForm } from "@/components/widget/SigninForm";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -102,12 +101,12 @@ export default function Page() {
                 <Logo color={"white"} />
 
                 <CContainer color={"light"} mt={"auto"}>
-                  <RandomQuote
+                  {/* <RandomQuote
                     fontSize={"lg"}
                     fontWeight={"medium"}
                     maxW={"500px"}
                     mb={4}
-                  />
+                  /> */}
 
                   <P>{l.msg_app_desc}</P>
                 </CContainer>

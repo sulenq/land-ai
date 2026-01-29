@@ -23,6 +23,10 @@ const translations = {
     "title": "Tidak ada data",
     "description": "Perbarui data atau sesuaikan filter."
   },
+  "alert_no_result_yet": {
+    "title": "Belum ada hasil",
+    "description": "Silahkan upload dokumen yang diperlukan dan klik 'Analisa'."
+  },
   "alert_not_found": {
     "title": "Tidak ditemukan",
     "description": "Data yang dicari tidak tersedia."

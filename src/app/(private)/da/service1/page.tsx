@@ -6,18 +6,51 @@ import { Field, FieldsetRoot } from "@/components/ui/field";
 import { FileInput } from "@/components/ui/file-input";
 import { P } from "@/components/ui/p";
 import { Skeleton } from "@/components/ui/skeleton";
+import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import { PageContainer, PageTitle } from "@/components/widget/Page";
 import { DA_API_SERVICE1 } from "@/constants/apis";
 import useLang from "@/context/useLang";
-import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useRequest from "@/hooks/useRequest";
 import { getGridColumns } from "@/utils/style";
 import { fileValidation } from "@/utils/validationSchema";
 import { SimpleGrid } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as yup from "yup";
+
+interface Props__Result {
+  result: any;
+}
+const Result = (props: Props__Result) => {
+  // Props
+  const { result, ...restProps } = props;
+  console.debug({ result });
+
+  // Contexts
+  const { l } = useLang();
+  // const { themeConfig } = useThemeConfig();
+
+  return (
+    <CContainer
+      minH={"100px"}
+      pt={4}
+      // rounded={themeConfig.radii.container}
+      borderTop={"1px solid"}
+      borderColor={"border.muted"}
+      {...restProps}
+    >
+      <P fontWeight={"medium"}>{l.result}</P>
+
+      {!result && (
+        <FeedbackNoData
+          title={l.alert_no_result_yet.title}
+          description={l.alert_no_result_yet.description}
+        />
+      )}
+    </CContainer>
+  );
+};
 
 export default function Page() {
   const ID = "da_service1";
@@ -29,7 +62,7 @@ export default function Page() {
 
   // Contexts
   const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
+  // const { themeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -41,6 +74,7 @@ export default function Page() {
   const containerDimension = useContainerDimension(containerRef);
 
   // States
+  const [result, setResult] = useState<any>(null);
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
@@ -92,7 +126,7 @@ export default function Page() {
           onSuccess: (r) => {
             const result = r.data?.data?.result;
 
-            console.debug(result);
+            setResult(result);
           },
         },
       });
@@ -110,11 +144,11 @@ export default function Page() {
       {containerDimension.width > 0 ? (
         <CContainer
           gap={4}
-          p={4}
-          pt={3}
+          // p={4}
+          pt={4}
           // bg={"bg.subtle"}
-          rounded={themeConfig.radii.container}
-          border={"1px solid"}
+          // rounded={themeConfig.radii.container}
+          borderTop={"1px solid"}
           borderColor={"border.muted"}
         >
           <form id={ID} onSubmit={formik.handleSubmit}>
@@ -194,15 +228,7 @@ export default function Page() {
         <Skeleton minH={"350px"} />
       )}
 
-      <CContainer
-        minH={"100px"}
-        p={4}
-        rounded={themeConfig.radii.container}
-        border={"1px solid"}
-        borderColor={"border.muted"}
-      >
-        <P fontWeight={"medium"}>{l.result}</P>
-      </CContainer>
+      <Result result={result} />
     </PageContainer>
   );
 }
