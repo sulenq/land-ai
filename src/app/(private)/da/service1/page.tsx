@@ -88,7 +88,10 @@ export default function Page() {
   return (
     <PageContainer className="scrollY" p={4}>
       <ContainerLayout>
-        <PageTitle p={0} m={0} mb={4} />
+        <PageTitle p={0} m={0} />
+        <P color={"fg.subtle"} mb={4}>
+          {l.service_1_description}
+        </P>
 
         <CContainer
           gap={4}

@@ -4,6 +4,7 @@ import { CContainer } from "@/components/ui/c-container";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
+import { Tooltip } from "@/components/ui/tooltip";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { IMAGES_PATH } from "@/constants/paths";
 import useLang from "@/context/useLang";
@@ -11,7 +12,7 @@ import { useThemeConfig } from "@/context/useThemeConfig";
 import { pluckString } from "@/utils/string";
 import { SimpleGrid } from "@chakra-ui/react";
 
-const ServiceOptions = () => {
+const Services = () => {
   const SERVICES = [
     {
       id: 1,
@@ -91,13 +92,16 @@ const ServiceOptions = () => {
           >
             <Img src={service.iconPath} fluid w={"40px"} />
 
-            <CContainer>
+            <CContainer gap={2}>
               <P fontSize={"lg"} fontWeight={"semibold"}>
                 {pluckString(l, service.titleKey)}
               </P>
-              <P color={"fg.subtle"}>
-                {pluckString(l, service.descriptionKey)}
-              </P>
+
+              <Tooltip content={pluckString(l, service.descriptionKey)}>
+                <P color={"fg.subtle"} lineClamp={2}>
+                  {pluckString(l, service.descriptionKey)}
+                </P>
+              </Tooltip>
             </CContainer>
           </NavLink>
         );
@@ -112,12 +116,12 @@ export default function Page() {
 
   return (
     <PageContainer p={4}>
-      <ContainerLayout className="scrollY">
+      <ContainerLayout>
         <P fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"} mb={4}>
           {l.document_analysis_service}
         </P>
 
-        <ServiceOptions />
+        <Services />
       </ContainerLayout>
     </PageContainer>
   );
