@@ -149,7 +149,7 @@ export const useActiveChat = create<State_Actions>((set) => ({
       activeChat: {
         ...state.activeChat,
         session: state.activeChat.session
-          ? { ...state.activeChat.session, isStreaming: false }
+          ? { ...state.activeChat.session }
           : null,
         messages: state.activeChat.messages.map((m, idx) =>
           idx === state.activeChat.messages.length - 1
