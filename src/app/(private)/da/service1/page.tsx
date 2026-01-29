@@ -129,6 +129,10 @@ export default function Page() {
       }),
     }),
     onSubmit: (values) => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      }
+
       const payload = new FormData();
 
       payload.append("coverLetter", values.coverLetter[0]);
