@@ -59,7 +59,6 @@ export const useChatSessions = create<State_Actions>((set) => ({
             ? {
                 ...s,
                 isProtected: !s.isProtected,
-                is_protected: !s.is_protected,
               }
             : s,
         ),
