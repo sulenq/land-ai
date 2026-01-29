@@ -5,6 +5,7 @@ import { CContainer } from "@/components/ui/c-container";
 import { Field, FieldsetRoot } from "@/components/ui/field";
 import { FileInput } from "@/components/ui/file-input";
 import { P } from "@/components/ui/p";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PageContainer, PageTitle } from "@/components/widget/Page";
 import { DA_API_SERVICE1 } from "@/constants/apis";
 import useLang from "@/context/useLang";
@@ -76,6 +77,9 @@ export default function Page() {
       payload.append("auctionSchedule", values.auctionSchedule[0]);
       payload.append("powerOfAttonery", values.powerOfAttonery[0]);
 
+      // Demo payload
+      payload.append("file", values.coverLetter[0]);
+
       const config = {
         url: DA_API_SERVICE1,
         method: "POST",
@@ -96,8 +100,6 @@ export default function Page() {
   });
   const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
 
-  console.debug(formik.values);
-
   return (
     <PageContainer ref={containerRef} className="scrollY" p={4}>
       <PageTitle p={0} m={0} />
@@ -105,7 +107,7 @@ export default function Page() {
         {l.service_1_description}
       </P>
 
-      {cols > 0 && (
+      {containerDimension.width > 0 ? (
         <CContainer
           gap={4}
           p={4}
@@ -189,6 +191,8 @@ export default function Page() {
             {l.analyze}
           </Btn>
         </CContainer>
+      ) : (
+        <Skeleton minH={"350px"} />
       )}
 
       <CContainer minH={"100px"}>
