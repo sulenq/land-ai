@@ -79,7 +79,7 @@ const Services = () => {
             className="clicky"
             flex={"1 1 200px"}
             w={"full"}
-            gap={4}
+            gap={8}
             p={4}
             border={"1px solid"}
             borderColor={"border.subtle"}
@@ -90,7 +90,7 @@ const Services = () => {
             }}
             transition={"200ms"}
           >
-            <Img src={service.iconPath} fluid w={"40px"} />
+            <Img src={service.iconPath} fluid w={"40px"} mb={"auto"} />
 
             <CContainer gap={2}>
               <P fontSize={"lg"} fontWeight={"semibold"}>

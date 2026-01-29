@@ -392,7 +392,7 @@ const translations = {
   "selected_date": "Tanggal dipilih",
   "september": "September",
   "service_1_description": "Memeriksa keabsahan dan kesesuaian data sertipikat tanah secara cepat dan akurat.",
-  "service_1_title": "Pengecekan Sertipikat",
+  "service_1_title": "Pengecekan Sertipikat Tanah",
   "service_2_description": "Dokumen informasi status pendaftaran tanah yang dibutuhkan dalam proses transaksi.",
   "service_2_title": "Surat Keterangan Pendaftaran Tanah (SKPT)",
   "service_3_description": "Pendaftaran hak tanggungan sebagai jaminan utang yang dilakukan secara elektronik.",

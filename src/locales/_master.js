@@ -1585,8 +1585,8 @@ export const document_analysis_service = {
   en: "Document Analysis Service",
 };
 export const service_1_title = {
-  id: "Pengecekan Sertipikat",
-  en: "Certificate Verification",
+  id: "Pengecekan Sertipikat Tanah",
+  en: "Land Certificate Verification",
 };
 export const service_1_description = {
   id: "Memeriksa keabsahan dan kesesuaian data sertipikat tanah secara cepat dan akurat.",

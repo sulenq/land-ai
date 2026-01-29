@@ -392,7 +392,7 @@ const translations = {
   "selected_date": "Selected date",
   "september": "September",
   "service_1_description": "Verification of land certificate authenticity and data accuracy.",
-  "service_1_title": "Certificate Verification",
+  "service_1_title": "Land Certificate Verification",
   "service_2_description": "An official document providing land registration status information for transactions.",
   "service_2_title": "Land Registration Statement (SKPT)",
   "service_3_description": "Digital registration of mortgage rights as collateral for debt obligations.",
