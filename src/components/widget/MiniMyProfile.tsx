@@ -39,8 +39,8 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
   // Hooks
   const { req } = useRequest({
     id: "signout",
-    loadingMessage: { ...l.loading_signout },
-    successMessage: { ...l.success_signout },
+    loadingMessage: l.loading_signout,
+    successMessage: l.success_signout,
   });
   const router = useRouter();
   router.prefetch("/");
@@ -130,7 +130,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
         })}
 
         <ConfirmationDisclosureTrigger
-          id="signout"
+          id="signing_out"
           title="Sign out"
           description={l.msg_signout}
           confirmLabel="Sign out"
@@ -156,6 +156,20 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
             Sign Out
           </Btn>
         </ConfirmationDisclosureTrigger>
+
+        {/* <Btn
+          clicky={false}
+          px={2}
+          variant={"ghost"}
+          color={"fg.error"}
+          justifyContent={"start"}
+          onClick={onSignout}
+        >
+          <Icon boxSize={BASE_ICON_BOX_SIZE}>
+            <LucideIcon icon={LogOutIcon} />
+          </Icon>
+          Sign Out
+        </Btn> */}
       </CContainer>
     </CContainer>
   );

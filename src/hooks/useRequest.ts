@@ -190,11 +190,13 @@ export default function useRequest<T = any>(props: Props) {
         if ([200, 201, 304].includes(r.status)) {
           onResolve?.onSuccess?.(r);
           if (showSuccessToast) {
-            toaster.update(id, {
-              type: "success",
-              title: resolvedSuccessMessage.title,
-              description: resolvedSuccessMessage.description,
-            });
+            setTimeout(() => {
+              toaster.update(id, {
+                type: "success",
+                title: resolvedSuccessMessage.title,
+                description: resolvedSuccessMessage.description,
+              });
+            }, 50);
           } else {
             toaster.dismiss(id);
           }
@@ -232,10 +234,12 @@ export default function useRequest<T = any>(props: Props) {
 
         if (showErrorToast) {
           if (showLoadingToast) {
-            toaster.update(id, {
-              type: "error",
-              ...toastProps,
-            });
+            setTimeout(() => {
+              toaster.update(id, {
+                type: "error",
+                ...toastProps,
+              });
+            }, 50);
           } else {
             toaster.create({
               type: "error",

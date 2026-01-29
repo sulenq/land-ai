@@ -7,13 +7,19 @@ import { NavLink } from "@/components/ui/nav-link";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Logo } from "@/components/widget/Logo";
 import { APP } from "@/constants/_meta";
+import { AUTH_API_SIGNIN, AUTH_API_SIGNOUT } from "@/constants/apis";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useRequest from "@/hooks/useRequest";
-import { getAccessToken, getUserData, setUserData } from "@/utils/auth";
-import { removeStorage } from "@/utils/client";
+import {
+  clearAccessToken,
+  clearUserData,
+  getAccessToken,
+  getUserData,
+  setUserData,
+} from "@/utils/auth";
 import {
   FieldsetRoot,
   HStack,
@@ -26,7 +32,9 @@ import { IconLock, IconUser } from "@tabler/icons-react";
 import { useFormik } from "formik";
 import { LogInIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import * as yup from "yup";
+import { useChatSessions } from "../../context/useChatSessions";
 import { Btn } from "../ui/btn";
 import { CContainer } from "../ui/c-container";
 import { Divider } from "../ui/divider";
@@ -34,9 +42,6 @@ import { P } from "../ui/p";
 import { PasswordInput } from "../ui/password-input";
 import { StringInput } from "../ui/string-input";
 import ResetPasswordDisclosureTrigger from "./ResetPasswordDisclosure";
-import { AUTH_API_SIGNIN, AUTH_API_SIGNOUT } from "@/constants/apis";
-import { useChatSessions } from "../../context/useChatSessions";
-import { useEffect } from "react";
 
 interface Props extends StackProps {}
 
@@ -54,7 +59,7 @@ const Signedin = (props: any) => {
 
   // Hooks
   const { req, loading } = useRequest({
-    id: "logout",
+    id: "signout",
     loadingMessage: l.loading_signout,
     successMessage: l.success_signout,
   });
@@ -62,7 +67,6 @@ const Signedin = (props: any) => {
   // Utils
   function onSignout() {
     const url = AUTH_API_SIGNOUT;
-
     const config = {
       url,
       method: "POST",
@@ -72,8 +76,11 @@ const Signedin = (props: any) => {
       config,
       onResolve: {
         onSuccess: () => {
-          removeStorage("__access_token");
-          removeStorage("__user_data");
+          clearAccessToken();
+          clearUserData();
+          removeAuth();
+        },
+        onError: () => {
           removeAuth();
         },
       },
