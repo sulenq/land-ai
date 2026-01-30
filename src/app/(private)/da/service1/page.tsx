@@ -197,10 +197,10 @@ export default function Page() {
                 </FieldsetRoot>
               </form>
 
-              <HStack wrap={"wrap"} justify={"space-between"}>
+              <HStack wrap={"wrap"} justify={"space-between"} align={"end"}>
                 <P
                   color={"fg.subtle"}
-                  ml={2}
+                  ml={1}
                 >{`${totalUploadedFiles}/${totalFiles} file(s)`}</P>
 
                 <Btn type="submit" form={ID} loading={loading}>
