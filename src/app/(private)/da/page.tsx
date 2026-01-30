@@ -95,7 +95,7 @@ const Services = (props: SimpleGridProps) => {
             }}
             transition={"200ms"}
           >
-            <Img src={service.iconPath} fluid w={"40px"} mb={"auto"} />
+            <Img src={service.iconPath} w={"40px"} h={"40px"} mb={"auto"} />
 
             <CContainer gap={2}>
               <P fontSize={"lg"} fontWeight={"semibold"}>
