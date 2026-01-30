@@ -948,7 +948,11 @@ export const msg_welcome_context = {
   id: "Konsultasi Hukum Pertanahan (Berbasis Dokumen Resmi)",
   en: "Legal Consultation (Based on Official Documents)",
 };
-export const msg_discliamer = {
+export const msg_da_disclaimer = {
+  id: "Data yang diunggah hanya digunakan untuk proses analisis dan akan dihapus setelah analisis selesai demi menjaga privasi pengguna.",
+  en: "Uploaded data is used solely for analysis purposes and will be deleted after the analysis is completed to protect user privacy.",
+};
+export const msg_chat_ai_disclaimer = {
   id: "Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
   en: "Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
 };

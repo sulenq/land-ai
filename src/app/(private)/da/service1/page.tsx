@@ -4,49 +4,37 @@ import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { Field, FieldsetRoot } from "@/components/ui/field";
 import { FileInput } from "@/components/ui/file-input";
+import { HelperText } from "@/components/ui/helper-text";
 import { P } from "@/components/ui/p";
 import { Skeleton } from "@/components/ui/skeleton";
-import FeedbackNoData from "@/components/widget/FeedbackNoData";
-import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { PageContainer, PageTitle } from "@/components/widget/Page";
+import {
+  ContainerLayout,
+  PageContainer,
+  PageTitle,
+} from "@/components/widget/Page";
 import { DA_API_SERVICE1 } from "@/constants/apis";
 import useLang from "@/context/useLang";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useRequest from "@/hooks/useRequest";
-import { isEmptyArray } from "@/utils/array";
 import { getGridColumns } from "@/utils/style";
 import { fileValidation } from "@/utils/validationSchema";
-import { SimpleGrid } from "@chakra-ui/react";
+import { HStack, SimpleGrid, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import * as yup from "yup";
 
 interface Props__Result {
   result: any;
-  loading: boolean;
-  onRetry: () => void;
 }
 const Result = (props: Props__Result) => {
   // Props
-  const { loading, onRetry, result, ...restProps } = props;
+  const { result, ...restProps } = props;
+  console.debug(result);
 
   // Contexts
   const { l } = useLang();
   // const { themeConfig } = useThemeConfig();
-
-  // States
-  const error = result === "error";
-  const render = {
-    loading: <Skeleton minH={"350px"} />,
-    error: <FeedbackRetry onRetry={onRetry} />,
-    empty: (
-      <FeedbackNoData
-        title={l.alert_no_result_yet.title}
-        description={l.alert_no_result_yet.description}
-      />
-    ),
-    loaded: <>Loaded</>,
-  };
 
   // console.debug({ result });
 
@@ -60,19 +48,6 @@ const Result = (props: Props__Result) => {
       {...restProps}
     >
       <P fontWeight={"medium"}>{l.result}</P>
-
-      {loading && render.loading}
-      {!loading && (
-        <>
-          {error && render.error}
-          {!error && (
-            <>
-              {result && render.loaded}
-              {(!result || isEmptyArray(result)) && render.empty}
-            </>
-          )}
-        </>
-      )}
     </CContainer>
   );
 };
@@ -87,7 +62,7 @@ export default function Page() {
 
   // Contexts
   const { l } = useLang();
-  // const { themeConfig } = useThemeConfig();
+  const { themeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -99,7 +74,6 @@ export default function Page() {
   const containerDimension = useContainerDimension(containerRef);
 
   // States
-  const [result, setResult] = useState<any>(null);
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
@@ -135,10 +109,10 @@ export default function Page() {
 
       const payload = new FormData();
 
-      payload.append("coverLetter", values.coverLetter[0]);
-      payload.append("certificate", values.certificate[0]);
-      payload.append("auctionSchedule", values.auctionSchedule[0]);
-      payload.append("powerOfAttonery", values.powerOfAttonery[0]);
+      // payload.append("coverLetter", values.coverLetter[0]);
+      // payload.append("certificate", values.certificate[0]);
+      // payload.append("auctionSchedule", values.auctionSchedule[0]);
+      // payload.append("powerOfAttonery", values.powerOfAttonery[0]);
 
       // Demo payload
       payload.append("file", values.coverLetter[0]);
@@ -154,113 +128,124 @@ export default function Page() {
         onResolve: {
           onSuccess: (r) => {
             const result = r.data?.data?.result;
-
-            setResult(result);
           },
-          onError: () => {
-            setResult("error");
-          },
+          onError: () => {},
         },
       });
     },
   });
+  const totalFiles = Object.keys(formik.values).length;
+  const totalUploadedFiles = Object.values(formik.values).reduce(
+    (count, files) => count + (files.length > 0 ? 1 : 0),
+    0,
+  );
+
+  // SX
   const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
 
   return (
-    <PageContainer ref={containerRef} className={"scrollY"} gap={4} p={4}>
-      <CContainer>
-        <PageTitle p={0} m={0} />
-        <P color={"fg.subtle"}>{l.service_1_description}</P>
-      </CContainer>
+    <PageContainer className={"scrollY"} p={4}>
+      <ContainerLayout ref={containerRef}>
+        <CContainer gap={4} my={"auto"}>
+          <VStack gap={1}>
+            <PageTitle p={0} textAlign={"center"} m={0} />
+            <P color={"fg.subtle"}>{l.service_1_description}</P>
+          </VStack>
 
-      {containerDimension.width > 0 ? (
-        <CContainer
-          gap={4}
-          // p={4}
-          pt={4}
-          // bg={"bg.subtle"}
-          // rounded={themeConfig.radii.container}
-          borderTop={"1px solid"}
-          borderColor={"border.muted"}
-        >
-          <form id={ID} onSubmit={formik.handleSubmit}>
-            <FieldsetRoot disabled={loading}>
-              <SimpleGrid columns={cols} gap={4}>
-                <Field
-                  label={l.cover_letter}
-                  flex={"1 1 200px"}
-                  invalid={!!formik.errors.coverLetter}
-                  errorText={formik.errors.coverLetter as string}
-                >
-                  <FileInput
-                    dropzone
-                    inputValue={formik.values.coverLetter}
-                    onChange={(inputValue) => {
-                      formik.setFieldValue("coverLetter", inputValue);
-                    }}
-                    bg={"bg.subtle"}
-                  />
-                </Field>
+          {containerDimension.width > 0 ? (
+            <CContainer
+              gap={4}
+              p={4}
+              rounded={themeConfig.radii.container}
+              border={"1px solid"}
+              borderColor={"border.muted"}
+            >
+              <form id={ID} onSubmit={formik.handleSubmit}>
+                <FieldsetRoot disabled={loading}>
+                  <SimpleGrid columns={cols} gap={4}>
+                    <Field
+                      label={l.cover_letter}
+                      flex={"1 1 200px"}
+                      invalid={!!formik.errors.coverLetter}
+                      errorText={formik.errors.coverLetter as string}
+                    >
+                      <FileInput
+                        dropzone
+                        inputValue={formik.values.coverLetter}
+                        onChange={(inputValue) => {
+                          formik.setFieldValue("coverLetter", inputValue);
+                        }}
+                        bg={"bg.subtle"}
+                      />
+                    </Field>
 
-                <Field
-                  label={l.certificate}
-                  flex={"1 1 200px"}
-                  invalid={!!formik.errors.certificate}
-                  errorText={formik.errors.certificate as string}
-                >
-                  <FileInput
-                    dropzone
-                    inputValue={formik.values.certificate}
-                    onChange={(inputValue) => {
-                      formik.setFieldValue("certificate", inputValue);
-                    }}
-                  />
-                </Field>
+                    <Field
+                      label={l.certificate}
+                      flex={"1 1 200px"}
+                      invalid={!!formik.errors.certificate}
+                      errorText={formik.errors.certificate as string}
+                    >
+                      <FileInput
+                        dropzone
+                        inputValue={formik.values.certificate}
+                        onChange={(inputValue) => {
+                          formik.setFieldValue("certificate", inputValue);
+                        }}
+                      />
+                    </Field>
 
-                <Field
-                  label={l.auction_schedule}
-                  flex={"1 1 200px"}
-                  optional
-                  invalid={!!formik.errors.auctionSchedule}
-                  errorText={formik.errors.auctionSchedule as string}
-                >
-                  <FileInput
-                    dropzone
-                    inputValue={formik.values.auctionSchedule}
-                    onChange={(inputValue) => {
-                      formik.setFieldValue("auctionSchedule", inputValue);
-                    }}
-                  />
-                </Field>
+                    <Field
+                      label={l.auction_schedule}
+                      flex={"1 1 200px"}
+                      optional
+                      invalid={!!formik.errors.auctionSchedule}
+                      errorText={formik.errors.auctionSchedule as string}
+                    >
+                      <FileInput
+                        dropzone
+                        inputValue={formik.values.auctionSchedule}
+                        onChange={(inputValue) => {
+                          formik.setFieldValue("auctionSchedule", inputValue);
+                        }}
+                      />
+                    </Field>
 
-                <Field
-                  label={l.power_of_attorney}
-                  flex={"1 1 200px"}
-                  optional
-                  invalid={!!formik.errors.powerOfAttonery}
-                  errorText={formik.errors.powerOfAttonery as string}
-                >
-                  <FileInput
-                    dropzone
-                    inputValue={formik.values.powerOfAttonery}
-                    onChange={(inputValue) => {
-                      formik.setFieldValue("powerOfAttonery", inputValue);
-                    }}
-                  />
-                </Field>
-              </SimpleGrid>
-            </FieldsetRoot>
-          </form>
+                    <Field
+                      label={l.power_of_attorney}
+                      flex={"1 1 200px"}
+                      optional
+                      invalid={!!formik.errors.powerOfAttonery}
+                      errorText={formik.errors.powerOfAttonery as string}
+                    >
+                      <FileInput
+                        dropzone
+                        inputValue={formik.values.powerOfAttonery}
+                        onChange={(inputValue) => {
+                          formik.setFieldValue("powerOfAttonery", inputValue);
+                        }}
+                      />
+                    </Field>
+                  </SimpleGrid>
+                </FieldsetRoot>
+              </form>
 
-          <Btn type="submit" form={ID} loading={loading} w={"fit"} ml={"auto"}>
-            {l.analyze}
-          </Btn>
+              <HStack wrap={"wrap"} justify={"space-between"}>
+                <P
+                  color={"fg.subtle"}
+                >{`${totalUploadedFiles}/${totalFiles} file(s)`}</P>
+
+                <Btn type="submit" form={ID} loading={loading}>
+                  {l.analyze}
+                </Btn>
+              </HStack>
+            </CContainer>
+          ) : (
+            <Skeleton minH={"350px"} />
+          )}
+
+          <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
         </CContainer>
-      ) : (
-        <Skeleton minH={"350px"} />
-      )}
-
-      <Result loading={loading} onRetry={formik.handleSubmit} result={result} />
+      </ContainerLayout>
     </PageContainer>
   );
 }

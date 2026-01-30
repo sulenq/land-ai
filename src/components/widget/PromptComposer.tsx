@@ -229,7 +229,7 @@ export const PromptHelperText = (props: TextProps) => {
 
   return (
     <HelperText textAlign={"center"} mx={"auto"} {...props}>
-      {l.msg_discliamer}
+      {l.msg_chat_ai_disclaimer}
     </HelperText>
   );
 };

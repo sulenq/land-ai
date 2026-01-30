@@ -42,7 +42,7 @@ export default function FeedbackRetry(props: Props) {
         maxW={"300px"}
       />
 
-      <CContainer gap={1} pb={4}>
+      {onRetry && (
         <Btn
           className="clicky"
           variant={"outline"}
@@ -53,9 +53,9 @@ export default function FeedbackRetry(props: Props) {
         >
           {l.retry}
         </Btn>
+      )}
 
-        {children}
-      </CContainer>
+      {children}
     </CContainer>
   );
 }

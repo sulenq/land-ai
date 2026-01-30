@@ -1,18 +1,23 @@
 "use client";
 
 import { CContainer } from "@/components/ui/c-container";
+import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip } from "@/components/ui/tooltip";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { IMAGES_PATH } from "@/constants/paths";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { pluckString } from "@/utils/string";
-import { SimpleGrid } from "@chakra-ui/react";
+import { getGridColumns } from "@/utils/style";
+import { SimpleGrid, SimpleGridProps } from "@chakra-ui/react";
+import { useRef } from "react";
 
-const Services = () => {
+const Services = (props: SimpleGridProps) => {
   const SERVICES = [
     {
       id: 1,
@@ -70,7 +75,7 @@ const Services = () => {
   const { themeConfig } = useThemeConfig();
 
   return (
-    <SimpleGrid columns={[2, null, 3]} gap={4}>
+    <SimpleGrid gap={4} {...props}>
       {SERVICES.map((service) => {
         return (
           <NavLink
@@ -111,17 +116,40 @@ const Services = () => {
 };
 
 export default function Page() {
+  const GRID_COLS_BREAKPOINTS = {
+    0: 1,
+    350: 2,
+    720: 3,
+  };
+
   // Contexts
   const { l } = useLang();
 
+  // Refs
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Hooks
+  const containerDimension = useContainerDimension(containerRef);
+
+  // SX
+  const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
+
   return (
     <PageContainer p={4}>
-      <ContainerLayout>
-        <P fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"} mb={4}>
-          {l.document_analysis_service}
-        </P>
+      <ContainerLayout ref={containerRef}>
+        <CContainer gap={4} my={"auto"}>
+          <P fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"}>
+            {l.document_analysis_service}
+          </P>
 
-        <Services />
+          {containerDimension.width > 0 ? (
+            <Services columns={cols} />
+          ) : (
+            <Skeleton minH={"500px"} />
+          )}
+
+          <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+        </CContainer>
       </ContainerLayout>
     </PageContainer>
   );
