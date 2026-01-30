@@ -16,7 +16,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
-import { APP } from "@/constants/_meta";
 import {
   Props__ContinueChat,
   Props__NewChat,
@@ -30,7 +29,6 @@ import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
 import { startChatStream } from "@/service/chatStream";
 import { disclosureId } from "@/utils/disclosure";
-import { interpolateString, pluckString } from "@/utils/string";
 import {
   Group,
   HStack,
@@ -272,7 +270,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   return (
     <CContainer {...restProps}>
-      <P
+      {/* <P
         fontSize={"lg"}
         fontWeight={"medium"}
         textAlign={"center"}
@@ -281,11 +279,11 @@ export const NewPrompt = (props: Props__NewChat) => {
         {interpolateString(pluckString(l, `msg_welcome_to_the_app`), {
           appName: APP.name,
         })}
-      </P>
+      </P> */}
 
       <P
         fontSize={"xl"}
-        fontWeight={"medium"}
+        fontWeight={"semibold"}
         color={"ibody"}
         textAlign={"center"}
         mb={4}

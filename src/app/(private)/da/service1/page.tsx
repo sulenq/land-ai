@@ -7,11 +7,7 @@ import { FileInput } from "@/components/ui/file-input";
 import { HelperText } from "@/components/ui/helper-text";
 import { P } from "@/components/ui/p";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  ContainerLayout,
-  PageContainer,
-  PageTitle,
-} from "@/components/widget/Page";
+import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { DA_API_SERVICE1 } from "@/constants/apis";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -23,34 +19,6 @@ import { HStack, SimpleGrid, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useRef } from "react";
 import * as yup from "yup";
-
-interface Props__Result {
-  result: any;
-}
-const Result = (props: Props__Result) => {
-  // Props
-  const { result, ...restProps } = props;
-  console.debug(result);
-
-  // Contexts
-  const { l } = useLang();
-  // const { themeConfig } = useThemeConfig();
-
-  // console.debug({ result });
-
-  return (
-    <CContainer
-      gap={4}
-      pt={4}
-      // rounded={themeConfig.radii.container}
-      borderTop={"1px solid"}
-      borderColor={"border.muted"}
-      {...restProps}
-    >
-      <P fontWeight={"medium"}>{l.result}</P>
-    </CContainer>
-  );
-};
 
 export default function Page() {
   const ID = "da_service1";
@@ -126,9 +94,7 @@ export default function Page() {
       req({
         config,
         onResolve: {
-          onSuccess: (r) => {
-            const result = r.data?.data?.result;
-          },
+          onSuccess: (r) => {},
           onError: () => {},
         },
       });
@@ -148,7 +114,9 @@ export default function Page() {
       <ContainerLayout ref={containerRef}>
         <CContainer gap={4} my={"auto"}>
           <VStack gap={1}>
-            <PageTitle p={0} textAlign={"center"} m={0} />
+            <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
+              {l.navs.da_service_1}
+            </P>
             <P color={"fg.subtle"}>{l.service_1_description}</P>
           </VStack>
 
@@ -232,6 +200,7 @@ export default function Page() {
               <HStack wrap={"wrap"} justify={"space-between"}>
                 <P
                   color={"fg.subtle"}
+                  ml={2}
                 >{`${totalUploadedFiles}/${totalFiles} file(s)`}</P>
 
                 <Btn type="submit" form={ID} loading={loading}>
@@ -240,7 +209,7 @@ export default function Page() {
               </HStack>
             </CContainer>
           ) : (
-            <Skeleton minH={"350px"} />
+            <Skeleton minH={"370px"} />
           )}
 
           <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>

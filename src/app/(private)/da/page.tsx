@@ -138,14 +138,14 @@ export default function Page() {
     <PageContainer p={4}>
       <ContainerLayout ref={containerRef}>
         <CContainer gap={4} my={"auto"}>
-          <P fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"}>
+          <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
             {l.document_analysis_service}
           </P>
 
           {containerDimension.width > 0 ? (
             <Services columns={cols} />
           ) : (
-            <Skeleton minH={"500px"} />
+            <Skeleton minH={"644px"} />
           )}
 
           <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
