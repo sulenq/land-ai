@@ -142,11 +142,7 @@ export default function Page() {
             {l.document_analysis_service}
           </P>
 
-          {containerDimension.width > 0 ? (
-            <Services columns={cols} />
-          ) : (
-            <Skeleton minH={"644px"} />
-          )}
+          {cols > 0 ? <Services columns={cols} /> : <Skeleton minH={"644px"} />}
 
           <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
         </CContainer>

@@ -120,7 +120,7 @@ export default function Page() {
             <P color={"fg.subtle"}>{l.service_1_description}</P>
           </VStack>
 
-          {containerDimension.width > 0 ? (
+          {cols > 0 ? (
             <CContainer
               gap={4}
               p={4}
