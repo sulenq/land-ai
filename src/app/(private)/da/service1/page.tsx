@@ -94,7 +94,8 @@ export default function Page() {
       req({
         config,
         onResolve: {
-          onSuccess: (r) => {},
+          // TODO : handle success
+          onSuccess: () => {},
           onError: () => {},
         },
       });
