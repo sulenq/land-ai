@@ -173,6 +173,12 @@ export interface Interface__SelectOption {
   disabled?: boolean;
 }
 
+// Interface__LangContent
+export interface Interface__LangContent {
+  id: string;
+  en: string;
+}
+
 // Modul 1 - AI Chats
 // Chats
 export interface Interface__ChatSession extends Interface__CUD {
@@ -205,4 +211,34 @@ export interface Interface__ChatState {
   isNewChat: boolean;
   hasLoadedHistory: boolean;
   // isNewSession: boolean;
+}
+
+// Modul 2 - Document Analysis
+export interface Interface__DemoDetailPage {
+  hasMaterai: boolean;
+  pageNumber: number;
+  hasSignature: boolean;
+  isValidPage: boolean;
+  extractedText: string;
+}
+export interface Interface__DemoResult {
+  fileName: string;
+  totalPages: number;
+  pagesDetail: Interface__DemoDetailPage[];
+  validationSummary: {
+    note: string;
+    isValid: boolean;
+  };
+}
+export interface Interface__DAService {
+  id: string;
+  title: Interface__LangContent;
+}
+export interface Interface__DASession {
+  id: string;
+  title: string;
+  documentService: Interface__DAService;
+  status: "PROCESSING" | "COMPLETED" | "ERROR";
+  result: string;
+  createdAt: string;
 }

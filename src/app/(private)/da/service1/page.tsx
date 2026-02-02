@@ -131,7 +131,7 @@ export default function Page() {
             >
               <form id={ID} onSubmit={formik.handleSubmit}>
                 <FieldsetRoot disabled={loading}>
-                  <SimpleGrid columns={cols} gap={4}>
+                  <SimpleGrid columns={cols} gap={2}>
                     <Field
                       label={l.cover_letter}
                       flex={"1 1 200px"}

@@ -75,7 +75,7 @@ import {
   setAccessToken,
   setUserData,
 } from "@/utils/auth";
-import { buildPrivateNavsFromChatSessions } from "@/utils/formatter";
+import { buildPrivateNavs } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import {
@@ -1020,7 +1020,7 @@ const TheApp = (props: Props__Layout) => {
   const iss = useIsSmScreenWidth();
 
   // States
-  const NAVS = buildPrivateNavsFromChatSessions(activeChatSessions || []);
+  const NAVS = buildPrivateNavs({ chats: activeChatSessions, daSessions: [] });
 
   return (
     <CContainer id="app_layout" h={"100dvh"} {...restProps}>

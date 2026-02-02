@@ -13,7 +13,7 @@ import { L_WEEKDAYS_0_BASED } from "@/constants/weekdays";
 import { getStorage } from "@/utils/client";
 import { isValid, parseISO } from "date-fns";
 import { format as formatTz, toZonedTime } from "date-fns-tz";
-import { MessageSquareIcon } from "lucide-react";
+import { FileScanIcon, MessageSquareIcon } from "lucide-react";
 import { isDateObject } from "./date";
 import { getTimezoneOffsetMs, getUserTimezone } from "./time";
 
@@ -371,31 +371,62 @@ export const formatDuration = (
   }
 };
 
-export function buildPrivateNavsFromChatSessions(
-  chats: Interface__ChatSession[],
-): Interface__NavItem[] {
+export function buildPrivateNavs({
+  chats,
+  daSessions,
+}: {
+  chats?: Interface__ChatSession[] | null;
+  daSessions?: Interface__ChatSession[] | null;
+}): Interface__NavItem[] {
+  const resolvedChats = chats ?? [];
+  const resolvedDaSessions = daSessions ?? [];
+
   return [
     {
       groupLabelKey: "main",
       list: [
         PRIVATE_NAVS[0].list[0],
         PRIVATE_NAVS[0].list[1],
-        {
-          icon: MessageSquareIcon,
-          labelKey: "navs.your_chats",
-          path: "/chats",
-          allowedRoles: [],
-          subMenus: [
-            {
-              list: chats.map((chat) => ({
-                labelKey: chat.title,
-                label: chat.title,
-                path: `/c/${chat.id}`,
+        ...(resolvedChats.length > 0
+          ? [
+              {
+                icon: MessageSquareIcon,
+                labelKey: "navs.your_chats",
+                path: "/chats",
                 allowedRoles: [],
-              })),
-            },
-          ],
-        },
+                subMenus: [
+                  {
+                    list: resolvedChats.map((chat) => ({
+                      labelKey: chat.title,
+                      label: chat.title,
+                      path: `/c/${chat.id}`,
+                      allowedRoles: [],
+                    })),
+                  },
+                ],
+              },
+            ]
+          : []),
+        ...(resolvedDaSessions.length > 0
+          ? [
+              {
+                icon: FileScanIcon,
+                labelKey: "navs.da_sessions",
+                path: "/da-sessions",
+                allowedRoles: [],
+                subMenus: [
+                  {
+                    list: resolvedDaSessions.map((session) => ({
+                      labelKey: session.title,
+                      label: session.title,
+                      path: `/da/${session.id}`,
+                      allowedRoles: [],
+                    })),
+                  },
+                ],
+              },
+            ]
+          : []),
       ],
     },
   ];
