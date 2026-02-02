@@ -3,5 +3,5 @@
 import { CContainer } from "@/components/ui/c-container";
 
 export default function Page() {
-  return <CContainer>Detail Services</CContainer>;
+  return <CContainer>Detail Service</CContainer>;
 }

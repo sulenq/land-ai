@@ -19,6 +19,7 @@ import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { isEmptyArray } from "@/utils/array";
 import { getGridColumns } from "@/utils/style";
+import { imgUrl } from "@/utils/url";
 import { SimpleGrid, StackProps } from "@chakra-ui/react";
 import { useRef } from "react";
 
@@ -100,13 +101,13 @@ const Services = (props: Props__Services) => {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <SimpleGrid columns={cols}>
+      <SimpleGrid columns={cols} gap={4}>
         {data?.map((service) => {
           return (
             <NavLink
               key={service.id}
               to={`/da/${service.id}`}
-              className="clicky"
+              className={"clicky"}
               flex={"1 1 200px"}
               w={"full"}
               gap={8}
@@ -120,7 +121,12 @@ const Services = (props: Props__Services) => {
               }}
               transition={"200ms"}
             >
-              <Img src={service.icon} w={"40px"} h={"40px"} mb={"auto"} />
+              <Img
+                src={imgUrl(service.icon)}
+                w={"40px"}
+                h={"40px"}
+                mb={"auto"}
+              />
 
               <CContainer gap={2}>
                 <P fontSize={"lg"} fontWeight={"semibold"}>

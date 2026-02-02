@@ -237,6 +237,19 @@ export interface Interface__DAService {
   description: Interface__LangContent;
   createdAt: string;
 }
+export interface Interface__DAServiceDocumentRequirement {
+  key: string;
+  title: Interface__LangContent;
+  description?: Interface__LangContent;
+  isRequired: boolean;
+  allowedMimeTypes: string[];
+  maxFiles: number;
+  maxSize: number; // In bytes
+}
+
+export interface Interface__DAServiceDetail extends Interface__DAService {
+  documentRequirements: Interface__DAServiceDocumentRequirement[];
+}
 export interface Interface__DASession {
   id: string;
   title: string;
