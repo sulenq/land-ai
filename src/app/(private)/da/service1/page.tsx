@@ -116,7 +116,7 @@ export default function Page() {
         <CContainer gap={4} my={"auto"}>
           <VStack gap={1}>
             <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
-              {l.navs.da_service_1}
+              {l.service_1_title}
             </P>
             <P color={"fg.subtle"}>{l.service_1_description}</P>
           </VStack>
