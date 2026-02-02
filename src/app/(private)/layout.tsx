@@ -382,7 +382,11 @@ const MobileLayout = (props: Props__Layout) => {
 // Desktop Area
 const DesktopLayout = (props: Props__Layout) => {
   // Props
-  const { children, navs, ...restProps } = props;
+  const {
+    children,
+    //? navs, unused
+    ...restProps
+  } = props;
 
   // Contexts
   const { l } = useLang();
@@ -1000,7 +1004,7 @@ const DesktopLayout = (props: Props__Layout) => {
           borderColor={"border.muted"}
           overflow={"auto"}
         >
-          <TopBar navs={navs} />
+          <TopBar />
 
           {children}
         </CContainer>

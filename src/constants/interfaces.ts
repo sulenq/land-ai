@@ -60,7 +60,7 @@ export interface Interface__Role {
 // Navs
 export interface Interface__NavListItem {
   icon?: any;
-  labelKey: string;
+  labelKey?: string;
   label?: string;
   path: string;
   backPath?: string;

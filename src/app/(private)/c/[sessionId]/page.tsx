@@ -12,6 +12,7 @@ import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SHOW_CHAT } from "@/constants/apis";
 import { useActiveChat } from "@/context/useActiveChat";
+import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useChatSessions } from "@/context/useChatSessions";
 import useMessageContainer from "@/context/useMessageContainer";
 import useDataState from "@/hooks/useDataState";
@@ -23,6 +24,7 @@ import { useEffect, useRef } from "react";
 
 export default function Page() {
   // Contexts
+  const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const messageContainerStyle = useMessageContainer((s) => s.style);
   const activeChat = useActiveChat((s) => s.activeChat);
   const setMessages = useActiveChat((s) => s.setMessages);
@@ -95,6 +97,22 @@ export default function Page() {
     }
   }, [messages]);
 
+  // Update breadcroumbs
+  useEffect(() => {
+    setBreadcrumbs({
+      activeNavs: [
+        {
+          labelKey: `navs.your_chats`,
+          path: `/c/${activeChat.session?.id}`,
+        },
+        {
+          labelKey: activeChat.session?.title as string,
+          label: activeChat.session?.title,
+          path: `/c/${activeChat.session?.id}`,
+        },
+      ],
+    });
+  }, []);
   const render = {
     loading: <ChatSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,

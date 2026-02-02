@@ -10,6 +10,8 @@ import Clock from "@/components/widget/Clock";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { Today } from "@/components/widget/Today";
 import { Interface__NavListItem } from "@/constants/interfaces";
+import { PRIVATE_NAVS } from "@/constants/navs";
+import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
 import useScreen from "@/hooks/useScreen";
 import { last } from "@/utils/array";
@@ -18,7 +20,7 @@ import { getActiveNavs } from "@/utils/url";
 import { HStack, Icon, StackProps } from "@chakra-ui/react";
 import { IconSlash } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 
 const FONT_SIZE = "md";
 
@@ -65,10 +67,36 @@ PageContainer.displayName = "PageContainer";
 
 export const NavBreadcrumb = (props: any) => {
   // Props
-  const { backPath, resolvedActiveNavs, ...restProps } = props;
+  const {
+    // backPath,
+    //  resolvedActiveNavs,
+    ...restProps
+  } = props;
 
   // Contexts
   const { l } = useLang();
+  const breadcrumbs = useBreadcrumbs((s) => s.breadcrumbs);
+  const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
+
+  // Hooks
+  const pathname = usePathname();
+  const { sw } = useScreen();
+
+  // States
+  const backPath = breadcrumbs.backPath;
+  const activeNavs = breadcrumbs.activeNavs;
+
+  useEffect(() => {
+    const activeNavs = getActiveNavs(pathname, PRIVATE_NAVS);
+    const resolvedBackPath = last(activeNavs)?.backPath;
+    const resolvedActiveNavs =
+      sw < 960 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
+
+    setBreadcrumbs({
+      activeNavs: resolvedActiveNavs,
+      backPath: resolvedBackPath,
+    });
+  }, [pathname]);
 
   return (
     <HStack gap={1} ml={"-4px"} h={"36px"} {...restProps}>
@@ -81,7 +109,7 @@ export const NavBreadcrumb = (props: any) => {
 
         {/* {isEmptyArray(resolvedActiveNavs) && <P>{l.navs.welcome}</P>} */}
 
-        {resolvedActiveNavs.map((nav: Interface__NavListItem, idx: number) => {
+        {activeNavs.map((nav: Interface__NavListItem, idx: number) => {
           return (
             <HStack key={idx} gap={0} color={"fg.subtle"}>
               {idx !== 0 && (
@@ -114,19 +142,18 @@ export const NavBreadcrumb = (props: any) => {
   );
 };
 
-export const TopBar = (props: any) => {
-  // Props
-  const { navs } = props;
-
+export const TopBar = () => {
   // Hooks
   const { sw } = useScreen();
   const pathname = usePathname();
 
   // States
-  const activeNavs = getActiveNavs(pathname, navs);
+  const activeNavs = getActiveNavs(pathname, PRIVATE_NAVS);
   const resolvedActiveNavs =
     sw < 960 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
   const backPath = last(activeNavs)?.backPath;
+
+  useEffect(() => {}, [activeNavs]);
 
   return (
     <HStack
