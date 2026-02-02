@@ -232,7 +232,10 @@ export interface Interface__DemoResult {
 }
 export interface Interface__DAService {
   id: string;
+  icon: string;
   title: Interface__LangContent;
+  description: Interface__LangContent;
+  createdAt: string;
 }
 export interface Interface__DASession {
   id: string;
