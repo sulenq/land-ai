@@ -44,6 +44,7 @@ export const navs = {
     id: "Perubahan Hak (HGB/Hak Pakai menjadi Hak Milik)",
     en: "Conversion of Land Rights (HGB/Right of Use to Ownership)",
   },
+
   dashboard: {
     id: "Dashboard",
     en: "Dashboard",
