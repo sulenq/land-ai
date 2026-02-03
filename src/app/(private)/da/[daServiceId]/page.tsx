@@ -17,6 +17,7 @@ import {
 } from "@/constants/apis";
 import { Interface__DAServiceDetail } from "@/constants/interfaces";
 import { useActiveDA } from "@/context/useActiveDA";
+import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
@@ -232,6 +233,7 @@ export default function Page() {
   // Contexts
   const { l, lang } = useLang();
   const setActiveDA = useActiveDA((s) => s.setActiveDA);
+  const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -281,6 +283,19 @@ export default function Page() {
   useEffect(() => {
     setActiveDA({
       daService: data,
+    });
+    setBreadcrumbs({
+      backPath: `/da`,
+      activeNavs: [
+        {
+          labelKey: "navs.document_analysis",
+          path: `/da`,
+        },
+        {
+          label: data?.title[lang] as string,
+          path: `/da/${data?.id}`,
+        },
+      ],
     });
   }, [data]);
 
