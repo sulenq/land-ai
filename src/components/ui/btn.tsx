@@ -38,7 +38,7 @@ export const Btn = forwardRef<HTMLButtonElement, BtnProps>((props, ref) => {
   // Memoized Active Style
   const resolvedMutedColor = useColorModeValue(
     `${props.colorPalette}.200 !important`,
-    `${props.colorPalette}.800 !important`
+    `${props.colorPalette}.800 !important`,
   );
   const activeBg = useMemo(() => {
     if (props.colorPalette) {

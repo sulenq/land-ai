@@ -13,6 +13,10 @@ export const Skeleton = (props: Props) => {
   const { themeConfig } = useThemeConfig();
 
   return (
-    <ChakraSkeleton rounded={themeConfig.radii.component} {...restProps} />
+    <ChakraSkeleton
+      w={"full"}
+      rounded={themeConfig.radii.component}
+      {...restProps}
+    />
   );
 };

@@ -14,6 +14,8 @@ export const CHAT_API_DELETE = `/api/ai/chat/delete`; // DELETE + /:sessionIds
 
 // Docs Analysis
 export const DA_API_SERVICES_INDEX = `/api/da/services/get`; // GET
-export const DA_API_SERVICE1_CREATE_SESSION = `/api/ocr/extract`; // POST
-export const DA_API_SERVICE1_SHOW_RESULT = `/api/ocr/session`; // GET + /sessionId
+export const DA_API_SERVICE_DETAIL = `/api/da/services/get-detail`; // GET + /:daServiceId
+
+export const DA_API_SERVICE_CREATE_SESSION = `/api/ocr/sessions`; // POST
+export const DA_API_SERVICE_TRIGGER_JOB = `/api/ocr/upload`; // POST
 export const DA_API_SERVICE1 = `/api/ocr/extract/status`; // GET + jobId

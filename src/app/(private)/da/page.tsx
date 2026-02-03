@@ -96,7 +96,7 @@ const Services = (props: Props__Services) => {
   });
 
   const render = {
-    loading: <Skeleton flex={1} />,
+    loading: <Skeleton flex={1} minH={"370px"} />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
@@ -147,7 +147,7 @@ const Services = (props: Props__Services) => {
   };
 
   return (
-    <CContainer flex={1} {...restProps}>
+    <CContainer my={"auto"} {...restProps}>
       {initialLoading && render.loading}
       {!initialLoading && (
         <>
@@ -218,18 +218,18 @@ export default function Page() {
   // Hooks
   const containerDimension = useContainerDimension(containerRef);
 
-  // SX
+  // States
   const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
 
   return (
     <PageContainer p={4}>
       <ContainerLayout ref={containerRef}>
-        <CContainer gap={4} flex={1} my={"auto"}>
+        <CContainer flex={1} gap={4} justify={"space-between"}>
           <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
             {l.document_analysis_service}
           </P>
 
-          <Services cols={cols} />
+          {cols > 1 && <Services cols={cols} />}
 
           <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
         </CContainer>
