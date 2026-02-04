@@ -9,7 +9,7 @@ interface State_Actions {
   activeChat: Interface__ChatState;
 
   initSession: () => void;
-  setActiveChat: (activeChat: Interface__ChatState) => void;
+  setActiveChat: (partial: Partial<State_Actions["activeChat"]>) => void;
 
   setSession: (session: Interface__ContextChatSession | null) => void;
   setMessages: (messages: Interface__ChatMessage[]) => void;
@@ -46,7 +46,13 @@ export const useActiveChat = create<State_Actions>((set) => ({
       },
     })),
 
-  setActiveChat: (activeChat) => set({ activeChat }),
+  setActiveChat: (partial) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        ...partial,
+      },
+    })),
 
   setSession: (session) =>
     set((state) => ({

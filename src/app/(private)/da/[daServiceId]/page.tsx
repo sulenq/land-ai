@@ -104,7 +104,6 @@ const InputForm = (props: Props__InputForm) => {
         })}`,
       );
       payload.append("serviceId", `${daService?.id}`);
-
       Object.entries(values.files).forEach(([docId, files]) => {
         if (files?.[0]) {
           payload.append(`files[${docId}]`, files[0]);
