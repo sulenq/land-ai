@@ -15,7 +15,10 @@ import {
   DA_API_SERVICE_CREATE_SESSION,
   DA_API_SERVICE_DETAIL,
 } from "@/constants/apis";
-import { Interface__DAServiceDetail } from "@/constants/interfaces";
+import {
+  Interface__DAServiceDetail,
+  Interface__DAServiceDocumentRequirement,
+} from "@/constants/interfaces";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
@@ -23,6 +26,7 @@ import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import useRequest from "@/hooks/useRequest";
+import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
 import { getGridColumns } from "@/utils/style";
 import { fileValidation } from "@/utils/validationSchema";
@@ -54,37 +58,42 @@ const InputForm = (props: Props__InputForm) => {
   const router = useRouter();
 
   // States
+  const docReqs = daService?.documentRequirements;
+
+  const buildFileSchema = (
+    docs?: Interface__DAServiceDocumentRequirement[],
+  ) => {
+    if (docs === undefined) return yup.object().shape({});
+
+    const shape: Record<number, any> = {};
+
+    docs.forEach((doc) => {
+      let schema = fileValidation({
+        allowedExtensions: ["pdf"],
+        maxSizeMB: 10,
+        min: doc.isMandatory ? 1 : 0,
+      });
+
+      if (doc.isMandatory) {
+        schema = schema.required(l.msg_required_form);
+      }
+
+      shape[doc.id] = schema;
+    });
+
+    return yup.object().shape({
+      files: yup.object().shape(shape),
+    });
+  };
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
-      coverLetter: [],
-      certificate: [],
-      auctionSchedule: [],
-      powerOfAttonery: [],
+      files: {} as Record<number, File[]>,
     },
-    validationSchema: yup.object().shape({
-      coverLetter: fileValidation({
-        allowedExtensions: ["pdf"],
-        maxSizeMB: 10,
-        min: 1,
-      }).required(l.msg_required_form),
-      // certificate: fileValidation({
-      //   allowedExtensions: ["pdf"],
-      //   maxSizeMB: 10,
-      //   min: 1,
-      // }).required(l.msg_required_form),
-      // auctionSchedule: fileValidation({
-      //   allowedExtensions: ["pdf"],
-      //   maxSizeMB: 10,
-      // }),
-      // powerOfAttonery: fileValidation({
-      //   allowedExtensions: ["pdf"],
-      //   maxSizeMB: 10,
-      // }),
-    }),
+    validationSchema: buildFileSchema(docReqs),
     onSubmit: (values) => {
       setActiveDA({
-        daDocs: values,
+        daDocs: values.files,
       });
       const payload = new FormData();
 
@@ -96,13 +105,11 @@ const InputForm = (props: Props__InputForm) => {
       );
       payload.append("serviceId", `${daService?.id}`);
 
-      // payload.append("coverLetter", values.coverLetter[0]);
-      // payload.append("certificate", values.certificate[0]);
-      // payload.append("auctionSchedule", values.auctionSchedule[0]);
-      // payload.append("powerOfAttonery", values.powerOfAttonery[0]);
-
-      // Demo payload
-      // payload.append("file", values.coverLetter[0]);
+      Object.entries(values.files).forEach(([docId, files]) => {
+        if (files?.[0]) {
+          payload.append(`files[${docId}]`, files[0]);
+        }
+      });
 
       const config = {
         url: DA_API_SERVICE_CREATE_SESSION,
@@ -125,11 +132,11 @@ const InputForm = (props: Props__InputForm) => {
       });
     },
   });
-  const totalFiles = Object.keys(formik.values).length;
-  const totalUploadedFiles = Object.values(formik.values).reduce(
-    (count, files) => count + (files.length > 0 ? 1 : 0),
-    0,
-  );
+
+  const totalFiles = docReqs?.length;
+  const totalUploadedFiles = Object.keys(formik.values.files).length;
+
+  if (isEmptyArray(docReqs)) return <FeedbackNoData />;
 
   return (
     <CContainer
@@ -143,69 +150,28 @@ const InputForm = (props: Props__InputForm) => {
     >
       <form id={ID} onSubmit={formik.handleSubmit}>
         <FieldsetRoot disabled={loading}>
-          <SimpleGrid columns={cols} gap={2}>
-            <Field
-              label={l.cover_letter}
-              flex={"1 1 200px"}
-              invalid={!!formik.errors.coverLetter}
-              errorText={formik.errors.coverLetter as string}
-            >
-              <FileInput
-                dropzone
-                inputValue={formik.values.coverLetter}
-                onChange={(inputValue) => {
-                  formik.setFieldValue("coverLetter", inputValue);
-                }}
-                bg={"bg.subtle"}
-              />
-            </Field>
-
-            <Field
-              label={l.certificate}
-              flex={"1 1 200px"}
-              invalid={!!formik.errors.certificate}
-              errorText={formik.errors.certificate as string}
-            >
-              <FileInput
-                dropzone
-                inputValue={formik.values.certificate}
-                onChange={(inputValue) => {
-                  formik.setFieldValue("certificate", inputValue);
-                }}
-              />
-            </Field>
-
-            <Field
-              label={l.auction_schedule}
-              flex={"1 1 200px"}
-              optional
-              invalid={!!formik.errors.auctionSchedule}
-              errorText={formik.errors.auctionSchedule as string}
-            >
-              <FileInput
-                dropzone
-                inputValue={formik.values.auctionSchedule}
-                onChange={(inputValue) => {
-                  formik.setFieldValue("auctionSchedule", inputValue);
-                }}
-              />
-            </Field>
-
-            <Field
-              label={l.power_of_attorney}
-              flex={"1 1 200px"}
-              optional
-              invalid={!!formik.errors.powerOfAttonery}
-              errorText={formik.errors.powerOfAttonery as string}
-            >
-              <FileInput
-                dropzone
-                inputValue={formik.values.powerOfAttonery}
-                onChange={(inputValue) => {
-                  formik.setFieldValue("powerOfAttonery", inputValue);
-                }}
-              />
-            </Field>
+          <SimpleGrid columns={cols} gap={4} alignItems={"end"}>
+            {docReqs?.map((doc) => {
+              return (
+                <Field
+                  key={doc.id}
+                  label={doc.name}
+                  flex={"1 1 200px"}
+                  invalid={!!formik.errors.files?.[doc.id]}
+                  errorText={formik.errors.files?.[doc.id] as string}
+                  optional={!doc.isMandatory}
+                >
+                  <FileInput
+                    dropzone
+                    inputValue={formik.values.files?.[doc.id]}
+                    onChange={(value) => {
+                      formik.setFieldValue(`files.${doc.id}`, value);
+                    }}
+                    bg={"bg.subtle"}
+                  />
+                </Field>
+              );
+            })}
           </SimpleGrid>
         </FieldsetRoot>
       </form>
@@ -215,7 +181,20 @@ const InputForm = (props: Props__InputForm) => {
           color={"fg.subtle"}
         >{`${totalUploadedFiles}/${totalFiles} file(s)`}</P>
 
-        <Btn type="submit" form={ID} loading={loading} w={"124px"} size={"md"}>
+        <Btn
+          type="submit"
+          form={ID}
+          loading={loading}
+          w={"124px"}
+          size={"md"}
+          disabled={docReqs
+            ?.filter((doc) => doc.isMandatory)
+            .some(
+              (doc) =>
+                !formik.values.files?.[doc.id] ||
+                formik.values.files[doc.id].length === 0,
+            )}
+        >
           {l.analyze}
         </Btn>
       </CContainer>

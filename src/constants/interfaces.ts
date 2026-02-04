@@ -236,13 +236,10 @@ export interface Interface__DAService {
   createdAt: string;
 }
 export interface Interface__DAServiceDocumentRequirement {
-  key: string;
-  title: Interface__LangContent;
-  description?: Interface__LangContent;
-  isRequired: boolean;
-  allowedMimeTypes: string[];
-  maxFiles: number;
-  maxSize: number; // In bytes
+  id: number;
+  name: string;
+  description: string;
+  isMandatory: boolean;
 }
 
 export interface Interface__DAServiceDetail extends Interface__DAService {

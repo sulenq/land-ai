@@ -17,7 +17,7 @@ interface State_Actions {
 
 export const DEFAULT_ACTIVE_DA: ActiveDAState = {
   daService: null,
-  daDocs: [],
+  daDocs: null,
   daSession: null,
 };
 
