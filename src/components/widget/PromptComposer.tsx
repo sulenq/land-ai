@@ -353,7 +353,7 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
         onSubmit={() => {
           formik.handleSubmit();
         }}
-        disabled={disabled || activeChat.session?.isStreaming}
+        disabled={disabled || activeChat.isStreaming}
         abortMode={activeChat.isStreaming}
         loading={loading}
       />

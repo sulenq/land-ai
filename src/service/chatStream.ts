@@ -71,7 +71,6 @@ export async function startChatStream({
             id: payload?.session?.id || payload.sessionId,
             title: payload?.session?.title || payload.title,
             isProtected: payload?.session?.isProtected,
-            isStreaming: true,
             controller: controller,
             createdAt: payload?.session?.createdAt,
           });
@@ -81,7 +80,6 @@ export async function startChatStream({
             id: payload?.session?.id || payload.sessionId,
             title: payload?.session?.title || payload.title,
             isProtected: payload?.session?.isProtected,
-            isStreaming: true,
             createdAt: payload?.session?.createdAt,
           });
 

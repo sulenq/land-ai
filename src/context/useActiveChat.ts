@@ -41,7 +41,6 @@ export const useActiveChat = create<State_Actions>((set) => ({
     set((state) => ({
       activeChat: {
         ...state.activeChat,
-        isStreaming: true,
         isNewChat: true,
         hasLoadedHistory: true,
       },
