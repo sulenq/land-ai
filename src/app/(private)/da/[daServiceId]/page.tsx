@@ -215,7 +215,7 @@ const InputForm = (props: Props__InputForm) => {
           color={"fg.subtle"}
         >{`${totalUploadedFiles}/${totalFiles} file(s)`}</P>
 
-        <Btn type="submit" form={ID} loading={loading} w={"150px"} size={"lg"}>
+        <Btn type="submit" form={ID} loading={loading} w={"124px"} size={"md"}>
           {l.analyze}
         </Btn>
       </CContainer>
@@ -250,6 +250,7 @@ export default function Page() {
       dataResource: false,
     });
   const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
+
   const render = {
     loading: (
       <>
@@ -300,7 +301,7 @@ export default function Page() {
   }, [data]);
 
   return (
-    <PageContainer className={"scrollY"} p={4}>
+    <PageContainer p={4}>
       <ContainerLayout ref={containerRef}>
         <CContainer flex={1} gap={4} justify={"space-between"}>
           {initialLoading && render.loading}

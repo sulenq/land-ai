@@ -130,12 +130,12 @@ const Services = (props: Props__Services) => {
 
               <CContainer gap={2}>
                 <P fontSize={"lg"} fontWeight={"semibold"}>
-                  {service.title[lang]}
+                  {service?.title?.[lang]}
                 </P>
 
-                <Tooltip content={service.description[lang]}>
+                <Tooltip content={service?.description?.[lang]}>
                   <P color={"fg.subtle"} lineClamp={2}>
-                    {service.description[lang]}
+                    {service?.description?.[lang]}
                   </P>
                 </Tooltip>
               </CContainer>
@@ -160,44 +160,6 @@ const Services = (props: Props__Services) => {
           )}
         </>
       )}
-
-      {/* <SimpleGrid gap={4} {...props}>
-        {SERVICES.map((service) => {
-          return (
-            <NavLink
-              key={service.id}
-              to={service.path}
-              className="clicky"
-              flex={"1 1 200px"}
-              w={"full"}
-              gap={8}
-              p={4}
-              border={"1px solid"}
-              borderColor={"border.subtle"}
-              rounded={themeConfig.radii.component}
-              cursor={"pointer"}
-              _hover={{
-                bg: "bg.muted",
-              }}
-              transition={"200ms"}
-            >
-              <Img src={service.iconPath} w={"40px"} h={"40px"} mb={"auto"} />
-
-              <CContainer gap={2}>
-                <P fontSize={"lg"} fontWeight={"semibold"}>
-                  {pluckString(l, service.titleKey)}
-                </P>
-
-                <Tooltip content={pluckString(l, service.descriptionKey)}>
-                  <P color={"fg.subtle"} lineClamp={2}>
-                    {pluckString(l, service.descriptionKey)}
-                  </P>
-                </Tooltip>
-              </CContainer>
-            </NavLink>
-          );
-        })}
-      </SimpleGrid> */}
     </CContainer>
   );
 };
