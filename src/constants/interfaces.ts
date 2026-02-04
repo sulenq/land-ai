@@ -251,5 +251,6 @@ export interface Interface__DASession {
   documentService: Interface__DAService;
   status: "PROCESSING" | "COMPLETED" | "ERROR";
   result: string;
+  isProtected: boolean;
   createdAt: string;
 }
