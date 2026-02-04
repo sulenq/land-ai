@@ -113,6 +113,7 @@ export default function Page() {
       ],
     });
   }, []);
+
   const render = {
     loading: <ChatSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,

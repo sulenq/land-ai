@@ -1,8 +1,17 @@
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import {
+  DisclosureBody,
+  DisclosureContent,
+  DisclosureFooter,
+  DisclosureHeader,
+  DisclosureRoot,
+} from "@/components/ui/disclosure";
+import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { P } from "@/components/ui/p";
 import Spinner from "@/components/ui/spinner";
 import { AppIcon } from "@/components/widget/AppIcon";
+import BackButton from "@/components/widget/BackButton";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
 import { Interface__ChatMessage } from "@/constants/interfaces";
@@ -10,11 +19,56 @@ import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import useMessageContainer from "@/context/useMessageContainer";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { startChatStream } from "@/service/chatStream";
+import { isEmptyArray } from "@/utils/array";
+import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
-import { Alert, Badge, HStack, StackProps } from "@chakra-ui/react";
-import { RefreshCwIcon } from "lucide-react";
+import { Alert, HStack, List, StackProps } from "@chakra-ui/react";
+import { ChevronDownIcon, RefreshCwIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
+
+interface Props__ReferenceDisclosureTrigger extends StackProps {
+  message: Interface__ChatMessage;
+}
+const ReferenceDisclosureTrigger = (
+  props: Props__ReferenceDisclosureTrigger,
+) => {
+  // Props
+  const { message, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(disclosureId(`reference`));
+
+  return (
+    <>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps} />
+
+      <DisclosureRoot open={isOpen} lazyLoad size={"xs"}>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={l.reference} />
+          </DisclosureHeader>
+
+          <DisclosureBody>
+            <List.Root gap={2} pl={4}>
+              {message?.sources?.map((source, index) => {
+                return <List.Item key={index}>{source}</List.Item>;
+              })}
+            </List.Root>
+          </DisclosureBody>
+
+          <DisclosureFooter>
+            <BackButton />
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
+  );
+};
 
 interface Props__Messages extends StackProps {
   messages: Interface__ChatMessage[];
@@ -85,12 +139,6 @@ export const Messages = (props: Props__Messages) => {
                           {message.content}
                         </MarkdownChat>
 
-                        <HStack>
-                          {message?.sources?.map((source, index) => {
-                            return <Badge key={index}>{source}</Badge>;
-                          })}
-                        </HStack>
-
                         {message.error && (
                           <CContainer key={message.id} gap={2}>
                             <Alert.Root
@@ -125,6 +173,19 @@ export const Messages = (props: Props__Messages) => {
                             >
                               <AppIcon icon={RefreshCwIcon} />
                             </Btn>
+                          )}
+
+                          {!isEmptyArray(message.sources) && (
+                            <ReferenceDisclosureTrigger message={message}>
+                              <Btn
+                                size={"xs"}
+                                variant={"ghost"}
+                                w={"fit"}
+                                pr={"6px"}
+                              >
+                                {l.reference} <AppIcon icon={ChevronDownIcon} />
+                              </Btn>
+                            </ReferenceDisclosureTrigger>
                           )}
                         </HStack>
                       </>

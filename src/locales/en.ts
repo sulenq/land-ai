@@ -372,6 +372,7 @@ const translations = {
   "purpose": "Purpose",
   "read_more": "Read more",
   "recieve": "Recieve",
+  "reference": "Reference",
   "rejected": "Rejected",
   "related_apps": "Related App",
   "rename": "Rename",

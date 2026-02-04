@@ -372,6 +372,7 @@ const translations = {
   "purpose": "Tujuan",
   "read_more": "Baca selengkapnya",
   "recieve": "Terima",
+  "reference": "Referensi",
   "rejected": "Ditolak",
   "related_apps": "Aplikasi Terkait",
   "rename": "Ganti nama",

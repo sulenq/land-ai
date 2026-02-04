@@ -135,6 +135,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const reference = {
+  id: "Referensi",
+  en: "Reference",
+};
 export const analyze = {
   id: "Analisa",
   en: "Analyze",
