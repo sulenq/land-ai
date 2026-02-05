@@ -1020,13 +1020,13 @@ const TheApp = (props: Props__Layout) => {
   const { ...restProps } = props;
 
   // Contexts
-  const activeChatSessions = useChatSessions((s) => s.activeChatSessions);
+  const chatSessions = useChatSessions((s) => s.chatSessions);
 
   // Hooks
   const iss = useIsSmScreenWidth();
 
   // States
-  const NAVS = buildPrivateNavs({ chats: activeChatSessions, daSessions: [] });
+  const NAVS = buildPrivateNavs({ chats: chatSessions, daSessions: [] });
 
   return (
     <CContainer id="app_layout" h={"100dvh"} {...restProps}>

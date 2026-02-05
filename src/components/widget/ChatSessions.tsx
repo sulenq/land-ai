@@ -342,8 +342,8 @@ export const ChatSessions = (props: any) => {
 
   // Contexts
   const { themeConfig } = useThemeConfig();
-  const activeChatSessions = useChatSessions((s) => s.activeChatSessions);
-  const setActiveChatSessions = useChatSessions((s) => s.setActiveChatSessions);
+  const chatSessions = useChatSessions((s) => s.chatSessions);
+  const setChatSessions = useChatSessions((s) => s.setChatSessions);
 
   // Refs
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -357,17 +357,20 @@ export const ChatSessions = (props: any) => {
     url: CHAT_API_CHAT_AI_INDEX,
     dataResource: false,
     loadingBar: false,
-    conditions: !activeChatSessions,
+    conditions: !chatSessions,
   });
   const [search, setSearch] = useState<string>("");
   const q = (search ?? "").toLowerCase();
   const qNormalized = q?.toLowerCase().trim();
+  const isReady = Array.isArray(chatSessions);
   const resolvedData = useMemo(() => {
-    if (qNormalized === "") return activeChatSessions;
-    return activeChatSessions?.filter((chat) =>
+    if (!isReady) return null;
+    if (qNormalized === "") return chatSessions;
+
+    return chatSessions.filter((chat) =>
       chat.title.toLowerCase().includes(qNormalized),
     );
-  }, [activeChatSessions, qNormalized]);
+  }, [isReady, chatSessions, qNormalized]);
 
   // Render
   let loadedContent = null;
@@ -457,7 +460,7 @@ export const ChatSessions = (props: any) => {
 
   useEffect(() => {
     if (data) {
-      setActiveChatSessions(data);
+      setChatSessions(data);
     }
   }, [data]);
 
@@ -475,27 +478,34 @@ export const ChatSessions = (props: any) => {
       </CContainer>
 
       <CContainer gap={1}>
-        {!activeChatSessions && (
-          <>
-            {initialLoading && render.loading}
-            {!initialLoading && (
-              <>
-                {error && render.error}
-                {!error && (
-                  <>
-                    {activeChatSessions && render.loaded}
+        {initialLoading && render.loading}
 
-                    {(!activeChatSessions ||
-                      isEmptyArray(activeChatSessions)) &&
-                      render.empty}
+        {!initialLoading && (
+          <>
+            {error && render.error}
+
+            {!error && (
+              <>
+                {!chatSessions && null}
+
+                {chatSessions && (
+                  <>
+                    {/* Empty */}
+                    {isEmptyArray(chatSessions) && render.empty}
+
+                    {/* Not found */}
+                    {!isEmptyArray(chatSessions) &&
+                      isEmptyArray(resolvedData) &&
+                      render.notFound}
+
+                    {/* Loaded */}
+                    {!isEmptyArray(resolvedData) && render.loaded}
                   </>
                 )}
               </>
             )}
           </>
         )}
-
-        {activeChatSessions && render.loaded}
       </CContainer>
     </CContainer>
   );

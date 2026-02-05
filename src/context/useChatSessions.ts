@@ -2,10 +2,8 @@ import { Interface__ChatSession } from "@/constants/interfaces";
 import { create } from "zustand";
 
 interface State_Actions {
-  activeChatSessions: Interface__ChatSession[] | null;
-  setActiveChatSessions: (
-    chatSessions: State_Actions["activeChatSessions"],
-  ) => void;
+  chatSessions: Interface__ChatSession[] | null;
+  setChatSessions: (chatSessions: State_Actions["chatSessions"]) => void;
   prependToChatSessions: (session: Interface__ChatSession) => void;
   renameChatSession: (sessionId: string, title: string) => void;
   toggleProtectedSession: (sessionId: string) => void;
@@ -14,34 +12,31 @@ interface State_Actions {
 }
 
 export const useChatSessions = create<State_Actions>((set) => ({
-  activeChatSessions: null,
+  chatSessions: null,
 
-  setActiveChatSessions: (chatSessions) =>
-    set({ activeChatSessions: chatSessions }),
+  setChatSessions: (chatSessions) => set({ chatSessions: chatSessions }),
 
   prependToChatSessions: (session) =>
     set((state) => {
-      if (!state.activeChatSessions) {
-        return { activeChatSessions: [session] };
+      if (!state.chatSessions) {
+        return { chatSessions: [session] };
       }
 
-      const filtered = state.activeChatSessions.filter(
-        (s) => s.id !== session.id,
-      );
+      const filtered = state.chatSessions.filter((s) => s.id !== session.id);
 
       return {
-        activeChatSessions: [session, ...filtered],
+        chatSessions: [session, ...filtered],
       };
     }),
 
   renameChatSession: (sessionId, title) =>
     set((state) => {
-      if (!state.activeChatSessions) {
-        return { activeChatSessions: null };
+      if (!state.chatSessions) {
+        return { chatSessions: null };
       }
 
       return {
-        activeChatSessions: state.activeChatSessions.map((s) =>
+        chatSessions: state.chatSessions.map((s) =>
           s.id === sessionId ? { ...s, title } : s,
         ),
       };
@@ -49,12 +44,12 @@ export const useChatSessions = create<State_Actions>((set) => ({
 
   toggleProtectedSession: (sessionId) =>
     set((state) => {
-      if (!state.activeChatSessions) {
-        return { activeChatSessions: null };
+      if (!state.chatSessions) {
+        return { chatSessions: null };
       }
 
       return {
-        activeChatSessions: state.activeChatSessions.map((s) =>
+        chatSessions: state.chatSessions.map((s) =>
           s.id === sessionId
             ? {
                 ...s,
@@ -67,18 +62,16 @@ export const useChatSessions = create<State_Actions>((set) => ({
 
   removeFromChatSessions: (sessionId) =>
     set((state) => {
-      if (!state.activeChatSessions) {
-        return { activeChatSessions: null };
+      if (!state.chatSessions) {
+        return { chatSessions: null };
       }
 
-      const filtered = state.activeChatSessions.filter(
-        (s) => s.id !== sessionId,
-      );
+      const filtered = state.chatSessions.filter((s) => s.id !== sessionId);
 
       return {
-        activeChatSessions: filtered.length > 0 ? filtered : null,
+        chatSessions: filtered.length > 0 ? filtered : null,
       };
     }),
 
-  clearChatSessions: () => set({ activeChatSessions: null }),
+  clearChatSessions: () => set({ chatSessions: null }),
 }));
