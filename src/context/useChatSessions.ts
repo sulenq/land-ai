@@ -69,7 +69,7 @@ export const useChatSessions = create<State_Actions>((set) => ({
       const filtered = state.chatSessions.filter((s) => s.id !== sessionId);
 
       return {
-        chatSessions: filtered.length > 0 ? filtered : null,
+        chatSessions: filtered,
       };
     }),
 

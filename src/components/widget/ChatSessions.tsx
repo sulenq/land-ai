@@ -464,6 +464,8 @@ export const ChatSessions = (props: any) => {
     }
   }, [data]);
 
+  console.debug(chatSessions);
+
   return (
     <CContainer gap={2} {...restProps}>
       <CContainer>
