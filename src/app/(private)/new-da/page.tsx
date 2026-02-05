@@ -77,7 +77,7 @@ const Services = (props: Props__Services) => {
 
               <CContainer gap={2}>
                 <P fontSize={"lg"} fontWeight={"semibold"}>
-                  {service?.title}
+                  {service?.name}
                 </P>
 
                 <Tooltip content={service?.description}>

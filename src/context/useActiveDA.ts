@@ -8,7 +8,7 @@ interface State_Actions {
   activeDA: Interface__ActiveDAState;
 
   initSession: () => void;
-  setActiveChat: (partial: Partial<State_Actions["activeDA"]>) => void;
+  setActiveDA: (partial: Partial<State_Actions["activeDA"]>) => void;
 
   setSession: (session: Interface__DASession | null) => void;
   updateHasLoadedHistory: (value: boolean) => void;
@@ -34,7 +34,7 @@ export const useActiveDA = create<State_Actions>((set) => ({
       },
     })),
 
-  setActiveChat: (partial) =>
+  setActiveDA: (partial) =>
     set((state) => ({
       activeDA: {
         ...state.activeDA,

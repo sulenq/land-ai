@@ -3,9 +3,9 @@ import {
   ActivityIcon,
   BlocksIcon,
   DatabaseIcon,
-  FileTextIcon,
   LanguagesIcon,
   PaletteIcon,
+  ScanTextIcon,
   SettingsIcon,
   ShieldHalfIcon,
   SquarePenIcon,
@@ -26,23 +26,10 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
         allowedRoles: [],
       },
       {
-        icon: FileTextIcon,
+        icon: ScanTextIcon,
         labelKey: "navs.new_document_analysis",
         path: "/new-da",
         allowedRoles: [],
-        subMenusInvisible: true,
-        subMenus: [
-          {
-            list: [
-              {
-                labelKey: "navs.da_service_1",
-                path: "/da/service1",
-                allowedRoles: [],
-                backPath: "/da",
-              },
-            ],
-          },
-        ],
       },
       // {
       //   icon: LayoutDashboardIcon,

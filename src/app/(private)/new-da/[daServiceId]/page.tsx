@@ -11,10 +11,7 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
-import {
-  DA_API_SERVICE_CREATE_SESSION,
-  DA_API_SERVICE_DETAIL,
-} from "@/constants/apis";
+import { DA_API_SERVICE_DETAIL, DA_API_SESSON_CREATE } from "@/constants/apis";
 import {
   Interface__DAServiceDetail,
   Interface__DAServiceDocumentRequirement,
@@ -47,7 +44,7 @@ const InputForm = (props: Props__InputForm) => {
   const { daService, cols, ...restProps } = props;
 
   // Contexts
-  const { l, lang } = useLang();
+  const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const setActiveDA = useActiveDA((s) => s.setActiveDA);
 
@@ -92,14 +89,14 @@ const InputForm = (props: Props__InputForm) => {
     },
     validationSchema: buildFileSchema(docReqs),
     onSubmit: (values) => {
-      setActiveDA({
-        daDocs: values.files,
-      });
+      // setActiveDA({
+      //   daDocs: values.files,
+      // });
       const payload = new FormData();
 
       payload.append(
         "title",
-        `${daService?.title[lang]} - ${formatDate(new Date(), {
+        `${daService?.name} - ${formatDate(new Date(), {
           variant: "dayShortMonthYear",
         })}`,
       );
@@ -111,7 +108,7 @@ const InputForm = (props: Props__InputForm) => {
       });
 
       const config = {
-        url: DA_API_SERVICE_CREATE_SESSION,
+        url: DA_API_SESSON_CREATE,
         method: "POST",
         data: payload,
       };
@@ -122,7 +119,7 @@ const InputForm = (props: Props__InputForm) => {
           onSuccess: (r) => {
             const daSession = r.data.data;
             setActiveDA({
-              daSession: daSession,
+              session: daSession,
             });
             router.push(`/da/${daService?.id}/${daSession.id}`);
           },
@@ -209,8 +206,7 @@ export default function Page() {
   };
 
   // Contexts
-  const { l, lang } = useLang();
-  const setActiveDA = useActiveDA((s) => s.setActiveDA);
+  const { l } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
 
   // Refs
@@ -247,10 +243,10 @@ export default function Page() {
       <>
         <VStack gap={1}>
           <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
-            {data?.title[lang]}
+            {data?.name}
           </P>
           <P color={"fg.subtle"} textAlign={"center"}>
-            {data?.description[lang]}
+            {data?.description}
           </P>
         </VStack>
 
@@ -260,9 +256,9 @@ export default function Page() {
   };
 
   useEffect(() => {
-    setActiveDA({
-      daService: data,
-    });
+    // setActiveDA({
+    //   session: data,
+    // });
     setBreadcrumbs({
       backPath: `/new-da`,
       activeNavs: [
@@ -271,7 +267,7 @@ export default function Page() {
           path: `/new-da`,
         },
         {
-          label: data?.title[lang] as string,
+          label: data?.name as string,
           path: `/new-da/${data?.id}`,
         },
       ],

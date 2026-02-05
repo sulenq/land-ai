@@ -15,7 +15,7 @@ export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
   documentService: {
     id: "101",
     icon: ``,
-    title: "Business Registration Verification",
+    name: "Business Registration Verification",
     description: "Verification service for registered business entities.",
     documentRequirements: [
       {

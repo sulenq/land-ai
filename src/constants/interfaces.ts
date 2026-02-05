@@ -231,7 +231,7 @@ export interface Interface__DemoResult {
 export interface Interface__DAService {
   id: string;
   icon: string;
-  title: string;
+  name: string;
   description: string;
   createdAt: string;
 }
@@ -262,5 +262,4 @@ export interface Interface__ActiveDAState {
   session: Interface__DASession | null;
   isNewDA: boolean;
   hasLoadedHistory: boolean;
-  // isNewSession: boolean;
 }

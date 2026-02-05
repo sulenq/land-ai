@@ -97,6 +97,7 @@ import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
   FileScanIcon,
+  FileTextIcon,
   MessageSquareIcon,
   SidebarCloseIcon,
   SidebarOpenIcon,
@@ -397,7 +398,7 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
     {
       value: "your_da",
       labelKey: "your_da_analysis",
-      icon: FileScanIcon,
+      icon: FileTextIcon,
     },
   ];
 
@@ -964,7 +965,7 @@ const DesktopLayout = (props: Props__Layout) => {
                   <Btn iconButton clicky={false} variant={"ghost"}>
                     {pathname.includes("/da/") && <LeftIndicator />}
 
-                    <AppIcon icon={FileScanIcon} />
+                    <AppIcon icon={FileTextIcon} />
                   </Btn>
                 </DesktopNavTooltip>
               </DASessionssDisclosureTrigger>
