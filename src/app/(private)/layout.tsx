@@ -961,7 +961,7 @@ const DesktopLayout = (props: Props__Layout) => {
               </ChatSessionsDisclosureTrigger>
 
               <DASessionssDisclosureTrigger mr={"auto"}>
-                <DesktopNavTooltip content={l.your_chats}>
+                <DesktopNavTooltip content={l.your_da_analysis}>
                   <Btn iconButton clicky={false} variant={"ghost"}>
                     {pathname.includes("/da/") && <LeftIndicator />}
 
