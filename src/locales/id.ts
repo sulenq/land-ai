@@ -326,7 +326,7 @@ const translations = {
     "welcome": "Halaman utama",
     "new_chat": "Obrolan Baru",
     "your_chats": "Obrolan Anda",
-    "document_analysis": "Analisa Dokumen",
+    "new_document_analysis": "Analisa Dokumen Baru",
     "da_service_1": "Pengecekan Sertipikat",
     "da_service_2": "Surat Keterangan Pendaftaran Tanah (SKPT)",
     "da_service_3": "Hak Tanggungan Elektronik (HT-el)",
@@ -542,7 +542,8 @@ const translations = {
   "year": "Tahun",
   "yearly_sales": "Penjualan tahunan",
   "yes": "Ya",
-  "your_chats": "Obrolan Anda",
+  "your_chats": "Obrolan anda",
+  "your_da_analysis": "Analisis doc. anda",
   "zoom_in": "Perbesar",
   "zoom_out": "Perkecil",
   "zoom_reset": "Reset zoom"

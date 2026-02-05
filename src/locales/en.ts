@@ -326,7 +326,7 @@ const translations = {
     "welcome": "Welcome screen",
     "new_chat": "New Chat",
     "your_chats": "Your Chats",
-    "document_analysis": "Document Analysis",
+    "new_document_analysis": "New Document Analysis",
     "da_service_1": "Certificate Verification",
     "da_service_2": "Land Registration Statement (SKPT)",
     "da_service_3": "Electronic Mortgage Right (HT-el)",
@@ -542,7 +542,8 @@ const translations = {
   "year": "Year",
   "yearly_sales": "Yearly sales",
   "yes": "Yes",
-  "your_chats": "Your Chats",
+  "your_chats": "Your chats",
+  "your_da_analysis": "Your doc. analysis",
   "zoom_in": "Zoom in",
   "zoom_out": "Zoom out",
   "zoom_reset": "Reset zoom"

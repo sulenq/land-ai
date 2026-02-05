@@ -12,9 +12,9 @@ export const navs = {
     id: "Obrolan Anda",
     en: "Your Chats",
   },
-  document_analysis: {
-    id: "Analisa Dokumen",
-    en: "Document Analysis",
+  new_document_analysis: {
+    id: "Analisa Dokumen Baru",
+    en: "New Document Analysis",
   },
   da_service_1: {
     id: "Pengecekan Sertipikat",
@@ -188,8 +188,12 @@ export const unprotect = {
   en: "Unprotect",
 };
 export const your_chats = {
-  id: "Obrolan Anda",
-  en: "Your Chats",
+  id: "Obrolan anda",
+  en: "Your chats",
+};
+export const your_da_analysis = {
+  id: "Analisis doc. anda",
+  en: "Your doc. analysis",
 };
 export const upload_file = {
   id: "Unggah file",

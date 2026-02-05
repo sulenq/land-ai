@@ -63,6 +63,7 @@ import useAuthMiddleware from "@/context/useAuthMiddleware";
 import { useChatSessions } from "@/context/useChatSessions";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
+import { useNavsTabs } from "@/context/useNavsTabs";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
@@ -84,11 +85,14 @@ import {
   HStack,
   Icon,
   StackProps,
+  Tabs,
+  TabsRootProps,
   VStack,
 } from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
+  FileScanIcon,
   MessageSquareIcon,
   SidebarCloseIcon,
   SidebarOpenIcon,
@@ -359,6 +363,58 @@ const MobileLayout = (props: Props__Layout) => {
         </HStack>
       </HScroll>
     </CContainer>
+  );
+};
+
+interface Props__DesktopTabs extends TabsRootProps {}
+const DesktopTabs = (props: Props__DesktopTabs) => {
+  const TABS = [
+    {
+      value: "your_chats",
+      labelKey: "your_chats",
+    },
+    {
+      value: "your_da",
+      labelKey: "your_da_analysis",
+    },
+  ];
+
+  // Props
+  const { ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const navsTabs = useNavsTabs((s) => s.navsTabs);
+  const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
+
+  return (
+    <Tabs.Root defaultValue={navsTabs.current} mt={4} {...restProps}>
+      <Tabs.List>
+        {TABS.map((tab) => {
+          return (
+            <Tabs.Trigger
+              key={tab.value}
+              value={tab.value}
+              onClick={() => {
+                setNavsTabs({
+                  current: tab.value,
+                });
+              }}
+            >
+              <Tooltip content={pluckString(l, tab.labelKey)}>
+                <P lineClamp={1}>{pluckString(l, tab.labelKey)}</P>
+              </Tooltip>
+            </Tabs.Trigger>
+          );
+        })}
+      </Tabs.List>
+
+      <Tabs.Content value={"your_chats"}>
+        <ChatSessions />
+      </Tabs.Content>
+
+      <Tabs.Content value={"your_da"}>Your Document Analysis</Tabs.Content>
+    </Tabs.Root>
   );
 };
 const DesktopLayout = (props: Props__Layout) => {
@@ -858,37 +914,31 @@ const DesktopLayout = (props: Props__Layout) => {
             })}
           </CContainer>
 
-          {/* Chat Sessions */}
-          <CContainer>
-            {navsExpanded ? (
-              <>
-                <P
-                  fontSize={"sm"}
-                  fontWeight={"semibold"}
-                  letterSpacing={"wide"}
-                  color={"fg.subtle"}
-                  ml={1}
-                  my={2}
-                >
-                  {l.your_chats}
-                </P>
+          {navsExpanded ? (
+            <DesktopTabs />
+          ) : (
+            <>
+              <ChatSessionsDisclosureTrigger mr={"auto"}>
+                <DesktopNavTooltip content={l.your_chats}>
+                  <Btn iconButton clicky={false} variant={"ghost"}>
+                    {pathname.includes("/c/") && <LeftIndicator />}
 
-                <ChatSessions navsExpanded={navsExpanded} />
-              </>
-            ) : (
-              <>
-                <ChatSessionsDisclosureTrigger mr={"auto"}>
-                  <DesktopNavTooltip content={l.your_chats}>
-                    <Btn iconButton clicky={false} variant={"ghost"}>
-                      {pathname.includes("/c/") && <LeftIndicator />}
+                    <AppIcon icon={MessageSquareIcon} />
+                  </Btn>
+                </DesktopNavTooltip>
+              </ChatSessionsDisclosureTrigger>
 
-                      <AppIcon icon={MessageSquareIcon} />
-                    </Btn>
-                  </DesktopNavTooltip>
-                </ChatSessionsDisclosureTrigger>
-              </>
-            )}
-          </CContainer>
+              <ChatSessionsDisclosureTrigger mr={"auto"}>
+                <DesktopNavTooltip content={l.your_chats}>
+                  <Btn iconButton clicky={false} variant={"ghost"}>
+                    {pathname.includes("/da/") && <LeftIndicator />}
+
+                    <AppIcon icon={FileScanIcon} />
+                  </Btn>
+                </DesktopNavTooltip>
+              </ChatSessionsDisclosureTrigger>
+            </>
+          )}
         </CContainer>
 
         <Divider />

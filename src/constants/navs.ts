@@ -27,8 +27,8 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
       },
       {
         icon: FileTextIcon,
-        labelKey: "navs.document_analysis",
-        path: "/da",
+        labelKey: "navs.new_document_analysis",
+        path: "/new-da",
         allowedRoles: [],
         subMenusInvisible: true,
         subMenus: [

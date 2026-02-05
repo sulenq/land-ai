@@ -264,15 +264,15 @@ export default function Page() {
       daService: data,
     });
     setBreadcrumbs({
-      backPath: `/da`,
+      backPath: `/new-da`,
       activeNavs: [
         {
-          labelKey: "navs.document_analysis",
-          path: `/da`,
+          labelKey: "navs.new_document_analysis",
+          path: `/new-da`,
         },
         {
           label: data?.title[lang] as string,
-          path: `/da/${data?.id}`,
+          path: `/new-da/${data?.id}`,
         },
       ],
     });

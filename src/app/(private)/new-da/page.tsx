@@ -54,7 +54,7 @@ const Services = (props: Props__Services) => {
           return (
             <NavLink
               key={service.id}
-              to={`/da/${service.id}`}
+              to={`/new-da/${service.id}`}
               className={"clicky"}
               flex={"1 1 200px"}
               w={"full"}
