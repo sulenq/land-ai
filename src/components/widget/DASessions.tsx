@@ -355,6 +355,7 @@ export const DASessions = (props: any) => {
   const { error, initialLoading, data, onRetry } = useDataState<
     Interface__DASession[]
   >({
+    // TODO remove initalData
     initialData: DUMMY_DA_SESSIONS,
     url: DA_API_SESSIONS,
     dataResource: false,
@@ -519,7 +520,7 @@ export const DASessionssDisclosureTrigger = (props: StackProps) => {
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(
-    disclosureId("disclosure_chat_sessions"),
+    disclosureId("disclosure_da_sessions"),
   );
 
   return (
