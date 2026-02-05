@@ -27,7 +27,7 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
-import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
+import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
   CHAT_API_CHAT_AI_INDEX,
   CHAT_API_DELETE,

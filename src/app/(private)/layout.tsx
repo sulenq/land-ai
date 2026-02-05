@@ -35,14 +35,14 @@ import HScroll from "@/components/widget/HScroll";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { MiniMyProfile } from "@/components/widget/MiniMyProfile";
-import { DesktopNavTooltip } from "@/components/widget/NavTooltip";
+import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
 import { NavBreadcrumb, TopBar } from "@/components/widget/Page";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_USER_PROFILE } from "@/constants/apis";
 import { PRIVATE_NAVS } from "@/constants/navs";
-import { Props__Layout, Props__NavLink } from "@/constants/props";
+import { Props__Layout } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
@@ -137,23 +137,6 @@ const MiniMyProfilePopoverTrigger = (props: StackProps) => {
   );
 };
 
-// Mobile Area
-const MobileNavLink = (props: Props__NavLink) => {
-  // Props
-  const { children, ...restProps } = props;
-
-  return (
-    <NavLink
-      minW={"50px"}
-      align={"center"}
-      gap={1}
-      pos={"relative"}
-      {...restProps}
-    >
-      {children}
-    </NavLink>
-  );
-};
 const MobileLayout = (props: Props__Layout) => {
   // Props
   const { children, ...restProps } = props;
@@ -378,8 +361,6 @@ const MobileLayout = (props: Props__Layout) => {
     </CContainer>
   );
 };
-
-// Desktop Area
 const DesktopLayout = (props: Props__Layout) => {
   // Props
   const {
@@ -892,39 +873,10 @@ const DesktopLayout = (props: Props__Layout) => {
                   {l.your_chats}
                 </P>
 
-                {/* <NewPromptDisclosureTrigger w={"full"} mb={2}>
-                  <Btn
-                    clicky={false}
-                    variant={"ghost"}
-                    justifyContent={"start"}
-                    textAlign={"left"}
-                    px={2}
-                    gap={4}
-                  >
-                    <AppIcon icon={SquarePenIcon} />
-                    {navsExpanded && l.navs.new_chat}
-                  </Btn>
-                </NewPromptDisclosureTrigger> */}
-
                 <ChatSessions navsExpanded={navsExpanded} />
               </>
             ) : (
               <>
-                {/* <NewPromptDisclosureTrigger w={"full"} mb={1}>
-                  <DesktopNavTooltip content={l.navs.new_chat}>
-                    <Btn
-                      clicky={false}
-                      variant={"ghost"}
-                      justifyContent={"start"}
-                      textAlign={"left"}
-                      px={2}
-                      gap={4}
-                    >
-                      <AppIcon icon={SquarePenIcon} />
-                    </Btn>
-                  </DesktopNavTooltip>
-                </NewPromptDisclosureTrigger> */}
-
                 <ChatSessionsDisclosureTrigger mr={"auto"}>
                   <DesktopNavTooltip content={l.your_chats}>
                     <Btn iconButton clicky={false} variant={"ghost"}>
