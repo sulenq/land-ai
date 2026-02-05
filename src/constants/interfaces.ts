@@ -231,8 +231,8 @@ export interface Interface__DemoResult {
 export interface Interface__DAService {
   id: string;
   icon: string;
-  title: Interface__LangContent;
-  description: Interface__LangContent;
+  title: string;
+  description: string;
   createdAt: string;
 }
 export interface Interface__DAServiceDocumentRequirement {
