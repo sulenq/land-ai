@@ -29,13 +29,15 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
-  CHAT_API_SESSIONS,
   CHAT_API_DELETE,
   CHAT_API_PROTECT,
   CHAT_API_RENAME,
+  DA_API_SESSIONS,
 } from "@/constants/apis";
-import { Interface__ChatSession } from "@/constants/interfaces";
+import { DUMMY_DA_SESSIONS } from "@/constants/dummyData";
+import { Interface__DASession } from "@/constants/interfaces";
 import { useChatSessions } from "@/context/useChatSessions";
+import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
@@ -336,14 +338,14 @@ const Delete = (props: Props__Delete) => {
   );
 };
 
-export const ChatSessions = (props: any) => {
+export const DASessions = (props: any) => {
   // Props
   const { ...restProps } = props;
 
   // Contexts
   const { themeConfig } = useThemeConfig();
-  const chatSessions = useChatSessions((s) => s.chatSessions);
-  const setChatSessions = useChatSessions((s) => s.setChatSessions);
+  const DASessions = useDASessions((s) => s.DASessions);
+  const setDASessions = useDASessions((s) => s.setDASessions);
 
   // Refs
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -351,26 +353,26 @@ export const ChatSessions = (props: any) => {
 
   // States
   const { error, initialLoading, data, onRetry } = useDataState<
-    Interface__ChatSession[]
+    Interface__DASession[]
   >({
-    // initialData: DUMMY_CHAT_SESSIONS,
-    url: CHAT_API_SESSIONS,
+    initialData: DUMMY_DA_SESSIONS,
+    url: DA_API_SESSIONS,
     dataResource: false,
     loadingBar: false,
-    conditions: !chatSessions,
+    conditions: !DASessions,
   });
   const [search, setSearch] = useState<string>("");
   const q = (search ?? "").toLowerCase();
   const qNormalized = q?.toLowerCase().trim();
-  const isReady = Array.isArray(chatSessions);
+  const isReady = Array.isArray(DASessions);
   const resolvedData = useMemo(() => {
     if (!isReady) return null;
-    if (qNormalized === "") return chatSessions;
+    if (qNormalized === "") return DASessions;
 
-    return chatSessions.filter((chat) =>
+    return DASessions.filter((chat) =>
       chat.title.toLowerCase().includes(qNormalized),
     );
-  }, [isReady, chatSessions, qNormalized]);
+  }, [isReady, DASessions, qNormalized]);
 
   // Render
   let loadedContent = null;
@@ -460,7 +462,7 @@ export const ChatSessions = (props: any) => {
 
   useEffect(() => {
     if (data) {
-      setChatSessions(data);
+      setDASessions(data);
     }
   }, [data]);
 
@@ -478,7 +480,7 @@ export const ChatSessions = (props: any) => {
       </CContainer>
 
       <CContainer gap={1}>
-        {!chatSessions && (
+        {!DASessions && (
           <>
             {initialLoading && render.loading}
 
@@ -488,22 +490,16 @@ export const ChatSessions = (props: any) => {
 
                 {!error && (
                   <>
-                    {!chatSessions && null}
+                    {/* Empty */}
+                    {isEmptyArray(DASessions) && render.empty}
 
-                    {chatSessions && (
-                      <>
-                        {/* Empty */}
-                        {isEmptyArray(chatSessions) && render.empty}
+                    {/* Not found */}
+                    {!isEmptyArray(DASessions) &&
+                      isEmptyArray(resolvedData) &&
+                      render.notFound}
 
-                        {/* Not found */}
-                        {!isEmptyArray(chatSessions) &&
-                          isEmptyArray(resolvedData) &&
-                          render.notFound}
-
-                        {/* Loaded */}
-                        {!isEmptyArray(resolvedData) && render.loaded}
-                      </>
-                    )}
+                    {/* Loaded */}
+                    {!isEmptyArray(resolvedData) && render.loaded}
                   </>
                 )}
               </>
@@ -511,13 +507,13 @@ export const ChatSessions = (props: any) => {
           </>
         )}
 
-        {chatSessions && render.loaded}
+        {DASessions && render.loaded}
       </CContainer>
     </CContainer>
   );
 };
 
-export const ChatSessionsDisclosureTrigger = (props: StackProps) => {
+export const DASessionssDisclosureTrigger = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
 
@@ -534,12 +530,12 @@ export const ChatSessionsDisclosureTrigger = (props: StackProps) => {
         <DisclosureContent>
           <DisclosureHeader>
             <DisclosureHeaderContent
-              title={`${capitalizeWords(l.your_chats)}`}
+              title={`${capitalizeWords(l.your_da_analysis)}`}
             />
           </DisclosureHeader>
 
           <DisclosureBody>
-            <ChatSessions />
+            <DASessions />
           </DisclosureBody>
 
           <DisclosureFooter>

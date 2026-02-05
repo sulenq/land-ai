@@ -31,6 +31,10 @@ import {
   ChatSessionsDisclosureTrigger,
 } from "@/components/widget/ChatSessions";
 import Clock from "@/components/widget/Clock";
+import {
+  DASessions,
+  DASessionssDisclosureTrigger,
+} from "@/components/widget/DASessions";
 import HScroll from "@/components/widget/HScroll";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
@@ -331,6 +335,22 @@ const MobileLayout = (props: Props__Layout) => {
             </MobileNavLink>
           </ChatSessionsDisclosureTrigger>
 
+          <DASessionssDisclosureTrigger flex={1}>
+            <MobileNavLink
+              color={pathname.includes("/c/") ? "" : MOBILE_NAVS_COLOR}
+            >
+              <AppIcon icon={FileScanIcon} boxSize={5} />
+
+              <P
+                textAlign={"center"}
+                lineClamp={1}
+                fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
+              >
+                {l.your_da_analysis}
+              </P>
+            </MobileNavLink>
+          </DASessionssDisclosureTrigger>
+
           <MiniMyProfilePopoverTrigger flex={1}>
             <VStack
               flex={1}
@@ -413,7 +433,9 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
         <ChatSessions />
       </Tabs.Content>
 
-      <Tabs.Content value={"your_da"}>Your Document Analysis</Tabs.Content>
+      <Tabs.Content value={"your_da"}>
+        <DASessions />
+      </Tabs.Content>
     </Tabs.Root>
   );
 };
@@ -928,7 +950,7 @@ const DesktopLayout = (props: Props__Layout) => {
                 </DesktopNavTooltip>
               </ChatSessionsDisclosureTrigger>
 
-              <ChatSessionsDisclosureTrigger mr={"auto"}>
+              <DASessionssDisclosureTrigger mr={"auto"}>
                 <DesktopNavTooltip content={l.your_chats}>
                   <Btn iconButton clicky={false} variant={"ghost"}>
                     {pathname.includes("/da/") && <LeftIndicator />}
@@ -936,7 +958,7 @@ const DesktopLayout = (props: Props__Layout) => {
                     <AppIcon icon={FileScanIcon} />
                   </Btn>
                 </DesktopNavTooltip>
-              </ChatSessionsDisclosureTrigger>
+              </DASessionssDisclosureTrigger>
             </>
           )}
         </CContainer>

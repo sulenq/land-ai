@@ -1,8 +1,58 @@
 import {
   Interface__ChatMessage,
   Interface__ChatSession,
+  Interface__DAService,
+  Interface__DASession,
   Interface__User,
 } from "@/constants/interfaces";
+
+export const DUMMY_DA_SESSIONS: Interface__DASession[] = [
+  {
+    id: "da_session_1",
+    title: "Verifikasi Sertifikat Hak Milik",
+    documentService: {} as Interface__DAService,
+    status: "COMPLETED",
+    result: "Data sertifikat valid dan terdaftar",
+    isProtected: false,
+    createdAt: "2025-01-01T10:00:00Z",
+  },
+  {
+    id: "da_session_2",
+    title: "Pemeriksaan Peta Bidang Tanah",
+    documentService: {} as Interface__DAService,
+    status: "PROCESSING",
+    result: "",
+    isProtected: true,
+    createdAt: "2025-01-02T11:30:00Z",
+  },
+  {
+    id: "da_session_3",
+    title: "Analisis Riwayat Peralihan Hak",
+    documentService: {} as Interface__DAService,
+    status: "ERROR",
+    result: "Dokumen riwayat tidak lengkap",
+    isProtected: false,
+    createdAt: "2025-01-03T09:15:00Z",
+  },
+  {
+    id: "da_session_4",
+    title: "Validasi Surat Ukur",
+    documentService: {} as Interface__DAService,
+    status: "COMPLETED",
+    result: "Surat ukur sesuai dengan data spasial",
+    isProtected: true,
+    createdAt: "2025-01-04T14:45:00Z",
+  },
+  {
+    id: "da_session_5",
+    title: "Pengecekan Status Hak Guna Bangunan",
+    documentService: {} as Interface__DAService,
+    status: "PROCESSING",
+    result: "",
+    isProtected: false,
+    createdAt: "2025-01-05T08:20:00Z",
+  },
+];
 
 export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
   {
@@ -10,7 +60,6 @@ export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
     title: "Analisis SHM Jakarta Selatan",
     createdAt: "2026-01-10T10:12:00Z",
     isProtected: false,
-    isStreaming: false,
   },
 ];
 
@@ -24,7 +73,6 @@ export const DUMMY_CHAT_SESSION: {
     title: "Dasar Hukum Yang Mendasari Teknis",
     createdAt: "2025-11-12T04:20:00Z",
     isProtected: false,
-    isStreaming: false,
   },
   totalMessages: 2,
   messages: [

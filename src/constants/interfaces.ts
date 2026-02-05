@@ -241,7 +241,6 @@ export interface Interface__DAServiceDocumentRequirement {
   description: string;
   isMandatory: boolean;
 }
-
 export interface Interface__DAServiceDetail extends Interface__DAService {
   documentRequirements: Interface__DAServiceDocumentRequirement[];
 }

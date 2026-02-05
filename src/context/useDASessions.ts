@@ -2,10 +2,8 @@ import { Interface__DASession } from "@/constants/interfaces";
 import { create } from "zustand";
 
 interface State_Actions {
-  activeDASessions: Interface__DASession[] | null;
-  setActiveDASessions: (
-    chatSessions: State_Actions["activeDASessions"],
-  ) => void;
+  DASessions: Interface__DASession[] | null;
+  setDASessions: (chatSessions: State_Actions["DASessions"]) => void;
   prependToDASessions: (session: Interface__DASession) => void;
   renameDASession: (sessionId: string, title: string) => void;
   toggleProtectedSession: (sessionId: string) => void;
@@ -14,34 +12,31 @@ interface State_Actions {
 }
 
 export const useDASessions = create<State_Actions>((set) => ({
-  activeDASessions: null,
+  DASessions: null,
 
-  setActiveDASessions: (chatSessions) =>
-    set({ activeDASessions: chatSessions }),
+  setDASessions: (chatSessions) => set({ DASessions: chatSessions }),
 
   prependToDASessions: (session) =>
     set((state) => {
-      if (!state.activeDASessions) {
-        return { activeDASessions: [session] };
+      if (!state.DASessions) {
+        return { DASessions: [session] };
       }
 
-      const filtered = state.activeDASessions.filter(
-        (s) => s.id !== session.id,
-      );
+      const filtered = state.DASessions.filter((s) => s.id !== session.id);
 
       return {
-        activeDASessions: [session, ...filtered],
+        DASessions: [session, ...filtered],
       };
     }),
 
   renameDASession: (sessionId, title) =>
     set((state) => {
-      if (!state.activeDASessions) {
-        return { activeDASessions: null };
+      if (!state.DASessions) {
+        return { DASessions: null };
       }
 
       return {
-        activeDASessions: state.activeDASessions.map((s) =>
+        DASessions: state.DASessions.map((s) =>
           s.id === sessionId ? { ...s, title } : s,
         ),
       };
@@ -49,12 +44,12 @@ export const useDASessions = create<State_Actions>((set) => ({
 
   toggleProtectedSession: (sessionId) =>
     set((state) => {
-      if (!state.activeDASessions) {
-        return { activeDASessions: null };
+      if (!state.DASessions) {
+        return { DASessions: null };
       }
 
       return {
-        activeDASessions: state.activeDASessions.map((s) =>
+        DASessions: state.DASessions.map((s) =>
           s.id === sessionId
             ? {
                 ...s,
@@ -67,16 +62,16 @@ export const useDASessions = create<State_Actions>((set) => ({
 
   removeFromDASessions: (sessionId) =>
     set((state) => {
-      if (!state.activeDASessions) {
-        return { activeDASessions: null };
+      if (!state.DASessions) {
+        return { DASessions: null };
       }
 
-      const filtered = state.activeDASessions.filter((s) => s.id !== sessionId);
+      const filtered = state.DASessions.filter((s) => s.id !== sessionId);
 
       return {
-        activeDASessions: filtered.length > 0 ? filtered : null,
+        DASessions: filtered.length > 0 ? filtered : null,
       };
     }),
 
-  clearDASessions: () => set({ activeDASessions: null }),
+  clearDASessions: () => set({ DASessions: null }),
 }));
