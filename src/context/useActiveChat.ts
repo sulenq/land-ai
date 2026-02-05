@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import {
-  Interface__ChatState,
+  Interface__ActiveChatState,
   Interface__ChatMessage,
   Interface__ContextChatSession,
 } from "@/constants/interfaces";
 
 interface State_Actions {
-  activeChat: Interface__ChatState;
+  activeChat: Interface__ActiveChatState;
 
   initSession: () => void;
   setActiveChat: (partial: Partial<State_Actions["activeChat"]>) => void;
@@ -25,7 +25,7 @@ interface State_Actions {
   finishStreaming: () => void;
 }
 
-export const DEFAULT_CHAT_STATE: Interface__ChatState = {
+export const DEFAULT_CHAT_STATE: Interface__ActiveChatState = {
   session: null,
   messages: [],
   totalMessages: 0,
@@ -70,11 +70,6 @@ export const useActiveChat = create<State_Actions>((set) => ({
       },
     })),
 
-  clearActiveChat: () =>
-    set(() => ({
-      activeChat: DEFAULT_CHAT_STATE,
-    })),
-
   updateHasLoadedHistory: (value) =>
     set((state) => ({
       activeChat: {
@@ -89,6 +84,11 @@ export const useActiveChat = create<State_Actions>((set) => ({
         ...state.activeChat,
         isNewChat: value,
       },
+    })),
+
+  clearActiveChat: () =>
+    set(() => ({
+      activeChat: DEFAULT_CHAT_STATE,
     })),
 
   appendMessage: (message) =>

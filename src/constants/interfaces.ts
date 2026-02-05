@@ -201,7 +201,7 @@ export interface Interface__ChatMessage {
   error?: boolean;
   createdAt?: string;
 }
-export interface Interface__ChatState {
+export interface Interface__ActiveChatState {
   session: Interface__ContextChatSession | null;
   messages: Interface__ChatMessage[];
   totalMessages: number;
@@ -247,9 +247,20 @@ export interface Interface__DAServiceDetail extends Interface__DAService {
 export interface Interface__DASession {
   id: string;
   title: string;
+  status: "PROCESSING" | "COMPLETED" | "ERROR";
+  createdAt: string;
+}
+export interface Interface__DASessionDetail extends Interface__DASession {
+  id: string;
+  title: string;
   documentService: Interface__DAService;
   status: "PROCESSING" | "COMPLETED" | "ERROR";
   result: string;
-  isProtected: boolean;
   createdAt: string;
+}
+export interface Interface__ActiveDAState {
+  session: Interface__DASession | null;
+  isNewDA: boolean;
+  hasLoadedHistory: boolean;
+  // isNewSession: boolean;
 }

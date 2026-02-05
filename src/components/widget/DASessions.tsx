@@ -29,9 +29,8 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
-  CHAT_API_DELETE,
-  CHAT_API_PROTECT,
-  CHAT_API_RENAME,
+  CHAT_API_SESSION_DELETE,
+  CHAT_API_SESSION_RENAME,
   DA_API_SESSIONS,
 } from "@/constants/apis";
 import { DUMMY_DA_SESSIONS } from "@/constants/dummyData";
@@ -49,13 +48,7 @@ import { disclosureId } from "@/utils/disclosure";
 import { capitalizeWords } from "@/utils/string";
 import { HStack, MenuItemProps, StackProps } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import {
-  EllipsisIcon,
-  PenIcon,
-  ShieldIcon,
-  ShieldOffIcon,
-  TrashIcon,
-} from "lucide-react";
+import { EllipsisIcon, PenIcon, TrashIcon } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as yup from "yup";
@@ -98,7 +91,7 @@ const Rename = (props: Props__Rename) => {
 
       const config = {
         method: "PATCH",
-        url: `${CHAT_API_RENAME}/${sessionId}`,
+        url: `${CHAT_API_SESSION_RENAME}/${sessionId}`,
         data: values,
       };
 
@@ -168,85 +161,6 @@ const Rename = (props: Props__Rename) => {
   );
 };
 
-interface Props__Protect extends MenuItemProps {
-  sessionId: string;
-  isProtected: boolean;
-}
-const Protect = (props: Props__Protect) => {
-  const ID = `protect_${props.sessionId}`;
-
-  // Props
-  const { sessionId, isProtected, ...restProps } = props;
-
-  // Contexts
-  const { l } = useLang();
-  const toggleProtectedSession = useChatSessions(
-    (s) => s.toggleProtectedSession,
-  );
-
-  // Hooks
-  const { req, loading } = useRequest({
-    id: ID,
-    showLoadingToast: false,
-    showSuccessToast: false,
-  });
-
-  // States
-  const formik = useFormik({
-    validateOnChange: false,
-    initialValues: {},
-    validationSchema: yup.object().shape({}),
-    onSubmit: () => {
-      back();
-
-      const config = {
-        method: "PATCH",
-        url: `${CHAT_API_PROTECT}/${sessionId}`,
-        params: [sessionId],
-      };
-
-      req({
-        config,
-        onResolve: {
-          onSuccess: () => {
-            toggleProtectedSession(sessionId);
-          },
-          onError: () => {},
-        },
-      });
-    },
-  });
-
-  return (
-    <ConfirmationDisclosureTrigger
-      id={ID}
-      title={capitalizeWords(isProtected ? l.unprotect : l.protect)}
-      description={l.msg_toggle_protect_session}
-      confirmButtonProps={{
-        type: "submit",
-        form: ID,
-      }}
-      confirmLabel={isProtected ? l.unprotect : l.protect}
-      onConfirm={formik.handleSubmit}
-      loading={loading}
-      w={"full"}
-    >
-      <form
-        id={ID}
-        onSubmit={formik.handleSubmit}
-        style={{
-          display: "none",
-        }}
-      ></form>
-
-      <MenuItem {...restProps}>
-        <AppIcon icon={isProtected ? ShieldOffIcon : ShieldIcon} />
-        {isProtected ? l.unprotect : l.protect}
-      </MenuItem>
-    </ConfirmationDisclosureTrigger>
-  );
-};
-
 interface Props__Delete extends MenuItemProps {
   sessionId: string;
   disabled?: boolean;
@@ -282,7 +196,7 @@ const Delete = (props: Props__Delete) => {
 
       const config = {
         method: "DELETE",
-        url: `${CHAT_API_DELETE}/${sessionId}`,
+        url: `${CHAT_API_SESSION_DELETE}/${sessionId}`,
         params: [sessionId],
       };
 
@@ -382,7 +296,6 @@ export const DASessions = (props: any) => {
   } else {
     loadedContent = resolvedData?.map((session) => {
       const isActive = pathname === `/c/${session.id}`;
-      const isProtected = session.isProtected as boolean;
 
       return (
         <DesktopNavTooltip key={session.id} content={session.title}>
@@ -395,17 +308,13 @@ export const DASessions = (props: any) => {
             transition={"200ms"}
             pos={"relative"}
           >
-            <NavLink to={`/c/${session.id}`} w={"full"}>
+            <NavLink to={`/da/${session.id}`} w={"full"}>
               <HStack h={["44px", null, "36px"]} pr={1}>
                 {isActive && <LeftIndicator />}
 
                 <P lineClamp={1} textAlign={"left"}>
                   {session.title}
                 </P>
-
-                {isProtected && (
-                  <AppIcon icon={ShieldIcon} color={"fg.subtle"} ml={"auto"} />
-                )}
               </HStack>
             </NavLink>
 
@@ -429,17 +338,7 @@ export const DASessions = (props: any) => {
                   title={session.title}
                 />
 
-                <Protect
-                  value="protect"
-                  sessionId={session.id}
-                  isProtected={isProtected}
-                />
-
-                <Delete
-                  value="delete"
-                  sessionId={session.id}
-                  disabled={isProtected}
-                />
+                <Delete value="delete" sessionId={session.id} />
               </MenuContent>
             </MenuRoot>
           </HStack>

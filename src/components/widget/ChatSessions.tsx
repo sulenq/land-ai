@@ -30,9 +30,9 @@ import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
   CHAT_API_SESSIONS,
-  CHAT_API_DELETE,
-  CHAT_API_PROTECT,
-  CHAT_API_RENAME,
+  CHAT_API_SESSION_DELETE,
+  CHAT_API_SESSION_PROTECT,
+  CHAT_API_SESSION_RENAME,
 } from "@/constants/apis";
 import { Interface__ChatSession } from "@/constants/interfaces";
 import { useChatSessions } from "@/context/useChatSessions";
@@ -96,7 +96,7 @@ const Rename = (props: Props__Rename) => {
 
       const config = {
         method: "PATCH",
-        url: `${CHAT_API_RENAME}/${sessionId}`,
+        url: `${CHAT_API_SESSION_RENAME}/${sessionId}`,
         data: values,
       };
 
@@ -199,7 +199,7 @@ const Protect = (props: Props__Protect) => {
 
       const config = {
         method: "PATCH",
-        url: `${CHAT_API_PROTECT}/${sessionId}`,
+        url: `${CHAT_API_SESSION_PROTECT}/${sessionId}`,
         params: [sessionId],
       };
 
@@ -280,7 +280,7 @@ const Delete = (props: Props__Delete) => {
 
       const config = {
         method: "DELETE",
-        url: `${CHAT_API_DELETE}/${sessionId}`,
+        url: `${CHAT_API_SESSION_DELETE}/${sessionId}`,
         params: [sessionId],
       };
 

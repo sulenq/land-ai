@@ -1,4 +1,4 @@
-import { CHAT_API_CHAT_AI_STREAM } from "@/constants/apis";
+import { CHAT_API_SESSION_AI_STREAM } from "@/constants/apis";
 import { Type__ChatStreamEvent } from "@/constants/types";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useChatSessions } from "@/context/useChatSessions";
@@ -36,7 +36,7 @@ export async function startChatStream({
   startAssistantStreaming(messageId);
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}${CHAT_API_CHAT_AI_STREAM}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}${CHAT_API_SESSION_AI_STREAM}`,
     {
       method: "POST",
       headers: {

@@ -1,34 +1,73 @@
 import {
-  Interface__DAServiceDetail,
+  Interface__ActiveDAState,
   Interface__DASession,
 } from "@/constants/interfaces";
 import { create } from "zustand";
 
-type ActiveDAState = {
-  daService: Interface__DAServiceDetail | null;
-  daDocs: any;
-  daSession: Interface__DASession | null;
-};
-
 interface State_Actions {
-  activeDA: ActiveDAState;
-  setActiveDA: (partial: Partial<ActiveDAState>) => void;
+  activeDA: Interface__ActiveDAState;
+
+  initSession: () => void;
+  setActiveChat: (partial: Partial<State_Actions["activeDA"]>) => void;
+
+  setSession: (session: Interface__DASession | null) => void;
+  updateHasLoadedHistory: (value: boolean) => void;
+  updateIsNewChat: (value: boolean) => void;
+  clearActiveChat: () => void;
 }
 
-export const DEFAULT_ACTIVE_DA: ActiveDAState = {
-  daService: null,
-  daDocs: null,
-  daSession: null,
+export const DEFAULT_CHAT_STATE: Interface__ActiveDAState = {
+  session: null,
+  isNewDA: false,
+  hasLoadedHistory: false,
 };
 
-export const useActiveDA = create<State_Actions>((set) => ({
-  activeDA: DEFAULT_ACTIVE_DA,
-  setActiveDA: (partial) =>
+export const useActiveChat = create<State_Actions>((set) => ({
+  activeDA: DEFAULT_CHAT_STATE,
+
+  initSession: () =>
+    set((state) => ({
+      activeDA: {
+        ...state.activeDA,
+        isNewChat: true,
+        hasLoadedHistory: true,
+      },
+    })),
+
+  setActiveChat: (partial) =>
     set((state) => ({
       activeDA: {
         ...state.activeDA,
         ...partial,
       },
     })),
-  clearActiveDA: () => set({ activeDA: DEFAULT_ACTIVE_DA }),
+
+  setSession: (session) =>
+    set((state) => ({
+      activeDA: {
+        ...state.activeDA,
+        session,
+      },
+    })),
+
+  updateHasLoadedHistory: (value) =>
+    set((state) => ({
+      activeDA: {
+        ...state.activeDA,
+        hasLoadedHistory: value,
+      },
+    })),
+
+  updateIsNewChat: (value) =>
+    set((state) => ({
+      activeDA: {
+        ...state.activeDA,
+        isNewChat: value,
+      },
+    })),
+
+  clearActiveChat: () =>
+    set(() => ({
+      activeDA: DEFAULT_CHAT_STATE,
+    })),
 }));

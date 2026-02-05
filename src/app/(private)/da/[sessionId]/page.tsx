@@ -1,24 +1,19 @@
 "use client";
 
-import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { ChatSkeleton } from "@/components/ui/c-loader";
-import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { Messages } from "@/components/widget/Messages";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
-import { ContinuePrompt } from "@/components/widget/PromptComposer";
-import { CHAT_API_SESSION_SHOW } from "@/constants/apis";
+import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
-import { useChatSessions } from "@/context/useChatSessions";
+import { useDASessions } from "@/context/useDASessions";
 import useMessageContainer from "@/context/useMessageContainer";
 import useDataState from "@/hooks/useDataState";
-import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
-import { ArrowDownIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
@@ -32,23 +27,20 @@ export default function Page() {
   const clearActiveChat = useActiveChat((s) => s.clearActiveChat);
   const updateHasLoadedHistory = useActiveChat((s) => s.updateHasLoadedHistory);
   const updateIsNewChat = useActiveChat((s) => s.updateIsNewChat);
-  const removeFromChatSessions = useChatSessions(
-    (s) => s.removeFromChatSessions,
-  );
+  const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Hooks
   const router = useRouter();
-  const scrollBottom = useScrollBottom(containerRef);
 
   // States
   const { sessionId } = useParams();
   const activeChatSessionId = activeChat?.session?.id;
   const shouldFetchHistory = !activeChat.hasLoadedHistory;
   const { error, status, initialLoading, data, onRetry } = useDataState<any>({
-    url: `${CHAT_API_SESSION_SHOW}/${sessionId}`,
+    url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
     dataResource: false,
     dependencies: [shouldFetchHistory],
     conditions: shouldFetchHistory,
@@ -85,8 +77,8 @@ export default function Page() {
   // Handle 404 - redirect and remove session
   useEffect(() => {
     if (status === 404) {
-      removeFromChatSessions(sessionId as string);
-      router.push("/new-chat");
+      removeFromDASessions(sessionId as string);
+      router.push("/new-da");
     }
   }, [status]);
 
@@ -102,7 +94,7 @@ export default function Page() {
     setBreadcrumbs({
       activeNavs: [
         {
-          labelKey: `navs.your_chats`,
+          labelKey: `navs.your_da_analysis`,
           path: `/c/${activeChat.session?.id}`,
         },
         {
@@ -146,36 +138,6 @@ export default function Page() {
 
           {!shouldFetchHistory && <>{render.loaded}</>}
         </ContainerLayout>
-
-        <CContainer
-          align={"center"}
-          px={4}
-          gap={4}
-          position={"absolute"}
-          left={0}
-          bottom={0}
-        >
-          <ContainerLayout gap={4} align={"center"}>
-            <Btn
-              iconButton
-              clicky={false}
-              w={"fit"}
-              variant={"surface"}
-              size={"xs"}
-              bg={"body"}
-              opacity={scrollBottom > 1 ? 1 : 0}
-              visibility={scrollBottom > 1 ? "visible" : "hidden"}
-              transition={"200ms"}
-              onClick={scrollToBottom}
-            >
-              <AppIcon icon={ArrowDownIcon} />
-            </Btn>
-
-            <CContainer bg={"body"}>
-              <ContinuePrompt mb={4} />
-            </CContainer>
-          </ContainerLayout>
-        </CContainer>
       </CContainer>
     </PageContainer>
   );
