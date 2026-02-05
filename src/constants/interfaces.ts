@@ -253,7 +253,7 @@ export interface Interface__DASession {
 export interface Interface__DASessionDetail extends Interface__DASession {
   id: string;
   title: string;
-  documentService: Interface__DAService;
+  documentService: Interface__DAServiceDetail;
   status: "PROCESSING" | "COMPLETED" | "ERROR";
   result: string;
   createdAt: string;

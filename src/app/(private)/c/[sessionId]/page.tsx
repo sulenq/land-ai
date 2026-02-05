@@ -2,7 +2,7 @@
 
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
-import { ChatSkeleton } from "@/components/ui/c-loader";
+import { ChatSessionPageSkeleton } from "@/components/ui/c-loader";
 import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
@@ -40,11 +40,11 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Hooks
+  const { sessionId } = useParams();
   const router = useRouter();
   const scrollBottom = useScrollBottom(containerRef);
 
   // States
-  const { sessionId } = useParams();
   const activeChatSessionId = activeChat?.session?.id;
   const shouldFetchHistory = !activeChat.hasLoadedHistory;
   const { error, status, initialLoading, data, onRetry } = useDataState<any>({
@@ -106,7 +106,6 @@ export default function Page() {
           path: `/c/${activeChat.session?.id}`,
         },
         {
-          labelKey: activeChat.session?.title as string,
           label: activeChat.session?.title,
           path: `/c/${activeChat.session?.id}`,
         },
@@ -115,7 +114,7 @@ export default function Page() {
   }, []);
 
   const render = {
-    loading: <ChatSkeleton />,
+    loading: <ChatSessionPageSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,

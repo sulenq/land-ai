@@ -1,93 +1,52 @@
 "use client";
 
 import { CContainer } from "@/components/ui/c-container";
-import { ChatSkeleton } from "@/components/ui/c-loader";
+import { DASessonPageSkeleton } from "@/components/ui/c-loader";
+import { HelperText } from "@/components/ui/helper-text";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { Messages } from "@/components/widget/Messages";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
-import { DA_API_SESSION_DETAIL } from "@/constants/apis";
-import { useActiveChat } from "@/context/useActiveChat";
+import { DUMMY_ACTIVE_DA_SESSION } from "@/constants/dummyData";
+import { Interface__DASessionDetail } from "@/constants/interfaces";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
-import useMessageContainer from "@/context/useMessageContainer";
+import useLang from "@/context/useLang";
 import useDataState from "@/hooks/useDataState";
-import { isEmptyArray } from "@/utils/array";
+import { SimpleGrid } from "@chakra-ui/react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export default function Page() {
   // Contexts
+  const { l } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
-  const messageContainerStyle = useMessageContainer((s) => s.style);
-  const activeChat = useActiveChat((s) => s.activeChat);
-  const setMessages = useActiveChat((s) => s.setMessages);
-  const setSession = useActiveChat((s) => s.setSession);
-  const clearActiveChat = useActiveChat((s) => s.clearActiveChat);
-  const updateHasLoadedHistory = useActiveChat((s) => s.updateHasLoadedHistory);
-  const updateIsNewChat = useActiveChat((s) => s.updateIsNewChat);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
 
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-
   // Hooks
+  const { sessionId } = useParams();
   const router = useRouter();
 
   // States
-  const { sessionId } = useParams();
-  const activeChatSessionId = activeChat?.session?.id;
-  const shouldFetchHistory = !activeChat.hasLoadedHistory;
-  const { error, status, initialLoading, data, onRetry } = useDataState<any>({
-    url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
-    dataResource: false,
-    dependencies: [shouldFetchHistory],
-    conditions: shouldFetchHistory,
-  });
-  const messages = activeChat.messages;
-
-  // Utils
-  function scrollToBottom() {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }
-
-  // Update has loaded history on session change
-  useEffect(() => {
-    updateIsNewChat(false);
-    if (activeChatSessionId !== sessionId) {
-      updateHasLoadedHistory(false);
-      clearActiveChat();
-    }
-  }, [sessionId]);
-
-  // Set active chat on data load
-  useEffect(() => {
-    if (data) {
-      setSession({
-        ...data?.session,
-        isStreaming: false,
-      });
-      setMessages(data?.messages);
-    }
-  }, [data]);
+  // const initialLoading = true;
+  const { error, initialLoading, status, data, onRetry } =
+    useDataState<Interface__DASessionDetail>({
+      initialData: DUMMY_ACTIVE_DA_SESSION,
+      // TODO enable below when api ready
+      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      dataResource: false,
+      dependencies: [sessionId],
+    });
 
   // Handle 404 - redirect and remove session
   useEffect(() => {
-    if (status === 404) {
+    // TODO: remove below disabled condition when api ready
+    const disabled = true;
+    if (status === 404 && !disabled) {
       removeFromDASessions(sessionId as string);
       router.push("/new-da");
     }
   }, [status]);
-
-  // Scroll to bottom on messages change
-  useEffect(() => {
-    if (!isEmptyArray(messages) && activeChat.isStreaming) {
-      scrollToBottom();
-    }
-  }, [messages]);
 
   // Update breadcroumbs
   useEffect(() => {
@@ -95,50 +54,50 @@ export default function Page() {
       activeNavs: [
         {
           labelKey: `navs.your_da_analysis`,
-          path: `/c/${activeChat.session?.id}`,
+          path: `/da/${data?.id}`,
         },
         {
-          labelKey: activeChat.session?.title as string,
-          label: activeChat.session?.title,
-          path: `/c/${activeChat.session?.id}`,
+          label: data?.title,
+          path: `/da/${data?.id}`,
         },
       ],
     });
   }, []);
 
+  console.debug(data);
+
   const render = {
-    loading: <ChatSkeleton />,
+    loading: <DASessonPageSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
-    loaded: <Messages messages={messages} />,
+    loaded: (
+      <CContainer>
+        <SimpleGrid columns={[2, null, 4]}></SimpleGrid>
+      </CContainer>
+    ),
   };
 
   return (
-    <PageContainer pos={"relative"}>
-      <CContainer
-        ref={containerRef}
-        flex={1}
-        p={4}
-        overflowY={"auto"}
-        scrollBehavior={"smooth"}
-      >
-        <ContainerLayout gap={8} pb={messageContainerStyle?.pb}>
-          {shouldFetchHistory && (
+    <PageContainer p={4} pos={"relative"}>
+      <ContainerLayout>
+        <CContainer flex={1} gap={4} justify={"space-between"}>
+          {initialLoading && render.loading}
+          {!initialLoading && (
             <>
-              {initialLoading && render.loading}
-              {!initialLoading && (
+              {error && render.error}
+              {!error && (
                 <>
-                  {error && render.error}
-                  {!error && <>{!isEmptyArray(messages) && render.loaded}</>}
+                  {data && render.loaded}
+                  {!data && render.empty}
                 </>
               )}
             </>
           )}
 
-          {!shouldFetchHistory && <>{render.loaded}</>}
-        </ContainerLayout>
-      </CContainer>
+          <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+        </CContainer>
+      </ContainerLayout>
     </PageContainer>
   );
 }

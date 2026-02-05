@@ -269,7 +269,6 @@ export const DASessions = (props: any) => {
   const { error, initialLoading, data, onRetry } = useDataState<
     Interface__DASession[]
   >({
-    // TODO remove initalData
     initialData: DUMMY_DA_SESSIONS,
     url: DA_API_SESSIONS,
     dataResource: false,
@@ -295,7 +294,7 @@ export const DASessions = (props: any) => {
     loadedContent = <FeedbackNotFound />;
   } else {
     loadedContent = resolvedData?.map((session) => {
-      const isActive = pathname === `/c/${session.id}`;
+      const isActive = pathname === `/da/${session.id}`;
 
       return (
         <DesktopNavTooltip key={session.id} content={session.title}>

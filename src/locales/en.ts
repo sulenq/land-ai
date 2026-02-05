@@ -327,6 +327,7 @@ const translations = {
     "new_chat": "New Chat",
     "your_chats": "Your Chats",
     "new_document_analysis": "New Document Analysis",
+    "your_da_analysis": "Your doc. analysis",
     "da_service_1": "Certificate Verification",
     "da_service_2": "Land Registration Statement (SKPT)",
     "da_service_3": "Electronic Mortgage Right (HT-el)",

@@ -392,10 +392,12 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
     {
       value: "your_chats",
       labelKey: "your_chats",
+      icon: MessageSquareIcon,
     },
     {
       value: "your_da",
       labelKey: "your_da_analysis",
+      icon: FileScanIcon,
     },
   ];
 
@@ -409,12 +411,13 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
 
   return (
     <Tabs.Root defaultValue={navsTabs.current} mt={4} {...restProps}>
-      <Tabs.List>
+      <Tabs.List w={"full"}>
         {TABS.map((tab) => {
           return (
             <Tabs.Trigger
               key={tab.value}
               value={tab.value}
+              w={"full"}
               onClick={() => {
                 setNavsTabs({
                   current: tab.value,
@@ -422,7 +425,13 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
               }}
             >
               <Tooltip content={pluckString(l, tab.labelKey)}>
-                <P lineClamp={1}>{pluckString(l, tab.labelKey)}</P>
+                <HStack w={"full"} justify={"center"}>
+                  <AppIcon icon={tab.icon} />
+
+                  <P lineClamp={1} textAlign={"left"}>
+                    {pluckString(l, tab.labelKey)}
+                  </P>
+                </HStack>
               </Tooltip>
             </Tabs.Trigger>
           );

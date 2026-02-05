@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface NavsTabs {
   current: string;
@@ -13,13 +14,20 @@ export const DEFAULT_NAVS_TABS = {
   current: "your_chats",
 };
 
-export const useNavsTabs = create<State_Actions>((set) => ({
-  navsTabs: DEFAULT_NAVS_TABS,
-  setNavsTabs: (newState) =>
-    set((state) => ({
-      navsTabs: {
-        ...state.navsTabs,
-        ...newState,
-      },
-    })),
-}));
+export const useNavsTabs = create<State_Actions>()(
+  persist(
+    (set) => ({
+      navsTabs: DEFAULT_NAVS_TABS,
+      setNavsTabs: (newState) =>
+        set((state) => ({
+          navsTabs: {
+            ...state.navsTabs,
+            ...newState,
+          },
+        })),
+    }),
+    {
+      name: "navs-tabs",
+    },
+  ),
+);

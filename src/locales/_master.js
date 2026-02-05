@@ -16,6 +16,10 @@ export const navs = {
     id: "Analisa Dokumen Baru",
     en: "New Document Analysis",
   },
+  your_da_analysis: {
+    id: "Analisis doc. anda",
+    en: "Your doc. analysis",
+  },
   da_service_1: {
     id: "Pengecekan Sertipikat",
     en: "Certificate Verification",

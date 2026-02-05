@@ -23,7 +23,16 @@ export const CSpinner = ({ spinnerProps, ...props }: Props) => {
   );
 };
 
-export const ChatSkeleton = () => {
+export const ChatSessionPageSkeleton = () => {
+  return (
+    <CContainer m={"auto"} gap={4}>
+      <Skeleton w={"70%"} h={"100px"} ml={"auto"} />
+      <Skeleton w={"full"} h={"200px"} mr={"auto"} />
+    </CContainer>
+  );
+};
+
+export const DASessonPageSkeleton = () => {
   return (
     <CContainer m={"auto"} gap={4}>
       <Skeleton w={"70%"} h={"100px"} ml={"auto"} />

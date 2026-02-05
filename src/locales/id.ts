@@ -327,6 +327,7 @@ const translations = {
     "new_chat": "Obrolan Baru",
     "your_chats": "Obrolan Anda",
     "new_document_analysis": "Analisa Dokumen Baru",
+    "your_da_analysis": "Analisis doc. anda",
     "da_service_1": "Pengecekan Sertipikat",
     "da_service_2": "Surat Keterangan Pendaftaran Tanah (SKPT)",
     "da_service_3": "Hak Tanggungan Elektronik (HT-el)",

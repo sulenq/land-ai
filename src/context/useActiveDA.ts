@@ -22,7 +22,7 @@ export const DEFAULT_CHAT_STATE: Interface__ActiveDAState = {
   hasLoadedHistory: false,
 };
 
-export const useActiveChat = create<State_Actions>((set) => ({
+export const useActiveDA = create<State_Actions>((set) => ({
   activeDA: DEFAULT_CHAT_STATE,
 
   initSession: () =>

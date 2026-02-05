@@ -2,9 +2,44 @@ import {
   Interface__ChatMessage,
   Interface__ChatSession,
   Interface__DASession,
+  Interface__DASessionDetail,
   Interface__User,
 } from "@/constants/interfaces";
 
+export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
+  id: "da-session-001",
+  title: "DA Service Analysis Session",
+  status: "COMPLETED",
+  createdAt: "2026-02-05T10:15:30.000Z",
+  result: "All required documents have been verified successfully.",
+  documentService: {
+    id: "101",
+    icon: ``,
+    title: "Business Registration Verification",
+    description: "Verification service for registered business entities.",
+    documentRequirements: [
+      {
+        id: 1,
+        name: "Business License",
+        description: "Official business license issued by authorities.",
+        isMandatory: true,
+      },
+      {
+        id: 2,
+        name: "Tax Identification Number",
+        description: "Valid tax identification document.",
+        isMandatory: true,
+      },
+      {
+        id: 3,
+        name: "Company Profile",
+        description: "Overview of company background and operations.",
+        isMandatory: false,
+      },
+    ],
+    createdAt: "2026-02-05T10:15:30.000Z",
+  },
+};
 export const DUMMY_DA_SESSIONS: Interface__DASession[] = [
   {
     id: "da_session_1",
@@ -37,7 +72,6 @@ export const DUMMY_DA_SESSIONS: Interface__DASession[] = [
     createdAt: "2025-01-05T08:20:00Z",
   },
 ];
-
 export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
   {
     id: "30e23784-d63a-4e41-bc5f-01e69d7b6308",
@@ -46,7 +80,6 @@ export const DUMMY_CHAT_SESSIONS: Interface__ChatSession[] = [
     isProtected: false,
   },
 ];
-
 export const DUMMY_CHAT_SESSION: {
   session: Interface__ChatSession;
   totalMessages: number;
