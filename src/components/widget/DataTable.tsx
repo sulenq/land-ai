@@ -264,11 +264,11 @@ export const DataTable = (props: Props__DataTable) => {
                       idx === headers.length - 1
                         ? 4
                         : (header?.wrapperProps?.justify === "center" ||
-                            header?.wrapperProps?.justifyContent ===
-                              "center") &&
-                          header.sortable
-                        ? 1
-                        : ""
+                              header?.wrapperProps?.justifyContent ===
+                                "center") &&
+                            header.sortable
+                          ? 1
+                          : ""
                     }
                     justify={header.align}
                     borderBottom={"1px solid"}

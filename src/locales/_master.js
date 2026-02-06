@@ -139,6 +139,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const match = {
+  id: "Sesuai",
+  en: "Match",
+};
+export const mismatch = {
+  id: "Tidak sesuai",
+  en: "Mismatch",
+};
 export const reference = {
   id: "Referensi",
   en: "Reference",

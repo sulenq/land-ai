@@ -45,6 +45,7 @@ export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
   },
   result: [
     {
+      key: "nama_pemilik",
       label: "Nama Pemilik",
       values: [
         { documentId: 12, renderType: "string", value: "Jolitos" },
@@ -53,6 +54,7 @@ export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
       validation: { status: true }, // object aja sapa tau ada tambahan entity lain nantinya
     },
     {
+      key: "tanggal",
       label: "Tanggal Hak/Sertipikat",
       values: [
         { documentId: 12, renderType: "date", value: "2023-01-01" },

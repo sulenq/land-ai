@@ -4,12 +4,18 @@ import { CContainer } from "@/components/ui/c-container";
 import { DASessonPageSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
 import { P } from "@/components/ui/p";
+import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { DUMMY_ACTIVE_DA_SESSION } from "@/constants/dummyData";
-import { Interface__DASessionDetail } from "@/constants/interfaces";
+import {
+  Interface__DASessionDetail,
+  Interface__FormattedTableHeader,
+  Interface__FormattedTableRow,
+} from "@/constants/interfaces";
+import { Props__DataTable } from "@/constants/props";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
@@ -17,6 +23,53 @@ import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+interface Props__ResultTable extends Props__DataTable {
+  daSession?: Interface__DASessionDetail;
+}
+const ResultTable = (props: Props__ResultTable) => {
+  // Props
+  const { daSession, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // States
+  const result = daSession?.result;
+  const headers: Interface__FormattedTableHeader[] = [
+    { th: "Item Validasi", sortable: true },
+    ...(result ?? []).map((r) => ({ th: r.label, sortable: true })),
+    { th: "Validasi", sortable: true },
+  ];
+  const rows: Interface__FormattedTableRow[] = (result ?? []).map((r, idx) => {
+    return {
+      id: `${idx}`,
+      idx: idx,
+      data: r,
+      columns: [
+        { td: r.label, value: r.label, dataType: "string" },
+        ...r.values.map((v) => ({
+          td: v.value,
+          value: v.value,
+          dataType: v.renderType,
+        })),
+        {
+          td: r.validation.status ? (
+            <P color={"fg.success"}>{l.match}</P>
+          ) : (
+            <P color={"fg.subtle"}>{l.mismatch}</P>
+          ),
+          value: r.validation.status,
+          dataType: "boolean",
+        },
+      ],
+    };
+  });
+
+  console.debug(result);
+
+  return <DataTable headers={headers} rows={rows} {...restProps} />;
+};
 
 export default function Page() {
   // Contexts
@@ -65,8 +118,6 @@ export default function Page() {
     });
   }, []);
 
-  console.debug(data);
-
   const render = {
     loading: <DASessonPageSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,
@@ -86,7 +137,9 @@ export default function Page() {
           </P>
         </CContainer>
 
-        <CContainer></CContainer>
+        <CContainer>
+          <ResultTable daSession={data} />
+        </CContainer>
       </CContainer>
     ),
   };

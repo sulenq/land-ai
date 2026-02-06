@@ -254,11 +254,13 @@ const translations = {
       "employment_status": "Status kepegawaian"
     }
   },
+  "match": "Sesuai",
   "maximize": "Maksimalkan",
   "may": "Mei",
   "mic": "Mic",
   "minimize": "Minimalkan",
   "minute": "Menit",
+  "mismatch": "Tidak sesuai",
   "missing_route": {
     "description": "Halaman yang Anda cari tidak tersedia. Kemungkinan ada URL yang keliru atau halaman ini sudah tidak tersedia."
   },

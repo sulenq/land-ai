@@ -254,11 +254,13 @@ const translations = {
       "employment_status": "Employment Status"
     }
   },
+  "match": "Match",
   "maximize": "Maximize",
   "may": "May",
   "mic": "Mic",
   "minimize": "Minimize",
   "minute": "Minute",
+  "mismatch": "Mismatch",
   "missing_route": {
     "description": "The page you are looking for is not available. There may be an incorrect URL or the page is no longer available."
   },
