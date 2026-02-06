@@ -367,8 +367,8 @@ export const ChatSessions = (props: any) => {
     if (!isReady) return null;
     if (qNormalized === "") return chatSessions;
 
-    return chatSessions.filter((chat) =>
-      chat.title.toLowerCase().includes(qNormalized),
+    return chatSessions.filter((session) =>
+      session.title.toLowerCase().includes(qNormalized),
     );
   }, [isReady, chatSessions, qNormalized]);
 
