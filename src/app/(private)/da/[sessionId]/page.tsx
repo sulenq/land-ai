@@ -36,9 +36,13 @@ const ResultTable = (props: Props__ResultTable) => {
 
   // States
   const result = daSession?.result;
+  const documentRequirements = daSession?.documentService?.documentRequirements;
   const headers: Interface__FormattedTableHeader[] = [
     { th: "Item Validasi", sortable: true },
-    ...(result ?? []).map((r) => ({ th: r.label, sortable: true })),
+    ...(documentRequirements ?? []).map((doc) => ({
+      th: doc.name,
+      sortable: true,
+    })),
     { th: "Validasi", sortable: true },
   ];
   const rows: Interface__FormattedTableRow[] = (result ?? []).map((r, idx) => {
