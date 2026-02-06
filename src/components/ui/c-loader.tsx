@@ -34,9 +34,9 @@ export const ChatSessionPageSkeleton = () => {
 
 export const DASessonPageSkeleton = () => {
   return (
-    <CContainer m={"auto"} gap={4}>
-      <Skeleton w={"70%"} h={"100px"} ml={"auto"} />
-      <Skeleton w={"full"} h={"200px"} mr={"auto"} />
+    <CContainer flex={1} gap={4}>
+      <Skeleton w={"full"} maxW={"400px"} h={"30px"} />
+      <Skeleton flex={1} />
     </CContainer>
   );
 };

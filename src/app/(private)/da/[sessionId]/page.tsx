@@ -3,6 +3,7 @@
 import { CContainer } from "@/components/ui/c-container";
 import { DASessonPageSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
+import { P } from "@/components/ui/p";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
@@ -13,7 +14,7 @@ import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import useDataState from "@/hooks/useDataState";
-import { SimpleGrid } from "@chakra-ui/react";
+import { formatDate } from "@/utils/formatter";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -72,8 +73,20 @@ export default function Page() {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <CContainer>
-        <SimpleGrid columns={[2, null, 4]}></SimpleGrid>
+      <CContainer gap={4}>
+        <CContainer gap={1} mb={4}>
+          <P fontSize={"xl"} fontWeight={"semibold"}>
+            {data?.title}
+          </P>
+
+          <P color={"fg.subtle"}>
+            {formatDate(data?.createdAt, {
+              withTime: true,
+            })}
+          </P>
+        </CContainer>
+
+        <CContainer></CContainer>
       </CContainer>
     ),
   };

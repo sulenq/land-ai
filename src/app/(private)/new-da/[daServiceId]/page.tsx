@@ -44,7 +44,7 @@ const InputForm = (props: Props__InputForm) => {
   const { daService, cols, ...restProps } = props;
 
   // Contexts
-  const { l } = useLang();
+  const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
   const setActiveDA = useActiveDA((s) => s.setActiveDA);
 
@@ -96,7 +96,7 @@ const InputForm = (props: Props__InputForm) => {
 
       payload.append(
         "title",
-        `${daService?.name} - ${formatDate(new Date(), {
+        `${daService?.title?.[lang]} - ${formatDate(new Date(), {
           variant: "dayShortMonthYear",
         })}`,
       );
@@ -206,7 +206,7 @@ export default function Page() {
   };
 
   // Contexts
-  const { l } = useLang();
+  const { l, lang } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
 
   // Refs
@@ -243,10 +243,10 @@ export default function Page() {
       <>
         <VStack gap={1}>
           <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
-            {data?.name}
+            {data?.title?.[lang]}
           </P>
           <P color={"fg.subtle"} textAlign={"center"}>
-            {data?.description}
+            {data?.description?.[lang]}
           </P>
         </VStack>
 
@@ -267,7 +267,7 @@ export default function Page() {
           path: `/new-da`,
         },
         {
-          label: data?.name as string,
+          label: data?.title?.[lang] as string,
           path: `/new-da/${data?.id}`,
         },
       ],

@@ -92,110 +92,106 @@ export const Messages = (props: Props__Messages) => {
   }, []);
 
   return (
-    <CContainer ref={containerRef} flex={1} {...restProps}>
-      <CContainer flex={1} gap={4} px={2}>
-        <CContainer mb={4}>
-          <P fontSize={"xl"} fontWeight={"semibold"}>
-            {activeChat.session?.title}
-          </P>
+    <CContainer ref={containerRef} flex={1} gap={4} px={2} {...restProps}>
+      <CContainer gap={1} mb={4}>
+        <P fontSize={"xl"} fontWeight={"semibold"}>
+          {activeChat.session?.title}
+        </P>
 
-          <P color={"fg.subtle"}>{formatDate(activeChat.session?.createdAt)}</P>
-        </CContainer>
+        <P color={"fg.subtle"}>{formatDate(activeChat.session?.createdAt)}</P>
+      </CContainer>
 
-        <CContainer gap={4}>
-          {activeChat.messages.map(
-            (message: Interface__ChatMessage, index: number) => {
-              const emptyMessage = !message.content;
-              const isStreaming = message.isStreaming;
-              const lastMessage = messages[messages.length - 1];
-              const isLastMessage = index === messages.length - 1;
-              const canRegenerate =
-                isLastMessage &&
-                lastMessage &&
-                lastMessage.role === "assistant";
+      <CContainer gap={4}>
+        {activeChat.messages.map(
+          (message: Interface__ChatMessage, index: number) => {
+            const emptyMessage = !message.content;
+            const isStreaming = message.isStreaming;
+            const lastMessage = messages[messages.length - 1];
+            const isLastMessage = index === messages.length - 1;
+            const canRegenerate =
+              isLastMessage && lastMessage && lastMessage.role === "assistant";
 
-              // User Message
-              if (message.role === "user") {
-                return (
-                  <CContainer key={message.id} gap={2}>
-                    <UserBubbleChat>{message.content}</UserBubbleChat>
+            // User Message
+            if (message.role === "user") {
+              return (
+                <CContainer key={message.id} gap={2}>
+                  <UserBubbleChat>{message.content}</UserBubbleChat>
 
-                    <HStack wrap={"wrap"} justify={"end"}>
-                      <Clipboard>{message.content}</Clipboard>
-                    </HStack>
-                  </CContainer>
-                );
-              }
+                  <HStack wrap={"wrap"} justify={"end"}>
+                    <Clipboard>{message.content}</Clipboard>
+                  </HStack>
+                </CContainer>
+              );
+            }
 
-              // Assistant Message
-              if (message.role === "assistant") {
-                return (
-                  <CContainer key={message.id} gap={2}>
-                    {isStreaming && emptyMessage ? (
-                      <Spinner size={"sm"} ml={2} />
-                    ) : (
-                      <>
-                        <MarkdownChat error={true}>
-                          {message.content}
-                        </MarkdownChat>
+            // Assistant Message
+            if (message.role === "assistant") {
+              return (
+                <CContainer key={message.id} gap={2}>
+                  {isStreaming && emptyMessage ? (
+                    <Spinner size={"sm"} ml={2} />
+                  ) : (
+                    <>
+                      <MarkdownChat error={true}>
+                        {message.content}
+                      </MarkdownChat>
 
-                        {message.error && (
-                          <CContainer key={message.id} gap={2}>
-                            <Alert.Root
-                              status="error"
-                              maxW={"70%"}
-                              rounded={themeConfig.radii.component}
-                            >
-                              <Alert.Indicator />
-                              <Alert.Title>
-                                {l.msg_assistant_response_error}
-                              </Alert.Title>
-                            </Alert.Root>
-                          </CContainer>
+                      {message.error && (
+                        <CContainer key={message.id} gap={2}>
+                          <Alert.Root
+                            status="error"
+                            maxW={"70%"}
+                            rounded={themeConfig.radii.component}
+                          >
+                            <Alert.Indicator />
+                            <Alert.Title>
+                              {l.msg_assistant_response_error}
+                            </Alert.Title>
+                          </Alert.Root>
+                        </CContainer>
+                      )}
+
+                      <HStack wrap={"wrap"} gap={1}>
+                        <Clipboard>{message.content}</Clipboard>
+
+                        {canRegenerate && (
+                          <Btn
+                            iconButton
+                            size={"xs"}
+                            variant={"ghost"}
+                            onClick={() => {
+                              removeMessage(message.id);
+                              startChatStream({
+                                prompt: messages[index - 1].content,
+                                sessionId: activeChat?.session?.id,
+                                isRegenerate: true,
+                              });
+                            }}
+                          >
+                            <AppIcon icon={RefreshCwIcon} />
+                          </Btn>
                         )}
 
-                        <HStack wrap={"wrap"} gap={1}>
-                          <Clipboard>{message.content}</Clipboard>
-
-                          {canRegenerate && (
+                        {!isEmptyArray(message.sources) && (
+                          <ReferenceDisclosureTrigger message={message}>
                             <Btn
-                              iconButton
                               size={"xs"}
                               variant={"ghost"}
-                              onClick={() => {
-                                removeMessage(message.id);
-                                startChatStream({
-                                  prompt: messages[index - 1].content,
-                                  sessionId: activeChat?.session?.id,
-                                  isRegenerate: true,
-                                });
-                              }}
+                              w={"fit"}
+                              pr={"6px"}
                             >
-                              <AppIcon icon={RefreshCwIcon} />
+                              {l.reference} <AppIcon icon={ChevronDownIcon} />
                             </Btn>
-                          )}
-
-                          {!isEmptyArray(message.sources) && (
-                            <ReferenceDisclosureTrigger message={message}>
-                              <Btn
-                                size={"xs"}
-                                variant={"ghost"}
-                                w={"fit"}
-                                pr={"6px"}
-                              >
-                                {l.reference} <AppIcon icon={ChevronDownIcon} />
-                              </Btn>
-                            </ReferenceDisclosureTrigger>
-                          )}
-                        </HStack>
-                      </>
-                    )}
-                  </CContainer>
-                );
-              }
-            },
-          )}
-        </CContainer>
+                          </ReferenceDisclosureTrigger>
+                        )}
+                      </HStack>
+                    </>
+                  )}
+                </CContainer>
+              );
+            }
+          },
+        )}
       </CContainer>
     </CContainer>
   );

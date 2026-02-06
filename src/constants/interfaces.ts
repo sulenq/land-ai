@@ -231,8 +231,8 @@ export interface Interface__DemoResult {
 export interface Interface__DAService {
   id: string;
   icon: string;
-  name: string;
-  description: string;
+  title: Interface__LangContent;
+  description: Interface__LangContent;
   createdAt: string;
 }
 export interface Interface__DAServiceDocumentRequirement {
@@ -255,11 +255,16 @@ export interface Interface__DASessionDetail extends Interface__DASession {
   title: string;
   documentService: Interface__DAServiceDetail;
   status: "PROCESSING" | "COMPLETED" | "ERROR";
-  result: string;
+  result: any;
   createdAt: string;
 }
 export interface Interface__ActiveDAState {
   session: Interface__DASession | null;
   isNewDA: boolean;
   hasLoadedHistory: boolean;
+}
+export interface Interface__ResultItem {
+  documentId: string;
+  type: "string" | "number" | "date" | "time" | "img";
+  value: any;
 }

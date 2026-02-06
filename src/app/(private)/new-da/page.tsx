@@ -31,6 +31,7 @@ const Services = (props: Props__Services) => {
   const { cols, ...restProps } = props;
 
   // Contexts
+  const { lang } = useLang();
   const { themeConfig } = useThemeConfig();
 
   // States
@@ -77,12 +78,12 @@ const Services = (props: Props__Services) => {
 
               <CContainer gap={2}>
                 <P fontSize={"lg"} fontWeight={"semibold"}>
-                  {service?.name}
+                  {service?.title?.[lang]}
                 </P>
 
-                <Tooltip content={service?.description}>
+                <Tooltip content={service?.description?.[lang]}>
                   <P color={"fg.subtle"} lineClamp={2}>
-                    {service?.description}
+                    {service?.description?.[lang]}
                   </P>
                 </Tooltip>
               </CContainer>

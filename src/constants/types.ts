@@ -1,6 +1,15 @@
 import { Interface__ChatSession } from "@/constants/interfaces";
 import { ButtonProps, ConditionalValue, MenuItemProps } from "@chakra-ui/react";
 
+export type RenderType =
+  | "string"
+  | "number"
+  | "date"
+  | "time"
+  | "datetime"
+  | "image"
+  | "enum";
+
 export type Type__ChatStreamEvent =
   | {
       type: "meta";

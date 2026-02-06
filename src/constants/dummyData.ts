@@ -7,16 +7,20 @@ import {
 } from "@/constants/interfaces";
 
 export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
-  id: "da-session-001",
+  id: "1",
   title: "DA Service Analysis Session",
   status: "COMPLETED",
-  createdAt: "2026-02-05T10:15:30.000Z",
-  result: "All required documents have been verified successfully.",
   documentService: {
     id: "101",
     icon: ``,
-    name: "Business Registration Verification",
-    description: "Verification service for registered business entities.",
+    title: {
+      id: "Business Registration Verification",
+      en: "Business Registration Verification",
+    },
+    description: {
+      id: "Verification service for registered business entities.",
+      en: "Verification service for registered business entities.",
+    },
     documentRequirements: [
       {
         id: 1,
@@ -39,6 +43,25 @@ export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
     ],
     createdAt: "2026-02-05T10:15:30.000Z",
   },
+  result: [
+    {
+      label: "Nama Pemilik",
+      values: [
+        { documentId: 12, renderType: "string", value: "Jolitos" },
+        { documentId: 27, renderType: "string", value: "Jolitos" },
+      ],
+      validation: { status: true }, // object aja sapa tau ada tambahan entity lain nantinya
+    },
+    {
+      label: "Tanggal Hak/Sertipikat",
+      values: [
+        { documentId: 12, renderType: "date", value: "2023-01-01" },
+        { documentId: 27, renderType: "date", value: "2023-01-02" },
+      ],
+      validation: { status: false },
+    },
+  ],
+  createdAt: "2026-02-05T10:15:30.000Z",
 };
 export const DUMMY_DA_SESSIONS: Interface__DASession[] = [
   {
