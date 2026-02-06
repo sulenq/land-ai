@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { Field, FieldsetRoot } from "@/components/ui/field";
+import { Img } from "@/components/ui/img";
 import {
   MenuContent,
   MenuItem,
@@ -19,6 +20,7 @@ import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { Skeleton } from "@/components/ui/skeleton";
+import Spinner from "@/components/ui/spinner";
 import { StringInput } from "@/components/ui/string-input";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
@@ -26,7 +28,7 @@ import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationD
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { LeftIndicator } from "@/components/widget/Indicator";
+import { DotIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
   DA_API_SESSION_DELETE,
@@ -44,6 +46,7 @@ import { isEmptyArray } from "@/utils/array";
 import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
 import { capitalizeWords } from "@/utils/string";
+import { imgUrl } from "@/utils/url";
 import { HStack, MenuItemProps, StackProps } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { EllipsisIcon, PenIcon, TrashIcon } from "lucide-react";
@@ -291,9 +294,14 @@ export const DASessions = (props: any) => {
   } else {
     loadedContent = resolvedData?.map((session) => {
       const isActive = pathname === `/da/${session.id}`;
+      const processing = session.status === "PROCESSING";
+      const failed = session.status === "FAILED";
 
       return (
-        <DesktopNavTooltip key={session.id} content={session.title}>
+        <DesktopNavTooltip
+          key={session.id}
+          content={`${session.title} (${session.serviceName})`}
+        >
           <HStack
             pl={"10px"}
             gap={0}
@@ -307,9 +315,15 @@ export const DASessions = (props: any) => {
               <HStack h={["44px", null, "36px"]} pr={1}>
                 {isActive && <LeftIndicator />}
 
+                <Img src={imgUrl(session.serviceIcon)} w={"32px"} fluid />
+
                 <P lineClamp={1} textAlign={"left"}>
                   {session.title}
                 </P>
+
+                {processing && <Spinner size={"xs"} borderWidth={1} />}
+
+                {failed && <DotIndicator color={"fg.error"} />}
               </HStack>
             </NavLink>
 

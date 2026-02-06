@@ -250,6 +250,9 @@ export interface Interface__DASession {
   title: string;
   status: Type__DASessionStatus;
   createdAt: string;
+  serviceId?: string;
+  serviceIcon?: string;
+  serviceName?: string;
 }
 export interface Interface__ActiveDAState {
   session: Interface__DASession | null;

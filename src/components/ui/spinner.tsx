@@ -10,7 +10,7 @@ const Spinner = (props: Props) => {
   // TODO cek mobile
   // TODO
 
-  return <ChakraSpinner {...restProps} />;
+  return <ChakraSpinner aspectRatio={1} {...restProps} />;
 };
 
 export default Spinner;
