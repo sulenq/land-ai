@@ -13,7 +13,7 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
-import { DUMMY_ACTIVE_DA_SESSION } from "@/constants/dummyData";
+import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import {
   Interface__DASessionDetail,
   Interface__FormattedTableHeader,
@@ -23,14 +23,13 @@ import { Props__DataTable } from "@/constants/props";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
-import useRenderTrigger from "@/context/useRenderTrigger";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { HStack } from "@chakra-ui/react";
 import { AlertTriangleIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Props__ResultTable extends Props__DataTable {
   daSession?: Interface__DASessionDetail;
@@ -86,19 +85,19 @@ export default function Page() {
   const { l, lang } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
-  const setRt = useRenderTrigger((s) => s.setRt);
 
   // Hooks
   const { sessionId } = useParams();
   const router = useRouter();
 
   // States
+  const [pollingTick, setPollingTick] = useState(0);
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      initialData: DUMMY_ACTIVE_DA_SESSION,
-      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      // initialData: DUMMY_ACTIVE_DA_SESSION,
+      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
-      dependencies: [sessionId],
+      dependencies: [sessionId, pollingTick],
     });
   const formattedDocuments =
     data?.documentService?.documentRequirements.map((req) => {
@@ -147,15 +146,16 @@ export default function Page() {
   }, []);
 
   // Refetch if processing
-  // TODO benerin jika status processing maka refetch tiap 3 detik
   useEffect(() => {
-    const status = data?.status;
+    if (data?.status !== "PROCESSING") return;
 
-    if (status === "PROCESSING") {
-      setTimeout(() => {
-        setRt((ps) => !ps);
-      }, 1000);
-    }
+    const interval = setInterval(() => {
+      setPollingTick((t) => t + 1);
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [data?.status]);
 
   const render = {
