@@ -31,7 +31,7 @@ import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
   CHAT_API_SESSION_DELETE,
   CHAT_API_SESSION_RENAME,
-  DA_API_SESSIONS,
+  DA_API_SESSION_GET_ALL,
 } from "@/constants/apis";
 import { Interface__DASession } from "@/constants/interfaces";
 import { useChatSessions } from "@/context/useChatSessions";
@@ -269,7 +269,7 @@ export const DASessions = (props: any) => {
     Interface__DASession[]
   >({
     // initialData: DUMMY_DA_SESSIONS,
-    url: DA_API_SESSIONS,
+    url: DA_API_SESSION_GET_ALL,
     dataResource: false,
     loadingBar: false,
     conditions: !DASessions,

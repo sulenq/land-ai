@@ -11,7 +11,7 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
-import { DA_API_SERVICES } from "@/constants/apis";
+import { DA_API_SERVICE_GET_ALL } from "@/constants/apis";
 import { Interface__DAService } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -39,7 +39,7 @@ const Services = (props: Props__Services) => {
     Interface__DAService[]
   >({
     initialData: undefined,
-    url: DA_API_SERVICES,
+    url: DA_API_SERVICE_GET_ALL,
     dataResource: false,
   });
 

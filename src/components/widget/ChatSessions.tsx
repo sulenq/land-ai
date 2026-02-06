@@ -29,7 +29,7 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
-  CHAT_API_SESSIONS,
+  CHAT_API_SESSION_GET_ALL,
   CHAT_API_SESSION_DELETE,
   CHAT_API_SESSION_PROTECT,
   CHAT_API_SESSION_RENAME,
@@ -354,7 +354,7 @@ export const ChatSessions = (props: any) => {
     Interface__ChatSession[]
   >({
     // initialData: DUMMY_CHAT_SESSIONS,
-    url: CHAT_API_SESSIONS,
+    url: CHAT_API_SESSION_GET_ALL,
     dataResource: false,
     loadingBar: false,
     conditions: !chatSessions,
