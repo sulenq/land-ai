@@ -407,7 +407,7 @@ export const ChatSessions = (props: any) => {
             </NavLink>
 
             {/* Options */}
-            <MenuRoot>
+            <MenuRoot positioning={{ placement: "right-start" }}>
               <MenuTrigger
                 asChild
                 onClick={(e) => {

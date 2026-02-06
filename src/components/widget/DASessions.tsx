@@ -333,7 +333,7 @@ export const DASessions = (props: any) => {
             </NavLink>
 
             {/* Options */}
-            <MenuRoot>
+            <MenuRoot positioning={{ placement: "right-start" }}>
               <MenuTrigger
                 asChild
                 onClick={(e) => {
