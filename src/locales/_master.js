@@ -1155,6 +1155,27 @@ export const msg_file_input_dropzone = {
 };
 
 // Alert
+export const alert_da_analyze_processing = {
+  title: {
+    id: "Analisis sedang diproses",
+    en: "Analysis in progress",
+  },
+  description: {
+    id: "Mohon tunggu, sistem sedang memproses dokumen Anda.",
+    en: "Please wait while the system processes your documents.",
+  },
+};
+
+export const alert_da_analyze_failed = {
+  title: {
+    id: "Analisis gagal",
+    en: "Analysis failed",
+  },
+  description: {
+    id: "Terjadi kesalahan saat memproses dokumen. Silakan coba kembali.",
+    en: "An error occurred while processing the documents. Please try again.",
+  },
+};
 export const alert_no_result_yet = {
   title: {
     id: "Belum ada hasil",

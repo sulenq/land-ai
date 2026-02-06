@@ -98,6 +98,7 @@ const InputForm = (props: Props__InputForm) => {
         "title",
         `${daService?.title?.[lang]} - ${formatDate(new Date(), {
           variant: "dayShortMonthYear",
+          withTime: true,
         })}`,
       );
       payload.append("serviceId", `${daService?.id}`);

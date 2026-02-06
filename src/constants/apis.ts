@@ -16,5 +16,5 @@ export const CHAT_API_SESSION_DELETE = `/api/ai/chat/delete`; // DELETE + /:sess
 export const DA_API_SERVICES = `/api/da/services/get`; // GET
 export const DA_API_SERVICE_DETAIL = `/api/da/services/get-detail`; // GET + /:daServiceId
 export const DA_API_SESSON_CREATE = `/api/da/session/create`; // POST
-export const DA_API_SESSION_DETAIL = `/api/da/session`; // GET + /:daSessionId
-export const DA_API_SESSIONS = `/api/da/sessions/get`; // GET
+export const DA_API_SESSION_DETAIL = `/api/da/session/get`; // GET + /:daSessionId
+export const DA_API_SESSIONS = `/api/da/session/get-all`; // GET

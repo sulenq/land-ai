@@ -1,8 +1,9 @@
 "use client";
 
 import { P } from "@/components/ui/p";
+import { LucideIcon } from "@/components/widget/Icon";
 import { Icon, StackProps, VStack } from "@chakra-ui/react";
-import { IconDatabaseOff } from "@tabler/icons-react";
+import { ServerOffIcon } from "lucide-react";
 
 interface Props extends StackProps {
   icon?: any;
@@ -21,7 +22,7 @@ const FeedbackState = (props: Props) => {
   return (
     <VStack gap={1} p={4} {...restProps}>
       <Icon mb={2} color={"fg.subtle"} boxSize={9}>
-        {icon || <IconDatabaseOff stroke={1.8} />}
+        {icon || <LucideIcon icon={ServerOffIcon} />}
       </Icon>
 
       {titleString && (

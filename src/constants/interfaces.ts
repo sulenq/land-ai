@@ -1,6 +1,6 @@
 import { BtnProps } from "@/components/ui/btn";
 import { Enum__ActivityAction } from "@/constants/enums";
-import { RenderType } from "@/constants/types";
+import { Type__DASessionStatus, Type__RenderType } from "@/constants/types";
 import {
   MenuItemProps,
   StackProps,
@@ -248,7 +248,7 @@ export interface Interface__DAServiceDetail extends Interface__DAService {
 export interface Interface__DASession {
   id: string;
   title: string;
-  status: "PROCESSING" | "COMPLETED" | "ERROR";
+  status: Type__DASessionStatus;
   createdAt: string;
 }
 export interface Interface__ActiveDAState {
@@ -258,7 +258,7 @@ export interface Interface__ActiveDAState {
 }
 export interface Interface__DAAnalysisValue {
   documentId: number;
-  renderType: RenderType;
+  renderType: Type__RenderType;
   value: string | number | boolean | null;
 }
 export interface Interface__DAAnalysisValidation {
@@ -276,7 +276,7 @@ export interface Interface__DASessionDetail extends Interface__DASession {
   title: string;
   documentService: Interface__DAService;
   uploadedDocuments: Interface__DAServiceDocumentRequirement[];
-  status: "PROCESSING" | "COMPLETED" | "ERROR";
+  status: Type__DASessionStatus;
   result: Interface__DAAnalysisResultItem[];
   createdAt: string;
 }

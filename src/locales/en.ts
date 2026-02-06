@@ -15,6 +15,14 @@ const translations = {
   "address": "Address",
   "address_not_found": "Address not found",
   "after": "After",
+  "alert_da_analyze_failed": {
+    "title": "Analysis failed",
+    "description": "An error occurred while processing the documents. Please try again."
+  },
+  "alert_da_analyze_processing": {
+    "title": "Analysis in progress",
+    "description": "Please wait while the system processes your documents."
+  },
   "alert_forbidden": {
     "title": "Access denied",
     "description": "You do not have permission to view this content."

@@ -350,7 +350,7 @@ export const ChatSessions = (props: any) => {
   const pathname = usePathname();
 
   // States
-  const { initialLoading, error, data, onRetry } = useDataState<
+  const { loading, error, data, onRetry } = useDataState<
     Interface__ChatSession[]
   >({
     // initialData: DUMMY_CHAT_SESSIONS,
@@ -478,40 +478,36 @@ export const ChatSessions = (props: any) => {
       </CContainer>
 
       <CContainer gap={1}>
-        {!chatSessions && (
-          <>
-            {initialLoading && render.loading}
+        <>
+          {loading && render.loading}
 
-            {!initialLoading && (
-              <>
-                {error && render.error}
+          {!loading && (
+            <>
+              {error && render.error}
 
-                {!error && (
-                  <>
-                    {!chatSessions && null}
+              {!error && (
+                <>
+                  {!chatSessions && null}
 
-                    {chatSessions && (
-                      <>
-                        {/* Empty */}
-                        {isEmptyArray(chatSessions) && render.empty}
+                  {chatSessions && (
+                    <>
+                      {/* Empty */}
+                      {isEmptyArray(chatSessions) && render.empty}
 
-                        {/* Not found */}
-                        {!isEmptyArray(chatSessions) &&
-                          isEmptyArray(resolvedData) &&
-                          render.notFound}
+                      {/* Not found */}
+                      {!isEmptyArray(chatSessions) &&
+                        isEmptyArray(resolvedData) &&
+                        render.notFound}
 
-                        {/* Loaded */}
-                        {!isEmptyArray(resolvedData) && render.loaded}
-                      </>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
-
-        {chatSessions && render.loaded}
+                      {/* Loaded */}
+                      {!isEmptyArray(resolvedData) && render.loaded}
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </>
       </CContainer>
     </CContainer>
   );

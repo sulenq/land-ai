@@ -9,7 +9,7 @@ import {
 export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
   id: "1",
   title: "DA Service Analysis Session",
-  status: "COMPLETED",
+  status: "PROCESSING",
   documentService: {
     id: "101",
     icon: ``,
@@ -75,7 +75,7 @@ export const DUMMY_DA_SESSIONS: Interface__DASession[] = [
   {
     id: "da_session_3",
     title: "Analisis Riwayat Peralihan Hak",
-    status: "ERROR",
+    status: "FAILED",
     createdAt: "2025-01-03T09:15:00Z",
   },
   {

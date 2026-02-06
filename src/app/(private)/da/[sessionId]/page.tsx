@@ -4,12 +4,15 @@ import { CContainer } from "@/components/ui/c-container";
 import { DASessonPageSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
 import { P } from "@/components/ui/p";
+import Spinner from "@/components/ui/spinner";
 import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
+import FeedbackState from "@/components/widget/FeedbackState";
+import { LucideIcon } from "@/components/widget/Icon";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
-import { DUMMY_ACTIVE_DA_SESSION } from "@/constants/dummyData";
+import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import {
   Interface__DASessionDetail,
   Interface__FormattedTableHeader,
@@ -19,8 +22,10 @@ import { Props__DataTable } from "@/constants/props";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
+import useRenderTrigger from "@/context/useRenderTrigger";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
+import { AlertTriangleIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -80,6 +85,7 @@ export default function Page() {
   const { l } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
+  const setRt = useRenderTrigger((s) => s.setRt);
 
   // Hooks
   const { sessionId } = useParams();
@@ -89,12 +95,14 @@ export default function Page() {
   // const initialLoading = false;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      initialData: DUMMY_ACTIVE_DA_SESSION,
-      // TODO enable below when api ready
-      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      // initialData: DUMMY_ACTIVE_DA_SESSION,
+      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId],
     });
+  const processing = data?.status === "PROCESSING";
+  const failed = data?.status === "FAILED";
+  const completed = data?.status === "COMPLETED";
 
   // Handle 404 - redirect and remove session
   useEffect(() => {
@@ -120,6 +128,16 @@ export default function Page() {
     });
   }, []);
 
+  useEffect(() => {
+    const status = data?.status;
+
+    if (status === "PROCESSING") {
+      setTimeout(() => {
+        setRt((ps) => !ps);
+      }, 1000);
+    }
+  }, [data?.status]);
+
   const render = {
     loading: <DASessonPageSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,
@@ -140,7 +158,24 @@ export default function Page() {
         </CContainer>
 
         <CContainer flex={1}>
-          <ResultTable daSession={data} />
+          {processing && (
+            <FeedbackState
+              icon={<Spinner />}
+              title={l.alert_da_analyze_processing.title}
+              description={l.alert_da_analyze_processing.description}
+              m={"auto"}
+            />
+          )}
+
+          {failed && (
+            <FeedbackState
+              icon={<LucideIcon icon={AlertTriangleIcon} />}
+              title={l.alert_da_analyze_failed.title}
+              description={l.alert_da_analyze_failed.description}
+              m={"auto"}
+            />
+          )}
+          {completed && <ResultTable daSession={data} />}
         </CContainer>
       </CContainer>
     ),

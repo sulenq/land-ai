@@ -15,6 +15,14 @@ const translations = {
   "address": "Alamat",
   "address_not_found": "Alamat tidak ditemukan",
   "after": "Setelah",
+  "alert_da_analyze_failed": {
+    "title": "Analisis gagal",
+    "description": "Terjadi kesalahan saat memproses dokumen. Silakan coba kembali."
+  },
+  "alert_da_analyze_processing": {
+    "title": "Analisis sedang diproses",
+    "description": "Mohon tunggu, sistem sedang memproses dokumen Anda."
+  },
   "alert_forbidden": {
     "title": "Akses ditolak",
     "description": "Anda tidak memiliki izin untuk melihat konten ini."

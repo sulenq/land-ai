@@ -265,7 +265,7 @@ export const DASessions = (props: any) => {
   const pathname = usePathname();
 
   // States
-  const { initialLoading, error, data, onRetry } = useDataState<
+  const { loading, error, data, onRetry } = useDataState<
     Interface__DASession[]
   >({
     // initialData: DUMMY_DA_SESSIONS,
@@ -378,34 +378,30 @@ export const DASessions = (props: any) => {
       </CContainer>
 
       <CContainer gap={1}>
-        {!DASessions && (
-          <>
-            {initialLoading && render.loading}
+        <>
+          {loading && render.loading}
 
-            {!initialLoading && (
-              <>
-                {error && render.error}
+          {!loading && (
+            <>
+              {error && render.error}
 
-                {!error && (
-                  <>
-                    {/* Empty */}
-                    {isEmptyArray(DASessions) && render.empty}
+              {!error && (
+                <>
+                  {/* Empty */}
+                  {isEmptyArray(DASessions) && render.empty}
 
-                    {/* Not found */}
-                    {!isEmptyArray(DASessions) &&
-                      isEmptyArray(resolvedData) &&
-                      render.notFound}
+                  {/* Not found */}
+                  {!isEmptyArray(DASessions) &&
+                    isEmptyArray(resolvedData) &&
+                    render.notFound}
 
-                    {/* Loaded */}
-                    {!isEmptyArray(resolvedData) && render.loaded}
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
-
-        {DASessions && render.loaded}
+                  {/* Loaded */}
+                  {!isEmptyArray(resolvedData) && render.loaded}
+                </>
+              )}
+            </>
+          )}
+        </>
       </CContainer>
     </CContainer>
   );

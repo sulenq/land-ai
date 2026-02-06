@@ -1,7 +1,8 @@
 import { Interface__ChatSession } from "@/constants/interfaces";
 import { ButtonProps, ConditionalValue, MenuItemProps } from "@chakra-ui/react";
 
-export type RenderType =
+export type Type__DASessionStatus = "PROCESSING" | "COMPLETED" | "FAILED";
+export type Type__RenderType =
   | "string"
   | "number"
   | "date"
