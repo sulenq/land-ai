@@ -5,6 +5,7 @@ import { DASessonPageSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
 import { P } from "@/components/ui/p";
 import Spinner from "@/components/ui/spinner";
+import { ClampText } from "@/components/widget/ClampText";
 import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
@@ -12,7 +13,7 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
-import { DA_API_SESSION_DETAIL } from "@/constants/apis";
+import { DUMMY_ACTIVE_DA_SESSION } from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__FormattedTableHeader,
@@ -25,6 +26,8 @@ import useLang from "@/context/useLang";
 import useRenderTrigger from "@/context/useRenderTrigger";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
+import { capitalizeWords } from "@/utils/string";
+import { HStack } from "@chakra-ui/react";
 import { AlertTriangleIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -45,7 +48,7 @@ const ResultTable = (props: Props__ResultTable) => {
   const headers: Interface__FormattedTableHeader[] = [
     { th: "Item Validasi", sortable: true },
     ...(uploadedDocuments ?? []).map((doc) => ({
-      th: doc.name,
+      th: doc.documentRequirement.name,
       sortable: true,
     })),
     { th: "Validasi", sortable: true },
@@ -58,7 +61,7 @@ const ResultTable = (props: Props__ResultTable) => {
       columns: [
         { td: r.label, value: r.label, dataType: "string" },
         ...r.values.map((v) => ({
-          td: v.value,
+          td: v.value || "-",
           value: v.value,
           dataType: v.renderType,
         })),
@@ -75,14 +78,12 @@ const ResultTable = (props: Props__ResultTable) => {
     };
   });
 
-  console.debug(result);
-
   return <DataTable headers={headers} rows={rows} {...restProps} />;
 };
 
 export default function Page() {
   // Contexts
-  const { l } = useLang();
+  const { l, lang } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
   const setRt = useRenderTrigger((s) => s.setRt);
@@ -92,14 +93,31 @@ export default function Page() {
   const router = useRouter();
 
   // States
-  // const initialLoading = false;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      // initialData: DUMMY_ACTIVE_DA_SESSION,
-      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      initialData: DUMMY_ACTIVE_DA_SESSION,
+      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId],
     });
+  const formattedDocuments =
+    data?.documentService?.documentRequirements.map((req) => {
+      const uploaded = data?.uploadedDocuments?.find(
+        (u) => u.documentRequirement.id === req.id,
+      );
+
+      return {
+        documentRequirement: req,
+        uploadedFile: uploaded
+          ? {
+              metaData: {
+                fileName: uploaded.metaData.fileName,
+              },
+            }
+          : null,
+      };
+    }) ?? [];
+
   const processing = data?.status === "PROCESSING";
   const failed = data?.status === "FAILED";
   const completed = data?.status === "COMPLETED";
@@ -128,6 +146,8 @@ export default function Page() {
     });
   }, []);
 
+  // Refetch if processing
+  // TODO benerin jika status processing maka refetch tiap 3 detik
   useEffect(() => {
     const status = data?.status;
 
@@ -144,8 +164,9 @@ export default function Page() {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <CContainer flex={1} gap={4}>
-        <CContainer gap={1} mb={4}>
+      <CContainer flex={1} gap={8}>
+        {/* Header */}
+        <CContainer gap={1}>
           <P fontSize={"xl"} fontWeight={"semibold"}>
             {data?.title}
           </P>
@@ -157,6 +178,58 @@ export default function Page() {
           </P>
         </CContainer>
 
+        {/* Meta */}
+        <>
+          <CContainer gap={4}>
+            <P fontWeight={"medium"}>{capitalizeWords(l.service)}</P>
+
+            <CContainer gap={2} pl={4}>
+              <HStack gap={4} align={"start"}>
+                <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                  {l.name}
+                </P>
+                <P>{data?.documentService.title[lang]}</P>
+              </HStack>
+
+              <HStack gap={4} align={"start"}>
+                <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                  {l.description}
+                </P>
+                <P>{data?.documentService.description[lang]}</P>
+              </HStack>
+            </CContainer>
+          </CContainer>
+
+          <CContainer gap={4}>
+            <P fontWeight={"medium"}>{capitalizeWords(l.uploaded_file)}</P>
+
+            <CContainer gap={2} pl={4}>
+              {formattedDocuments?.map((doc) => {
+                return (
+                  <HStack
+                    key={doc.documentRequirement.id}
+                    align={"start"}
+                    gap={4}
+                  >
+                    <ClampText w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                      {doc.documentRequirement.name}
+                    </ClampText>
+
+                    {doc.uploadedFile?.metaData.fileName ? (
+                      <ClampText>
+                        {doc.uploadedFile?.metaData.fileName}
+                      </ClampText>
+                    ) : (
+                      <P>-</P>
+                    )}
+                  </HStack>
+                );
+              })}
+            </CContainer>
+          </CContainer>
+        </>
+
+        {/* Result */}
         <CContainer flex={1}>
           {processing && (
             <FeedbackState
@@ -175,7 +248,14 @@ export default function Page() {
               m={"auto"}
             />
           )}
-          {completed && <ResultTable daSession={data} />}
+
+          {completed && (
+            <CContainer>
+              <P fontWeight={"medium"}>{capitalizeWords(l.analyze_result)}</P>
+
+              <ResultTable daSession={data} />
+            </CContainer>
+          )}
         </CContainer>
       </CContainer>
     ),

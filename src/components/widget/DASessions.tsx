@@ -315,7 +315,12 @@ export const DASessions = (props: any) => {
               <HStack h={["44px", null, "36px"]} pr={1}>
                 {isActive && <LeftIndicator />}
 
-                <Img src={imgUrl(session.serviceIcon)} w={"32px"} fluid />
+                <Img
+                  src={imgUrl(session.serviceIcon)}
+                  h={"20px"}
+                  fluid
+                  flexShrink={0}
+                />
 
                 <P lineClamp={1} textAlign={"left"}>
                   {session.title}

@@ -67,7 +67,7 @@ const InputForm = (props: Props__InputForm) => {
     docs.forEach((doc) => {
       let schema = fileValidation({
         allowedExtensions: ["pdf"],
-        maxSizeMB: 10,
+        maxSizeMB: 100,
         min: doc.isMandatory ? 1 : 0,
       });
 
@@ -165,6 +165,7 @@ const InputForm = (props: Props__InputForm) => {
                       formik.setFieldValue(`files.${doc.id}`, value);
                     }}
                     bg={"bg.subtle"}
+                    maxFileSize={100}
                   />
                 </Field>
               );

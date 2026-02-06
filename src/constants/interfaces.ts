@@ -274,11 +274,17 @@ export interface Interface__DAAnalysisResultItem {
   values: Interface__DAAnalysisValue[];
   validation: Interface__DAAnalysisValidation;
 }
+export interface Interface__DAUploadedDocument {
+  documentRequirement: Interface__DAServiceDocumentRequirement;
+  metaData: {
+    fileName: string;
+  };
+}
 export interface Interface__DASessionDetail extends Interface__DASession {
   id: string;
   title: string;
   documentService: Interface__DAServiceDetail;
-  uploadedDocuments: Interface__DAServiceDocumentRequirement[];
+  uploadedDocuments: Interface__DAUploadedDocument[];
   status: Type__DASessionStatus;
   result: Interface__DAAnalysisResultItem[];
   createdAt: string;

@@ -139,6 +139,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const analyze_result = {
+  id: "Hasil analisis",
+  en: "Analyze result",
+};
+export const service = {
+  id: "Layanan",
+  en: "Service",
+};
 export const match = {
   id: "Sesuai",
   en: "Match",
