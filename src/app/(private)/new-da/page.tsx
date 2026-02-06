@@ -35,7 +35,7 @@ const Services = (props: Props__Services) => {
   const { themeConfig } = useThemeConfig();
 
   // States
-  const { error, initialLoading, data, onRetry } = useDataState<
+  const { initialLoading, error, data, onRetry } = useDataState<
     Interface__DAService[]
   >({
     initialData: undefined,

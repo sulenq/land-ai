@@ -47,7 +47,8 @@ export default function Page() {
   // States
   const activeChatSessionId = activeChat?.session?.id;
   const shouldFetchHistory = !activeChat.hasLoadedHistory;
-  const { error, status, initialLoading, data, onRetry } = useDataState<any>({
+  // const initialLoading = true;
+  const { initialLoading, error, status, data, onRetry } = useDataState<any>({
     url: `${CHAT_API_SESSION_SHOW}/${sessionId}`,
     dataResource: false,
     dependencies: [shouldFetchHistory],

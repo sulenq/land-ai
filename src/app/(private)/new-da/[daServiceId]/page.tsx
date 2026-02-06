@@ -217,7 +217,7 @@ export default function Page() {
   const { daServiceId } = useParams();
 
   // States
-  const { error, initialLoading, data, onRetry } =
+  const { initialLoading, error, data, onRetry } =
     useDataState<Interface__DAServiceDetail>({
       initialData: undefined,
       url: `${DA_API_SERVICE_DETAIL}/${daServiceId}`,

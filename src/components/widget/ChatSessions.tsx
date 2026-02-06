@@ -350,7 +350,7 @@ export const ChatSessions = (props: any) => {
   const pathname = usePathname();
 
   // States
-  const { error, initialLoading, data, onRetry } = useDataState<
+  const { initialLoading, error, data, onRetry } = useDataState<
     Interface__ChatSession[]
   >({
     // initialData: DUMMY_CHAT_SESSIONS,

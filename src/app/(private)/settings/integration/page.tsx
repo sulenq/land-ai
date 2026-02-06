@@ -135,7 +135,7 @@ const APIKeys = (props: any) => {
 
 export default function Page() {
   // States
-  const { error, initialLoading, data, onRetry } = useDataState<any>({
+  const { initialLoading, error, data, onRetry } = useDataState<any>({
     initialData: {
       apiKeys: {
         mapboxToken:

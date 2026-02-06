@@ -75,7 +75,7 @@ interface Props__AvatarInputDisclosureTrigger {
   user?: Interface__User;
 }
 const AvatarInputDisclosureTrigger = (
-  props: Props__AvatarInputDisclosureTrigger
+  props: Props__AvatarInputDisclosureTrigger,
 ) => {
   // Props
   const { children, formik, user, ...restProps } = props;
@@ -107,16 +107,16 @@ const AvatarInputDisclosureTrigger = (
                 formik.setFieldValue(
                   "deleteAvatarIds",
                   Array.from(
-                    new Set([...formik.values.deleteAvatarIds, fileData.id])
-                  )
+                    new Set([...formik.values.deleteAvatarIds, fileData.id]),
+                  ),
                 );
               }}
               onUndoDeleteFile={(fileData) => {
                 formik.setFieldValue(
                   "deleteAvatarIds",
                   formik.values.deleteAvatarIds.filter(
-                    (id: string) => id !== fileData.id
-                  )
+                    (id: string) => id !== fileData.id,
+                  ),
                 );
               }}
             />
@@ -636,7 +636,7 @@ const ActivityLog = () => {
 
 export default function Page() {
   // States
-  const { error, initialLoading, data, onRetry } =
+  const { initialLoading, error, data, onRetry } =
     useDataState<Interface__User>({
       initialData: dummyUser,
       url: ``,

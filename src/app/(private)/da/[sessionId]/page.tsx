@@ -86,8 +86,8 @@ export default function Page() {
   const router = useRouter();
 
   // States
-  // const initialLoading = true;
-  const { error, initialLoading, status, data, onRetry } =
+  // const initialLoading = false;
+  const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
       initialData: DUMMY_ACTIVE_DA_SESSION,
       // TODO enable below when api ready

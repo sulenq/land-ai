@@ -266,7 +266,7 @@ export const DASessions = (props: any) => {
   const pathname = usePathname();
 
   // States
-  const { error, initialLoading, data, onRetry } = useDataState<
+  const { initialLoading, error, data, onRetry } = useDataState<
     Interface__DASession[]
   >({
     initialData: DUMMY_DA_SESSIONS,
