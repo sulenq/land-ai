@@ -29,12 +29,11 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
-  CHAT_API_SESSION_DELETE,
-  CHAT_API_SESSION_RENAME,
+  DA_API_SESSION_DELETE,
   DA_API_SESSION_GET_ALL,
+  DA_API_SESSION_RENAME,
 } from "@/constants/apis";
 import { Interface__DASession } from "@/constants/interfaces";
-import { useChatSessions } from "@/context/useChatSessions";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -65,7 +64,7 @@ const Rename = (props: Props__Rename) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const renameChatSession = useChatSessions((s) => s.renameChatSession);
+  const renameDASession = useDASessions((s) => s.renameDASession);
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(disclosureId(ID));
@@ -86,11 +85,11 @@ const Rename = (props: Props__Rename) => {
     onSubmit: (values) => {
       back();
 
-      renameChatSession(sessionId, values.title);
+      renameDASession(sessionId, values.title);
 
       const config = {
         method: "PATCH",
-        url: `${CHAT_API_SESSION_RENAME}/${sessionId}`,
+        url: `${DA_API_SESSION_RENAME}/${sessionId}`,
         data: values,
       };
 
@@ -99,7 +98,7 @@ const Rename = (props: Props__Rename) => {
         onResolve: {
           onSuccess: () => {},
           onError: () => {
-            renameChatSession(sessionId, originalTitle);
+            renameDASession(sessionId, originalTitle);
           },
         },
       });
@@ -172,9 +171,7 @@ const Delete = (props: Props__Delete) => {
 
   // Contexts
   const { l } = useLang();
-  const removeFromChatSessions = useChatSessions(
-    (s) => s.removeFromChatSessions,
-  );
+  const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
 
   // Hooks
   const { req, loading } = useRequest({
@@ -195,7 +192,7 @@ const Delete = (props: Props__Delete) => {
 
       const config = {
         method: "DELETE",
-        url: `${CHAT_API_SESSION_DELETE}/${sessionId}`,
+        url: `${DA_API_SESSION_DELETE}/${sessionId}`,
         params: [sessionId],
       };
 
@@ -204,9 +201,9 @@ const Delete = (props: Props__Delete) => {
         onResolve: {
           onSuccess: () => {
             if (sessionId === activeSessionId) {
-              router.replace("/new-chat");
+              router.replace("/new-da");
             }
-            removeFromChatSessions(sessionId);
+            removeFromDASessions(sessionId);
           },
           onError: () => {},
         },
@@ -282,8 +279,8 @@ export const DASessions = (props: any) => {
     if (!isReady) return null;
     if (qNormalized === "") return DASessions;
 
-    return DASessions.filter((chat) =>
-      chat.title.toLowerCase().includes(qNormalized),
+    return DASessions.filter((session) =>
+      session.title.toLowerCase().includes(qNormalized),
     );
   }, [isReady, DASessions, qNormalized]);
 
