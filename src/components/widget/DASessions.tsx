@@ -33,7 +33,6 @@ import {
   CHAT_API_SESSION_RENAME,
   DA_API_SESSIONS,
 } from "@/constants/apis";
-import { DUMMY_DA_SESSIONS } from "@/constants/dummyData";
 import { Interface__DASession } from "@/constants/interfaces";
 import { useChatSessions } from "@/context/useChatSessions";
 import { useDASessions } from "@/context/useDASessions";
@@ -269,7 +268,7 @@ export const DASessions = (props: any) => {
   const { initialLoading, error, data, onRetry } = useDataState<
     Interface__DASession[]
   >({
-    initialData: DUMMY_DA_SESSIONS,
+    // initialData: DUMMY_DA_SESSIONS,
     url: DA_API_SESSIONS,
     dataResource: false,
     loadingBar: false,

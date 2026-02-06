@@ -98,9 +98,7 @@ export default function Page() {
 
   // Handle 404 - redirect and remove session
   useEffect(() => {
-    // TODO: remove below disabled condition when api ready
-    const disabled = true;
-    if (status === 404 && !disabled) {
+    if (status === 404) {
       removeFromDASessions(sessionId as string);
       router.push("/new-da");
     }

@@ -121,7 +121,7 @@ const InputForm = (props: Props__InputForm) => {
             setActiveDA({
               session: daSession,
             });
-            router.push(`/da/${daService?.id}/${daSession.id}`);
+            router.push(`/da/${daSession.id}`);
           },
           onError: () => {},
         },
