@@ -335,9 +335,9 @@ const translations = {
   "navs": {
     "welcome": "Welcome screen",
     "new_chat": "New Chat",
-    "your_chats": "Your Chats",
+    "your_chats": "Chats",
     "new_document_analysis": "New Document Analysis",
-    "your_da_analysis": "Your doc. analysis",
+    "your_da_analysis": "Document Analysis",
     "da_service_1": "Certificate Verification",
     "da_service_2": "Land Registration Statement (SKPT)",
     "da_service_3": "Electronic Mortgage Right (HT-el)",

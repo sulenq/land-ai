@@ -9,16 +9,16 @@ export const navs = {
     en: "New Chat",
   },
   your_chats: {
-    id: "Obrolan Anda",
-    en: "Your Chats",
+    id: "Obrolan",
+    en: "Chats",
   },
   new_document_analysis: {
     id: "Analisa Dokumen Baru",
     en: "New Document Analysis",
   },
   your_da_analysis: {
-    id: "Analisis doc. anda",
-    en: "Your doc. analysis",
+    id: "Analisis Dokumen",
+    en: "Document Analysis",
   },
   da_service_1: {
     id: "Pengecekan Sertipikat",

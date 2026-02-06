@@ -331,7 +331,7 @@ const MobileLayout = (props: Props__Layout) => {
                 lineClamp={1}
                 fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
               >
-                {l.your_chats}
+                {l.navs.your_chats}
               </P>
             </MobileNavLink>
           </ChatSessionsDisclosureTrigger>
@@ -347,7 +347,7 @@ const MobileLayout = (props: Props__Layout) => {
                 lineClamp={1}
                 fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
               >
-                {l.your_da_analysis}
+                {l.navs.your_da_analysis}
               </P>
             </MobileNavLink>
           </DASessionssDisclosureTrigger>
@@ -392,12 +392,12 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
   const TABS = [
     {
       value: "your_chats",
-      labelKey: "your_chats",
+      labelKey: "navs.your_chats",
       icon: MessageSquareIcon,
     },
     {
       value: "your_da",
-      labelKey: "your_da_analysis",
+      labelKey: "navs.your_da_analysis",
       icon: FileTextIcon,
     },
   ];
@@ -951,7 +951,7 @@ const DesktopLayout = (props: Props__Layout) => {
           ) : (
             <>
               <ChatSessionsDisclosureTrigger mr={"auto"}>
-                <DesktopNavTooltip content={l.your_chats}>
+                <DesktopNavTooltip content={l.navs.your_chats}>
                   <Btn iconButton clicky={false} variant={"ghost"}>
                     {pathname.includes("/c/") && <LeftIndicator />}
 
@@ -961,7 +961,7 @@ const DesktopLayout = (props: Props__Layout) => {
               </ChatSessionsDisclosureTrigger>
 
               <DASessionssDisclosureTrigger mr={"auto"}>
-                <DesktopNavTooltip content={l.your_da_analysis}>
+                <DesktopNavTooltip content={l.navs.your_da_analysis}>
                   <Btn iconButton clicky={false} variant={"ghost"}>
                     {pathname.includes("/da/") && <LeftIndicator />}
 

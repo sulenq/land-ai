@@ -335,9 +335,9 @@ const translations = {
   "navs": {
     "welcome": "Halaman utama",
     "new_chat": "Obrolan Baru",
-    "your_chats": "Obrolan Anda",
+    "your_chats": "Obrolan",
     "new_document_analysis": "Analisa Dokumen Baru",
-    "your_da_analysis": "Analisis doc. anda",
+    "your_da_analysis": "Analisis Dokumen",
     "da_service_1": "Pengecekan Sertipikat",
     "da_service_2": "Surat Keterangan Pendaftaran Tanah (SKPT)",
     "da_service_3": "Hak Tanggungan Elektronik (HT-el)",

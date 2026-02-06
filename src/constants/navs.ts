@@ -1,7 +1,5 @@
 import { Interface__NavItem } from "@/constants/interfaces";
 import {
-  ActivityIcon,
-  BlocksIcon,
   DatabaseIcon,
   LanguagesIcon,
   PaletteIcon,
@@ -137,32 +135,32 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
               },
             ],
           },
-          {
-            groupLabelKey: "settings_navs.system.index",
-            list: [
-              {
-                icon: UserCogIcon,
-                labelKey: "settings_navs.system.account_role",
-                path: `/settings/account-role`,
-                allowedRoles: [],
-                backPath: `/settings`,
-              },
-              {
-                icon: BlocksIcon,
-                labelKey: "settings_navs.system.integration",
-                path: `/settings/integration`,
-                allowedRoles: [],
-                backPath: `/settings`,
-              },
-              {
-                icon: ActivityIcon,
-                labelKey: "settings_navs.system.activity_log",
-                path: `/settings/activity-log`,
-                allowedRoles: [],
-                backPath: `/settings`,
-              },
-            ],
-          },
+          // {
+          //   groupLabelKey: "settings_navs.system.index",
+          //   list: [
+          //     {
+          //       icon: UserCogIcon,
+          //       labelKey: "settings_navs.system.account_role",
+          //       path: `/settings/account-role`,
+          //       allowedRoles: [],
+          //       backPath: `/settings`,
+          //     },
+          //     {
+          //       icon: BlocksIcon,
+          //       labelKey: "settings_navs.system.integration",
+          //       path: `/settings/integration`,
+          //       allowedRoles: [],
+          //       backPath: `/settings`,
+          //     },
+          //     {
+          //       icon: ActivityIcon,
+          //       labelKey: "settings_navs.system.activity_log",
+          //       path: `/settings/activity-log`,
+          //       allowedRoles: [],
+          //       backPath: `/settings`,
+          //     },
+          //   ],
+          // },
         ],
       },
     ],
