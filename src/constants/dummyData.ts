@@ -21,28 +21,22 @@ export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
       id: "Verification service for registered business entities.",
       en: "Verification service for registered business entities.",
     },
-    documentRequirements: [
-      {
-        id: 1,
-        name: "Business License",
-        description: "Official business license issued by authorities.",
-        isMandatory: true,
-      },
-      {
-        id: 2,
-        name: "Tax Identification Number",
-        description: "Valid tax identification document.",
-        isMandatory: true,
-      },
-      {
-        id: 3,
-        name: "Company Profile",
-        description: "Overview of company background and operations.",
-        isMandatory: false,
-      },
-    ],
     createdAt: "2026-02-05T10:15:30.000Z",
   },
+  uploadedDocuments: [
+    {
+      id: 1,
+      name: "Surat Pengantar",
+      description: "Official business license issued by authorities.",
+      isMandatory: true,
+    },
+    {
+      id: 2,
+      name: "Sertipikat",
+      description: "Valid tax identification document.",
+      isMandatory: true,
+    },
+  ],
   result: [
     {
       key: "nama_pemilik",

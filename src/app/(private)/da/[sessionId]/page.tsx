@@ -36,10 +36,10 @@ const ResultTable = (props: Props__ResultTable) => {
 
   // States
   const result = daSession?.result;
-  const documentRequirements = daSession?.documentService?.documentRequirements;
+  const uploadedDocuments = daSession?.uploadedDocuments;
   const headers: Interface__FormattedTableHeader[] = [
     { th: "Item Validasi", sortable: true },
-    ...(documentRequirements ?? []).map((doc) => ({
+    ...(uploadedDocuments ?? []).map((doc) => ({
       th: doc.name,
       sortable: true,
     })),
@@ -128,7 +128,7 @@ export default function Page() {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <CContainer gap={4}>
+      <CContainer flex={1} gap={4}>
         <CContainer gap={1} mb={4}>
           <P fontSize={"xl"} fontWeight={"semibold"}>
             {data?.title}
@@ -141,7 +141,7 @@ export default function Page() {
           </P>
         </CContainer>
 
-        <CContainer>
+        <CContainer flex={1}>
           <ResultTable daSession={data} />
         </CContainer>
       </CContainer>

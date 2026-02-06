@@ -274,7 +274,8 @@ export interface Interface__DAAnalysisResultItem {
 export interface Interface__DASessionDetail extends Interface__DASession {
   id: string;
   title: string;
-  documentService: Interface__DAServiceDetail;
+  documentService: Interface__DAService;
+  uploadedDocuments: Interface__DAServiceDocumentRequirement[];
   status: "PROCESSING" | "COMPLETED" | "ERROR";
   result: Interface__DAAnalysisResultItem[];
   createdAt: string;
