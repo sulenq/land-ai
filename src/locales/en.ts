@@ -52,8 +52,8 @@ const translations = {
     "description": "We're sorry. Please try again."
   },
   "all": "All",
+  "analysis_result": "Analysis results",
   "analyze": "Analyze",
-  "analyze_result": "Analyze result",
   "apply": "Apply",
   "april": "April",
   "ask_land_ai": "Ask Land.ai (Enter to submit)",

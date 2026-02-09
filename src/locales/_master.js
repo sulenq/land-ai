@@ -139,9 +139,9 @@ export const settings_navs = {
 };
 
 // Semantic UI
-export const analyze_result = {
+export const analysis_result = {
   id: "Hasil analisis",
-  en: "Analyze result",
+  en: "Analysis results",
 };
 export const service = {
   id: "Layanan",

@@ -52,8 +52,8 @@ const translations = {
     "description": "Maaf, silakan coba lagi."
   },
   "all": "Semua",
+  "analysis_result": "Hasil analisis",
   "analyze": "Analisa",
-  "analyze_result": "Hasil analisis",
   "apply": "Terapkan",
   "april": "April",
   "ask_land_ai": "Tanya Land.ai (Enter untuk submit)",

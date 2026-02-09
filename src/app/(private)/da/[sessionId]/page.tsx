@@ -133,19 +133,34 @@ export default function Page() {
 
   // Update breadcroumbs
   useEffect(() => {
-    setBreadcrumbs({
-      activeNavs: [
-        {
-          labelKey: `navs.your_da_analysis`,
-          path: `/da/${data?.id}`,
-        },
-        {
-          label: data?.title,
-          path: `/da/${data?.id}`,
-        },
-      ],
-    });
-  }, []);
+    if (data) {
+      setBreadcrumbs({
+        activeNavs: [
+          {
+            labelKey: `navs.your_da_analysis`,
+            path: `/da`,
+          },
+          {
+            label: data?.title,
+            path: `/da/${sessionId}`,
+          },
+        ],
+      });
+    } else {
+      setBreadcrumbs({
+        activeNavs: [
+          {
+            labelKey: `navs.your_da_analysis`,
+            path: `/da`,
+          },
+          {
+            label: "...",
+            path: `/da/${sessionId}`,
+          },
+        ],
+      });
+    }
+  }, [data]);
 
   // Refetch if processing
   useEffect(() => {
@@ -261,7 +276,7 @@ export default function Page() {
 
           {completed && (
             <CContainer>
-              <P fontWeight={"medium"}>{capitalizeWords(l.analyze_result)}</P>
+              <P fontWeight={"medium"}>{capitalizeWords(l.analysis_result)}</P>
 
               <ResultTable daSession={data} />
             </CContainer>

@@ -100,19 +100,34 @@ export default function Page() {
 
   // Update breadcroumbs
   useEffect(() => {
-    setBreadcrumbs({
-      activeNavs: [
-        {
-          labelKey: `navs.your_chats`,
-          path: `/c/${activeChat.session?.id}`,
-        },
-        {
-          label: activeChat.session?.title,
-          path: `/c/${activeChat.session?.id}`,
-        },
-      ],
-    });
-  }, []);
+    if (data) {
+      setBreadcrumbs({
+        activeNavs: [
+          {
+            labelKey: `navs.your_chats`,
+            path: `/c`,
+          },
+          {
+            label: activeChat.session?.title,
+            path: `/c/${sessionId}`,
+          },
+        ],
+      });
+    } else {
+      setBreadcrumbs({
+        activeNavs: [
+          {
+            labelKey: `navs.your_chats`,
+            path: `/c`,
+          },
+          {
+            label: "...",
+            path: `/c/${sessionId}`,
+          },
+        ],
+      });
+    }
+  }, [data]);
 
   const render = {
     loading: <ChatSessionPageSkeleton />,
