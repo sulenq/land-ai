@@ -183,9 +183,10 @@ const InputForm = (props: Props__InputForm) => {
         <Btn
           type="submit"
           form={ID}
-          loading={loading}
           w={"124px"}
           size={"md"}
+          colorPalette={themeConfig.colorPalette}
+          loading={loading}
           disabled={docReqs
             ?.filter((doc) => doc.isMandatory)
             .some(

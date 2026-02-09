@@ -27,9 +27,7 @@ export default function Page() {
 
   return (
     <PageContainer p={4}>
-      <ContainerLayout>
-        {/* {isInitialPrompted && <InitialPrompted />} */}
-
+      <ContainerLayout flex={1}>
         <NewPrompt loading={initialLoading} m={"auto"} />
       </ContainerLayout>
     </PageContainer>
