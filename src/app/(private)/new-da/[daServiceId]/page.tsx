@@ -142,7 +142,6 @@ const InputForm = (props: Props__InputForm) => {
       // border={"1px solid"}
       borderColor={"border.muted"}
       rounded={themeConfig.radii.container}
-      my={"auto"}
       {...restProps}
     >
       <form id={ID} onSubmit={formik.handleSubmit}>
@@ -153,7 +152,7 @@ const InputForm = (props: Props__InputForm) => {
                 <Field
                   key={doc.id}
                   label={doc.name}
-                  flex={"1 1 200px"}
+                  flex={"1 1 240px"}
                   invalid={!!formik.errors.files?.[doc.id]}
                   errorText={formik.errors.files?.[doc.id] as string}
                   optional={!doc.isMandatory}
@@ -281,7 +280,7 @@ export default function Page() {
   return (
     <PageContainer p={4}>
       <ContainerLayout ref={containerRef} flex={1}>
-        <CContainer flex={1} gap={8} justify={"space-between"}>
+        <CContainer flex={1} gap={8} justify={"center"}>
           {initialLoading && render.loading}
           {!initialLoading && (
             <>

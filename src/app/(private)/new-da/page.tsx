@@ -95,7 +95,7 @@ const Services = (props: Props__Services) => {
   };
 
   return (
-    <CContainer my={"auto"} {...restProps}>
+    <CContainer {...restProps}>
       {initialLoading && render.loading}
       {!initialLoading && (
         <>
@@ -134,7 +134,12 @@ export default function Page() {
   return (
     <PageContainer p={4}>
       <ContainerLayout ref={containerRef} flex={1}>
-        <CContainer flex={1} gap={4} justify={"space-between"}>
+        <CContainer
+          flex={1}
+          gap={4}
+          justify={"center"}
+          //  className="debug"
+        >
           <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
             {l.document_analysis_service}
           </P>
