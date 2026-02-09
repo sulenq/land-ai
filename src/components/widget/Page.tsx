@@ -8,6 +8,7 @@ import { CalendarDisclosureTrigger } from "@/components/widget/CalendarDisclosur
 import { ClampText } from "@/components/widget/ClampText";
 import Clock from "@/components/widget/Clock";
 import { DotIndicator } from "@/components/widget/Indicator";
+import SimplePopover from "@/components/widget/SimplePopover";
 import { Today } from "@/components/widget/Today";
 import { Interface__NavListItem } from "@/constants/interfaces";
 import { PRIVATE_NAVS } from "@/constants/navs";
@@ -98,46 +99,57 @@ export const NavBreadcrumb = (props: any) => {
   }, [pathname]);
 
   return (
-    <HStack gap={1} ml={"-4px"} h={"36px"} {...restProps}>
-      {backPath && <BackButton iconButton clicky={false} backPath={backPath} />}
+    <SimplePopover
+      content={activeNavs
+        .map((nav) => {
+          return nav.label || pluckString(l, nav.labelKey);
+        })
+        .join(" / ")}
+      maxW={"400px"}
+    >
+      <HStack gap={1} ml={"-4px"} h={"36px"} {...restProps}>
+        {backPath && (
+          <BackButton iconButton clicky={false} backPath={backPath} />
+        )}
 
-      <HStack color={"fg.subtle"} gap={0}>
-        <Icon boxSize={5} opacity={0.6} rotate={"-12deg"}>
-          <IconSlash stroke={1.5} />
-        </Icon>
+        <HStack color={"fg.subtle"} gap={0}>
+          <Icon boxSize={5} opacity={0.6} rotate={"-12deg"}>
+            <IconSlash stroke={1.5} />
+          </Icon>
 
-        {/* {isEmptyArray(resolvedActiveNavs) && <P>{l.navs.welcome}</P>} */}
+          {/* {isEmptyArray(resolvedActiveNavs) && <P>{l.navs.welcome}</P>} */}
 
-        {activeNavs.map((nav: Interface__NavListItem, idx: number) => {
-          return (
-            <HStack key={idx} gap={0} color={"fg.subtle"}>
-              {idx !== 0 && (
-                <>
-                  {backPath && (
-                    <Icon boxSize={5} opacity={0.6} rotate={"-12deg"}>
-                      <IconSlash stroke={1.5} />
-                    </Icon>
-                  )}
+          {activeNavs.map((nav: Interface__NavListItem, idx: number) => {
+            return (
+              <HStack key={idx} gap={0} color={"fg.subtle"}>
+                {idx !== 0 && (
+                  <>
+                    {backPath && (
+                      <Icon boxSize={5} opacity={0.6} rotate={"-12deg"}>
+                        <IconSlash stroke={1.5} />
+                      </Icon>
+                    )}
 
-                  {!backPath && (
-                    <DotIndicator
-                      boxSize={"5px"}
-                      color={"fg.subtle"}
-                      opacity={0.6}
-                      mx={2}
-                    />
-                  )}
-                </>
-              )}
+                    {!backPath && (
+                      <DotIndicator
+                        boxSize={"5px"}
+                        color={"fg.subtle"}
+                        opacity={0.6}
+                        mx={2}
+                      />
+                    )}
+                  </>
+                )}
 
-              <P fontSize={FONT_SIZE} lineClamp={1}>
-                {nav.label ? nav.label : pluckString(l, nav.labelKey)}
-              </P>
-            </HStack>
-          );
-        })}
+                <P fontSize={FONT_SIZE} lineClamp={1}>
+                  {nav.label ? nav.label : pluckString(l, nav.labelKey)}
+                </P>
+              </HStack>
+            );
+          })}
+        </HStack>
       </HStack>
-    </HStack>
+    </SimplePopover>
   );
 };
 
