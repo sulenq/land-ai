@@ -100,7 +100,7 @@ export default function Page() {
 
   // Update breadcroumbs
   useEffect(() => {
-    if (data) {
+    if (activeChat.session) {
       setBreadcrumbs({
         activeNavs: [
           {
@@ -108,7 +108,7 @@ export default function Page() {
             path: `/c`,
           },
           {
-            label: data?.session?.title,
+            label: activeChat.session?.title,
             path: `/c/${sessionId}`,
           },
         ],
@@ -127,7 +127,7 @@ export default function Page() {
         ],
       });
     }
-  }, [data]);
+  }, [activeChat.session]);
 
   const render = {
     loading: <ChatSessionPageSkeleton />,
