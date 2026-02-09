@@ -12,8 +12,8 @@ interface HorizontalScrollbarProps extends BoxProps {
 export function HorizontalScrollbar({
   containerRef,
   height = "6px",
-  thumbColor = "d4",
-  trackColor = "d1",
+  thumbColor = "fg.subtle",
+  trackColor = "d2",
   borderRadius = "999px",
   ...restProps
 }: HorizontalScrollbarProps) {
