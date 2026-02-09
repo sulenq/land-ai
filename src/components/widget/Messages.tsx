@@ -129,7 +129,7 @@ export const Messages = (props: Props__Messages) => {
               return (
                 <CContainer key={message.id} gap={2}>
                   {isStreaming && emptyMessage ? (
-                    <Spinner size={"sm"} ml={2} />
+                    <Spinner size={"sm"} ml={2} mb={22} />
                   ) : (
                     <>
                       <MarkdownChat error={true}>
