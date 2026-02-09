@@ -556,7 +556,7 @@ const translations = {
   "yearly_sales": "Yearly sales",
   "yes": "Yes",
   "your_chats": "Your chats",
-  "your_da_analysis": "Your doc. analysis",
+  "your_da_analysis": "Your document analysis",
   "zoom_in": "Zoom in",
   "zoom_out": "Zoom out",
   "zoom_reset": "Reset zoom"

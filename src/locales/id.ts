@@ -556,7 +556,7 @@ const translations = {
   "yearly_sales": "Penjualan tahunan",
   "yes": "Ya",
   "your_chats": "Obrolan anda",
-  "your_da_analysis": "Analisis doc. anda",
+  "your_da_analysis": "Analisis dokumen anda",
   "zoom_in": "Perbesar",
   "zoom_out": "Perkecil",
   "zoom_reset": "Reset zoom"

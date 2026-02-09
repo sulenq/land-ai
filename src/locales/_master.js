@@ -212,8 +212,8 @@ export const your_chats = {
   en: "Your chats",
 };
 export const your_da_analysis = {
-  id: "Analisis doc. anda",
-  en: "Your doc. analysis",
+  id: "Analisis dokumen anda",
+  en: "Your document analysis",
 };
 export const upload_file = {
   id: "Unggah file",

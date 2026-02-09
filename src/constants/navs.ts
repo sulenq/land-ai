@@ -1,13 +1,11 @@
 import { Interface__NavItem } from "@/constants/interfaces";
 import {
-  DatabaseIcon,
   LanguagesIcon,
   PaletteIcon,
   ScanTextIcon,
   SettingsIcon,
   ShieldHalfIcon,
   SquarePenIcon,
-  UserCogIcon,
   UserIcon,
 } from "lucide-react";
 
@@ -76,26 +74,26 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
   {
     groupLabelKey: "other",
     list: [
-      {
-        icon: DatabaseIcon,
-        labelKey: "navs.master_data",
-        path: `/master-data`,
-        allowedRoles: [],
-        subMenus: [
-          {
-            groupLabelKey: "master_data_navs.hr.index",
-            list: [
-              {
-                icon: UserCogIcon,
-                labelKey: "master_data_navs.hr.employment_status",
-                path: `/master-data/employment-status`,
-                allowedRoles: [],
-                backPath: `/master-data`,
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   icon: DatabaseIcon,
+      //   labelKey: "navs.master_data",
+      //   path: `/master-data`,
+      //   allowedRoles: [],
+      //   subMenus: [
+      //     {
+      //       groupLabelKey: "master_data_navs.hr.index",
+      //       list: [
+      //         {
+      //           icon: UserCogIcon,
+      //           labelKey: "master_data_navs.hr.employment_status",
+      //           path: `/master-data/employment-status`,
+      //           allowedRoles: [],
+      //           backPath: `/master-data`,
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
       {
         icon: SettingsIcon,
         labelKey: "navs.settings",
