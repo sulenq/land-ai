@@ -352,6 +352,8 @@ const translations = {
     "profile": "Profile"
   },
   "new_chat": "New chat",
+  "new_da": "New document analysis",
+  "new_da_with_same_service": "New document analysis with same service",
   "next": "Next",
   "next_page": "Next page",
   "no": "No",

@@ -75,7 +75,7 @@ export const FileUploadDropzone = forwardRef<
     >
       <VStack gap={4} pointerEvents={"none"}>
         {showIcon && (
-          <Icon fontSize="2xl" color="fg.muted" opacity={disabled ? 0.4 : 1}>
+          <Icon fontSize="2xl" color="fg.subtle" opacity={disabled ? 0.4 : 1}>
             {icon || <LucideIcon icon={UploadIcon} />}
           </Icon>
         )}
@@ -87,10 +87,10 @@ export const FileUploadDropzone = forwardRef<
             opacity={disabled ? 0.4 : 1}
             mb={imgInput ? "28px" : ""}
           >
-            {showLabel && <P>{label}</P>}
+            {showLabel && <P color={"fg.subtle"}>{label}</P>}
 
             {showDescription && description && (
-              <P color="fg.muted">{description || ".* up to 5MB"}</P>
+              <P color="fg.subtle">{description || ".* up to 5MB"}</P>
             )}
           </ChakraFileUpload.DropzoneContent>
         )}

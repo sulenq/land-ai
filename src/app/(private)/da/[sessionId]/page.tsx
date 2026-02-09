@@ -1,11 +1,14 @@
 "use client";
 
+import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { DASessonPageSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
+import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import Spinner from "@/components/ui/spinner";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
 import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
@@ -25,13 +28,14 @@ import { Props__DataTable } from "@/constants/props";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
 import { HStack } from "@chakra-ui/react";
-import { AlertTriangleIcon } from "lucide-react";
+import { AlertTriangleIcon, ArrowUpRightIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -117,6 +121,7 @@ const ResultTable = (props: Props__ResultTable) => {
 export default function Page() {
   // Contexts
   const { l, lang } = useLang();
+  const { themeConfig } = useThemeConfig();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
 
@@ -321,6 +326,21 @@ export default function Page() {
               containerDimension={containerDimension}
             />
           )}
+
+          <HStack wrap={"wrap"} gap={1} justify={"center"}>
+            <NavLink to={"/new-da"}>
+              <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
+                {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
+              </Btn>
+            </NavLink>
+
+            <NavLink to={`/new-da/${data?.documentService.id}`}>
+              <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
+                {l.new_da_with_same_service}
+                <AppIcon icon={ArrowUpRightIcon} />
+              </Btn>
+            </NavLink>
+          </HStack>
         </CContainer>
       </CContainer>
     ),

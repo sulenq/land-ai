@@ -107,7 +107,7 @@ export const NavBreadcrumb = (props: any) => {
         .join(" / ")}
       maxW={"400px"}
     >
-      <HStack gap={1} ml={"-4px"} h={"36px"} {...restProps}>
+      <HStack gap={1} ml={"-4px"} h={"36px"} cursor={"pointer"} {...restProps}>
         {backPath && (
           <BackButton iconButton clicky={false} backPath={backPath} />
         )}

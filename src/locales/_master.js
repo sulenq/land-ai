@@ -139,6 +139,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const new_da = {
+  id: "Analisa dokumen baru",
+  en: "New document analysis",
+};
+export const new_da_with_same_service = {
+  id: "Analisa dokumen baru dengan layanan sama",
+  en: "New document analysis with same service",
+};
 export const analysis_result = {
   id: "Hasil analisis",
   en: "Analysis results",

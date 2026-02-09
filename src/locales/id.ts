@@ -352,6 +352,8 @@ const translations = {
     "profile": "Profil"
   },
   "new_chat": "Obrolan baru",
+  "new_da": "Analisa dokumen baru",
+  "new_da_with_same_service": "Analisa dokumen baru dengan layanan sama",
   "next": "Selanjutnya",
   "next_page": "Halaman selanjutnya",
   "no": "Tidak",
