@@ -91,12 +91,12 @@ export default function Page() {
     }
   }, [status]);
 
-  // Scroll to bottom on messages change
+  // Scroll to bottom on messages length change
   useEffect(() => {
-    if (!isEmptyArray(messages) && activeChat.isStreaming) {
+    if (activeChat.totalMessages && activeChat.isStreaming) {
       scrollToBottom();
     }
-  }, [messages]);
+  }, [activeChat.totalMessages]);
 
   // Update breadcroumbs
   useEffect(() => {
