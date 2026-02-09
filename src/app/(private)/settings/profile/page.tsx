@@ -31,11 +31,7 @@ import ItemHeaderTitle from "@/components/widget/ItemHeaderTitle";
 import { Limitation } from "@/components/widget/Limitation";
 import { Pagination } from "@/components/widget/Pagination";
 import ResetPasswordDisclosureTrigger from "@/components/widget/ResetPasswordDisclosure";
-import {
-  dummyActivityLogs,
-  dummyAuthLogs,
-  dummyUser,
-} from "@/constants/dummyData";
+import { dummyActivityLogs, dummyAuthLogs } from "@/constants/dummyData";
 import { Enum__ActivityAction } from "@/constants/enums";
 import {
   Interface__ActivityLog,
@@ -54,6 +50,7 @@ import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
+import { getUserData } from "@/utils/auth";
 import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
 import { imgUrl } from "@/utils/url";
@@ -636,9 +633,10 @@ const ActivityLog = () => {
 
 export default function Page() {
   // States
+  const user = getUserData() as Interface__User;
   const { initialLoading, error, data, onRetry } =
     useDataState<Interface__User>({
-      initialData: dummyUser,
+      initialData: user,
       url: ``,
       dataResource: false,
     });

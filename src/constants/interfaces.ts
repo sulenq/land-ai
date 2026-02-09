@@ -28,25 +28,11 @@ export interface Interface__AuthLog extends Interface__CUD {
 }
 export interface Interface__User extends Interface__CUD {
   id: string;
-  role: number;
-  avatar: Interface__StorageFile[];
+  role: string;
+  avatar?: Interface__StorageFile[];
   name: string;
   email: string;
-  isActive?: boolean;
-  accountStatus?: string;
-  gender?: boolean;
-  phoneNumber?: string;
-  birthDate?: string;
-  address?: string;
-  registeredAt?: string;
-  deactiveAt?: string | null;
-
   lastLogin: string;
-  lastChangePassword?: string;
-  lastChangePasswordAt?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
 }
 export interface Interface__Role {
   id: string;
