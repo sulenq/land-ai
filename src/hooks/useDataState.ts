@@ -18,8 +18,7 @@ interface Props<T> {
   intialOffset?: number;
   dataResource?: boolean;
   loadingBar?: boolean;
-  // withLimit?: boolean;
-  // withPagination?: boolean;
+  loadingBarInitialOnly?: boolean;
 }
 
 const useDataState = <T = any>({
@@ -36,12 +35,15 @@ const useDataState = <T = any>({
   initialLimit = 15,
   dataResource = true,
   loadingBar = true,
+  loadingBarInitialOnly = false,
 }: Props<T>) => {
   const setLoadingBar = useLoadingBar((s) => s.setLoadingBar);
   const { rt } = useRenderTrigger();
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const paginationRef = useRef<any>(null);
+  const hasFetchedRef = useRef(false);
+  const hasShownLoadingBarRef = useRef(false);
 
   const [data, setData] = useState<T | undefined>(dummyData || initialData);
   const [initialLoading, setInitialLoading] = useState<boolean>(!!url);
@@ -74,14 +76,15 @@ const useDataState = <T = any>({
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    setInitialLoading(true);
+    if (!hasFetchedRef.current) {
+      setInitialLoading(true);
+    }
 
     req({
       config: { ...config, signal: controller.signal },
       onResolve: {
         onSuccess: (r) => {
           paginationRef.current = r?.data?.data?.pagination;
-          setInitialLoading(false);
           setData(
             dummyData ??
               (dataResource
@@ -90,8 +93,13 @@ const useDataState = <T = any>({
                   : r?.data?.data?.data
                 : r?.data?.data),
           );
+          hasFetchedRef.current = true;
+          hasShownLoadingBarRef.current = true;
+          setInitialLoading(false);
         },
         onError: () => {
+          hasFetchedRef.current = true;
+          hasShownLoadingBarRef.current = true;
           setInitialLoading(false);
         },
       },
@@ -132,10 +140,22 @@ const useDataState = <T = any>({
   }, [url, page, limit, ...(noRt ? [] : [rt]), ...dependencies]);
 
   useEffect(() => {
-    if (loadingBar && conditions) {
-      setLoadingBar(initialLoading || loading);
+    if (!loadingBar || !conditions) return;
+
+    if (!loadingBarInitialOnly) {
+      setLoadingBar(loading);
+      return;
     }
-  }, [initialLoading, loading, conditions]);
+
+    if (!hasShownLoadingBarRef.current && initialLoading) {
+      setLoadingBar(true);
+      return;
+    }
+
+    if (hasShownLoadingBarRef.current) {
+      setLoadingBar(false);
+    }
+  }, [loading, initialLoading, conditions, loadingBarInitialOnly]);
 
   return {
     data,

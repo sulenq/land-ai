@@ -12,6 +12,7 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
+import { HorizontalScrollbar } from "@/components/widget/HorizontalScrollbar";
 import { LucideIcon } from "@/components/widget/Icon";
 import { ContainerLayout, PageContainer } from "@/components/widget/Page";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
@@ -24,6 +25,7 @@ import { Props__DataTable } from "@/constants/props";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
+import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
@@ -31,14 +33,18 @@ import { imgUrl } from "@/utils/url";
 import { HStack } from "@chakra-ui/react";
 import { AlertTriangleIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props__ResultTable extends Props__DataTable {
+  containerDimension: { width: number; height: number };
   daSession?: Interface__DASessionDetail;
 }
 const ResultTable = (props: Props__ResultTable) => {
   // Props
-  const { daSession, ...restProps } = props;
+  const { containerDimension, daSession, ...restProps } = props;
+
+  // Refs
+  const containerRefInternal = useRef<HTMLDivElement | null>(null);
 
   // Contexts
   const { l } = useLang();
@@ -79,7 +85,33 @@ const ResultTable = (props: Props__ResultTable) => {
     };
   });
 
-  return <DataTable headers={headers} rows={rows} {...restProps} />;
+  return (
+    <CContainer gap={3}>
+      <ContainerLayout>
+        <P fontWeight={"medium"}>{capitalizeWords(l.analysis_result)}</P>
+      </ContainerLayout>
+
+      <CContainer
+        className="noScroll"
+        ref={containerRefInternal}
+        overflowX={"auto"}
+      >
+        <CContainer
+          w={"max"}
+          px={`calc((${containerDimension.width || 0}px - 720px)/2)`}
+        >
+          <DataTable headers={headers} rows={rows} minH={0} {...restProps} />
+        </CContainer>
+      </CContainer>
+
+      <HorizontalScrollbar
+        containerRef={containerRefInternal}
+        maxW={"200px"}
+        mx={"auto"}
+        my={4}
+      />
+    </CContainer>
+  );
 };
 
 export default function Page() {
@@ -88,9 +120,13 @@ export default function Page() {
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
 
+  // Refs
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
   // Hooks
   const { sessionId } = useParams();
   const router = useRouter();
+  const containerDimension = useContainerDimension(containerRef);
 
   // States
   const [pollingTick, setPollingTick] = useState(0);
@@ -100,6 +136,7 @@ export default function Page() {
       url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId, pollingTick],
+      loadingBarInitialOnly: true,
     });
   const formattedDocuments =
     data?.documentService?.documentRequirements.map((req) => {
@@ -177,91 +214,94 @@ export default function Page() {
 
   const render = {
     loading: <DASessonPageSkeleton />,
-    error: <FeedbackRetry onRetry={onRetry} />,
-    empty: <FeedbackNoData />,
+    error: <FeedbackRetry onRetry={onRetry} my={"80px"} />,
+    empty: <FeedbackNoData my={"80px"} />,
     notFound: <FeedbackNotFound />,
     loaded: (
       <CContainer flex={1} gap={8}>
-        {/* Header */}
-        <CContainer gap={1}>
-          <P fontSize={"xl"} fontWeight={"semibold"}>
-            {data?.title}
-          </P>
+        <ContainerLayout gap={8}>
+          {/* Header */}
+          <CContainer gap={1}>
+            <P fontSize={"xl"} fontWeight={"semibold"}>
+              {data?.title}
+            </P>
 
-          <P color={"fg.subtle"}>
-            {formatDate(data?.createdAt, {
-              withTime: true,
-            })}
-          </P>
-        </CContainer>
-
-        {/* Meta */}
-        <>
-          <CContainer gap={4}>
-            <P fontWeight={"medium"}>{capitalizeWords(l.service)}</P>
-
-            <CContainer gap={2} pl={4}>
-              <HStack gap={4} align={"start"}>
-                <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
-                  {l.name}
-                </P>
-                <HStack>
-                  <Img
-                    src={imgUrl(data?.documentService.icon)}
-                    fluid
-                    w={"20px"}
-                  />
-
-                  <P>{data?.documentService.title[lang]}</P>
-                </HStack>
-              </HStack>
-
-              <HStack gap={4} align={"start"}>
-                <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
-                  {l.description}
-                </P>
-                <P>{data?.documentService.description[lang]}</P>
-              </HStack>
-            </CContainer>
-          </CContainer>
-
-          <CContainer gap={4}>
-            <P fontWeight={"medium"}>{capitalizeWords(l.uploaded_file)}</P>
-
-            <CContainer gap={2} pl={4}>
-              {formattedDocuments?.map((doc) => {
-                return (
-                  <HStack
-                    key={doc.documentRequirement.id}
-                    align={"start"}
-                    gap={4}
-                  >
-                    <ClampText w={"140px"} flexShrink={0} color={"fg.subtle"}>
-                      {doc.documentRequirement.name}
-                    </ClampText>
-
-                    {doc.uploadedFile?.metaData.fileName ? (
-                      <ClampText>
-                        {doc.uploadedFile?.metaData.fileName}
-                      </ClampText>
-                    ) : (
-                      <P>-</P>
-                    )}
-                  </HStack>
-                );
+            <P color={"fg.subtle"}>
+              {formatDate(data?.createdAt, {
+                withTime: true,
               })}
-            </CContainer>
+            </P>
           </CContainer>
-        </>
+
+          {/* Meta */}
+          <>
+            <CContainer gap={4}>
+              <P fontWeight={"medium"}>{capitalizeWords(l.service)}</P>
+
+              <CContainer gap={2} pl={4}>
+                <HStack gap={4} align={"start"}>
+                  <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                    {l.name}
+                  </P>
+                  <HStack>
+                    <Img
+                      src={imgUrl(data?.documentService.icon)}
+                      fluid
+                      w={"20px"}
+                    />
+
+                    <P>{data?.documentService.title[lang]}</P>
+                  </HStack>
+                </HStack>
+
+                <HStack gap={4} align={"start"}>
+                  <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                    {l.description}
+                  </P>
+                  <P>{data?.documentService.description[lang]}</P>
+                </HStack>
+              </CContainer>
+            </CContainer>
+
+            <CContainer gap={4}>
+              <P fontWeight={"medium"}>{capitalizeWords(l.uploaded_file)}</P>
+
+              <CContainer gap={2} pl={4}>
+                {formattedDocuments?.map((doc) => {
+                  return (
+                    <HStack
+                      key={doc.documentRequirement.id}
+                      align={"start"}
+                      gap={4}
+                    >
+                      <ClampText w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                        {doc.documentRequirement.name}
+                      </ClampText>
+
+                      {doc.uploadedFile?.metaData.fileName ? (
+                        <ClampText>
+                          {doc.uploadedFile?.metaData.fileName}
+                        </ClampText>
+                      ) : (
+                        <P>-</P>
+                      )}
+                    </HStack>
+                  );
+                })}
+              </CContainer>
+            </CContainer>
+          </>
+        </ContainerLayout>
 
         {/* Result */}
-        <CContainer flex={1}>
+        <CContainer>
           {processing && (
             <FeedbackState
               icon={<Spinner />}
               title={l.alert_da_analyze_processing.title}
               description={l.alert_da_analyze_processing.description}
               m={"auto"}
+              my={"80px"}
             />
           )}
 
@@ -271,15 +311,15 @@ export default function Page() {
               title={l.alert_da_analyze_failed.title}
               description={l.alert_da_analyze_failed.description}
               m={"auto"}
+              my={"80px"}
             />
           )}
 
           {completed && (
-            <CContainer>
-              <P fontWeight={"medium"}>{capitalizeWords(l.analysis_result)}</P>
-
-              <ResultTable daSession={data} />
-            </CContainer>
+            <ResultTable
+              daSession={data}
+              containerDimension={containerDimension}
+            />
           )}
         </CContainer>
       </CContainer>
@@ -287,25 +327,23 @@ export default function Page() {
   };
 
   return (
-    <PageContainer p={4} pos={"relative"}>
-      <ContainerLayout>
-        <CContainer flex={1} gap={4} justify={"space-between"}>
-          {initialLoading && render.loading}
-          {!initialLoading && (
-            <>
-              {error && render.error}
-              {!error && (
-                <>
-                  {data && render.loaded}
-                  {!data && render.empty}
-                </>
-              )}
-            </>
-          )}
+    <PageContainer ref={containerRef} p={4} pos={"relative"}>
+      <CContainer flex={1} gap={4} justify={"space-between"}>
+        {initialLoading && render.loading}
+        {!initialLoading && (
+          <>
+            {error && render.error}
+            {!error && (
+              <>
+                {data && render.loaded}
+                {!data && render.empty}
+              </>
+            )}
+          </>
+        )}
 
-          <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
-        </CContainer>
-      </ContainerLayout>
+        <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+      </CContainer>
     </PageContainer>
   );
 }

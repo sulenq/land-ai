@@ -191,9 +191,21 @@ export const formatDate = (
   }
 
   if (options.withTime) {
-    const timeFormat = options.timeFormat || "HH:mm";
-    // Mengganti localDate.format(timeFormat)
-    const timeStr = formatTz(zonedDate, timeFormat, { timeZone: timezoneKey });
+    if (options.timeFormat) {
+      const timeStr = formatTz(zonedDate, options.timeFormat, {
+        timeZone: timezoneKey,
+      });
+      return `${formattedDate} ${timeStr}`;
+    }
+
+    const hhmmss = formatTz(zonedDate, "HH:mm:ss", {
+      timeZone: timezoneKey,
+    });
+
+    const timeStr = formatTime(hhmmss, {
+      timezoneKey,
+    });
+
     return `${formattedDate} ${timeStr}`;
   }
 
