@@ -3,6 +3,7 @@
 import { CContainer } from "@/components/ui/c-container";
 import { DASessonPageSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
+import { Img } from "@/components/ui/img";
 import { P } from "@/components/ui/p";
 import Spinner from "@/components/ui/spinner";
 import { ClampText } from "@/components/widget/ClampText";
@@ -26,6 +27,7 @@ import useLang from "@/context/useLang";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
+import { imgUrl } from "@/utils/url";
 import { HStack } from "@chakra-ui/react";
 import { AlertTriangleIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -188,7 +190,15 @@ export default function Page() {
                 <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
                   {l.name}
                 </P>
-                <P>{data?.documentService.title[lang]}</P>
+                <HStack>
+                  <Img
+                    src={imgUrl(data?.documentService.icon)}
+                    fluid
+                    w={"20px"}
+                  />
+
+                  <P>{data?.documentService.title[lang]}</P>
+                </HStack>
               </HStack>
 
               <HStack gap={4} align={"start"}>
