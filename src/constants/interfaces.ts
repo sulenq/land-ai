@@ -28,7 +28,7 @@ export interface Interface__AuthLog extends Interface__CUD {
 }
 export interface Interface__User extends Interface__CUD {
   id: string;
-  role: string;
+  role: number;
   avatar?: Interface__StorageFile[];
   name: string;
   email: string;
