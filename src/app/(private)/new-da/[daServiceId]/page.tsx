@@ -27,7 +27,7 @@ import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
 import { getGridColumns } from "@/utils/style";
 import { fileValidation } from "@/utils/validationSchema";
-import { HStack, StackProps, VStack } from "@chakra-ui/react";
+import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -146,7 +146,7 @@ const InputForm = (props: Props__InputForm) => {
     >
       <form id={ID} onSubmit={formik.handleSubmit}>
         <FieldsetRoot disabled={loading}>
-          <HStack wrap={"wrap"} gap={4} align={"end"} justify={"center"}>
+          <SimpleGrid columns={[1, null, 2]} gap={4}>
             {docReqs?.map((doc) => {
               return (
                 <Field
@@ -156,7 +156,6 @@ const InputForm = (props: Props__InputForm) => {
                   invalid={!!formik.errors.files?.[doc.id]}
                   errorText={formik.errors.files?.[doc.id] as string}
                   optional={!doc.isMandatory}
-                  maxW={"220px"}
                 >
                   <FileInput
                     dropzone
@@ -170,7 +169,7 @@ const InputForm = (props: Props__InputForm) => {
                 </Field>
               );
             })}
-          </HStack>
+          </SimpleGrid>
         </FieldsetRoot>
       </form>
 
