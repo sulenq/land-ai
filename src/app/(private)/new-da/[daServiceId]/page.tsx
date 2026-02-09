@@ -194,7 +194,7 @@ const InputForm = (props: Props__InputForm) => {
                 formik.values.files[doc.id].length === 0,
             )}
         >
-          {l.analyze}
+          {l.analysis}
         </Btn>
       </CContainer>
     </CContainer>

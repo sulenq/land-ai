@@ -159,9 +159,9 @@ export const reference = {
   id: "Referensi",
   en: "Reference",
 };
-export const analyze = {
-  id: "Analisa",
-  en: "Analyze",
+export const analysis = {
+  id: "Analisis",
+  en: "Analysis",
 };
 export const cover_letter = {
   id: "Surat pengantar",
