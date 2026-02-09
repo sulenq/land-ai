@@ -133,7 +133,7 @@ export default function Page() {
 
   return (
     <PageContainer p={4}>
-      <ContainerLayout ref={containerRef}>
+      <ContainerLayout ref={containerRef} flex={1}>
         <CContainer flex={1} gap={4} justify={"space-between"}>
           <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
             {l.document_analysis_service}
