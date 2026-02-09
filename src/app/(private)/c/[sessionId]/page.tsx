@@ -108,7 +108,7 @@ export default function Page() {
             path: `/c`,
           },
           {
-            label: activeChat.session?.title,
+            label: data?.session?.title,
             path: `/c/${sessionId}`,
           },
         ],
