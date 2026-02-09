@@ -27,7 +27,7 @@ import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
 import { getGridColumns } from "@/utils/style";
 import { fileValidation } from "@/utils/validationSchema";
-import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
+import { HStack, StackProps, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -41,7 +41,7 @@ const InputForm = (props: Props__InputForm) => {
   const ID = "da_service_input_form";
 
   // Props
-  const { daService, cols, ...restProps } = props;
+  const { daService, ...restProps } = props;
 
   // Contexts
   const { l, lang } = useLang();
@@ -147,7 +147,7 @@ const InputForm = (props: Props__InputForm) => {
     >
       <form id={ID} onSubmit={formik.handleSubmit}>
         <FieldsetRoot disabled={loading}>
-          <SimpleGrid columns={cols} gap={4} alignItems={"end"}>
+          <HStack wrap={"wrap"} gap={4} align={"end"} justify={"center"}>
             {docReqs?.map((doc) => {
               return (
                 <Field
@@ -157,6 +157,7 @@ const InputForm = (props: Props__InputForm) => {
                   invalid={!!formik.errors.files?.[doc.id]}
                   errorText={formik.errors.files?.[doc.id] as string}
                   optional={!doc.isMandatory}
+                  maxW={"220px"}
                 >
                   <FileInput
                     dropzone
@@ -170,7 +171,7 @@ const InputForm = (props: Props__InputForm) => {
                 </Field>
               );
             })}
-          </SimpleGrid>
+          </HStack>
         </FieldsetRoot>
       </form>
 
@@ -279,7 +280,7 @@ export default function Page() {
   return (
     <PageContainer p={4}>
       <ContainerLayout ref={containerRef}>
-        <CContainer flex={1} gap={4} justify={"space-between"}>
+        <CContainer flex={1} gap={8} justify={"space-between"}>
           {initialLoading && render.loading}
           {!initialLoading && (
             <>
