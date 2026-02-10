@@ -35,6 +35,7 @@ import {
   CHAT_API_SESSION_RENAME,
 } from "@/constants/apis";
 import { Interface__ChatSession } from "@/constants/interfaces";
+import { useActiveChat } from "@/context/useActiveChat";
 import { useChatSessions } from "@/context/useChatSessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -72,6 +73,8 @@ const Rename = (props: Props__Rename) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const renameChatSession = useChatSessions((s) => s.renameChatSession);
+  const activeSession = useActiveChat((s) => s.activeChat.session);
+  const setActiveSession = useActiveChat((s) => s.setSession);
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(disclosureId(ID));
@@ -93,6 +96,10 @@ const Rename = (props: Props__Rename) => {
       back();
 
       renameChatSession(sessionId, values.title);
+
+      if (activeSession?.id === sessionId) {
+        setActiveSession({ ...activeSession, title: values.title });
+      }
 
       const config = {
         method: "PATCH",
