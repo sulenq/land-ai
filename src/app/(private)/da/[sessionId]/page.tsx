@@ -65,7 +65,6 @@ const ResultTable = (props: Props__ResultTable) => {
     { th: "Validasi", sortable: true },
   ];
   const rows: Interface__FormattedTableRow[] = (result ?? []).map((r, idx) => {
-    console.debug(r);
     return {
       id: `${idx}`,
       idx: idx,
