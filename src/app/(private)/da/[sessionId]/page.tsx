@@ -113,7 +113,8 @@ const ResultTable = (props: Props__ResultTable) => {
         containerRef={containerRefInternal}
         maxW={"200px"}
         mx={"auto"}
-        my={4}
+        mt={2}
+        mb={4}
       />
     </CContainer>
   );
