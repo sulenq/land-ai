@@ -139,6 +139,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const not_found = {
+  id: "Tidak ditemukan",
+  en: "Not found",
+};
 export const new_da = {
   id: "Analisa dokumen baru",
   en: "New document analysis",

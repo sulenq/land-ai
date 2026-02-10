@@ -20,7 +20,6 @@ import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { Skeleton } from "@/components/ui/skeleton";
-import Spinner from "@/components/ui/spinner";
 import { StringInput } from "@/components/ui/string-input";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
@@ -294,7 +293,7 @@ export const DASessions = (props: any) => {
   } else {
     loadedContent = resolvedData?.map((session) => {
       const isActive = pathname === `/da/${session.id}`;
-      const processing = session.status === "PROCESSING";
+      // const processing = session.status === "PROCESSING";
       const failed = session.status === "FAILED";
 
       return (
@@ -325,8 +324,6 @@ export const DASessions = (props: any) => {
                 <P lineClamp={1} textAlign={"left"}>
                   {session.title}
                 </P>
-
-                {processing && <Spinner size={"xs"} borderWidth={1} />}
 
                 {failed && <DotIndicator color={"fg.error"} />}
               </HStack>

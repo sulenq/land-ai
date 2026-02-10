@@ -18,6 +18,7 @@ import {
 } from "@/constants/interfaces";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
+import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
@@ -47,6 +48,7 @@ const InputForm = (props: Props__InputForm) => {
   const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
   const setActiveDA = useActiveDA((s) => s.setActiveDA);
+  const prependToDASessions = useDASessions((s) => s.prependToDASessions);
 
   // Hooks
   const { req, loading } = useRequest({
@@ -119,6 +121,7 @@ const InputForm = (props: Props__InputForm) => {
         onResolve: {
           onSuccess: (r) => {
             const daSession = r.data.data;
+            prependToDASessions(daSession);
             setActiveDA({
               session: daSession,
             });

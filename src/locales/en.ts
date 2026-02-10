@@ -357,6 +357,7 @@ const translations = {
   "next": "Next",
   "next_page": "Next page",
   "no": "No",
+  "not_found": "Not found",
   "not_started": "Not started",
   "november": "November",
   "october": "October",

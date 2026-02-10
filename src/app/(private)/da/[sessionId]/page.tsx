@@ -72,7 +72,7 @@ const ResultTable = (props: Props__ResultTable) => {
       columns: [
         { td: r.label, value: r.label, dataType: "string" },
         ...r.values.map((v) => ({
-          td: v.value || "-",
+          td: v.value === "NOT_FOUND" ? l.not_found : v.value || "-",
           value: v.value,
           dataType: v.renderType,
         })),
@@ -245,7 +245,7 @@ export default function Page() {
 
               <CContainer gap={2} pl={4}>
                 <HStack gap={4} align={"start"}>
-                  <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                  <P w={"140px"} flexShrink={0} color={"fg.muted"}>
                     {l.name}
                   </P>
                   <HStack>
@@ -260,7 +260,7 @@ export default function Page() {
                 </HStack>
 
                 <HStack gap={4} align={"start"}>
-                  <P w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                  <P w={"140px"} flexShrink={0} color={"fg.muted"}>
                     {l.description}
                   </P>
                   <P>{data?.documentService.description[lang]}</P>
@@ -279,12 +279,12 @@ export default function Page() {
                       align={"start"}
                       gap={4}
                     >
-                      <ClampText w={"140px"} flexShrink={0} color={"fg.subtle"}>
+                      <ClampText w={"140px"} flexShrink={0} color={"fg.muted"}>
                         {doc.documentRequirement.name}
                       </ClampText>
 
                       {doc.uploadedFile?.metaData.fileName ? (
-                        <ClampText>
+                        <ClampText fontWeight={"medium"}>
                           {doc.uploadedFile?.metaData.fileName}
                         </ClampText>
                       ) : (

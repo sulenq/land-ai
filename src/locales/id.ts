@@ -357,6 +357,7 @@ const translations = {
   "next": "Selanjutnya",
   "next_page": "Halaman selanjutnya",
   "no": "Tidak",
+  "not_found": "Tidak ditemukan",
   "not_started": "Belum dimulai",
   "november": "November",
   "october": "Oktober",
