@@ -41,7 +41,9 @@ const ReferenceDisclosureTrigger = (
   const { l } = useLang();
 
   // Hooks
-  const { isOpen, onOpen } = usePopDisclosure(disclosureId(`reference`));
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId(`reference_${message.id}`),
+  );
 
   return (
     <>
