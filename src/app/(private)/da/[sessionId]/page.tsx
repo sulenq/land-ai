@@ -276,7 +276,7 @@ export default function Page() {
                   </P>
                   <HStack>
                     <Img
-                      src={imgUrl(activeDASession?.documentService.icon)}
+                      src={imgUrl(activeDASession?.documentService?.icon)}
                       fluid
                       w={"20px"}
                     />
