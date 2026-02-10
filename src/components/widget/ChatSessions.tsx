@@ -329,6 +329,7 @@ const Delete = (props: Props__Delete) => {
         type: "submit",
         form: ID,
         variant: "outline",
+        colorPalette: "gray",
         color: "fg.error",
       }}
       confirmLabel={l.delete_}
