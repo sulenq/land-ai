@@ -21,6 +21,7 @@ import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StringInput } from "@/components/ui/string-input";
+import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
@@ -28,13 +29,13 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { DotIndicator, LeftIndicator } from "@/components/widget/Indicator";
-import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
   DA_API_SESSION_DELETE,
   DA_API_SESSION_GET_ALL,
   DA_API_SESSION_RENAME,
 } from "@/constants/apis";
 import { Interface__DASession } from "@/constants/interfaces";
+import { useActiveDA } from "@/context/useActiveDA";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -63,10 +64,15 @@ const Rename = (props: Props__Rename) => {
   // Props
   const { sessionId, title, ...restProps } = props;
 
+  // Refs
+  const inputRef = useRef<HTMLInputElement>(null);
+
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const renameDASession = useDASessions((s) => s.renameDASession);
+  const activeDASession = useActiveDA((s) => s.activeDA.session);
+  const setActiveDASession = useActiveDA((s) => s.setSession);
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(disclosureId(ID));
@@ -89,6 +95,13 @@ const Rename = (props: Props__Rename) => {
 
       renameDASession(sessionId, values.title);
 
+      if (activeDASession?.id === sessionId) {
+        setActiveDASession({
+          ...activeDASession,
+          title: values.title,
+        });
+      }
+
       const config = {
         method: "PATCH",
         url: `${DA_API_SESSION_RENAME}/${sessionId}`,
@@ -101,11 +114,25 @@ const Rename = (props: Props__Rename) => {
           onSuccess: () => {},
           onError: () => {
             renameDASession(sessionId, originalTitle);
+            setActiveDASession({
+              ...activeDASession,
+              title: originalTitle,
+            });
           },
         },
       });
     },
   });
+
+  // Focus input when open
+  useEffect(() => {
+    if (isOpen) {
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      });
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -297,63 +324,61 @@ export const DASessions = (props: any) => {
       const failed = session.status === "FAILED";
 
       return (
-        <DesktopNavTooltip
+        <HStack
           key={session.id}
-          content={`${session.title} (${session.serviceName})`}
+          pl={"10px"}
+          gap={0}
+          justifyContent={"space-between"}
+          rounded={themeConfig.radii.component}
+          _hover={{ bg: "bg.muted" }}
+          transition={"200ms"}
+          pos={"relative"}
         >
-          <HStack
-            pl={"10px"}
-            gap={0}
-            justifyContent={"space-between"}
-            rounded={themeConfig.radii.component}
-            _hover={{ bg: "bg.muted" }}
-            transition={"200ms"}
-            pos={"relative"}
-          >
-            <NavLink to={`/da/${session.id}`} w={"full"}>
-              <HStack h={["44px", null, "36px"]} pr={1}>
-                {isActive && <LeftIndicator />}
+          <NavLink to={`/da/${session.id}`} w={"full"}>
+            <HStack h={["44px", null, "36px"]} pr={1}>
+              {isActive && <LeftIndicator />}
 
-                <Img
-                  src={imgUrl(session.serviceIcon)}
-                  h={"20px"}
-                  fluid
-                  flexShrink={0}
-                />
+              <Img
+                src={imgUrl(session.serviceIcon)}
+                h={"20px"}
+                fluid
+                flexShrink={0}
+              />
 
+              <Tooltip content={session.title}>
                 <P lineClamp={1} textAlign={"left"}>
                   {session.title}
                 </P>
+              </Tooltip>
 
-                {failed && <DotIndicator color={"fg.error"} />}
-              </HStack>
-            </NavLink>
+              {failed && <DotIndicator color={"fg.error"} />}
+            </HStack>
+          </NavLink>
 
-            {/* Options */}
-            <MenuRoot positioning={{ placement: "right-start" }}>
-              <MenuTrigger
-                asChild
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <Btn iconButton size={"xs"} variant={"plain"}>
-                  <AppIcon icon={EllipsisIcon} />
-                </Btn>
-              </MenuTrigger>
+          {/* Options */}
+          <MenuRoot positioning={{ placement: "right-start" }}>
+            <MenuTrigger
+              asChild
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Btn iconButton size={"xs"} variant={"plain"}>
+                <AppIcon icon={EllipsisIcon} />
+              </Btn>
+            </MenuTrigger>
 
-              <MenuContent zIndex={"modal"}>
-                <Rename
-                  value="rename"
-                  sessionId={session.id}
-                  title={session.title}
-                />
+            <MenuContent zIndex={"modal"}>
+              <Rename
+                value="rename"
+                sessionId={session.id}
+                title={session.title}
+              />
 
-                <Delete value="delete" sessionId={session.id} />
-              </MenuContent>
-            </MenuRoot>
-          </HStack>
-        </DesktopNavTooltip>
+              <Delete value="delete" sessionId={session.id} />
+            </MenuContent>
+          </MenuRoot>
+        </HStack>
       );
     });
   }

@@ -12,10 +12,10 @@ export const Logo = (props: Props__Logo) => {
   const resolvedColor = color
     ? color
     : themeConfig.colorPalette === "gray"
-    ? colorMode === "dark"
-      ? "#fff"
-      : "#1b1b1b"
-    : themeConfig?.primaryColorHex;
+      ? colorMode === "dark"
+        ? "#fff"
+        : "#1b1b1b"
+      : themeConfig?.primaryColorHex;
 
   return (
     <Center

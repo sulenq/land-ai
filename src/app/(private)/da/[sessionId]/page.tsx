@@ -25,6 +25,7 @@ import {
   Interface__FormattedTableRow,
 } from "@/constants/interfaces";
 import { Props__DataTable } from "@/constants/props";
+import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
@@ -126,6 +127,11 @@ export default function Page() {
   const { themeConfig } = useThemeConfig();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
+  const updateIsNewDA = useActiveDA((s) => s.updateIsNewDA);
+  const updateHasLoadedHistory = useActiveDA((s) => s.updateHasLoadedHistory);
+  const clearActiveDa = useActiveDA((s) => s.clearActiveDa);
+  const setSession = useActiveDA((s) => s.setSession);
+  const activeDA = useActiveDA((s) => s.activeDA);
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -136,6 +142,8 @@ export default function Page() {
   const containerDimension = useContainerDimension(containerRef);
 
   // States
+  const activeDASession = activeDA.session;
+  const activeDASessionId = activeDASession?.id;
   const [pollingTick, setPollingTick] = useState(0);
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
@@ -167,6 +175,22 @@ export default function Page() {
   const failed = data?.status === "FAILED";
   const completed = data?.status === "COMPLETED";
 
+  // Update has loaded history on session change
+  useEffect(() => {
+    updateIsNewDA(false);
+    if (activeDASessionId !== sessionId) {
+      updateHasLoadedHistory(false);
+      clearActiveDa();
+    }
+  }, [sessionId]);
+
+  // Set active DA on data load
+  useEffect(() => {
+    if (data) {
+      setSession(data);
+    }
+  }, [data]);
+
   // Handle 404 - redirect and remove session
   useEffect(() => {
     if (status === 404) {
@@ -177,7 +201,7 @@ export default function Page() {
 
   // Update breadcroumbs
   useEffect(() => {
-    if (data) {
+    if (activeDA.session) {
       setBreadcrumbs({
         activeNavs: [
           {
@@ -185,7 +209,7 @@ export default function Page() {
             path: `/da`,
           },
           {
-            label: data?.title,
+            label: activeDA.session?.title,
             path: `/da/${sessionId}`,
           },
         ],
@@ -204,7 +228,7 @@ export default function Page() {
         ],
       });
     }
-  }, [data]);
+  }, [activeDA.session]);
 
   // Refetch if processing
   useEffect(() => {
@@ -230,11 +254,11 @@ export default function Page() {
           {/* Header */}
           <CContainer gap={1}>
             <P fontSize={"xl"} fontWeight={"semibold"}>
-              {data?.title}
+              {activeDASession?.title}
             </P>
 
             <P color={"fg.subtle"}>
-              {formatDate(data?.createdAt, {
+              {formatDate(activeDASession?.createdAt, {
                 withTime: true,
               })}
             </P>
@@ -252,7 +276,7 @@ export default function Page() {
                   </P>
                   <HStack>
                     <Img
-                      src={imgUrl(data?.documentService.icon)}
+                      src={imgUrl(activeDASession?.documentService.icon)}
                       fluid
                       w={"20px"}
                     />

@@ -178,6 +178,9 @@ export interface Interface__ChatSession extends Interface__CUD {
 export interface Interface__ContextChatSession extends Interface__ChatSession {
   controller: AbortController;
 }
+export type Interface__ContextChatSessionDraft =
+  Partial<Interface__ContextChatSession>;
+
 export interface Interface__ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -189,7 +192,7 @@ export interface Interface__ChatMessage {
   createdAt?: string;
 }
 export interface Interface__ActiveChatState {
-  session: Interface__ContextChatSession | null;
+  session: Interface__ContextChatSessionDraft | null;
   messages: Interface__ChatMessage[];
   totalMessages: number;
   isStreaming: boolean;
@@ -240,11 +243,6 @@ export interface Interface__DASession {
   serviceIcon?: string;
   serviceName?: string;
 }
-export interface Interface__ActiveDAState {
-  session: Interface__DASession | null;
-  isNewDA: boolean;
-  hasLoadedHistory: boolean;
-}
 export interface Interface__DAAnalysisValue {
   documentId: number;
   renderType: Type__RenderType;
@@ -267,11 +265,14 @@ export interface Interface__DAUploadedDocument {
   };
 }
 export interface Interface__DASessionDetail extends Interface__DASession {
-  id: string;
-  title: string;
   documentService: Interface__DAServiceDetail;
   uploadedDocuments: Interface__DAUploadedDocument[];
-  status: Type__DASessionStatus;
   result: Interface__DAAnalysisResultItem[];
-  createdAt: string;
+}
+export type Interface__DASessionDraft = Partial<Interface__DASessionDetail>;
+
+export interface Interface__ActiveDAState {
+  session: Interface__DASessionDraft | null;
+  isNewDA: boolean;
+  hasLoadedHistory: boolean;
 }

@@ -20,6 +20,7 @@ import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StringInput } from "@/components/ui/string-input";
+import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
@@ -27,10 +28,9 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { LeftIndicator } from "@/components/widget/Indicator";
-import { DesktopNavTooltip } from "@/components/widget/Navs";
 import {
-  CHAT_API_SESSION_GET_ALL,
   CHAT_API_SESSION_DELETE,
+  CHAT_API_SESSION_GET_ALL,
   CHAT_API_SESSION_PROTECT,
   CHAT_API_SESSION_RENAME,
 } from "@/constants/apis";
@@ -68,6 +68,9 @@ const Rename = (props: Props__Rename) => {
 
   // Props
   const { sessionId, title, ...restProps } = props;
+
+  // Refs
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Contexts
   const { l } = useLang();
@@ -113,11 +116,22 @@ const Rename = (props: Props__Rename) => {
           onSuccess: () => {},
           onError: () => {
             renameChatSession(sessionId, originalTitle);
+            setActiveSession({ title: originalTitle });
           },
         },
       });
     },
   });
+
+  // Focus input when open
+  useEffect(() => {
+    if (isOpen) {
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      });
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -389,65 +403,66 @@ export const ChatSessions = (props: any) => {
       const isProtected = session.isProtected as boolean;
 
       return (
-        <DesktopNavTooltip key={session.id} content={session.title}>
-          <HStack
-            pl={"10px"}
-            gap={0}
-            justifyContent={"space-between"}
-            rounded={themeConfig.radii.component}
-            _hover={{ bg: "bg.muted" }}
-            transition={"200ms"}
-            pos={"relative"}
-          >
-            <NavLink to={`/c/${session.id}`} w={"full"}>
-              <HStack h={["44px", null, "36px"]} pr={1}>
-                {isActive && <LeftIndicator />}
+        <HStack
+          key={session.id}
+          pl={"10px"}
+          gap={0}
+          justifyContent={"space-between"}
+          rounded={themeConfig.radii.component}
+          _hover={{ bg: "bg.muted" }}
+          transition={"200ms"}
+          pos={"relative"}
+        >
+          <NavLink to={`/c/${session.id}`} w={"full"}>
+            <HStack h={["44px", null, "36px"]} pr={1}>
+              {isActive && <LeftIndicator />}
 
+              <Tooltip content={session.title}>
                 <P lineClamp={1} textAlign={"left"}>
                   {session.title}
                 </P>
+              </Tooltip>
 
-                {isProtected && (
-                  <AppIcon icon={ShieldIcon} color={"fg.subtle"} ml={"auto"} />
-                )}
-              </HStack>
-            </NavLink>
+              {isProtected && (
+                <AppIcon icon={ShieldIcon} color={"fg.subtle"} ml={"auto"} />
+              )}
+            </HStack>
+          </NavLink>
 
-            {/* Options */}
-            <MenuRoot positioning={{ placement: "right-start" }}>
-              <MenuTrigger
-                asChild
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <Btn iconButton size={"xs"} variant={"plain"}>
-                  <AppIcon icon={EllipsisIcon} />
-                </Btn>
-              </MenuTrigger>
+          {/* Options */}
+          <MenuRoot positioning={{ placement: "right-start" }}>
+            <MenuTrigger
+              asChild
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Btn iconButton size={"xs"} variant={"plain"}>
+                <AppIcon icon={EllipsisIcon} />
+              </Btn>
+            </MenuTrigger>
 
-              <MenuContent zIndex={"modal"}>
-                <Rename
-                  value="rename"
-                  sessionId={session.id}
-                  title={session.title}
-                />
+            <MenuContent zIndex={"modal"}>
+              <Rename
+                value="rename"
+                sessionId={session.id}
+                title={session.title}
+              />
 
-                <Protect
-                  value="protect"
-                  sessionId={session.id}
-                  isProtected={isProtected}
-                />
+              <Protect
+                value="protect"
+                sessionId={session.id}
+                isProtected={isProtected}
+              />
 
-                <Delete
-                  value="delete"
-                  sessionId={session.id}
-                  disabled={isProtected}
-                />
-              </MenuContent>
-            </MenuRoot>
-          </HStack>
-        </DesktopNavTooltip>
+              <Delete
+                value="delete"
+                sessionId={session.id}
+                disabled={isProtected}
+              />
+            </MenuContent>
+          </MenuRoot>
+        </HStack>
       );
     });
   }

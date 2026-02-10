@@ -11,7 +11,7 @@ interface State_Actions {
   initSession: () => void;
   setActiveChat: (partial: Partial<State_Actions["activeChat"]>) => void;
 
-  setSession: (session: Interface__ContextChatSession | null) => void;
+  setSession: (partial: Partial<Interface__ContextChatSession> | null) => void;
   setMessages: (messages: Interface__ChatMessage[]) => void;
   updateHasLoadedHistory: (value: boolean) => void;
   updateIsNewChat: (value: boolean) => void;
@@ -25,7 +25,7 @@ interface State_Actions {
   finishStreaming: () => void;
 }
 
-export const DEFAULT_CHAT_STATE: Interface__ActiveChatState = {
+export const DEFAULT_ACTIVE_CHAT: Interface__ActiveChatState = {
   session: null,
   messages: [],
   totalMessages: 0,
@@ -35,7 +35,7 @@ export const DEFAULT_CHAT_STATE: Interface__ActiveChatState = {
 };
 
 export const useActiveChat = create<State_Actions>((set) => ({
-  activeChat: DEFAULT_CHAT_STATE,
+  activeChat: DEFAULT_ACTIVE_CHAT,
 
   initSession: () =>
     set((state) => ({
@@ -54,11 +54,17 @@ export const useActiveChat = create<State_Actions>((set) => ({
       },
     })),
 
-  setSession: (session) =>
+  setSession: (partial) =>
     set((state) => ({
       activeChat: {
         ...state.activeChat,
-        session,
+        session:
+          partial === null
+            ? null
+            : {
+                ...(state.activeChat.session ?? {}),
+                ...partial,
+              },
       },
     })),
 
@@ -88,7 +94,7 @@ export const useActiveChat = create<State_Actions>((set) => ({
 
   clearActiveChat: () =>
     set(() => ({
-      activeChat: DEFAULT_CHAT_STATE,
+      activeChat: DEFAULT_ACTIVE_CHAT,
     })),
 
   appendMessage: (message) =>
