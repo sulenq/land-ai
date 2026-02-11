@@ -244,7 +244,11 @@ export default function Page() {
   }, [data?.status]);
 
   const render = {
-    loading: <DASessonPageSkeleton />,
+    loading: (
+      <ContainerLayout flex={1}>
+        <DASessonPageSkeleton />
+      </ContainerLayout>
+    ),
     error: <FeedbackRetry onRetry={onRetry} my={"80px"} />,
     empty: <FeedbackNoData my={"80px"} />,
     notFound: <FeedbackNotFound />,
