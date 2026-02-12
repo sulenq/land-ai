@@ -281,8 +281,8 @@ export default function Page() {
 
   return (
     <PageContainer p={4}>
-      <ContainerLayout ref={containerRef} flex={1}>
-        <CContainer flex={1} gap={8} justify={"center"}>
+      <ContainerLayout ref={containerRef} flex={1} justify={"center"}>
+        <CContainer gap={8}>
           {initialLoading && render.loading}
           {!initialLoading && (
             <>
