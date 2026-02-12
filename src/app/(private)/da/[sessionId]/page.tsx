@@ -280,8 +280,10 @@ export default function Page() {
                   </P>
                   <HStack>
                     <Img
+                      key={activeDASession?.documentService?.icon}
                       src={imgUrl(activeDASession?.documentService?.icon)}
                       fluid
+                      flexShrink={0}
                       w={"20px"}
                     />
 
