@@ -27,7 +27,7 @@ const NAVS =
   ADMIN_OTHER_PRIVATE_NAVS[0].list.find((n) => n.path === "/admin/settings")
     ?.subMenus || [];
 const DESKTOP_NAVS_COLOR = "ibody";
-const ROOT_PATH = `/settings`;
+const ROOT_PATH = `/admin/settings`;
 
 const NavsList = (props: any) => {
   // Props
