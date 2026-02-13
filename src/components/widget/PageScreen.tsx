@@ -54,7 +54,6 @@ export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
     );
   },
 );
-ContainerLayout.displayName = "ContainerLayout";
 
 export const PageContainer = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {
@@ -74,7 +73,6 @@ export const PageContainer = forwardRef<HTMLDivElement, StackProps>(
     );
   },
 );
-PageContainer.displayName = "PageContainer";
 
 export const NavBreadcrumb = (props: any) => {
   // Props
@@ -222,7 +220,7 @@ export const PageTitle = (props: StackProps) => {
   const pathname = usePathname();
 
   // States
-  const activeNavs = getActiveNavs(pathname, PRIVATE_NAVS);
+  const activeNavs = getActiveNavs(pathname, RESOLVED_NAVS);
   const title = pluckString(l, last<any>(activeNavs)?.labelKey);
 
   return (
@@ -253,4 +251,7 @@ export const PageContent = forwardRef<HTMLDivElement, StackProps>(
     );
   },
 );
+
+ContainerLayout.displayName = "ContainerLayout";
+PageContainer.displayName = "PageContainer";
 PageContent.displayName = "PageContent";

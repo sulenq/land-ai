@@ -228,7 +228,7 @@ export const ADMIN_OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
       {
         icon: SettingsIcon,
         labelKey: "navs.settings",
-        path: `/settings`,
+        path: `/admin/settings`,
         allowedRoles: [],
         subMenus: [
           {
