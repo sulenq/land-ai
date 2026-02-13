@@ -579,7 +579,13 @@ const DesktopLayout = (props: any) => {
         borderColor={"border.muted"}
       >
         {/* Logo & Sidebar Toggle */}
-        <CContainer gap={1} px={3} py={2}>
+        <CContainer
+          h={navsExpanded ? "52px" : ""}
+          gap={1}
+          px={3}
+          pt={navsExpanded ? 0 : "6px"}
+          justify={"center"}
+        >
           {!navsExpanded && (
             <NavLink to="/">
               <Center w={"36px"} h={"40px"} mr={"auto"}>
