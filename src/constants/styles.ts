@@ -12,5 +12,5 @@ export const DESKTOP_CONTENT_CONTAINER_BG = "bgContent";
 // Sizes
 export const MOBILE_POPOVER_MAIN_AXIS = 22;
 
-export const DESKTOP_POPOVER_MAIN_AXIS = 20;
-export const DESKTOP_TOOLTIP_MAIN_AXIS = 24;
+export const DESKTOP_NAVS_POPOVER_MAIN_AXIS = 20;
+export const DESKTOP_NAVS_TOOLTIP_MAIN_AXIS = 24;

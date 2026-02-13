@@ -17,4 +17,4 @@ export const TOP_TITLE_H = "36px";
 export const TOP_DISTANCE = "78px";
 export const BASE_ICON_BOX_SIZE = 4.5;
 export const MENU_ICON_BOX_SIZE = 4.5;
-export const DESKTOP_TOOLTIP_MAIN_AXIS = 8;
+export const DESKTOP_NAVS_TOOLTIP_MAIN_AXIS = 8;

@@ -26,15 +26,7 @@ import {
 } from "@/components/ui/popover";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
-import {
-  ChatSessions,
-  ChatSessionsDisclosureTrigger,
-} from "@/components/widget/ChatSessions";
 import Clock from "@/components/widget/Clock";
-import {
-  DASessions,
-  DASessionssDisclosureTrigger,
-} from "@/components/widget/DASessions";
 import HScroll from "@/components/widget/HScroll";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
@@ -45,7 +37,7 @@ import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_USER_PROFILE } from "@/constants/apis";
-import { PRIVATE_NAVS } from "@/constants/navs";
+import { ADMIN_PRIVATE_NAVS } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
@@ -64,10 +56,8 @@ import {
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
-import { useChatSessions } from "@/context/useChatSessions";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
-import { useNavsTabs } from "@/context/useNavsTabs";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
@@ -80,7 +70,6 @@ import {
   setAccessToken,
   setUserData,
 } from "@/utils/auth";
-import { buildPrivateNavs } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import {
@@ -89,16 +78,11 @@ import {
   HStack,
   Icon,
   StackProps,
-  Tabs,
-  TabsRootProps,
   VStack,
 } from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
-  FileScanIcon,
-  FileTextIcon,
-  MessageSquareIcon,
   SidebarCloseIcon,
   SidebarOpenIcon,
   UserIcon,
@@ -205,7 +189,7 @@ const MobileLayout = (props: Props__Layout) => {
       {/* Navs */}
       <HScroll borderTop={"1px solid"} borderColor={"border.subtle"}>
         <HStack w={"max"} gap={4} px={4} pt={3} pb={5} mx={"auto"}>
-          {PRIVATE_NAVS.map((navItem, idx) => {
+          {ADMIN_PRIVATE_NAVS.map((navItem, idx) => {
             return (
               <Fragment key={idx}>
                 {navItem.list.map((nav) => {
@@ -320,38 +304,6 @@ const MobileLayout = (props: Props__Layout) => {
             );
           })}
 
-          <ChatSessionsDisclosureTrigger flex={1}>
-            <MobileNavLink
-              color={pathname.includes("/c/") ? "" : MOBILE_NAVS_COLOR}
-            >
-              <AppIcon icon={MessageSquareIcon} boxSize={5} />
-
-              <P
-                textAlign={"center"}
-                lineClamp={1}
-                fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
-              >
-                {l.navs.your_chats}
-              </P>
-            </MobileNavLink>
-          </ChatSessionsDisclosureTrigger>
-
-          <DASessionssDisclosureTrigger flex={1}>
-            <MobileNavLink
-              color={pathname.includes("/c/") ? "" : MOBILE_NAVS_COLOR}
-            >
-              <AppIcon icon={FileScanIcon} boxSize={5} />
-
-              <P
-                textAlign={"center"}
-                lineClamp={1}
-                fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
-              >
-                {l.navs.your_da_analysis}
-              </P>
-            </MobileNavLink>
-          </DASessionssDisclosureTrigger>
-
           <MiniMyProfilePopoverTrigger flex={1}>
             <VStack
               flex={1}
@@ -387,68 +339,6 @@ const MobileLayout = (props: Props__Layout) => {
   );
 };
 
-interface Props__DesktopTabs extends TabsRootProps {}
-const DesktopTabs = (props: Props__DesktopTabs) => {
-  const TABS = [
-    {
-      value: "your_chats",
-      labelKey: "navs.your_chats",
-      icon: MessageSquareIcon,
-    },
-    {
-      value: "your_da",
-      labelKey: "navs.your_da_analysis",
-      icon: FileTextIcon,
-    },
-  ];
-
-  // Props
-  const { ...restProps } = props;
-
-  // Contexts
-  const { l } = useLang();
-  const navsTabs = useNavsTabs((s) => s.navsTabs);
-  const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
-
-  return (
-    <Tabs.Root defaultValue={navsTabs.current} mt={4} {...restProps}>
-      <Tabs.List w={"full"}>
-        {TABS.map((tab) => {
-          return (
-            <Tabs.Trigger
-              key={tab.value}
-              value={tab.value}
-              w={"full"}
-              onClick={() => {
-                setNavsTabs({
-                  current: tab.value,
-                });
-              }}
-            >
-              <Tooltip content={pluckString(l, tab.labelKey)}>
-                <HStack w={"full"} justify={"center"}>
-                  <AppIcon icon={tab.icon} />
-
-                  <P lineClamp={1} textAlign={"left"}>
-                    {pluckString(l, tab.labelKey)}
-                  </P>
-                </HStack>
-              </Tooltip>
-            </Tabs.Trigger>
-          );
-        })}
-      </Tabs.List>
-
-      <Tabs.Content value={"your_chats"}>
-        <ChatSessions />
-      </Tabs.Content>
-
-      <Tabs.Content value={"your_da"}>
-        <DASessions />
-      </Tabs.Content>
-    </Tabs.Root>
-  );
-};
 const DesktopLayout = (props: Props__Layout) => {
   // Props
   const {
@@ -564,7 +454,7 @@ const DesktopLayout = (props: Props__Layout) => {
         >
           {/* Private Navs */}
           <CContainer gap={1}>
-            {PRIVATE_NAVS.map((navItem, navItemIdx) => {
+            {ADMIN_PRIVATE_NAVS.map((navItem, navItemIdx) => {
               return (
                 <CContainer key={navItemIdx} gap={1}>
                   {navsExpanded && navItem.groupLabelKey && (
@@ -945,32 +835,6 @@ const DesktopLayout = (props: Props__Layout) => {
               );
             })}
           </CContainer>
-
-          {navsExpanded ? (
-            <DesktopTabs />
-          ) : (
-            <>
-              <ChatSessionsDisclosureTrigger mr={"auto"}>
-                <DesktopNavTooltip content={l.navs.your_chats}>
-                  <Btn iconButton clicky={false} variant={"ghost"}>
-                    {pathname.includes("/c/") && <LeftIndicator />}
-
-                    <AppIcon icon={MessageSquareIcon} />
-                  </Btn>
-                </DesktopNavTooltip>
-              </ChatSessionsDisclosureTrigger>
-
-              <DASessionssDisclosureTrigger mr={"auto"}>
-                <DesktopNavTooltip content={l.navs.your_da_analysis}>
-                  <Btn iconButton clicky={false} variant={"ghost"}>
-                    {pathname.includes("/da/") && <LeftIndicator />}
-
-                    <AppIcon icon={FileTextIcon} />
-                  </Btn>
-                </DesktopNavTooltip>
-              </DASessionssDisclosureTrigger>
-            </>
-          )}
         </CContainer>
 
         <Divider />
@@ -1051,22 +915,12 @@ const TheApp = (props: Props__Layout) => {
   // Props
   const { ...restProps } = props;
 
-  // Contexts
-  const chatSessions = useChatSessions((s) => s.chatSessions);
-
   // Hooks
   const iss = useIsSmScreenWidth();
 
-  // States
-  const NAVS = buildPrivateNavs({ chats: chatSessions, daSessions: [] });
-
   return (
     <CContainer id="app_layout" h={"100dvh"} {...restProps}>
-      {iss ? (
-        <MobileLayout navs={NAVS} {...props} />
-      ) : (
-        <DesktopLayout navs={NAVS} {...props} />
-      )}
+      {iss ? <MobileLayout {...props} /> : <DesktopLayout {...props} />}
     </CContainer>
   );
 };

@@ -20,40 +20,32 @@ export const navs = {
     id: "Analisis Dokumen",
     en: "Document Analysis",
   },
-  da_service_1: {
-    id: "Pengecekan Sertipikat",
-    en: "Certificate Verification",
+  settings: {
+    id: "Pengaturan",
+    en: "Settings",
   },
-  da_service_2: {
-    id: "Surat Keterangan Pendaftaran Tanah (SKPT)",
-    en: "Land Registration Statement (SKPT)",
+  profile: {
+    id: "Profil",
+    en: "Profile",
   },
-  da_service_3: {
-    id: "Hak Tanggungan Elektronik (HT-el)",
-    en: "Electronic Mortgage Right (HT-el)",
-  },
-  da_service_4: {
-    id: "Roya (Manual & Elektronik)",
-    en: "Mortgage Discharge (Manual & Electronic)",
-  },
-  da_service_5: {
-    id: "Peralihan Hak",
-    en: "Transfer of Land Rights",
-  },
-  da_service_6: {
-    id: "Pendaftaran Surat Keputusan (SK)",
-    en: "Decree Registration (SK)",
-  },
-  da_service_7: {
-    id: "Perubahan Hak (HGB/Hak Pakai menjadi Hak Milik)",
-    en: "Conversion of Land Rights (HGB/Right of Use to Ownership)",
-  },
-
+};
+export const admin_navs = {
   dashboard: {
     id: "Dashboard",
     en: "Dashboard",
   },
-
+  user: {
+    id: "Pengguna",
+    en: "User",
+  },
+  ai_chat_reference: {
+    id: "Referensi Obrolan AI",
+    en: "AI Chat Reference",
+  },
+  da_service: {
+    id: "Layanan Analisa Dokumen",
+    en: "Document Analysis Service",
+  },
   master_data: {
     id: "Master Data",
     en: "Master Data",

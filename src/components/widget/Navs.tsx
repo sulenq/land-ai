@@ -1,7 +1,7 @@
 import { NavLink } from "@/components/ui/nav-link";
 import { Tooltip, TooltipProps } from "@/components/ui/tooltip";
 import { Props__NavLink } from "@/constants/props";
-import { DESKTOP_TOOLTIP_MAIN_AXIS } from "@/constants/sizes";
+import { DESKTOP_NAVS_TOOLTIP_MAIN_AXIS } from "@/constants/sizes";
 
 export const DesktopNavTooltip = (props: TooltipProps) => {
   // Props
@@ -12,7 +12,7 @@ export const DesktopNavTooltip = (props: TooltipProps) => {
       positioning={{
         placement: "right",
         offset: {
-          mainAxis: DESKTOP_TOOLTIP_MAIN_AXIS,
+          mainAxis: DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
         },
       }}
       {...restProps}

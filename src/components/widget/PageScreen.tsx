@@ -11,7 +11,12 @@ import { DotIndicator } from "@/components/widget/Indicator";
 import SimplePopover from "@/components/widget/SimplePopover";
 import { Today } from "@/components/widget/Today";
 import { Interface__NavListItem } from "@/constants/interfaces";
-import { PRIVATE_NAVS } from "@/constants/navs";
+import {
+  ADMIN_OTHER_PRIVATE_NAVS,
+  ADMIN_PRIVATE_NAVS,
+  OTHER_PRIVATE_NAVS,
+  PRIVATE_NAVS,
+} from "@/constants/navs";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
 import useScreen from "@/hooks/useScreen";
@@ -24,6 +29,12 @@ import { usePathname } from "next/navigation";
 import { forwardRef, useEffect } from "react";
 
 const FONT_SIZE = "md";
+const RESOLVED_NAVS = [
+  ...PRIVATE_NAVS,
+  ...OTHER_PRIVATE_NAVS,
+  ...ADMIN_PRIVATE_NAVS,
+  ...ADMIN_OTHER_PRIVATE_NAVS,
+];
 
 export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {
@@ -87,10 +98,12 @@ export const NavBreadcrumb = (props: any) => {
   const activeNavs = breadcrumbs.activeNavs;
 
   useEffect(() => {
-    const activeNavs = getActiveNavs(pathname, PRIVATE_NAVS);
-    const resolvedBackPath = last(activeNavs)?.backPath;
+    const currentActiveNavs = getActiveNavs(pathname, RESOLVED_NAVS);
+    const resolvedBackPath = last(currentActiveNavs)?.backPath;
     const resolvedActiveNavs =
-      sw < 960 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
+      sw < 960
+        ? [currentActiveNavs[currentActiveNavs.length - 1]]
+        : currentActiveNavs;
 
     setBreadcrumbs({
       activeNavs: resolvedActiveNavs,
@@ -159,7 +172,7 @@ export const TopBar = () => {
   const pathname = usePathname();
 
   // States
-  const activeNavs = getActiveNavs(pathname, PRIVATE_NAVS);
+  const activeNavs = getActiveNavs(pathname, RESOLVED_NAVS);
   const resolvedActiveNavs =
     sw < 960 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
   const backPath = last(activeNavs)?.backPath;
@@ -209,7 +222,7 @@ export const PageTitle = (props: StackProps) => {
   const pathname = usePathname();
 
   // States
-  const activeNavs = getActiveNavs(pathname);
+  const activeNavs = getActiveNavs(pathname, PRIVATE_NAVS);
   const title = pluckString(l, last<any>(activeNavs)?.labelKey);
 
   return (

@@ -18,6 +18,7 @@ import {
   clearUserData,
   getAccessToken,
   getUserData,
+  setAccessToken,
   setUserData,
 } from "@/utils/auth";
 import {
@@ -123,7 +124,6 @@ const BasicAuthForm = (props: any) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
 
-  const setAccessToken = useAuthMiddleware((s) => s.setAccessToken);
   const setVerifiedAuthToken = useAuthMiddleware((s) => s.setVerifiedAuthToken);
   const setPermissions = useAuthMiddleware((s) => s.setPermissions);
 
@@ -166,7 +166,6 @@ const BasicAuthForm = (props: any) => {
 
             setAccessToken(accessToken);
             setUserData(userData);
-            setAccessToken(accessToken);
             setVerifiedAuthToken(accessToken);
             setPermissions(permissionsData);
 

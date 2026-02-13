@@ -2,29 +2,32 @@
 
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import { HelperText } from "@/components/ui/helper-text";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
-import { PageContainer, PageTitle } from "@/components/widget/Page";
-import { OTHER_PRIVATE_NAVS } from "@/constants/navs";
+import { PageContainer, PageTitle } from "@/components/widget/PageScreen";
+import { APP } from "@/constants/_meta";
+import { ADMIN_OTHER_PRIVATE_NAVS } from "@/constants/navs";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useLang from "@/context/useLang";
-import { useMasterDataPageContainer } from "@/context/useMasterDataPageContainer";
+import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { isEmptyArray } from "@/utils/array";
+import { formatAbsDate } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { HStack, Icon } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS =
-  OTHER_PRIVATE_NAVS[0].list.find((n) => n.path === "/master-data")?.subMenus ||
-  [];
+  ADMIN_OTHER_PRIVATE_NAVS[0].list.find((n) => n.path === "/settings")
+    ?.subMenus || [];
 const DESKTOP_NAVS_COLOR = "ibody";
-const ROOT_PATH = `/master-data`;
+const ROOT_PATH = `/settings`;
 
 const NavsList = (props: any) => {
   // Props
@@ -115,7 +118,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const containerDimension = useContainerDimension(containerRef);
 
   // Contexts
-  const setContainerDimension = useMasterDataPageContainer(
+  const { l } = useLang();
+  const setContainerDimension = useSettingsPageContainer(
     (s) => s.setContainerDimension,
   );
 
@@ -133,7 +137,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [containerDimension]);
 
   return (
-    <PageContainer id="settings_page_container" ref={containerRef} p={0}>
+    <PageContainer id="settings_route_container" ref={containerRef} p={0}>
       {containerDimension.width > 0 && (
         <HStack align={"stretch"} flex={1} gap={0} overflowY={"auto"}>
           {/* Sidebar */}
@@ -149,7 +153,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
               <CContainer px={4} pt={3} pb={1}>
                 <P fontSize={"xl"} fontWeight={"semibold"}>
-                  Master Data
+                  {l.settings}
                 </P>
               </CContainer>
 
@@ -159,11 +163,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onChange={(inputValue) => {
                     setSearch(inputValue || "");
                   }}
-                  queryKey={"q_master_data_navs"}
+                  queryKey={"q_settings_navs"}
                 />
               </CContainer>
 
               <NavsList search={search} p={3} />
+
+              <HStack px={4} pb={4} justify={"space-between"} mt={"auto"}>
+                <HelperText>{`v${APP.version}`}</HelperText>
+
+                <HelperText>
+                  {`Last updated: 
+                ${formatAbsDate(APP.lastUpdated, {
+                  variant: "numeric",
+                })}`}
+                </HelperText>
+              </HStack>
             </CContainer>
           )}
 

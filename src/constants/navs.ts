@@ -1,15 +1,20 @@
 import { Interface__NavItem } from "@/constants/interfaces";
 import {
+  ActivityIcon,
+  BlocksIcon,
+  DatabaseIcon,
   LanguagesIcon,
+  LayoutDashboardIcon,
+  MessageSquareIcon,
   PaletteIcon,
   ScanTextIcon,
   SettingsIcon,
   ShieldHalfIcon,
   SquarePenIcon,
+  UserCogIcon,
   UserIcon,
+  UsersIcon,
 } from "lucide-react";
-
-export const PRIVATE_ROUTE_INDEX = "/pvt";
 
 export const PRIVATE_NAVS: Interface__NavItem[] = [
   {
@@ -69,7 +74,6 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
     ],
   },
 ];
-
 export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
   {
     groupLabelKey: "other",
@@ -159,6 +163,132 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
           //     },
           //   ],
           // },
+        ],
+      },
+    ],
+  },
+];
+
+export const ADMIN_PRIVATE_NAVS: Interface__NavItem[] = [
+  {
+    groupLabelKey: "main",
+    list: [
+      {
+        icon: LayoutDashboardIcon,
+        labelKey: "admin_navs.dashboard",
+        path: `/admin/dashboard`,
+        allowedRoles: [],
+      },
+      {
+        icon: UsersIcon,
+        labelKey: "admin_navs.user",
+        path: `/admin/user`,
+        allowedRoles: [],
+      },
+      {
+        icon: MessageSquareIcon,
+        labelKey: "admin_navs.ai_chat_reference",
+        path: `/admin/ai-chat-reference`,
+        allowedRoles: [],
+      },
+      {
+        icon: ScanTextIcon,
+        labelKey: "admin_navs.da_service",
+        path: `/admin/da-service`,
+        allowedRoles: [],
+      },
+    ],
+  },
+];
+export const ADMIN_OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
+  {
+    groupLabelKey: "other",
+    list: [
+      {
+        icon: DatabaseIcon,
+        labelKey: "navs.master_data",
+        path: `/admin/master-data`,
+        allowedRoles: [],
+        subMenus: [
+          {
+            groupLabelKey: "master_data_navs.hr.index",
+            list: [
+              {
+                icon: UserCogIcon,
+                labelKey: "master_data_navs.hr.employment_status",
+                path: `/admin/master-data/employment-status`,
+                allowedRoles: [],
+                backPath: `/master-data`,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        icon: SettingsIcon,
+        labelKey: "navs.settings",
+        path: `/settings`,
+        allowedRoles: [],
+        subMenus: [
+          {
+            groupLabelKey: "settings_navs.main.index",
+            list: [
+              {
+                icon: UserIcon,
+                labelKey: "my_profile",
+                path: `/admin/settings/profile`,
+                allowedRoles: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: PaletteIcon,
+                labelKey: "settings_navs.main.personalization",
+                path: `/admin/settings/personalization`,
+                allowedRoles: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: LanguagesIcon,
+                labelKey: "settings_navs.main.regional",
+                path: `/admin/settings/regional`,
+                allowedRoles: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: ShieldHalfIcon,
+                labelKey: "settings_navs.main.app_permissions",
+                path: `/admin/settings/app-permissions`,
+                allowedRoles: [],
+                backPath: `/admin/settings`,
+              },
+            ],
+          },
+          {
+            groupLabelKey: "settings_navs.system.index",
+            list: [
+              {
+                icon: UserCogIcon,
+                labelKey: "settings_navs.system.account_role",
+                path: `/admin/settings/account-role`,
+                allowedRoles: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: BlocksIcon,
+                labelKey: "settings_navs.system.integration",
+                path: `/admin/settings/integration`,
+                allowedRoles: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: ActivityIcon,
+                labelKey: "settings_navs.system.activity_log",
+                path: `/admin/settings/activity-log`,
+                allowedRoles: [],
+                backPath: `/admin/settings`,
+              },
+            ],
+          },
         ],
       },
     ],

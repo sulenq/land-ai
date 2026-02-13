@@ -14,6 +14,15 @@ const translations = {
   "added": "Added",
   "address": "Address",
   "address_not_found": "Address not found",
+  "admin_navs": {
+    "dashboard": "Dashboard",
+    "user": "User",
+    "ai_chat_reference": "AI Chat Reference",
+    "da_service": "Document Analysis Service",
+    "master_data": "Master Data",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
   "after": "After",
   "alert_da_analyze_failed": {
     "title": "Analysis failed",
@@ -339,15 +348,6 @@ const translations = {
     "your_chats": "Chats",
     "new_document_analysis": "New Document Analysis",
     "your_da_analysis": "Document Analysis",
-    "da_service_1": "Certificate Verification",
-    "da_service_2": "Land Registration Statement (SKPT)",
-    "da_service_3": "Electronic Mortgage Right (HT-el)",
-    "da_service_4": "Mortgage Discharge (Manual & Electronic)",
-    "da_service_5": "Transfer of Land Rights",
-    "da_service_6": "Decree Registration (SK)",
-    "da_service_7": "Conversion of Land Rights (HGB/Right of Use to Ownership)",
-    "dashboard": "Dashboard",
-    "master_data": "Master Data",
     "settings": "Settings",
     "profile": "Profile"
   },

@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { ContainerLayout, PageContainer } from "@/components/widget/Page";
+import { ContainerLayout, PageContainer } from "@/components/widget/PageScreen";
 import { DA_API_SERVICE_DETAIL, DA_API_SESSON_CREATE } from "@/constants/apis";
 import {
   Interface__DAServiceDetail,

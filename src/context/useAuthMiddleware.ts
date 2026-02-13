@@ -1,11 +1,8 @@
 import { clearAccessToken, clearUserData, setAccessToken } from "@/utils/auth";
-import { getStorage, removeStorage } from "@/utils/client";
+import { removeStorage } from "@/utils/client";
 import { create } from "zustand";
 
 interface Props {
-  authToken: string | null;
-  setAccessToken: (newState: Props["authToken"]) => void;
-
   verifiedAuthToken: string | null;
   role: object | null;
   permissions: number[] | null;
@@ -23,9 +20,6 @@ interface Props {
 }
 
 const useAuthMiddleware = create<Props>((set, get) => ({
-  authToken: getStorage("__access_token"),
-  setAccessToken: (newState) => set(() => ({ authToken: newState })),
-
   verifiedAuthToken: null,
   setVerifiedAuthToken: (newState) =>
     set(() => {
@@ -48,7 +42,6 @@ const useAuthMiddleware = create<Props>((set, get) => ({
     get().removePermissions();
     get().removeRole();
     get().setVerifiedAuthToken(null);
-    get().setAccessToken(null);
     clearAccessToken();
     clearUserData();
   },

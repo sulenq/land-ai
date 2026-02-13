@@ -22,7 +22,7 @@ import { back } from "@/utils/client";
 import { pluckString } from "@/utils/string";
 import { Icon, StackProps } from "@chakra-ui/react";
 import { LogOutIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface Props__MiniMyProfile extends StackProps {
   onClose?: () => void;
@@ -44,10 +44,11 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
   });
   const router = useRouter();
   router.prefetch("/");
-  // const pathname = usePathname();
+  const pathname = usePathname();
 
   // States
   const user = getUserData();
+  const isAdminRoute = pathname.startsWith("/admin");
 
   // Utils
   function onSignout() {
@@ -106,7 +107,11 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
       <CContainer gap={1} p={"6px"}>
         {OTHER_PRIVATE_NAVS[0].list.map((nav) => {
           return (
-            <NavLink key={nav.path} to={nav.path} w={"full"}>
+            <NavLink
+              key={nav.path}
+              to={`${isAdminRoute ? "/admin" : ""}${nav.path}`}
+              w={"full"}
+            >
               <Btn
                 clicky={false}
                 px={2}

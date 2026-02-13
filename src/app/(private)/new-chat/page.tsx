@@ -1,6 +1,6 @@
 "use client";
 
-import { ContainerLayout, PageContainer } from "@/components/widget/Page";
+import { ContainerLayout, PageContainer } from "@/components/widget/PageScreen";
 import { NewPrompt } from "@/components/widget/PromptComposer";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useRouter } from "next/navigation";

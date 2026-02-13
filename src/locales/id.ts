@@ -14,6 +14,15 @@ const translations = {
   "added": "Ditambahkan",
   "address": "Alamat",
   "address_not_found": "Alamat tidak ditemukan",
+  "admin_navs": {
+    "dashboard": "Dashboard",
+    "user": "Pengguna",
+    "ai_chat_reference": "Referensi Obrolan AI",
+    "da_service": "Layanan Analisa Dokumen",
+    "master_data": "Master Data",
+    "settings": "Pengaturan",
+    "profile": "Profil"
+  },
   "after": "Setelah",
   "alert_da_analyze_failed": {
     "title": "Analisis gagal",
@@ -339,15 +348,6 @@ const translations = {
     "your_chats": "Obrolan",
     "new_document_analysis": "Analisa Dokumen Baru",
     "your_da_analysis": "Analisis Dokumen",
-    "da_service_1": "Pengecekan Sertipikat",
-    "da_service_2": "Surat Keterangan Pendaftaran Tanah (SKPT)",
-    "da_service_3": "Hak Tanggungan Elektronik (HT-el)",
-    "da_service_4": "Roya (Manual & Elektronik)",
-    "da_service_5": "Peralihan Hak",
-    "da_service_6": "Pendaftaran Surat Keputusan (SK)",
-    "da_service_7": "Perubahan Hak (HGB/Hak Pakai menjadi Hak Milik)",
-    "dashboard": "Dashboard",
-    "master_data": "Master Data",
     "settings": "Pengaturan",
     "profile": "Profil"
   },
