@@ -24,7 +24,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS =
-  ADMIN_OTHER_PRIVATE_NAVS[0].list.find((n) => n.path === "/settings")
+  ADMIN_OTHER_PRIVATE_NAVS[0].list.find((n) => n.path === "/admin/settings")
     ?.subMenus || [];
 const DESKTOP_NAVS_COLOR = "ibody";
 const ROOT_PATH = `/settings`;
