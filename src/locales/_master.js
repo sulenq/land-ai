@@ -965,6 +965,10 @@ export const yearly_sales = {
 };
 
 // Message
+export const msg_da_select_service_helper = {
+  id: "Silahkan pilih layanan yang ingin Anda gunakan.",
+  en: "Please select the service you want to use.",
+};
 export const msg_app_desc = {
   id: "Land.ai adalah aplikasi AI untuk konsultasi dan analisis pertanahan. Aplikasi ini menyediakan dua fitur utama: Chat untuk konsultasi interaktif seputar aturan dan prosedur pertanahan, serta Analisa untuk menelaah dan menjelaskan dokumen pertanahan secara terstruktur dan berbasis regulasi.",
   en: "Land.ai is an AI-powered application for land and land-use consultation and document analysis. It provides two main features: Chat for interactive consultations on land regulations and procedures, and Analysis for structured, regulation-based review of land-related documents.",

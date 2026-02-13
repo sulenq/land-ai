@@ -20,7 +20,7 @@ import useDataState from "@/hooks/useDataState";
 import { isEmptyArray } from "@/utils/array";
 import { getGridColumns } from "@/utils/style";
 import { imgUrl } from "@/utils/url";
-import { SimpleGrid, StackProps } from "@chakra-ui/react";
+import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
 import { useRef } from "react";
 
 interface Props__Services extends StackProps {
@@ -140,9 +140,15 @@ export default function Page() {
           justify={"space-between"}
           //  className="debug"
         >
-          <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
-            {l.document_analysis_service}
-          </P>
+          <VStack gap={1}>
+            <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
+              {l.document_analysis_service}
+            </P>
+
+            <P color={"fg.subtle"} textAlign={"center"}>
+              {l.msg_da_select_service_helper}
+            </P>
+          </VStack>
 
           {cols > 1 && <Services cols={cols} />}
 
