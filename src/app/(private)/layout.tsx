@@ -30,6 +30,7 @@ import {
   ChatSessions,
   ChatSessionsDisclosureTrigger,
 } from "@/components/widget/ChatSessions";
+import { ClampText } from "@/components/widget/ClampText";
 import Clock from "@/components/widget/Clock";
 import {
   DASessions,
@@ -40,7 +41,11 @@ import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { MiniMyProfile } from "@/components/widget/MiniMyProfile";
 import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
-import { NavBreadcrumb, TopBar } from "@/components/widget/PageScreen";
+import {
+  NavBreadcrumb,
+  RESOLVED_NAVS,
+  TopBar,
+} from "@/components/widget/PageScreen";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
@@ -159,7 +164,7 @@ const MobileLayout = (props: Props__Layout) => {
 
   // States
   const user = getUserData();
-  const activeNavs = getActiveNavs(pathname);
+  const activeNavs = getActiveNavs(pathname, RESOLVED_NAVS);
   const resolvedActiveNavs =
     sw < 360 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
   const backPath = last(activeNavs)?.backPath;
@@ -561,6 +566,7 @@ const DesktopLayout = (props: Props__Layout) => {
           gap={1}
           p={3}
           pr={`calc(12px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
+          mt={navsExpanded ? "12px" : 0}
         >
           {/* Private Navs */}
           <CContainer gap={1}>
@@ -568,7 +574,7 @@ const DesktopLayout = (props: Props__Layout) => {
               return (
                 <CContainer key={navItemIdx} gap={1}>
                   {navsExpanded && navItem.groupLabelKey && (
-                    <P
+                    <ClampText
                       fontSize={"sm"}
                       fontWeight={"semibold"}
                       letterSpacing={"wide"}
@@ -577,7 +583,7 @@ const DesktopLayout = (props: Props__Layout) => {
                       mb={1}
                     >
                       {pluckString(l, navItem.groupLabelKey)}
-                    </P>
+                    </ClampText>
                   )}
 
                   {navItem.list.map((nav) => {
@@ -801,7 +807,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                         (menuItem, menuItemIdx) => (
                                           <CContainer key={menuItemIdx} gap={1}>
                                             {menuItem.groupLabelKey && (
-                                              <P
+                                              <ClampText
                                                 fontSize="sm"
                                                 fontWeight="semibold"
                                                 color="fg.subtle"
@@ -812,7 +818,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                   l,
                                                   menuItem.groupLabelKey,
                                                 )}
-                                              </P>
+                                              </ClampText>
                                             )}
 
                                             {menuItem.list.map((menu, idx) => {

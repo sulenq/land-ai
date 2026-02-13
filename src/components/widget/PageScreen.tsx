@@ -29,7 +29,7 @@ import { usePathname } from "next/navigation";
 import { forwardRef, useEffect } from "react";
 
 const FONT_SIZE = "md";
-const RESOLVED_NAVS = [
+export const RESOLVED_NAVS = [
   ...PRIVATE_NAVS,
   ...OTHER_PRIVATE_NAVS,
   ...ADMIN_PRIVATE_NAVS,
