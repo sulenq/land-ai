@@ -292,7 +292,7 @@ const translations = {
   "msg_cannot_be_undone": "This action cannot be undone, please be careful.",
   "msg_chat_ai_disclaimer": "Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
   "msg_chrome_permissions_settings_link": "Settings → Privacy & Security → Site Settings → ",
-  "msg_da_disclaimer": "Uploaded data is used solely for analysis purposes and will be deleted after the analysis is completed to protect user privacy.",
+  "msg_da_disclaimer": "*Uploaded data is used solely for analysis purposes and will be deleted after the analysis is completed to protect user privacy.",
   "msg_da_select_service_helper": "Please select the service you want to use.",
   "msg_deactivate": "The account will be deactivated and cannot be used temporarily.",
   "msg_default_permissions_settings_link": "Open browser settings to change permissions.",

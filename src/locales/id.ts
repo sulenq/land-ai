@@ -292,7 +292,7 @@ const translations = {
   "msg_cannot_be_undone": "Aksi ini tidak dapat dibatalkan, harap hati-hati.",
   "msg_chat_ai_disclaimer": "Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
   "msg_chrome_permissions_settings_link": "Pengaturan → Privasi & Keamanan → Pengaturan Situs → ",
-  "msg_da_disclaimer": "Data yang diunggah hanya digunakan untuk proses analisis dan akan dihapus setelah analisis selesai demi menjaga privasi pengguna.",
+  "msg_da_disclaimer": "*Data yang diunggah hanya digunakan untuk proses analisis dan akan dihapus setelah analisis selesai demi menjaga privasi pengguna.",
   "msg_da_select_service_helper": "Silahkan pilih layanan yang ingin Anda gunakan.",
   "msg_deactivate": "Akun akan dinonaktifkan dan tidak bisa digunakan sementara.",
   "msg_default_permissions_settings_link": "Buka pengaturan browser untuk mengubah izin.",
