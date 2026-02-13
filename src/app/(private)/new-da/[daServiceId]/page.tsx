@@ -280,9 +280,9 @@ export default function Page() {
   }, [data]);
 
   return (
-    <PageContainer p={4}>
-      <ContainerLayout ref={containerRef} flex={1} justify={"center"}>
-        <CContainer gap={8}>
+    <PageContainer p={8}>
+      <ContainerLayout ref={containerRef} flex={1}>
+        <CContainer flex={1} gap={8} justify={"space-between"}>
           {initialLoading && render.loading}
           {!initialLoading && (
             <>

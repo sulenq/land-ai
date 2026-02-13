@@ -132,12 +132,12 @@ export default function Page() {
   const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
 
   return (
-    <PageContainer p={4}>
+    <PageContainer p={8}>
       <ContainerLayout ref={containerRef} flex={1}>
         <CContainer
           flex={1}
           gap={4}
-          justify={"center"}
+          justify={"space-between"}
           //  className="debug"
         >
           <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
