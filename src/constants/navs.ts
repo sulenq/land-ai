@@ -2,10 +2,11 @@ import { Interface__NavItem } from "@/constants/interfaces";
 import {
   ActivityIcon,
   BlocksIcon,
+  BrainCircuitIcon,
   DatabaseIcon,
+  FilesIcon,
   LanguagesIcon,
   LayoutDashboardIcon,
-  MessageSquareIcon,
   PaletteIcon,
   ScanTextIcon,
   SettingsIcon,
@@ -186,13 +187,13 @@ export const ADMIN_PRIVATE_NAVS: Interface__NavItem[] = [
         allowedRoles: [],
       },
       {
-        icon: MessageSquareIcon,
+        icon: BrainCircuitIcon,
         labelKey: "admin_navs.ai_chat_reference",
         path: `/admin/ai-chat-reference`,
         allowedRoles: [],
       },
       {
-        icon: ScanTextIcon,
+        icon: FilesIcon,
         labelKey: "admin_navs.da_service",
         path: `/admin/da-service`,
         allowedRoles: [],
