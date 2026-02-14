@@ -48,7 +48,7 @@ const InputForm = (props: Props__InputForm) => {
   // Contexts
   const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
-  const setActiveDA = useActiveDA((s) => s.setActiveDA);
+  const setSession = useActiveDA((s) => s.setSession);
   const prependToDASessions = useDASessions((s) => s.prependToDASessions);
 
   // Hooks
@@ -88,19 +88,13 @@ const InputForm = (props: Props__InputForm) => {
     });
   };
 
- 
-
-
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
       files: {} as Record<number, File[]>,
     },
     validationSchema: buildFileSchema(docReqs),
-    onSubmit: (values) => {
-      // setActiveDA({
-      //   daDocs: values.files,
-      // });
+    onSubmit: (values) => {;
       const payload = new FormData();
 
       const now = new Date();
@@ -133,9 +127,7 @@ const InputForm = (props: Props__InputForm) => {
           onSuccess: (r) => {
             const daSession = r.data.data;
             prependToDASessions(daSession);
-            setActiveDA({
-              session: daSession,
-            });
+            setSession(daSession);
             router.push(`/da/${daSession.id}`);
           },
           onError: () => {},

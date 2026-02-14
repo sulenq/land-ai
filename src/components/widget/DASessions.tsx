@@ -340,6 +340,7 @@ export const DASessions = (props: any) => {
               {isActive && <LeftIndicator />}
 
               <Img
+              key={session.serviceIcon}
                 src={imgUrl(session.serviceIcon)}
                 h={"20px"}
                 fluid
