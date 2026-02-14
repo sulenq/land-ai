@@ -359,7 +359,7 @@ export default function Page() {
             />
           )}
 
-          <HStack wrap={"wrap"} gap={1} justify={"center"}>
+          <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
             <NavLink to={"/new-da"}>
               <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
                 {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
