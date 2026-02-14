@@ -27,6 +27,7 @@ import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
 import { getGridColumns } from "@/utils/style";
+import { makeUTCISODateTime } from "@/utils/time";
 import { fileValidation } from "@/utils/validationSchema";
 import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
@@ -53,6 +54,8 @@ const InputForm = (props: Props__InputForm) => {
   // Hooks
   const { req, loading } = useRequest({
     id: ID,
+    showLoadingToast: false,
+    showSuccessToast: false,
   });
   const router = useRouter();
 
@@ -84,6 +87,10 @@ const InputForm = (props: Props__InputForm) => {
       files: yup.object().shape(shape),
     });
   };
+
+ 
+
+
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
@@ -96,12 +103,16 @@ const InputForm = (props: Props__InputForm) => {
       // });
       const payload = new FormData();
 
+      const now = new Date();
+      const iso = now.toISOString();
+      const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
       payload.append(
         "title",
-        `${daService?.title?.[lang]} - ${formatDate(new Date(), {
-          variant: "numeric",
-          withTime: true,
-        })}`,
+        `${daService?.title?.[lang]} - ${formatDate(makeUTCISODateTime(iso, time), {
+      variant: "numeric",
+      withTime: true,
+    })}`,
       );
       payload.append("serviceId", `${daService?.id}`);
       Object.entries(values.files).forEach(([docId, files]) => {

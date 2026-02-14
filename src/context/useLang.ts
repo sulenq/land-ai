@@ -4,7 +4,7 @@ import en from "@/locales/en";
 import id from "@/locales/id";
 
 const STORAGE_KEY = "lang";
-const DEFAULT: keyof typeof translations = "en";
+const DEFAULT: keyof typeof translations = "id";
 
 const translations = {
   id,
