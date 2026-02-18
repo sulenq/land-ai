@@ -92,7 +92,7 @@ const ResultTable = (props: Props__ResultTable) => {
   });
 
   return (
-    <CContainer gap={3}>
+    <CContainer gap={2}>
       <ContainerLayout>
         <P fontWeight={"medium"}>{capitalizeWords(l.analysis_result)}</P>
       </ContainerLayout>
@@ -249,9 +249,9 @@ export default function Page() {
         <DASessonPageSkeleton />
       </ContainerLayout>
     ),
-    error: <FeedbackRetry onRetry={onRetry} my={"80px"} />,
-    empty: <FeedbackNoData my={"80px"} />,
-    notFound: <FeedbackNotFound />,
+    error: <FeedbackRetry onRetry={onRetry} m={"auto"} />,
+    empty: <FeedbackNoData m={"auto"} />,
+    notFound: <FeedbackNotFound m={"auto"} />,
     loaded: (
       <CContainer flex={1} gap={8}>
         <ContainerLayout gap={8}>
@@ -270,10 +270,17 @@ export default function Page() {
 
           {/* Meta */}
           <>
-            <CContainer gap={4}>
+            <CContainer gap={2}>
               <P fontWeight={"medium"}>{capitalizeWords(l.service)}</P>
 
-              <CContainer gap={2} pl={4}>
+              <CContainer
+                gap={2}
+                p={4}
+                rounded={themeConfig.radii.container}
+                // border={"1px solid"}
+                borderColor={"border.muted"}
+                bg={"d0"}
+              >
                 <HStack gap={4} align={"start"}>
                   <P w={"140px"} flexShrink={0} color={"fg.muted"}>
                     {l.name}
@@ -300,10 +307,17 @@ export default function Page() {
               </CContainer>
             </CContainer>
 
-            <CContainer gap={4}>
+            <CContainer gap={2}>
               <P fontWeight={"medium"}>{capitalizeWords(l.uploaded_file)}</P>
 
-              <CContainer gap={2} pl={4}>
+              <CContainer
+                gap={2}
+                p={4}
+                rounded={themeConfig.radii.container}
+                // border={"1px solid"}
+                borderColor={"border.muted"}
+                bg={"d0"}
+              >
                 {formattedDocuments?.map((doc) => {
                   return (
                     <HStack
