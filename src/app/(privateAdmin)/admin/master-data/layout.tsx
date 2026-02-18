@@ -10,6 +10,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { ADMIN_OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
+import { Props__Layout } from "@/constants/props";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useMasterDataPageContainer } from "@/context/useMasterDataPageContainer";
@@ -106,7 +107,7 @@ const NavsList = (props: any) => {
   );
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: Props__Layout) {
   // Hooks
   const pathname = usePathname();
 
