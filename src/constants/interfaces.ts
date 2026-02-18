@@ -45,7 +45,11 @@ export interface Interface__Role {
 }
 
 // Navs
-export interface Interface__NavListItem {
+export interface Interface__NavGroup {
+  labelKey?: string;
+  navs: Interface__Nav[];
+}
+export interface Interface__Nav {
   icon?: any;
   labelKey?: string;
   label?: string;
@@ -53,12 +57,8 @@ export interface Interface__NavListItem {
   backPath?: string;
   allowedRoles?: string[];
   allowedPermissions?: string[];
-  subMenus?: Interface__NavItem[];
-  subMenusInvisible?: boolean;
-}
-export interface Interface__NavItem {
-  groupLabelKey?: string;
-  list: Interface__NavListItem[];
+  children?: Interface__NavGroup[];
+  invisibleChildren?: boolean;
 }
 
 // Data Table

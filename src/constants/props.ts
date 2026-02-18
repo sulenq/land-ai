@@ -3,7 +3,7 @@ import {
   Interface__BatchOptionsTableOptionGenerator,
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
-  Interface__NavItem,
+  Interface__NavGroup,
   Interface__RowOptionsTableOptionGenerator,
   Interface__SelectOption,
   Interface__StorageFile,
@@ -96,7 +96,7 @@ export interface Props__Img extends StackProps {
 
 export interface Props__Layout {
   children: React.ReactNode;
-  navs?: Interface__NavItem[];
+  navs?: Interface__NavGroup[];
 }
 export interface Props__Today extends TextProps {
   dateVariant?: Type__DateVariant;

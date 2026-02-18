@@ -1,4 +1,4 @@
-import { Interface__NavItem } from "@/constants/interfaces";
+import { Interface__NavGroup } from "@/constants/interfaces";
 import {
   ActivityIcon,
   BlocksIcon,
@@ -17,10 +17,10 @@ import {
   UsersIcon,
 } from "lucide-react";
 
-export const PRIVATE_NAVS: Interface__NavItem[] = [
+export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
   {
-    groupLabelKey: "main",
-    list: [
+    labelKey: "main",
+    navs: [
       {
         icon: SquarePenIcon,
         labelKey: "navs.new_chat",
@@ -50,9 +50,9 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
       //   labelKey: "navs.other.index",
       //   path: `/other-navs`,
       //   allowedRoles: [],
-      //   subMenus: [
+      //   children: [
       //     {
-      //       list: [
+      //       navs: [
       //         {
       //           labelKey: "navs.other.type",
       //           path: `/other-navs/type`,
@@ -75,19 +75,19 @@ export const PRIVATE_NAVS: Interface__NavItem[] = [
     ],
   },
 ];
-export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
+export const OTHER_PRIVATE_NAV_GROUP: Interface__NavGroup[] = [
   {
-    groupLabelKey: "other",
-    list: [
+    labelKey: "other",
+    navs: [
       // {
       //   icon: DatabaseIcon,
       //   labelKey: "navs.master_data",
       //   path: `/master-data`,
       //   allowedRoles: [],
-      //   subMenus: [
+      //   children: [
       //     {
-      //       groupLabelKey: "master_data_navs.hr.index",
-      //       list: [
+      //       labelKey: "master_data_navs.hr.index",
+      //       navs: [
       //         {
       //           icon: UserCogIcon,
       //           labelKey: "master_data_navs.hr.employment_status",
@@ -104,10 +104,10 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
         labelKey: "navs.settings",
         path: `/settings`,
         allowedRoles: [],
-        subMenus: [
+        children: [
           {
-            groupLabelKey: "settings_navs.main.index",
-            list: [
+            labelKey: "settings_navs.main.index",
+            navs: [
               {
                 icon: UserIcon,
                 labelKey: "my_profile",
@@ -139,8 +139,8 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
             ],
           },
           // {
-          //   groupLabelKey: "settings_navs.system.index",
-          //   list: [
+          //   labelKey: "settings_navs.system.index",
+          //   navs: [
           //     {
           //       icon: UserCogIcon,
           //       labelKey: "settings_navs.system.account_role",
@@ -170,10 +170,10 @@ export const OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
   },
 ];
 
-export const ADMIN_PRIVATE_NAVS: Interface__NavItem[] = [
+export const ADMIN_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
   {
-    groupLabelKey: "main",
-    list: [
+    labelKey: "main",
+    navs: [
       {
         icon: LayoutDashboardIcon,
         labelKey: "admin_navs.dashboard",
@@ -201,19 +201,19 @@ export const ADMIN_PRIVATE_NAVS: Interface__NavItem[] = [
     ],
   },
 ];
-export const ADMIN_OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
+export const ADMIN_OTHER_PRIVATE_NAV_GROUP: Interface__NavGroup[] = [
   {
-    groupLabelKey: "other",
-    list: [
+    labelKey: "other",
+    navs: [
       {
         icon: DatabaseIcon,
         labelKey: "navs.master_data",
         path: `/admin/master-data`,
         allowedRoles: [],
-        subMenus: [
+        children: [
           {
-            groupLabelKey: "master_data_navs.hr.index",
-            list: [
+            labelKey: "master_data_navs.hr.index",
+            navs: [
               {
                 icon: UserCogIcon,
                 labelKey: "master_data_navs.hr.employment_status",
@@ -230,10 +230,10 @@ export const ADMIN_OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
         labelKey: "navs.settings",
         path: `/admin/settings`,
         allowedRoles: [],
-        subMenus: [
+        children: [
           {
-            groupLabelKey: "settings_navs.main.index",
-            list: [
+            labelKey: "settings_navs.main.index",
+            navs: [
               {
                 icon: UserIcon,
                 labelKey: "my_profile",
@@ -265,8 +265,8 @@ export const ADMIN_OTHER_PRIVATE_NAVS: Interface__NavItem[] = [
             ],
           },
           {
-            groupLabelKey: "settings_navs.system.index",
-            list: [
+            labelKey: "settings_navs.system.index",
+            navs: [
               {
                 icon: UserCogIcon,
                 labelKey: "settings_navs.system.account_role",

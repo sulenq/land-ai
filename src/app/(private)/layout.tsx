@@ -50,7 +50,7 @@ import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_USER_PROFILE } from "@/constants/apis";
-import { PRIVATE_NAVS } from "@/constants/navs";
+import { PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
@@ -210,18 +210,18 @@ const MobileLayout = (props: Props__Layout) => {
       {/* Navs */}
       <HScroll borderTop={"1px solid"} borderColor={"border.subtle"}>
         <HStack w={"max"} gap={4} px={4} pt={3} pb={5} mx={"auto"}>
-          {PRIVATE_NAVS.map((navItem, idx) => {
+          {PRIVATE_NAV_GROUPS.map((group, idx) => {
             return (
               <Fragment key={idx}>
-                {navItem.list.map((nav) => {
+                {group.navs.map((nav) => {
                   const isMainNavActive = pathname.includes(nav.path);
 
                   return (
                     <Fragment key={nav.path}>
-                      {!nav.subMenus && (
+                      {!nav.children && (
                         <MobileNavLink
                           key={nav.path}
-                          to={nav.subMenus ? "" : nav.path}
+                          to={nav.children ? "" : nav.path}
                           color={isMainNavActive ? "" : "fg.muted"}
                           flex={1}
                         >
@@ -232,14 +232,14 @@ const MobileLayout = (props: Props__Layout) => {
                             lineClamp={1}
                             fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
                           >
-                            {pluckString(l, nav.labelKey)}
+                            {nav.label || pluckString(l, nav.labelKey) || "-"}
                           </P>
 
                           {isMainNavActive && <BottomIndicator />}
                         </MobileNavLink>
                       )}
 
-                      {nav.subMenus && (
+                      {nav.children && (
                         <>
                           <MenuRoot
                             positioning={{
@@ -267,7 +267,9 @@ const MobileLayout = (props: Props__Layout) => {
                                   textAlign={"center"}
                                   lineClamp={1}
                                 >
-                                  {pluckString(l, nav.labelKey)}
+                                  {nav.label ||
+                                    pluckString(l, nav.labelKey) ||
+                                    "-"}
                                 </P>
 
                                 {isMainNavActive && <BottomIndicator />}
@@ -275,28 +277,28 @@ const MobileLayout = (props: Props__Layout) => {
                             </MenuTrigger>
 
                             <MenuContent>
-                              {nav.subMenus.map((menuItem, idx) => {
+                              {nav.children.map((subGroup, subGroupIndex) => {
                                 return (
                                   <MenuItemGroup
-                                    key={idx}
+                                    key={subGroupIndex}
                                     title={
-                                      menuItem.groupLabelKey
-                                        ? pluckString(l, menuItem.groupLabelKey)
+                                      subGroup.labelKey
+                                        ? pluckString(l, subGroup.labelKey)
                                         : ""
                                     }
                                   >
-                                    {menuItem.list.map((menu) => {
+                                    {subGroup.navs.map((subNav) => {
                                       const isSubNavsActive =
-                                        pathname === menu.path;
+                                        pathname === subNav.path;
 
                                       return (
                                         <NavLink
-                                          key={menu.path}
+                                          key={subNav.path}
                                           w={"full"}
-                                          to={menu.path}
+                                          to={subNav.path}
                                         >
                                           <MenuItem
-                                            value={menu.path}
+                                            value={subNav.path}
                                             h={"44px"}
                                             px={3}
                                           >
@@ -305,7 +307,12 @@ const MobileLayout = (props: Props__Layout) => {
                                             )}
 
                                             <P lineClamp={1}>
-                                              {pluckString(l, menu.labelKey)}
+                                              {subNav.label ||
+                                                pluckString(
+                                                  l,
+                                                  subNav.labelKey,
+                                                ) ||
+                                                "-"}
                                             </P>
                                           </MenuItem>
                                         </NavLink>
@@ -570,10 +577,10 @@ const DesktopLayout = (props: Props__Layout) => {
         >
           {/* Private Navs */}
           <CContainer gap={1}>
-            {PRIVATE_NAVS.map((navItem, navItemIdx) => {
+            {PRIVATE_NAV_GROUPS.map((group, groupIndex) => {
               return (
-                <CContainer key={navItemIdx} gap={1}>
-                  {navsExpanded && navItem.groupLabelKey && (
+                <CContainer key={groupIndex} gap={1}>
+                  {navsExpanded && group.labelKey && (
                     <ClampText
                       fontSize={"sm"}
                       fontWeight={"semibold"}
@@ -582,14 +589,14 @@ const DesktopLayout = (props: Props__Layout) => {
                       ml={1}
                       mb={1}
                     >
-                      {pluckString(l, navItem.groupLabelKey)}
+                      {pluckString(l, group.labelKey)}
                     </ClampText>
                   )}
 
-                  {navItem.list.map((nav) => {
+                  {group.navs.map((nav) => {
                     if (!isAllowed(nav.allowedRoles)) return null;
 
-                    const hasSubMenus = nav.subMenus && !nav.subMenusInvisible;
+                    const hasSubMenus = nav.children && !nav.invisibleChildren;
                     const isMainNavsActive = pathname.includes(nav.path);
 
                     return (
@@ -597,7 +604,9 @@ const DesktopLayout = (props: Props__Layout) => {
                         {!hasSubMenus && (
                           <NavLink key={nav.path} to={nav.path} w={"full"}>
                             <DesktopNavTooltip
-                              content={pluckString(l, nav.labelKey)}
+                              content={
+                                nav.label || pluckString(l, nav.labelKey) || "-"
+                              }
                             >
                               <Btn
                                 iconButton={navsExpanded ? false : true}
@@ -636,7 +645,9 @@ const DesktopLayout = (props: Props__Layout) => {
 
                                 {navsExpanded && (
                                   <P lineClamp={1} textAlign={"left"}>
-                                    {pluckString(l, nav.labelKey)}
+                                    {nav.label ||
+                                      pluckString(l, nav.labelKey) ||
+                                      "-"}
                                   </P>
                                 )}
                               </Btn>
@@ -657,9 +668,9 @@ const DesktopLayout = (props: Props__Layout) => {
                               >
                                 <DesktopNavTooltip
                                   content={
-                                    nav.label
-                                      ? nav.label
-                                      : pluckString(l, nav.labelKey)
+                                    nav.label ||
+                                    pluckString(l, nav.labelKey) ||
+                                    "-"
                                   }
                                 >
                                   <CContainer>
@@ -689,38 +700,35 @@ const DesktopLayout = (props: Props__Layout) => {
                                 </DesktopNavTooltip>
 
                                 <MenuContent>
-                                  {nav.subMenus?.map(
-                                    (menuItem, menuItemIdx) => (
+                                  {nav.children?.map(
+                                    (subGroup, subGroupIndex) => (
                                       <MenuItemGroup
-                                        key={menuItemIdx}
+                                        key={subGroupIndex}
                                         gap={1}
                                         title={
-                                          menuItem.groupLabelKey
-                                            ? pluckString(
-                                                l,
-                                                menuItem.groupLabelKey,
-                                              )
+                                          subGroup.labelKey
+                                            ? pluckString(l, subGroup.labelKey)
                                             : ""
                                         }
                                       >
-                                        {menuItem.list.map((menu) => {
+                                        {subGroup.navs.map((subNav) => {
                                           const isSubNavsActive =
-                                            pathname === menu.path;
+                                            pathname === subNav.path;
 
                                           return (
                                             <NavLink
-                                              key={menu.path}
-                                              to={menu.path}
+                                              key={subNav.path}
+                                              to={subNav.path}
                                               w="full"
                                             >
                                               <Tooltip
                                                 content={
-                                                  menu.label
-                                                    ? menu.label
-                                                    : pluckString(
-                                                        l,
-                                                        menu.labelKey,
-                                                      )
+                                                  subNav.label ||
+                                                  pluckString(
+                                                    l,
+                                                    subNav.labelKey,
+                                                  ) ||
+                                                  "-"
                                                 }
                                                 positioning={{
                                                   placement: "right",
@@ -728,7 +736,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                                 }}
                                               >
                                                 <MenuItem
-                                                  value={menu.path}
+                                                  value={subNav.path}
                                                   px={3}
                                                   color={
                                                     isSubNavsActive
@@ -740,12 +748,12 @@ const DesktopLayout = (props: Props__Layout) => {
                                                     <LeftIndicator />
                                                   )}
                                                   <P lineClamp={1}>
-                                                    {menu.label
-                                                      ? menu.label
-                                                      : pluckString(
-                                                          l,
-                                                          menu.labelKey,
-                                                        )}
+                                                    {subNav.label ||
+                                                      pluckString(
+                                                        l,
+                                                        subNav.labelKey,
+                                                      ) ||
+                                                      "-"}
                                                   </P>
                                                 </MenuItem>
                                               </Tooltip>
@@ -793,9 +801,9 @@ const DesktopLayout = (props: Props__Layout) => {
                                           boxSize={BASE_ICON_BOX_SIZE}
                                         />
                                         <P lineClamp={1} textAlign="left">
-                                          {nav.label
-                                            ? nav.label
-                                            : pluckString(l, nav.labelKey)}
+                                          {nav.label ||
+                                            pluckString(l, nav.labelKey) ||
+                                            "-"}
                                         </P>
                                       </HStack>
                                     </Btn>
@@ -803,10 +811,13 @@ const DesktopLayout = (props: Props__Layout) => {
 
                                   <AccordionItemContent p={0}>
                                     <CContainer gap={1} pt={1}>
-                                      {nav.subMenus?.map(
-                                        (menuItem, menuItemIdx) => (
-                                          <CContainer key={menuItemIdx} gap={1}>
-                                            {menuItem.groupLabelKey && (
+                                      {nav.children?.map(
+                                        (subGroup, subGroupIndex) => (
+                                          <CContainer
+                                            key={subGroupIndex}
+                                            gap={1}
+                                          >
+                                            {subGroup.labelKey && (
                                               <ClampText
                                                 fontSize="sm"
                                                 fontWeight="semibold"
@@ -816,124 +827,127 @@ const DesktopLayout = (props: Props__Layout) => {
                                               >
                                                 {pluckString(
                                                   l,
-                                                  menuItem.groupLabelKey,
+                                                  subGroup.labelKey,
                                                 )}
                                               </ClampText>
                                             )}
 
-                                            {menuItem.list.map((menu, idx) => {
-                                              const isFirstIdx = idx === 0;
-                                              const isLastIdx =
-                                                idx ===
-                                                menuItem.list.length - 1;
-                                              const isSubNavsActive =
-                                                pathname === menu.path;
+                                            {subGroup.navs.map(
+                                              (subNav, subNavIndex) => {
+                                                const isFirstIdx =
+                                                  subNavIndex === 0;
+                                                const isLastIdx =
+                                                  subNavIndex ===
+                                                  subGroup.navs.length - 1;
+                                                const isSubNavsActive =
+                                                  pathname === subNav.path;
 
-                                              return (
-                                                <NavLink
-                                                  key={menu.path}
-                                                  to={menu.path}
-                                                  w="full"
-                                                >
-                                                  <Tooltip
-                                                    content={
-                                                      menu.label
-                                                        ? menu.label
-                                                        : pluckString(
-                                                            l,
-                                                            menu.labelKey,
-                                                          )
-                                                    }
-                                                    positioning={{
-                                                      placement: "right",
-                                                      offset: {
-                                                        mainAxis:
-                                                          DESKTOP_NAVS_TOOLTIP_MAIN_AXIS +
-                                                          2,
-                                                      },
-                                                    }}
+                                                return (
+                                                  <NavLink
+                                                    key={subNav.path}
+                                                    to={subNav.path}
+                                                    w="full"
                                                   >
-                                                    <HStack
-                                                      pos="relative"
-                                                      pl="8.5px"
-                                                      gap={1}
+                                                    <Tooltip
+                                                      content={
+                                                        subNav.label ||
+                                                        pluckString(
+                                                          l,
+                                                          subNav.labelKey,
+                                                        ) ||
+                                                        "-"
+                                                      }
+                                                      positioning={{
+                                                        placement: "right",
+                                                        offset: {
+                                                          mainAxis:
+                                                            DESKTOP_NAVS_TOOLTIP_MAIN_AXIS +
+                                                            2,
+                                                        },
+                                                      }}
                                                     >
-                                                      {!isFirstIdx && (
-                                                        <Box
-                                                          w="1px"
-                                                          h="calc(50% + 2px)"
-                                                          pos="absolute"
-                                                          top="-2px"
-                                                          left="18px"
-                                                          bg="d3"
-                                                        />
-                                                      )}
-                                                      {!isLastIdx && (
-                                                        <Box
-                                                          w="1px"
-                                                          h="calc(50% + 2px)"
-                                                          pos="absolute"
-                                                          bottom="-2px"
-                                                          left="18px"
-                                                          bg="d3"
-                                                        />
-                                                      )}
-
-                                                      <Center
-                                                        boxSize={
-                                                          BASE_ICON_BOX_SIZE
-                                                        }
-                                                        zIndex={2}
-                                                        ml="1.5px"
+                                                      <HStack
+                                                        pos="relative"
+                                                        pl="8.5px"
+                                                        gap={1}
                                                       >
-                                                        <Icon
-                                                          boxSize={2}
+                                                        {!isFirstIdx && (
+                                                          <Box
+                                                            w="1px"
+                                                            h="calc(50% + 2px)"
+                                                            pos="absolute"
+                                                            top="-2px"
+                                                            left="18px"
+                                                            bg="d3"
+                                                          />
+                                                        )}
+                                                        {!isLastIdx && (
+                                                          <Box
+                                                            w="1px"
+                                                            h="calc(50% + 2px)"
+                                                            pos="absolute"
+                                                            bottom="-2px"
+                                                            left="18px"
+                                                            bg="d3"
+                                                          />
+                                                        )}
+
+                                                        <Center
+                                                          boxSize={
+                                                            BASE_ICON_BOX_SIZE
+                                                          }
+                                                          zIndex={2}
+                                                          ml="1.5px"
+                                                        >
+                                                          <Icon
+                                                            boxSize={2}
+                                                            color={
+                                                              isSubNavsActive
+                                                                ? themeConfig.primaryColor
+                                                                : "bg.emphasized"
+                                                            }
+                                                          >
+                                                            <IconCircleFilled
+                                                              stroke={1.5}
+                                                            />
+                                                          </Icon>
+                                                        </Center>
+
+                                                        <Btn
+                                                          clicky={false}
+                                                          flex={1}
+                                                          gap={3}
+                                                          px={3}
+                                                          rounded={`calc(${themeConfig.radii.component})`}
+                                                          justifyContent="start"
+                                                          variant="ghost"
+                                                          colorPalette={
+                                                            NAVS_COLOR_PALETTE
+                                                          }
                                                           color={
                                                             isSubNavsActive
-                                                              ? themeConfig.primaryColor
-                                                              : "bg.emphasized"
+                                                              ? ""
+                                                              : DESKTOP_NAVS_COLOR
                                                           }
                                                         >
-                                                          <IconCircleFilled
-                                                            stroke={1.5}
-                                                          />
-                                                        </Icon>
-                                                      </Center>
-
-                                                      <Btn
-                                                        clicky={false}
-                                                        flex={1}
-                                                        gap={3}
-                                                        px={3}
-                                                        rounded={`calc(${themeConfig.radii.component})`}
-                                                        justifyContent="start"
-                                                        variant="ghost"
-                                                        colorPalette={
-                                                          NAVS_COLOR_PALETTE
-                                                        }
-                                                        color={
-                                                          isSubNavsActive
-                                                            ? ""
-                                                            : DESKTOP_NAVS_COLOR
-                                                        }
-                                                      >
-                                                        <P
-                                                          lineClamp={1}
-                                                          textAlign="left"
-                                                        >
-                                                          {menu.label
-                                                            ? menu.label
-                                                            : pluckString(
+                                                          <P
+                                                            lineClamp={1}
+                                                            textAlign="left"
+                                                          >
+                                                            {subNav.label ||
+                                                              pluckString(
                                                                 l,
-                                                                menu.labelKey,
-                                                              )}
-                                                        </P>
-                                                      </Btn>
-                                                    </HStack>
-                                                  </Tooltip>
-                                                </NavLink>
-                                              );
-                                            })}
+                                                                subNav.labelKey,
+                                                              ) ||
+                                                              "-"}
+                                                          </P>
+                                                        </Btn>
+                                                      </HStack>
+                                                    </Tooltip>
+                                                  </NavLink>
+                                                );
+                                              },
+                                            )}
                                           </CContainer>
                                         ),
                                       )}

@@ -9,7 +9,7 @@ import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
-import { ADMIN_OTHER_PRIVATE_NAVS } from "@/constants/navs";
+import { ADMIN_OTHER_PRIVATE_NAV_GROUP } from "@/constants/navs";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useLang from "@/context/useLang";
 import { useMasterDataPageContainer } from "@/context/useMasterDataPageContainer";
@@ -21,8 +21,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS =
-  ADMIN_OTHER_PRIVATE_NAVS[0].list.find((n) => n.path === "/master-data")
-    ?.subMenus || [];
+  ADMIN_OTHER_PRIVATE_NAV_GROUP[0].navs.find((n) => n.path === "/master-data")
+    ?.children || [];
 const DESKTOP_NAVS_COLOR = "ibody";
 const ROOT_PATH = `/master-data`;
 
@@ -40,7 +40,7 @@ const NavsList = (props: any) => {
   const searchTerm = search.toLowerCase();
   const resolvedList = NAVS.reduce<typeof NAVS>(
     (acc, nav) => {
-      const filteredItems = nav.list.filter((item) =>
+      const filteredItems = nav.navs.filter((item) =>
         pluckString(l, item.labelKey).toLowerCase().includes(searchTerm),
       );
 
@@ -64,18 +64,18 @@ const NavsList = (props: any) => {
         resolvedList.map((navItem, navItemIdx) => {
           return (
             <CContainer key={navItemIdx} gap={1}>
-              {navItem.groupLabelKey && (
+              {navItem.labelKey && (
                 <P
                   fontSize={"sm"}
                   fontWeight={"semibold"}
                   color={"fg.subtle"}
                   ml={1}
                 >
-                  {pluckString(l, navItem.groupLabelKey)}
+                  {pluckString(l, navItem.labelKey)}
                 </P>
               )}
 
-              {navItem.list.map((nav) => {
+              {navItem.navs.map((nav) => {
                 const isActive = nav.path === pathname;
 
                 return (

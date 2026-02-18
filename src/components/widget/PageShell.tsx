@@ -10,12 +10,12 @@ import Clock from "@/components/widget/Clock";
 import { DotIndicator } from "@/components/widget/Indicator";
 import SimplePopover from "@/components/widget/SimplePopover";
 import { Today } from "@/components/widget/Today";
-import { Interface__NavListItem } from "@/constants/interfaces";
+import { Interface__Nav } from "@/constants/interfaces";
 import {
-  ADMIN_OTHER_PRIVATE_NAVS,
-  ADMIN_PRIVATE_NAVS,
-  OTHER_PRIVATE_NAVS,
-  PRIVATE_NAVS,
+  ADMIN_OTHER_PRIVATE_NAV_GROUP,
+  ADMIN_PRIVATE_NAV_GROUPS,
+  OTHER_PRIVATE_NAV_GROUP,
+  PRIVATE_NAV_GROUPS,
 } from "@/constants/navs";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
@@ -30,10 +30,10 @@ import { forwardRef, useEffect } from "react";
 
 const FONT_SIZE = "md";
 export const RESOLVED_NAVS = [
-  ...PRIVATE_NAVS,
-  ...OTHER_PRIVATE_NAVS,
-  ...ADMIN_PRIVATE_NAVS,
-  ...ADMIN_OTHER_PRIVATE_NAVS,
+  ...PRIVATE_NAV_GROUPS,
+  ...OTHER_PRIVATE_NAV_GROUP,
+  ...ADMIN_PRIVATE_NAV_GROUPS,
+  ...ADMIN_OTHER_PRIVATE_NAV_GROUP,
 ];
 
 export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
@@ -130,7 +130,7 @@ export const NavBreadcrumb = (props: any) => {
 
           {/* {isEmptyArray(resolvedActiveNavs) && <P>{l.navs.welcome}</P>} */}
 
-          {activeNavs.map((nav: Interface__NavListItem, idx: number) => {
+          {activeNavs.map((nav: Interface__Nav, idx: number) => {
             return (
               <HStack key={idx} gap={0} color={"fg.subtle"}>
                 {idx !== 0 && (

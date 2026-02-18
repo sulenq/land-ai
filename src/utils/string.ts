@@ -43,7 +43,7 @@ export const interpolateString = (
 
 export const pluckString = (
   obj?: Record<string, any>,
-  key?: string,
+  key?: string | null,
 ): string => {
   if (!obj || !key) return "";
 

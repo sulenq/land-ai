@@ -1,9 +1,9 @@
 import {
   Interface__ChatSession,
-  Interface__NavItem,
+  Interface__NavGroup,
 } from "@/constants/interfaces";
 import { L_MONTHS } from "@/constants/months";
-import { PRIVATE_NAVS } from "@/constants/navs";
+import { PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import {
   Type__DateFormat,
   Type__DateVariant,
@@ -389,16 +389,16 @@ export function buildPrivateNavs({
 }: {
   chats?: Interface__ChatSession[] | null;
   daSessions?: Interface__ChatSession[] | null;
-}): Interface__NavItem[] {
+}): Interface__NavGroup[] {
   const resolvedChats = chats ?? [];
   const resolvedDaSessions = daSessions ?? [];
 
   return [
     {
-      groupLabelKey: "main",
+      labelKey: "main",
       list: [
-        PRIVATE_NAVS[0].list[0],
-        PRIVATE_NAVS[0].list[1],
+        PRIVATE_NAV_GROUPS[0].navs[0],
+        PRIVATE_NAV_GROUPS[0].navs[1],
         ...(resolvedChats.length > 0
           ? [
               {

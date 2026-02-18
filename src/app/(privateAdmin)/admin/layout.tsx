@@ -42,7 +42,10 @@ import {
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
-import { ADMIN_OTHER_PRIVATE_NAVS, ADMIN_PRIVATE_NAVS } from "@/constants/navs";
+import {
+  ADMIN_OTHER_PRIVATE_NAV_GROUP,
+  ADMIN_PRIVATE_NAV_GROUPS,
+} from "@/constants/navs";
 import { Props__Layout, Props__NavLink } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
@@ -266,19 +269,19 @@ const MobileLayout = (props: any) => {
       {/* Navs */}
       <HScroll borderTop={"1px solid"} borderColor={"border.subtle"}>
         <HStack w={"max"} gap={4} px={4} pt={3} pb={5} mx={"auto"}>
-          {ADMIN_PRIVATE_NAVS.map((navItem, idx) => {
+          {ADMIN_PRIVATE_NAV_GROUPS.map((navItem, idx) => {
             return (
               <Fragment key={idx}>
-                {navItem.list.map((nav, idx) => {
+                {navItem.navs.map((nav, idx) => {
                   const isMainNavActive = pathname.includes(nav.path);
 
                   return (
                     idx > 0 && (
                       <Fragment key={nav.path}>
-                        {!nav.subMenus && (
+                        {!nav.children && (
                           <MobileNavLink
                             key={nav.path}
-                            to={nav.subMenus ? "" : nav.path}
+                            to={nav.children ? "" : nav.path}
                             color={isMainNavActive ? "" : "fg.muted"}
                             flex={1}
                           >
@@ -298,7 +301,7 @@ const MobileLayout = (props: any) => {
                           </MobileNavLink>
                         )}
 
-                        {nav.subMenus && (
+                        {nav.children && (
                           <>
                             <MenuRoot
                               positioning={{
@@ -336,20 +339,17 @@ const MobileLayout = (props: any) => {
                               </MenuTrigger>
 
                               <MenuContent>
-                                {nav.subMenus.map((menuItem, idx) => {
+                                {nav.children.map((menuItem, idx) => {
                                   return (
                                     <MenuItemGroup
                                       key={idx}
                                       title={
-                                        menuItem.groupLabelKey
-                                          ? pluckString(
-                                              l,
-                                              menuItem.groupLabelKey,
-                                            )
+                                        menuItem.labelKey
+                                          ? pluckString(l, menuItem.labelKey)
                                           : ""
                                       }
                                     >
-                                      {menuItem.list.map((menu) => {
+                                      {menuItem.navs.map((menu) => {
                                         const isSubNavsActive =
                                           pathname === menu.path;
 
@@ -390,7 +390,7 @@ const MobileLayout = (props: any) => {
             );
           })}
 
-          {ADMIN_OTHER_PRIVATE_NAVS[0]?.list.map((nav) => {
+          {ADMIN_OTHER_PRIVATE_NAV_GROUP[0]?.navs.map((nav) => {
             return (
               <MobileNavLink
                 key={nav.path}
@@ -487,8 +487,8 @@ const DesktopLayout = (props: any) => {
 
   const qNormalized = q?.toLowerCase().trim();
 
-  const resolvedNavs = ADMIN_PRIVATE_NAVS.map((nav) => {
-    const filteredList = nav.list
+  const resolvedNavs = ADMIN_PRIVATE_NAV_GROUPS.map((nav) => {
+    const filteredList = nav.navs
       .map((item) => {
         const labelMain =
           item.label?.toLowerCase() ||
@@ -496,20 +496,20 @@ const DesktopLayout = (props: any) => {
           "";
         const allowedMain = isAllowed(item, roleId);
 
-        if (!item.subMenus || item.subMenus.length === 0) {
+        if (!item.children || item.children.length === 0) {
           if (!qNormalized) return allowedMain ? item : null;
           const isMatchMain = qNormalized && labelMain.includes(qNormalized);
           return allowedMain && isMatchMain ? item : null;
         }
 
-        const subsFilteredByRole = item.subMenus
+        const subsFilteredByRole = item.children
           .map((sub) => ({
             ...sub,
-            list: (sub.list ?? []).filter((subItem) =>
+            list: (sub.navs ?? []).filter((subItem) =>
               isAllowed(subItem, roleId),
             ),
           }))
-          .filter((s) => (s.list ?? []).length > 0);
+          .filter((s) => (s.navs ?? []).length > 0);
 
         if (!qNormalized) {
           if (allowedMain)
@@ -529,10 +529,10 @@ const DesktopLayout = (props: any) => {
             : { ...item, subMenus: undefined };
         }
 
-        const matchedSubs = item.subMenus
+        const matchedSubs = item.children
           .map((sub) => ({
             ...sub,
-            list: (sub.list ?? []).filter((subItem) => {
+            list: (sub.navs ?? []).filter((subItem) => {
               if (!isAllowed(subItem, roleId)) return false;
               const subLabel =
                 subItem.label?.toLowerCase() ||
@@ -541,16 +541,16 @@ const DesktopLayout = (props: any) => {
               return qNormalized && subLabel.includes(qNormalized);
             }),
           }))
-          .filter((s) => (s.list ?? []).length > 0);
+          .filter((s) => (s.navs ?? []).length > 0);
 
         return matchedSubs.length > 0
           ? { ...item, subMenus: matchedSubs }
           : null;
       })
-      .filter(Boolean) as typeof nav.list;
+      .filter(Boolean) as typeof nav.navs;
 
     return filteredList.length > 0 ? { ...nav, list: filteredList } : null;
-  }).filter(Boolean) as typeof ADMIN_PRIVATE_NAVS;
+  }).filter(Boolean) as typeof ADMIN_PRIVATE_NAV_GROUPS;
 
   useEffect(() => {
     if (!navsExpanded) {
@@ -672,7 +672,7 @@ const DesktopLayout = (props: any) => {
               resolvedNavs.map((navItem, navItemIdx) => {
                 return (
                   <CContainer key={navItemIdx} gap={1}>
-                    {navsExpanded && navItem.groupLabelKey && (
+                    {navsExpanded && navItem.labelKey && (
                       <ClampText
                         fontSize={"sm"}
                         fontWeight={"semibold"}
@@ -680,12 +680,12 @@ const DesktopLayout = (props: any) => {
                         color={"fg.subtle"}
                         ml={1}
                       >
-                        {pluckString(l, navItem.groupLabelKey)}
+                        {pluckString(l, navItem.labelKey)}
                       </ClampText>
                     )}
 
-                    {navItem.list.map((nav) => {
-                      const hasSubMenus = nav.subMenus;
+                    {navItem.navs.map((nav) => {
+                      const hasSubMenus = nav.children;
                       const isMainNavsActive = pathname.includes(nav.path);
 
                       return (
@@ -781,21 +781,21 @@ const DesktopLayout = (props: any) => {
                                   </NavTooltip>
 
                                   <MenuContent>
-                                    {nav.subMenus?.map(
+                                    {nav.children?.map(
                                       (menuItem, menuItemIdx) => (
                                         <MenuItemGroup
                                           key={menuItemIdx}
                                           gap={1}
                                           title={
-                                            menuItem.groupLabelKey
+                                            menuItem.labelKey
                                               ? pluckString(
                                                   l,
-                                                  menuItem.groupLabelKey,
+                                                  menuItem.labelKey,
                                                 )
                                               : ""
                                           }
                                         >
-                                          {menuItem.list.map((menu) => {
+                                          {menuItem.navs.map((menu) => {
                                             const isSubNavsActive =
                                               pathname === menu.path;
 
@@ -895,13 +895,13 @@ const DesktopLayout = (props: any) => {
 
                                     <AccordionItemContent p={0}>
                                       <CContainer gap={1} pt={1}>
-                                        {nav.subMenus?.map(
+                                        {nav.children?.map(
                                           (menuItem, menuItemIdx) => (
                                             <CContainer
                                               key={menuItemIdx}
                                               gap={1}
                                             >
-                                              {menuItem.groupLabelKey && (
+                                              {menuItem.labelKey && (
                                                 <ClampText
                                                   fontSize="sm"
                                                   fontWeight="semibold"
@@ -911,17 +911,17 @@ const DesktopLayout = (props: any) => {
                                                 >
                                                   {pluckString(
                                                     l,
-                                                    menuItem.groupLabelKey,
+                                                    menuItem.labelKey,
                                                   )}
                                                 </ClampText>
                                               )}
 
-                                              {menuItem.list.map(
+                                              {menuItem.navs.map(
                                                 (menu, idx) => {
                                                   const isFirstIdx = idx === 0;
                                                   const isLastIdx =
                                                     idx ===
-                                                    menuItem.list.length - 1;
+                                                    menuItem.navs.length - 1;
                                                   const isSubNavsActive =
                                                     pathname === menu.path;
 
@@ -1050,7 +1050,7 @@ const DesktopLayout = (props: any) => {
           </CContainer>
 
           {/* <CContainer gap={1} mt={"auto"}>
-            {ADMIN_OTHER_PRIVATE_NAVS[0].list.map((nav) => {
+            {ADMIN_OTHER_PRIVATE_NAV_GROUP[0].navs.map((nav) => {
               return (
                 <NavLink key={nav.path} to={nav.path} w={"full"}>
                   <NavTooltip content={pluckString(l, nav.labelKey)}>

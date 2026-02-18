@@ -1,9 +1,9 @@
-import { Interface__NavListItem } from "@/constants/interfaces";
+import { Interface__Nav } from "@/constants/interfaces";
 import { create } from "zustand";
 
 type BreadcrumbsState = {
   backPath?: string;
-  activeNavs: Interface__NavListItem[];
+  activeNavs: Interface__Nav[];
 };
 
 interface State_Actions {
