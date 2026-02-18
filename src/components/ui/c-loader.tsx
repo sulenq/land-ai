@@ -1,7 +1,7 @@
 import { CContainer } from "@/components/ui/c-container";
 import { Skeleton } from "@/components/ui/skeleton";
 import Spinner from "@/components/ui/spinner";
-import { SpinnerProps, StackProps } from "@chakra-ui/react";
+import { SimpleGrid, SpinnerProps, StackProps } from "@chakra-ui/react";
 
 interface Props extends StackProps {
   spinnerProps?: SpinnerProps;
@@ -49,5 +49,15 @@ export const DASessonPageSkeleton = () => {
 
       <Skeleton flex={1} />
     </CContainer>
+  );
+};
+
+export const DAServiceSkeleton = () => {
+  return (
+    <SimpleGrid minChildWidth={"200px"} gap={4}>
+      {[...Array(7)].map((_, i) => (
+        <Skeleton key={i} minH={"200px"} />
+      ))}
+    </SimpleGrid>
   );
 };

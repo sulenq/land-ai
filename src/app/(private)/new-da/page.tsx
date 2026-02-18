@@ -1,11 +1,11 @@
 "use client";
 
 import { CContainer } from "@/components/ui/c-container";
+import { DAServiceSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip } from "@/components/ui/tooltip";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
@@ -15,26 +15,22 @@ import { DA_API_SERVICE_GET_ALL } from "@/constants/apis";
 import { Interface__DAService } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { isEmptyArray } from "@/utils/array";
-import { getGridColumns } from "@/utils/style";
 import { imgUrl } from "@/utils/url";
 import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
 import { useRef } from "react";
 
-interface Props__Services extends StackProps {
-  cols?: number;
-}
-const Services = (props: Props__Services) => {
+const Services = (props: StackProps) => {
   // Props
-  const { cols, ...restProps } = props;
+  const { ...restProps } = props;
 
   // Contexts
   const { lang } = useLang();
   const { themeConfig } = useThemeConfig();
 
   // States
+  // const initialLoading = true;
   const { initialLoading, error, data, onRetry } = useDataState<
     Interface__DAService[]
   >({
@@ -44,12 +40,12 @@ const Services = (props: Props__Services) => {
   });
 
   const render = {
-    loading: <Skeleton flex={1} minH={"370px"} />,
+    loading: <DAServiceSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <SimpleGrid columns={cols} gap={4}>
+      <SimpleGrid minChildWidth={"200px"} gap={4}>
         {data?.map((service) => {
           return (
             <NavLink
@@ -58,6 +54,7 @@ const Services = (props: Props__Services) => {
               className={"clicky"}
               flex={"1 1 200px"}
               w={"full"}
+              minH={"200px"}
               gap={8}
               p={4}
               border={"1px solid"}
@@ -113,33 +110,16 @@ const Services = (props: Props__Services) => {
 };
 
 export default function Page() {
-  const GRID_COLS_BREAKPOINTS = {
-    0: 1,
-    350: 2,
-    720: 3,
-  };
-
   // Contexts
   const { l } = useLang();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hooks
-  const containerDimension = useContainerDimension(containerRef);
-
-  // States
-  const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
-
   return (
     <PageContainer p={8}>
       <ContainerLayout ref={containerRef} flex={1}>
-        <CContainer
-          flex={1}
-          gap={4}
-          justify={"space-between"}
-          //  className="debug"
-        >
+        <CContainer flex={1} gap={8} justify={"space-between"}>
           <VStack gap={1}>
             <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
               {l.document_analysis_service}
@@ -150,7 +130,7 @@ export default function Page() {
             </P>
           </VStack>
 
-          {cols > 1 && <Services cols={cols} />}
+          <Services />
 
           <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
         </CContainer>
