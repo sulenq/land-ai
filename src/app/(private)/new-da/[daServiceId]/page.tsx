@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageScreen";
+import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { DA_API_SERVICE_DETAIL, DA_API_SESSON_CREATE } from "@/constants/apis";
 import {
   Interface__DAServiceDetail,
@@ -94,7 +94,7 @@ const InputForm = (props: Props__InputForm) => {
       files: {} as Record<number, File[]>,
     },
     validationSchema: buildFileSchema(docReqs),
-    onSubmit: (values) => {;
+    onSubmit: (values) => {
       const payload = new FormData();
 
       const now = new Date();
@@ -103,10 +103,13 @@ const InputForm = (props: Props__InputForm) => {
 
       payload.append(
         "title",
-        `${daService?.title?.[lang]} - ${formatDate(makeUTCISODateTime(iso, time), {
-      variant: "numeric",
-      withTime: true,
-    })}`,
+        `${daService?.title?.[lang]} - ${formatDate(
+          makeUTCISODateTime(iso, time),
+          {
+            variant: "numeric",
+            withTime: true,
+          },
+        )}`,
       );
       payload.append("serviceId", `${daService?.id}`);
       Object.entries(values.files).forEach(([docId, files]) => {

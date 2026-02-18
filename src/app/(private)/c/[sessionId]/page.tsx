@@ -8,7 +8,7 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { Messages } from "@/components/widget/Messages";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageScreen";
+import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SESSION_SHOW } from "@/constants/apis";
 import { useActiveChat } from "@/context/useActiveChat";

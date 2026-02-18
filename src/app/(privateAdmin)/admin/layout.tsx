@@ -38,7 +38,7 @@ import {
   NavBreadcrumb,
   RESOLVED_NAVS,
   TopBar,
-} from "@/components/widget/PageScreen";
+} from "@/components/widget/PageShell";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";

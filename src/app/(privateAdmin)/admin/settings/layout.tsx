@@ -9,7 +9,7 @@ import SearchInput from "@/components/ui/search-input";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
-import { PageContainer, PageTitle } from "@/components/widget/PageScreen";
+import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
 import { ADMIN_OTHER_PRIVATE_NAVS } from "@/constants/navs";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
