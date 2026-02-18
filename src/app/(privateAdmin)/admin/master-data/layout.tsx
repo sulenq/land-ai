@@ -39,15 +39,15 @@ const NavsList = (props: any) => {
   // States
   const searchTerm = search.toLowerCase();
   const resolvedList = NAVS.reduce<typeof NAVS>(
-    (acc, nav) => {
-      const filteredItems = nav.navs.filter((item) =>
+    (acc, group) => {
+      const filteredItems = group.navs.filter((item) =>
         pluckString(l, item.labelKey).toLowerCase().includes(searchTerm),
       );
 
       if (filteredItems.length > 0) {
         acc.push({
-          ...nav,
-          list: filteredItems,
+          ...group,
+          navs: filteredItems,
         });
       }
 
