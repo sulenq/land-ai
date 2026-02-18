@@ -91,13 +91,13 @@ export const settings_navs = {
       id: "Utama",
       en: "Main",
     },
+    regional: {
+      id: "Bahasa & Regional",
+      en: "Language & Regional",
+    },
     personalization: {
       id: "Personalisasi",
       en: "Personalization",
-    },
-    regional: {
-      id: "Regional",
-      en: "Regional",
     },
     app_permissions: {
       id: "Izin aplikasi",

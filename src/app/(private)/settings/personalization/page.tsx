@@ -20,6 +20,7 @@ import { LocalSettingsHelperText } from "@/components/widget/LocalSettingsHelper
 import { ToggleSettingContainer } from "@/components/widget/SettingsShell";
 import { COLOR_PALETTES } from "@/constants/colors";
 import { Interface__SelectOption } from "@/constants/interfaces";
+import { ROUNDED_PRESETS } from "@/constants/presets";
 import { OPTIONS_RELIGION } from "@/constants/selectOptions";
 import useADM from "@/context/useADM";
 import useLang from "@/context/useLang";
@@ -272,17 +273,6 @@ const AccentColor = () => {
   );
 };
 const Rounded = () => {
-  const PRESETS = [
-    { label: "None", component: "0px", container: "0px" },
-    { label: "XS", component: "2px", container: "4px" },
-    { label: "Sm", component: "4px", container: "8px" },
-    { label: "Md", component: "6px", container: "12px" },
-    { label: "Lg", component: "8px", container: "16px" },
-    { label: "XL", component: "12px", container: "20px" },
-    { label: "2XL", component: "16px", container: "24px" },
-    { label: "3XL", component: "24px", container: "28px" },
-  ];
-
   // Contexts
   const { l } = useLang();
   const { themeConfig, setThemeConfig } = useThemeConfig();
@@ -383,7 +373,7 @@ const Rounded = () => {
           borderColor={"border.muted"}
         >
           <SimpleGrid minChildWidth={"140px"} gap={4}>
-            {PRESETS.map((item, index) => {
+            {ROUNDED_PRESETS.map((item, index) => {
               const isActive = item.component === themeConfig.radii.component;
 
               return (

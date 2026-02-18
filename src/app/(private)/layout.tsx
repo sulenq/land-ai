@@ -39,6 +39,7 @@ import {
 import HScroll from "@/components/widget/HScroll";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
+import { MContainer } from "@/components/widget/MContainer";
 import { MiniMyProfile } from "@/components/widget/MiniMyProfile";
 import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
 import {
@@ -205,7 +206,7 @@ const MobileLayout = (props: Props__Layout) => {
 
       {/* Navs */}
       <HScroll borderTop={"1px solid"} borderColor={"border.subtle"}>
-        <HStack w={"max"} gap={4} px={4} pt={3} pb={5} mx={"auto"}>
+        <HStack w={"max"} gap={2} px={4} pt={3} pb={5} mx={"auto"}>
           {PRIVATE_NAV_GROUPS.map((group, index) => {
             return (
               <Fragment key={index}>
@@ -328,7 +329,7 @@ const MobileLayout = (props: Props__Layout) => {
             );
           })}
 
-          <ChatSessionsDisclosureTrigger flex={1}>
+          <ChatSessionsDisclosureTrigger flex={1} align={"center"}>
             <MobileNavLink
               color={pathname.includes("/c/") ? "" : MOBILE_NAVS_COLOR}
             >
@@ -344,7 +345,7 @@ const MobileLayout = (props: Props__Layout) => {
             </MobileNavLink>
           </ChatSessionsDisclosureTrigger>
 
-          <DASessionssDisclosureTrigger flex={1}>
+          <DASessionssDisclosureTrigger flex={1} align={"center"}>
             <MobileNavLink
               color={pathname.includes("/c/") ? "" : MOBILE_NAVS_COLOR}
             >
@@ -581,7 +582,7 @@ const DesktopLayout = (props: Props__Layout) => {
         </CContainer>
 
         {/* Navs */}
-        <CContainer
+        <MContainer
           className="scrollY"
           overflowX={"clip"}
           flex={1}
@@ -1006,7 +1007,7 @@ const DesktopLayout = (props: Props__Layout) => {
               </DASessionssDisclosureTrigger>
             </>
           )}
-        </CContainer>
+        </MContainer>
 
         <CContainer px={3}>
           <Divider />

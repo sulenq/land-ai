@@ -10,6 +10,7 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LeftIndicator } from "@/components/widget/Indicator";
+import { MContainer } from "@/components/widget/MContainer";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
 import { OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
@@ -61,7 +62,7 @@ const NavsList = (props: any) => {
   );
 
   return (
-    <CContainer gap={4} {...restProps}>
+    <MContainer className="scrollY" gap={4} {...restProps}>
       {isEmptyArray(resolvedList) && <FeedbackNotFound />}
 
       {!isEmptyArray(resolvedList) &&
@@ -104,7 +105,7 @@ const NavsList = (props: any) => {
             </CContainer>
           );
         })}
-    </CContainer>
+    </MContainer>
   );
 };
 
@@ -171,7 +172,7 @@ export default function Layout(props: Props__Layout) {
 
               <NavsList search={search} p={3} />
 
-              <HStack px={4} pb={4} justify={"space-between"} mt={"auto"}>
+              <HStack justify={"space-between"} px={4} py={4} mt={"auto"}>
                 <HelperText>{`v${APP.version}`}</HelperText>
 
                 <HelperText>
@@ -186,11 +187,11 @@ export default function Layout(props: Props__Layout) {
 
           {/* Content */}
           {showContent && (
-            <CContainer className={"scrollY"} flex={1}>
+            <MContainer className={"scrollY"} flex={1}>
               {pathname !== ROOT_PATH && <PageTitle mb={1} />}
 
               <CContainer flex={1}>{children}</CContainer>
-            </CContainer>
+            </MContainer>
           )}
         </HStack>
       )}

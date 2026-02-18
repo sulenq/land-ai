@@ -9,13 +9,13 @@ import {
   Type__DateVariant,
   Type__TimeFormat,
 } from "@/constants/types";
-import { L_WEEKDAYS_0_BASED } from "@/constants/weekdays";
 import { getStorage } from "@/utils/client";
 import { isValid, parseISO } from "date-fns";
 import { format as formatTz, toZonedTime } from "date-fns-tz";
 import { FileScanIcon, MessageSquareIcon } from "lucide-react";
 import { isDateObject } from "./date";
 import { getTimezoneOffsetMs, getUserTimezone } from "./time";
+import useLang from "@/context/useLang";
 
 export const formatDate = (
   date?: Date | string | undefined,
@@ -28,6 +28,17 @@ export const formatDate = (
   } = {},
 ): string => {
   if (!date) return "";
+
+  const l = useLang.getState().l;
+  const L_WEEKDAYS_0_BASED = [
+    l.sunday,
+    l.monday,
+    l.tuesday,
+    l.wednesday,
+    l.thursday,
+    l.friday,
+    l.saturday,
+  ];
 
   const dateFormat = options.dateFormat || getStorage("dateFormat") || "dmy";
   const timezoneKey = options.timezoneKey || getUserTimezone().key;
@@ -252,7 +263,7 @@ export const formatNumber = (
 export const formatBytes = (bytes: number) => {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
-  const sizes = ["Bytes", "kB", "mB", "gB", "tB", "pB"];
+  const sizes = ["Bytes", "kB", "MB", "GB", "TB", "PB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return Math.ceil(bytes / Math.pow(k, i)) + " " + sizes[i];

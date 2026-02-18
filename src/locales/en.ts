@@ -452,8 +452,8 @@ const translations = {
   "settings_navs": {
     "main": {
       "index": "Main",
+      "regional": "Language & Regional",
       "personalization": "Personalization",
-      "regional": "Regional",
       "app_permissions": "App permissions"
     },
     "system": {

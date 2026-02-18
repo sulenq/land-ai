@@ -452,8 +452,8 @@ const translations = {
   "settings_navs": {
     "main": {
       "index": "Utama",
+      "regional": "Bahasa & Regional",
       "personalization": "Personalisasi",
-      "regional": "Regional",
       "app_permissions": "Izin aplikasi"
     },
     "system": {

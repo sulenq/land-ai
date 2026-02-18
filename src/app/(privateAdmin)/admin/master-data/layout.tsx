@@ -5,9 +5,11 @@ import { CContainer } from "@/components/ui/c-container";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
+import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
+import { MContainer } from "@/components/widget/MContainer";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { ADMIN_OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
@@ -58,7 +60,7 @@ const NavsList = (props: any) => {
   );
 
   return (
-    <CContainer gap={4} {...restProps}>
+    <MContainer className="scrollY" gap={4} {...restProps}>
       {isEmptyArray(resolvedList) && <FeedbackNotFound />}
 
       {!isEmptyArray(resolvedList) &&
@@ -103,7 +105,7 @@ const NavsList = (props: any) => {
             </CContainer>
           );
         })}
-    </CContainer>
+    </MContainer>
   );
 };
 
@@ -145,13 +147,13 @@ export default function Layout({ children }: Props__Layout) {
               h={"full"}
               maxH={"full"}
               overflowY={"auto"}
-              borderRight={isSmContainer ? "" : "1px solid"}
+              // borderRight={isSmContainer ? "" : "1px solid"}
               borderColor={"border.muted"}
             >
-              <CContainer px={4} pt={3} pb={1}>
-                <P fontSize={"xl"} fontWeight={"semibold"}>
+              <CContainer px={4} mt={3} mb={1}>
+                <ClampText fontSize={"xl"} fontWeight={"semibold"}>
                   Master Data
-                </P>
+                </ClampText>
               </CContainer>
 
               <CContainer p={3} pb={1}>
@@ -160,7 +162,7 @@ export default function Layout({ children }: Props__Layout) {
                   onChange={(inputValue) => {
                     setSearch(inputValue || "");
                   }}
-                  queryKey={"q_master_data_navs"}
+                  queryKey={"q_settings_navs"}
                 />
               </CContainer>
 
@@ -170,11 +172,11 @@ export default function Layout({ children }: Props__Layout) {
 
           {/* Content */}
           {showContent && (
-            <CContainer className={"scrollY"} flex={1}>
-              {pathname !== ROOT_PATH && <PageTitle />}
+            <MContainer className={"scrollY"} flex={1}>
+              {pathname !== ROOT_PATH && <PageTitle mb={1} />}
 
               <CContainer flex={1}>{children}</CContainer>
-            </CContainer>
+            </MContainer>
           )}
         </HStack>
       )}

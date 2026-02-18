@@ -16,7 +16,6 @@ import { LocalSettingsHelperText } from "@/components/widget/LocalSettingsHelper
 import { Pagination } from "@/components/widget/Pagination";
 import { DATE_FORMATS } from "@/constants/dateFormats";
 import { LANGUAGES } from "@/constants/languages";
-import { FIREFOX_SCROLL_Y_CLASS_PR_PREFIX } from "@/constants/styles";
 import { TIME_FORMATS } from "@/constants/timeFormats";
 import { TIME_ZONES } from "@/constants/timezone";
 import {
@@ -110,7 +109,7 @@ const Language = () => {
   );
 };
 const Timezone = () => {
-  const LIMIT_OPTIONS = [14, 28, 56, 100];
+  const LIMIT_OPTIONS = [10, 20, 50, 100];
 
   // Contexts
   const { l } = useLang();
@@ -123,7 +122,7 @@ const Timezone = () => {
   // States
   const localTz = getLocalTimezone();
   const timezones = TIME_ZONES;
-  const [limit, setLimit] = useState<number>([14, 28, 56][0]);
+  const [limit, setLimit] = useState<number>(LIMIT_OPTIONS[0]);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const resolvedTimezones = useMemo(() => {
@@ -182,11 +181,7 @@ const Timezone = () => {
             />
           </CContainer>
 
-          <CContainer
-            className={"scrollY"}
-            px={3}
-            pr={`calc(8px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
-          >
+          <CContainer px={3}>
             {isEmptyArray(resolvedTimezones) && <FeedbackNotFound />}
 
             {!isEmptyArray(resolvedTimezones) && (
@@ -216,7 +211,7 @@ const Timezone = () => {
                         <P
                           textAlign={"left"}
                           color={"fg.subtle"}
-                        >{`${tz.formattedOffset} (${tz.localAbbr})`}</P>
+                        >{`${tz.localAbbr} (${tz.formattedOffset})`}</P>
 
                         {isActive && <DotIndicator />}
                       </Btn>
@@ -446,12 +441,13 @@ const UOMFormat = () => {
 
                   {/* Example */}
                   <HStack wrap={"wrap"} mt={"auto"}>
-                    <P color={"fg.subtle"}>{item.units.mass}</P>
-                    <P color={"fg.subtle"}>{item.units.length}</P>
-                    <P color={"fg.subtle"}>{item.units.height}</P>
-                    <P color={"fg.subtle"}>{item.units.volume}</P>
-                    <P color={"fg.subtle"}>{item.units.area}</P>
-                    <P color={"fg.subtle"}>{item.units.speed}</P>
+                    {Object.keys(item.units).map((key) => {
+                      return (
+                        <P key={key} color={"fg.subtle"}>
+                          {item.units[key as keyof typeof item.units]}
+                        </P>
+                      );
+                    })}
                   </HStack>
                 </CContainer>
               );

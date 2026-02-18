@@ -1,3 +1,5 @@
+import { P } from "@/components/ui/p";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import { Tooltip as ChakraTooltip, Portal } from "@chakra-ui/react";
 import * as React from "react";
 
@@ -24,6 +26,9 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       ...restProps
     } = props;
 
+    // Contexts
+    const { themeConfig } = useThemeConfig();
+
     if (disabled) return children;
 
     return (
@@ -33,7 +38,13 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
           <ChakraTooltip.Positioner>
             <ChakraTooltip.Content
               ref={ref}
-              className="dsb ss"
+              w={"fit"}
+              maxW={"240px"}
+              px={2}
+              py={1}
+              rounded={themeConfig.radii.component}
+              bg={"body"}
+              color={"ibody"}
               {...contentProps}
             >
               {showArrow && (
@@ -41,7 +52,8 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                   <ChakraTooltip.ArrowTip />
                 </ChakraTooltip.Arrow>
               )}
-              {content}
+
+              <P fontSize={"sm"}>{content}</P>
             </ChakraTooltip.Content>
           </ChakraTooltip.Positioner>
         </Portal>
