@@ -16,7 +16,16 @@ export const getTimezoneOffsetMs = (timezoneKey: string): number => {
 };
 
 export const getLocalTimezone = (): Type__TimezoneObject => {
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const TZ_ALIAS: Record<string, string> = {
+    "Asia/Bangkok": "Asia/Jakarta",
+    "Asia/Ho_Chi_Minh": "Asia/Jakarta",
+    "Asia/Phnom_Penh": "Asia/Jakarta",
+    "Asia/Vientiane": "Asia/Jakarta",
+  };
+
+  const timezone = TZ_ALIAS[detected] ?? detected;
   const autoTimezoneLabel = `Auto (${timezone})`;
 
   const offsetMs = getTimezoneOffset(timezone);
@@ -25,7 +34,7 @@ export const getLocalTimezone = (): Type__TimezoneObject => {
 
   const offsetSign = offsetHours >= 0 ? "+" : "";
   const formattedOffset = `UTC${offsetSign}${String(
-    Math.abs(offsetHours)
+    Math.abs(offsetHours),
   ).padStart(2, "0")}:00`;
 
   const abbreviation = formatInTimeZone(new Date(), timezone, "z");
@@ -70,7 +79,7 @@ export const getUserNow = () => {
 
 export const getDurationByClock = (
   timeFrom: string,
-  timeTo: string
+  timeTo: string,
 ): number => {
   const timeStart: Date = new Date(timeFrom);
   const timeEnd: Date = new Date(timeTo);
@@ -81,7 +90,7 @@ export const getDurationByClock = (
 
 export const getDurationInSeconds = (
   timeFrom: string,
-  timeTo: string
+  timeTo: string,
 ): number => {
   const secondsFrom = parseTimeToSeconds(timeFrom);
   const secondsTo = parseTimeToSeconds(timeTo);
@@ -114,7 +123,7 @@ export const getSecondsFromTime = (time: string | undefined | null): number => {
 
 export const makeTime = (
   input: Date | string | number | undefined,
-  formatString: "HH:mm:ss" | "HH:mm" | "hh:mm A" = "HH:mm:ss"
+  formatString: "HH:mm:ss" | "HH:mm" | "hh:mm A" = "HH:mm:ss",
 ): string => {
   if (!input) return "";
 
@@ -162,7 +171,7 @@ export const makeISODateTime = (isoDate: string, time: string): string => {
 export const makeUTCISODateTime = (
   isoDate: string,
   time: string,
-  options?: { timezoneKey?: string }
+  options?: { timezoneKey?: string },
 ): string => {
   if (!isoDate || !time) return "";
 
@@ -181,9 +190,18 @@ export const makeUTCISODateTime = (
   return utcDate.toISOString();
 };
 
+export const dateNow = () => {
+  const now = new Date();
+  const iso = now.toISOString();
+  const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+  // based on user timezone preference
+  return makeUTCISODateTime(iso, time);
+};
+
 export const extractTime = (
   input?: string | Date | null,
-  options: { withSeconds?: boolean } = {}
+  options: { withSeconds?: boolean } = {},
 ): string => {
   if (!input) return "";
 
@@ -228,7 +246,7 @@ export const timezones = () => {
       formattedOffset: `UTC${offsetHours >= 0 ? "+" : ""}${formatInTimeZone(
         new Date(),
         tz,
-        "HH:mm"
+        "HH:mm",
       )}`,
       localAbbr: abbreviation,
     };
@@ -237,7 +255,7 @@ export const timezones = () => {
 
 export const addSecondsToTime = (
   time: string | null,
-  secondsToAdd: number
+  secondsToAdd: number,
 ): string => {
   if (!time) return "";
 
@@ -270,7 +288,7 @@ export const getRemainingSecondsUntil = (targetTime: string): number => {
 
 export const addSecondsToISODate = (
   isoDate: string,
-  seconds: number
+  seconds: number,
 ): string => {
   const date = parseISO(isoDate);
 
