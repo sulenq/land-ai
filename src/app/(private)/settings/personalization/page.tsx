@@ -220,7 +220,10 @@ const AccentColor = () => {
               const isColorPaletteGray = color.palette === "gray";
 
               return (
-                <Tooltip key={index} content={color.label}>
+                <Tooltip
+                  key={`${color.palette}-${index}`}
+                  content={color.label}
+                >
                   <Center
                     w={"full"}
                     aspectRatio={1}
@@ -269,15 +272,7 @@ const AccentColor = () => {
   );
 };
 const Rounded = () => {
-  // Contexts
-  const { l } = useLang();
-  const { themeConfig, setThemeConfig } = useThemeConfig();
-
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // States
-  const roundedList = [
+  const PRESETS = [
     { label: "None", component: "0px", container: "0px" },
     { label: "XS", component: "2px", container: "4px" },
     { label: "Sm", component: "4px", container: "8px" },
@@ -287,6 +282,13 @@ const Rounded = () => {
     { label: "2XL", component: "16px", container: "24px" },
     { label: "3XL", component: "24px", container: "28px" },
   ];
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig, setThemeConfig } = useThemeConfig();
+
+  // Refs
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Component
   const RoundedExampel = (props: any) => {
@@ -381,11 +383,11 @@ const Rounded = () => {
           borderColor={"border.muted"}
         >
           <SimpleGrid minChildWidth={"140px"} gap={4}>
-            {roundedList.map((item) => {
+            {PRESETS.map((item, index) => {
               const isActive = item.component === themeConfig.radii.component;
 
               return (
-                <CContainer key={item.label}>
+                <CContainer key={`${item.label}-${index}`}>
                   <RoundedExampel preset={item} isActive={isActive} />
                 </CContainer>
               );

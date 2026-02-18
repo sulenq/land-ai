@@ -206,9 +206,9 @@ const MobileLayout = (props: Props__Layout) => {
       {/* Navs */}
       <HScroll borderTop={"1px solid"} borderColor={"border.subtle"}>
         <HStack w={"max"} gap={4} px={4} pt={3} pb={5} mx={"auto"}>
-          {PRIVATE_NAV_GROUPS.map((group, idx) => {
+          {PRIVATE_NAV_GROUPS.map((group, index) => {
             return (
-              <Fragment key={idx}>
+              <Fragment key={index}>
                 {group.navs.map((nav) => {
                   const isMainNavActive = pathname.includes(nav.path);
 
@@ -430,28 +430,26 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
     >
       <Tabs.List>
         {TABS.map((tab) => (
-          <>
-            <Tabs.Trigger
-              key={tab.value}
-              value={tab.value}
-              rounded={themeConfig.radii.component}
-              onClick={() => {
-                setNavsTabs({
-                  current: tab.value,
-                });
-              }}
-            >
-              <Tooltip content={pluckString(l, tab.labelKey)}>
-                <HStack w={"full"} justify={"center"}>
-                  <AppIcon icon={tab.icon} />
+          <Tabs.Trigger
+            key={tab.value}
+            value={tab.value}
+            rounded={themeConfig.radii.component}
+            onClick={() => {
+              setNavsTabs({
+                current: tab.value,
+              });
+            }}
+          >
+            <Tooltip content={pluckString(l, tab.labelKey)}>
+              <HStack w={"full"} justify={"center"}>
+                <AppIcon icon={tab.icon} />
 
-                  <P lineClamp={1} textAlign={"left"}>
-                    {pluckString(l, tab.labelKey)}
-                  </P>
-                </HStack>
-              </Tooltip>
-            </Tabs.Trigger>
-          </>
+                <P lineClamp={1} textAlign={"left"}>
+                  {pluckString(l, tab.labelKey)}
+                </P>
+              </HStack>
+            </Tooltip>
+          </Tabs.Trigger>
         ))}
       </Tabs.List>
 
@@ -613,12 +611,12 @@ const DesktopLayout = (props: Props__Layout) => {
                   {group.navs.map((nav) => {
                     if (!isAllowed(nav.allowedRoles)) return null;
 
-                    const hasSubMenus = nav.children && !nav.invisibleChildren;
+                    const hasSub = nav.children && !nav.invisibleChildren;
                     const isMainNavsActive = pathname.includes(nav.path);
 
                     return (
                       <Fragment key={nav.path}>
-                        {!hasSubMenus && (
+                        {!hasSub && (
                           <NavLink key={nav.path} to={nav.path} w={"full"}>
                             <DesktopNavTooltip
                               content={
@@ -672,7 +670,7 @@ const DesktopLayout = (props: Props__Layout) => {
                           </NavLink>
                         )}
 
-                        {hasSubMenus && (
+                        {hasSub && (
                           <>
                             {!navsExpanded && (
                               <MenuRoot

@@ -471,8 +471,8 @@ export const ChatSessions = (props: any) => {
   const render = {
     loading: (
       <CContainer gap={4} mt={2}>
-        {Array.from({ length: 5 }).map((_, idx) => {
-          return <Skeleton key={idx} h={"24px"} />;
+        {Array.from({ length: 5 }).map((_, index) => {
+          return <Skeleton key={index} h={"24px"} />;
         })}
       </CContainer>
     ),
