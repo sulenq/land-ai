@@ -406,7 +406,7 @@ export function buildPrivateNavs({
                 labelKey: "navs.your_chats",
                 path: "/chats",
                 allowedRoles: [],
-                subMenus: [
+                children: [
                   {
                     navs: resolvedChats.map((chat) => ({
                       labelKey: chat.title,
@@ -426,7 +426,7 @@ export function buildPrivateNavs({
                 labelKey: "navs.da_sessions",
                 path: "/da-sessions",
                 allowedRoles: [],
-                subMenus: [
+                children: [
                   {
                     navs: resolvedDaSessions.map((session) => ({
                       labelKey: session.title,
