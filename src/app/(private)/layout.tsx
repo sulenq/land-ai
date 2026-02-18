@@ -457,7 +457,7 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
         ))}
       </Tabs.List>
 
-      <CContainer minH={"200px"} pos={"relative"}>
+      <CContainer minH={"200px"} pos={"relative"} mt={-2}>
         {TABS.map((tab, index) => (
           <Tabs.Content
             key={index}
