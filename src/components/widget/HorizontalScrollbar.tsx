@@ -1,5 +1,6 @@
 import { Box, BoxProps } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface HorizontalScrollbarProps extends BoxProps {
   containerRef: React.RefObject<HTMLElement | null>;
@@ -17,15 +18,20 @@ export function HorizontalScrollbar({
   borderRadius = "999px",
   ...restProps
 }: HorizontalScrollbarProps) {
+  // Refs
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const [thumbWidth, setThumbWidth] = useState(0);
-  const [thumbLeft, setThumbLeft] = useState(0);
-
   const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
   const startScrollLeftRef = useRef(0);
 
-  useEffect(() => {
+  // Hooks
+  const pathname = usePathname();
+
+  // States
+  const [thumbWidth, setThumbWidth] = useState(0);
+  const [thumbLeft, setThumbLeft] = useState(0);
+
+  useLayoutEffect(() => {
     const container = containerRef.current;
     const track = trackRef.current;
     if (!container || !track) return;
@@ -34,7 +40,7 @@ export function HorizontalScrollbar({
       const { scrollWidth, clientWidth, scrollLeft } = container;
       const trackWidth = track.clientWidth;
 
-      if (scrollWidth <= clientWidth) {
+      if (scrollWidth <= clientWidth || trackWidth === 0) {
         setThumbWidth(0);
         setThumbLeft(0);
         return;
@@ -59,7 +65,7 @@ export function HorizontalScrollbar({
       container.removeEventListener("scroll", updateThumbFromScroll);
       window.removeEventListener("resize", updateThumbFromScroll);
     };
-  }, [containerRef]);
+  }, [containerRef, pathname]);
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
@@ -102,7 +108,9 @@ export function HorizontalScrollbar({
       h={height}
       bg={trackColor}
       borderRadius={borderRadius}
-      pos={"relative"}
+      pos={thumbWidth > 0 ? "relative" : "absolute"}
+      opacity={thumbWidth > 0 ? 1 : 0}
+      pointerEvents={thumbWidth > 0 ? "auto" : "none"}
       {...restProps}
     >
       <Box

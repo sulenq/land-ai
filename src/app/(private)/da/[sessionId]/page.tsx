@@ -189,7 +189,7 @@ export default function Page() {
     if (!activeDA.session && data) {
       setSession(data);
     }
-  }, [data,activeDA.session]);
+  }, [data, activeDA.session]);
 
   // Handle 404 - redirect and remove session
   useEffect(() => {
