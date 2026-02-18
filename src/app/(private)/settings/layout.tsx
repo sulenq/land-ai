@@ -154,7 +154,7 @@ export default function Layout(props: Props__Layout) {
               // borderRight={isSmContainer ? "" : "1px solid"}
               borderColor={"border.muted"}
             >
-              <CContainer px={4} mt={3} mb={1}>
+              <CContainer px={4} mt={4} mb={1}>
                 <ClampText fontSize={"xl"} fontWeight={"semibold"}>
                   {l.settings}
                 </ClampText>
@@ -188,7 +188,7 @@ export default function Layout(props: Props__Layout) {
           {/* Content */}
           {showContent && (
             <MContainer className={"scrollY"} flex={1}>
-              {pathname !== ROOT_PATH && <PageTitle mb={1} />}
+              {pathname !== ROOT_PATH && <PageTitle mb={2} />}
 
               <CContainer flex={1}>{children}</CContainer>
             </MContainer>
