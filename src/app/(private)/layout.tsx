@@ -1008,7 +1008,9 @@ const DesktopLayout = (props: Props__Layout) => {
           )}
         </CContainer>
 
-        <Divider />
+        <CContainer px={3}>
+          <Divider />
+        </CContainer>
 
         <CContainer p={3}>
           <MiniMyProfilePopoverTrigger w={"full"}>
