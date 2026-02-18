@@ -8,9 +8,6 @@ export const DESKTOP_NAVS_BG = "body";
 export const DESKTOP_CONTENT_CONTAINER_BG = "bgContent";
 
 // Sizes
-export const MOBILE_POPOVER_MAIN_AXIS = 22;
-export const DESKTOP_NAVS_POPOVER_MAIN_AXIS = 20;
-export const DESKTOP_NAVS_TOOLTIP_MAIN_AXIS = 8;
 export const DRAWER_BODY_MAXH = `calc(100dvh - 176px)`;
 export const MAIN_BUTTON_SIZE = ["md", null, "sm"] as any;
 export const MAIN_INPUT_SIZE = ["md", null, "sm"] as any;
@@ -30,3 +27,8 @@ export const TOP_TITLE_H = "36px";
 export const TOP_DISTANCE = "78px";
 export const BASE_ICON_BOX_SIZE = 4.5;
 export const MENU_ICON_BOX_SIZE = 4.5;
+
+// Positioning
+export const MOBILE_POPOVER_MAIN_AXIS = 22;
+export const DESKTOP_NAVS_POPOVER_MAIN_AXIS = 20;
+export const DESKTOP_NAVS_TOOLTIP_MAIN_AXIS = 8;

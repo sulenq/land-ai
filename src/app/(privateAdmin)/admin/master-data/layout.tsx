@@ -5,6 +5,7 @@ import { CContainer } from "@/components/ui/c-container";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
+import { Tooltip } from "@/components/ui/tooltip";
 import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LucideIcon } from "@/components/widget/Icon";
@@ -13,7 +14,10 @@ import { MContainer } from "@/components/widget/MContainer";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { ADMIN_OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
-import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
+import {
+  BASE_ICON_BOX_SIZE,
+  DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
+} from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useMasterDataPageContainer } from "@/context/useMasterDataPageContainer";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
@@ -82,24 +86,35 @@ const NavsList = (props: any) => {
                 const isActive = nav.path === pathname;
 
                 return (
-                  <NavLink key={nav.path} to={nav.path} w={"full"}>
-                    <Btn
-                      clicky={false}
-                      justifyContent={"start"}
-                      variant={"ghost"}
-                      px={2}
-                      color={isActive ? "" : DESKTOP_NAVS_COLOR}
-                      pos={"relative"}
-                    >
-                      {isActive && <LeftIndicator />}
+                  <Tooltip
+                    key={nav.path}
+                    content={pluckString(l, nav.labelKey)}
+                    positioning={{
+                      placement: "right",
+                      offset: {
+                        mainAxis: DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
+                      },
+                    }}
+                  >
+                    <NavLink to={nav.path} w={"full"}>
+                      <Btn
+                        clicky={false}
+                        justifyContent={"start"}
+                        variant={"ghost"}
+                        px={2}
+                        color={isActive ? "" : DESKTOP_NAVS_COLOR}
+                        pos={"relative"}
+                      >
+                        {isActive && <LeftIndicator />}
 
-                      <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                        <LucideIcon icon={nav.icon} />
-                      </Icon>
+                        <Icon boxSize={BASE_ICON_BOX_SIZE}>
+                          <LucideIcon icon={nav.icon} />
+                        </Icon>
 
-                      <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
-                    </Btn>
-                  </NavLink>
+                        <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
+                      </Btn>
+                    </NavLink>
+                  </Tooltip>
                 );
               })}
             </CContainer>

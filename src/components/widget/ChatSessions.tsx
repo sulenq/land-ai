@@ -350,7 +350,7 @@ const Delete = (props: Props__Delete) => {
       <MenuItem
         color={"fg.error"}
         disabled={disabled}
-        cursor={disabled ? "disabled" : "auto"}
+        cursor={disabled ? "disabled" : "pointer"}
         {...restProps}
       >
         <AppIcon icon={TrashIcon} /> {l.delete_}

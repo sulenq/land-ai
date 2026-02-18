@@ -14,6 +14,9 @@ export const ClampText = (props: TextProps) => {
       rootProps={{
         positioning: {
           placement: "bottom-start",
+          offset: {
+            mainAxis: 4,
+          },
         },
       }}
     >

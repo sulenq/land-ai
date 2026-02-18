@@ -6,6 +6,7 @@ import { HelperText } from "@/components/ui/helper-text";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
+import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
@@ -15,6 +16,7 @@ import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
 import { OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
+import { DESKTOP_NAVS_TOOLTIP_MAIN_AXIS } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
@@ -84,22 +86,33 @@ const NavsList = (props: any) => {
                 const isActive = nav.path === pathname;
 
                 return (
-                  <NavLink key={nav.path} to={nav.path} w={"full"}>
-                    <Btn
-                      clicky={false}
-                      justifyContent={"start"}
-                      variant={"ghost"}
-                      px={2}
-                      color={isActive ? "" : NAVS_COLOR}
-                      pos={"relative"}
-                    >
-                      {isActive && <LeftIndicator />}
+                  <Tooltip
+                    key={nav.path}
+                    content={pluckString(l, nav.labelKey)}
+                    positioning={{
+                      placement: "right",
+                      offset: {
+                        mainAxis: DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
+                      },
+                    }}
+                  >
+                    <NavLink to={nav.path} w={"full"}>
+                      <Btn
+                        clicky={false}
+                        justifyContent={"start"}
+                        variant={"ghost"}
+                        px={2}
+                        color={isActive ? "" : NAVS_COLOR}
+                        pos={"relative"}
+                      >
+                        {isActive && <LeftIndicator />}
 
-                      <AppIcon icon={nav.icon} />
+                        <AppIcon icon={nav.icon} />
 
-                      <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
-                    </Btn>
-                  </NavLink>
+                        <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
+                      </Btn>
+                    </NavLink>
+                  </Tooltip>
                 );
               })}
             </CContainer>

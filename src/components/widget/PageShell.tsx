@@ -17,6 +17,7 @@ import {
   OTHER_PRIVATE_NAV_GROUPS,
   PRIVATE_NAV_GROUPS,
 } from "@/constants/navs";
+import useADM from "@/context/useADM";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
 import useScreen from "@/hooks/useScreen";
@@ -165,6 +166,9 @@ export const NavBreadcrumb = (props: any) => {
 };
 
 export const TopBar = () => {
+  // Contexts
+  const ADM = useADM((s) => s.ADM);
+
   // Hooks
   const { sw } = useScreen();
   const pathname = usePathname();
@@ -203,7 +207,7 @@ export const TopBar = () => {
           </CalendarDisclosureTrigger>
         </HStack>
 
-        <ColorModeButton rounded={"full"} size={"xs"} />
+        {!ADM && <ColorModeButton rounded={"full"} size={"xs"} />}
       </HStack>
     </HStack>
   );
