@@ -10,6 +10,7 @@ import { SelectInput } from "@/components/ui/select-input";
 import { StringInput } from "@/components/ui/string-input";
 import { Switch } from "@/components/ui/switch";
 import { TimePickerInput } from "@/components/ui/time-picker-input";
+import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { ItemContainer } from "@/components/widget/ItemContainer";
@@ -214,47 +215,51 @@ const AccentColor = () => {
           borderColor={"border.muted"}
         >
           <SimpleGrid minChildWidth={"56px"} gap={2}>
-            {COLOR_PALETTES.map((color, idx) => {
+            {COLOR_PALETTES.map((color, index) => {
               const isActive = color.palette === themeConfig.colorPalette;
               const isColorPaletteGray = color.palette === "gray";
 
               return (
-                <Center
-                  key={idx}
-                  w={"full"}
-                  aspectRatio={1}
-                  bg={isColorPaletteGray ? "ibody" : `${color.palette}.500`}
-                  rounded={themeConfig.radii.component}
-                  cursor={"pointer"}
-                  overflow={"clip"}
-                  onClick={() => {
-                    setThemeConfig({
-                      colorPalette: color.palette,
-                      primaryColor: isColorPaletteGray
-                        ? "ibody"
-                        : `${color.palette}.500`,
-                      primaryColorHex: color.primaryHex,
-                    });
-                  }}
-                  pos={"relative"}
-                >
-                  {/* <P
-                  fontSize={"sm"}
-                  color={`${color.palette}.contrast`}
-                  textAlign={"center"}
-                >
-                  {color.palette}
-                </P> */}
+                <Tooltip key={index} content={color.label}>
+                  <Center
+                    w={"full"}
+                    aspectRatio={1}
+                    p={2}
+                    bg={isColorPaletteGray ? "ibody" : `${color.palette}.500`}
+                    rounded={themeConfig.radii.component}
+                    cursor={"pointer"}
+                    overflow={"clip"}
+                    onClick={() => {
+                      setThemeConfig({
+                        colorPalette: color.palette,
+                        primaryColor: isColorPaletteGray
+                          ? "ibody"
+                          : `${color.palette}.500`,
+                        primaryColorHex: color.primaryHex,
+                      });
+                    }}
+                    pos={"relative"}
+                  >
+                    {/* <P
+                    fontSize={"sm"}
+                    fontWeight={"medium"}
+                    color={`${color.palette}.contrast`}
+                    textAlign={"center"}
+                    lineClamp={1}
+                  >
+                    {color.label}
+                  </P> */}
 
-                  {isActive && (
-                    <DotIndicator
-                      pos={"absolute"}
-                      color={isColorPaletteGray ? "body" : "light"}
-                      top={2}
-                      right={2}
-                    />
-                  )}
-                </Center>
+                    {isActive && (
+                      <DotIndicator
+                        pos={"absolute"}
+                        color={isColorPaletteGray ? "body" : "light"}
+                        top={2}
+                        right={2}
+                      />
+                    )}
+                  </Center>
+                </Tooltip>
               );
             })}
           </SimpleGrid>

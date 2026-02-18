@@ -417,6 +417,7 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
   const navsTabs = useNavsTabs((s) => s.navsTabs);
   const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
 
@@ -433,6 +434,7 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
             <Tabs.Trigger
               key={tab.value}
               value={tab.value}
+              rounded={themeConfig.radii.component}
               onClick={() => {
                 setNavsTabs({
                   current: tab.value,
