@@ -51,7 +51,7 @@ const NavsList = (props: any) => {
       if (filteredItems.length > 0) {
         acc.push({
           ...nav,
-          list: filteredItems,
+          navs: filteredItems,
         });
       }
 

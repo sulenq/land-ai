@@ -396,7 +396,7 @@ export function buildPrivateNavs({
   return [
     {
       labelKey: "main",
-      list: [
+      navs: [
         PRIVATE_NAV_GROUPS[0].navs[0],
         PRIVATE_NAV_GROUPS[0].navs[1],
         ...(resolvedChats.length > 0
@@ -408,7 +408,7 @@ export function buildPrivateNavs({
                 allowedRoles: [],
                 subMenus: [
                   {
-                    list: resolvedChats.map((chat) => ({
+                    navs: resolvedChats.map((chat) => ({
                       labelKey: chat.title,
                       label: chat.title,
                       path: `/c/${chat.id}`,
@@ -428,7 +428,7 @@ export function buildPrivateNavs({
                 allowedRoles: [],
                 subMenus: [
                   {
-                    list: resolvedDaSessions.map((session) => ({
+                    navs: resolvedDaSessions.map((session) => ({
                       labelKey: session.title,
                       label: session.title,
                       path: `/da/${session.id}`,
