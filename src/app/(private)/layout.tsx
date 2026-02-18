@@ -426,15 +426,9 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
 
   return (
     <Tabs.Root
-      fitted
-      variant="plain"
       defaultValue={navsTabs.current}
-      mt={4}
-      css={{
-        "--tabs-indicator-bg": "red",
-        "--tabs-indicator-shadow": "shadows.xs",
-        "--tabs-trigger-radius": "radii.full",
-      }}
+      fitted
+      variant={"subtle"}
       {...restProps}
     >
       <Tabs.List>
@@ -992,7 +986,7 @@ const DesktopLayout = (props: Props__Layout) => {
           </CContainer>
 
           {navsExpanded ? (
-            <DesktopTabs />
+            <DesktopTabs mt={4} />
           ) : (
             <>
               <ChatSessionsDisclosureTrigger mr={"auto"}>
