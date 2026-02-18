@@ -127,10 +127,10 @@ const Rename = (props: Props__Rename) => {
   // Focus input when open
   useEffect(() => {
     if (isOpen) {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         inputRef.current?.focus();
         inputRef.current?.select();
-      });
+      }, 1);
     }
   }, [isOpen]);
 
@@ -160,6 +160,7 @@ const Rename = (props: Props__Rename) => {
                   errorText={formik.errors.title as string}
                 >
                   <StringInput
+                    ref={inputRef}
                     inputValue={formik.values.title}
                     onChange={(inputValue) => {
                       formik.setFieldValue("title", inputValue);
@@ -340,7 +341,7 @@ export const DASessions = (props: any) => {
               {isActive && <LeftIndicator />}
 
               <Img
-              key={session.serviceIcon}
+                key={session.serviceIcon}
                 src={imgUrl(session.serviceIcon)}
                 h={"20px"}
                 fluid

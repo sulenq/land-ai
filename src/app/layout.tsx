@@ -5,6 +5,7 @@ import { APP } from "@/constants/_meta";
 import { Metadata, Viewport } from "next";
 import { Figtree } from "next/font/google";
 import "./globals.css";
+import { disclosurePrefixId } from "@/utils/disclosure";
 
 interface Props {
   children: React.ReactNode;
@@ -71,7 +72,7 @@ const RootLayout = (props: Props) => {
       </head>
 
       <body>
-        {/* <script
+        <script
           dangerouslySetInnerHTML={{
             __html: `
             (function() {
@@ -98,7 +99,7 @@ const RootLayout = (props: Props) => {
             })();
           `,
           }}
-        /> */}
+        />
         <Provider>
           <Toaster />
           <ClientSideOnly>{children}</ClientSideOnly>

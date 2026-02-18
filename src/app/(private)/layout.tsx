@@ -466,7 +466,7 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
             inset="0"
             _open={{
               animationName: "fade-in, scale-in",
-              animationDuration: "300ms",
+              animationDuration: "200ms",
             }}
             _closed={{
               animationName: "fade-out, scale-out",
