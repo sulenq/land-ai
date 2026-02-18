@@ -1040,7 +1040,7 @@ const DesktopLayout = (props: Props__Layout) => {
           flex={1}
           bg={"body"}
           // rounded={themeConfig.radii.container}
-          borderLeft={"1px solid"}
+          // borderLeft={"1px solid"}
           borderColor={"border.muted"}
           overflow={"auto"}
         >

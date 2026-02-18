@@ -186,7 +186,7 @@ export const TopBar = () => {
       pr={"10px"}
       justify={"space-between"}
       bg={"body"}
-      borderBottom={"1px solid"}
+      // borderBottom={"1px solid"}
       borderColor={"border.muted"}
     >
       <NavBreadcrumb
