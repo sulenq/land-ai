@@ -54,14 +54,12 @@ import { PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
-  FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
-} from "@/constants/styles";
-import {
   DESKTOP_CONTENT_CONTAINER_BG,
   DESKTOP_NAVS_BG,
   DESKTOP_NAVS_COLOR,
   DESKTOP_NAVS_POPOVER_MAIN_AXIS,
   DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
+  FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
   MOBILE_CONTENT_CONTAINER_BG,
   MOBILE_NAV_LABEL_FONT_SIZE,
   MOBILE_NAVS_COLOR,
@@ -69,7 +67,6 @@ import {
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
-import { useChatSessions } from "@/context/useChatSessions";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
 import { useNavsTabs } from "@/context/useNavsTabs";
@@ -85,7 +82,6 @@ import {
   setAccessToken,
   setUserData,
 } from "@/utils/auth";
-import { buildPrivateNavs } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import {
@@ -1090,22 +1086,12 @@ const TheApp = (props: Props__Layout) => {
   // Props
   const { ...restProps } = props;
 
-  // Contexts
-  const chatSessions = useChatSessions((s) => s.chatSessions);
-
   // Hooks
   const iss = useIsSmScreenWidth();
 
-  // States
-  const NAVS = buildPrivateNavs({ chats: chatSessions, daSessions: [] });
-
   return (
     <CContainer id="app_layout" h={"100dvh"} {...restProps}>
-      {iss ? (
-        <MobileLayout navs={NAVS} {...props} />
-      ) : (
-        <DesktopLayout navs={NAVS} {...props} />
-      )}
+      {iss ? <MobileLayout {...props} /> : <DesktopLayout {...props} />}
     </CContainer>
   );
 };
