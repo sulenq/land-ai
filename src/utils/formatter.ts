@@ -238,29 +238,28 @@ export const formatAbsDate = (
 
 export const formatNumber = (
   numParam: number | string | undefined | null,
+  locale = "id-ID",
+  maxFractionDigits = 4,
 ): string => {
-  if (numParam === null || numParam === undefined) return "";
+  if (numParam === null || numParam === undefined || numParam === "")
+    return "-";
 
   let num: number;
 
   if (typeof numParam === "string") {
-    num = parseFloat(numParam.replace(",", "."));
+    const normalized = numParam.replace(/\./g, "").replace(",", ".");
+    num = Number(normalized);
+    if (isNaN(num)) return "-";
   } else {
     num = numParam;
   }
 
-  // has desimal?
-  const hasDecimal = num.toString().includes(".");
+  const isInteger = Number.isInteger(num);
 
-  // format number
-  const formattedNum = hasDecimal
-    ? num.toLocaleString("id-ID", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 20,
-      })
-    : num.toLocaleString("id-ID");
-
-  return formattedNum;
+  return num.toLocaleString(locale, {
+    minimumFractionDigits: isInteger ? 0 : 0,
+    maximumFractionDigits: isInteger ? 0 : maxFractionDigits,
+  });
 };
 
 export const formatBytes = (bytes: number) => {
@@ -397,13 +396,13 @@ export const formatDuration = (
   }
 };
 
-export function buildPrivateNavs({
+export const buildPrivateNavs = ({
   chats,
   daSessions,
 }: {
   chats?: Interface__ChatSession[] | null;
   daSessions?: Interface__ChatSession[] | null;
-}): Interface__NavGroup[] {
+}): Interface__NavGroup[] => {
   const resolvedChats = chats ?? [];
   const resolvedDaSessions = daSessions ?? [];
 
@@ -456,24 +455,37 @@ export function buildPrivateNavs({
       ],
     },
   ];
-}
+};
 
-export function formatUOM(
+export const formatUOM = (
   value: number | string | null | undefined,
   unit: Type__UnitKey,
-  options?: Intl.NumberFormatOptions,
-) {
+  options?: Intl.NumberFormatOptions & { compact?: boolean },
+) => {
   if (value === null || value === undefined || value === "") return "-";
 
   const key = useUOMFormat.getState().UOM;
-
   const format = UOM_FORMATS.find((f) => f.key === key) ?? UOM_FORMATS[0];
   const unitLabel = format.units[unit];
 
-  const num =
-    typeof value === "number"
-      ? new Intl.NumberFormat(undefined, options).format(value)
-      : value;
+  // normalize number
+  let num: number;
+  if (typeof value === "string") {
+    const normalized = value.replace(/\./g, "").replace(",", ".");
+    num = Number(normalized);
+    if (isNaN(num)) return "-";
+  } else {
+    num = value;
+  }
 
-  return `${num} ${unitLabel}`;
-}
+  const formatted = new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: 4,
+    notation: options?.compact ? "compact" : "standard",
+    ...options,
+  }).format(num);
+
+  const noSpaceUnits = ["°C", "°F", "K", "°", "rad"];
+  return noSpaceUnits.includes(unitLabel)
+    ? `${formatted}${unitLabel}`
+    : `${formatted} ${unitLabel}`;
+};
