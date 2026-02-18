@@ -50,7 +50,7 @@ import { Props__Layout, Props__NavLink } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
-} from "@/constants/sizes";
+} from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";

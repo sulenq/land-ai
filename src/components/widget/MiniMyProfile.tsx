@@ -12,7 +12,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { AUTH_API_SIGNOUT } from "@/constants/apis";
 import { OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { SVGS_PATH } from "@/constants/paths";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";

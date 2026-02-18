@@ -3,7 +3,7 @@
 import { Btn, BtnProps } from "@/components/ui/btn";
 import { Tooltip } from "@/components/ui/tooltip";
 import { LucideIcon } from "@/components/widget/Icon";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import { useDataDisplay } from "@/context/useDataDisplay";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import { Icon } from "@chakra-ui/react";

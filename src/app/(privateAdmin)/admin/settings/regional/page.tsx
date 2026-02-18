@@ -19,7 +19,7 @@ import { LANGUAGES } from "@/constants/languages";
 import {
   BASE_ICON_BOX_SIZE,
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
-} from "@/constants/sizes";
+} from "@/constants/styles";
 import { TIME_FORMATS } from "@/constants/timeFormats";
 import { TIME_ZONES } from "@/constants/timezone";
 import {

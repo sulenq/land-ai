@@ -1,7 +1,7 @@
 "use client";
 
 import { useColorMode, useColorModeValue } from "@/components/ui/color-mode";
-import { MAIN_BUTTON_SIZE } from "@/constants/sizes";
+import { MAIN_BUTTON_SIZE } from "@/constants/styles";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { Button, ButtonProps, IconButton } from "@chakra-ui/react";
 import { forwardRef, useMemo } from "react";

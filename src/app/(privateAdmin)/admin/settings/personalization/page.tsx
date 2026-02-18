@@ -20,7 +20,7 @@ import { ToggleSettingContainer } from "@/components/widget/SettingsShell";
 import { COLOR_PALETTES } from "@/constants/colors";
 import { Interface__SelectOption } from "@/constants/interfaces";
 import { OPTIONS_RELIGION } from "@/constants/selectOptions";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useADM from "@/context/useADM";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";

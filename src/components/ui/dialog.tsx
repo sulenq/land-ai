@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { forwardRef, useRef, useState } from "react";
 import { CloseButton } from "./close-button";
-import { BLUR_RADIUS } from "@/constants/sizes";
+import { BLUR_RADIUS } from "@/constants/styles";
 
 export interface DialogContentProps extends ChakraDialog.ContentProps {
   portalled?: boolean;
@@ -86,7 +86,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
         </ChakraDialog.Positioner>
       </Portal>
     );
-  }
+  },
 );
 
 export const DialogCloseTrigger = forwardRef<

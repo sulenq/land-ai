@@ -21,7 +21,7 @@ import {
   Props__NewChat,
   Props__PromptInput,
 } from "@/constants/props";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import useMessageContainer from "@/context/useMessageContainer";

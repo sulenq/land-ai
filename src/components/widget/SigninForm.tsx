@@ -8,7 +8,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { Logo } from "@/components/widget/Logo";
 import { APP } from "@/constants/_meta";
 import { AUTH_API_SIGNIN, AUTH_API_SIGNOUT } from "@/constants/apis";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";

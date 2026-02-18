@@ -12,7 +12,7 @@ import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
 import { ADMIN_OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
 import { useContainerDimension } from "@/hooks/useContainerDimension";

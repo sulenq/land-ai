@@ -11,7 +11,7 @@ import { P } from "@/components/ui/p";
 import { StringInput } from "@/components/ui/string-input";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Props__TimePicker } from "@/constants/props";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
@@ -69,26 +69,26 @@ export const TimePickerInput = (props: Props__TimePicker) => {
   const userTz = getUserTimezone();
   const resolvedPlaceholder = placeholder || l.select_time;
   const [selected, setSelected] = useState<string | null | undefined>(
-    inputValue
+    inputValue,
   );
   const [hours, setHours] = useState<number>(getHoursFromTime(inputValue));
   const [minutes, setMinutes] = useState<number>(
-    getMinutesFromTime(inputValue)
+    getMinutesFromTime(inputValue),
   );
   const [seconds, setSeconds] = useState<number>(
-    getSecondsFromTime(inputValue)
+    getSecondsFromTime(inputValue),
   );
   const intervalIncrementRef = useRef<ReturnType<typeof setInterval> | null>(
-    null
+    null,
   );
   const timeoutIncrementRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
+    null,
   );
   const intervalDecrementRef = useRef<ReturnType<typeof setInterval> | null>(
-    null
+    null,
   );
   const timeoutDecrementRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
+    null,
   );
   const renderValue = formatTime(inputValue);
 
@@ -98,7 +98,7 @@ export const TimePickerInput = (props: Props__TimePicker) => {
     disclosureId(id || `time-picker${name ? `-${name}` : ""}`),
     open,
     onOpen,
-    onClose
+    onClose,
   );
   const { sw } = useScreen();
   const wrapped = sw < 450 && withSeconds;
@@ -197,8 +197,8 @@ export const TimePickerInput = (props: Props__TimePicker) => {
             resolvedInvalid
               ? "border.error"
               : variant === "subtle"
-              ? "transparent"
-              : "border.muted"
+                ? "transparent"
+                : "border.muted"
           }
           onClick={() => {
             if (inputValue) {

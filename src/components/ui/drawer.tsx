@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { forwardRef } from "react";
 import { CloseButton } from "./close-button";
-import { BLUR_RADIUS } from "@/constants/sizes";
+import { BLUR_RADIUS } from "@/constants/styles";
 
 export interface DrawerContentProps extends ChakraDrawer.ContentProps {
   portalled?: boolean;
@@ -65,7 +65,7 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
         </ChakraDrawer.Positioner>
       </Portal>
     );
-  }
+  },
 );
 
 export const DrawerCloseTrigger = forwardRef<

@@ -42,7 +42,7 @@ import { SVGS_PATH } from "@/constants/paths";
 import {
   BASE_ICON_BOX_SIZE,
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
-} from "@/constants/sizes";
+} from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";

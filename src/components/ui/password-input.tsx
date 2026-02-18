@@ -7,7 +7,7 @@ import { Center, Icon, IconButton } from "@chakra-ui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { forwardRef, useState } from "react";
 import { StringInput } from "./string-input";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 
 export const PasswordInput = forwardRef<HTMLInputElement, Props__PasswordInput>(
   (props, ref) => {
@@ -85,7 +85,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, Props__PasswordInput>(
         </Center>
       </CContainer>
     );
-  }
+  },
 );
 
 PasswordInput.displayName = "PasswordInput";

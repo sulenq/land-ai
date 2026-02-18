@@ -55,7 +55,7 @@ import { Props__Layout } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
-} from "@/constants/sizes";
+} from "@/constants/styles";
 import {
   DESKTOP_CONTENT_CONTAINER_BG,
   DESKTOP_NAVS_BG,

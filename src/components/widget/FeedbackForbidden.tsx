@@ -4,7 +4,7 @@ import { CContainer } from "@/components/ui/c-container";
 import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Props__FeedbackState } from "@/constants/props";
-import { MIN_H_FEEDBACK_CONTAINER } from "@/constants/sizes";
+import { MIN_H_FEEDBACK_CONTAINER } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { Icon } from "@chakra-ui/react";
 import { BanIcon } from "lucide-react";

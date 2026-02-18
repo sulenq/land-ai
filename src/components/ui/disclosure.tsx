@@ -27,7 +27,7 @@ import {
 import {
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
   SM_SCREEN_W_NUMBER,
-} from "@/constants/sizes";
+} from "@/constants/styles";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import useScreen from "@/hooks/useScreen";

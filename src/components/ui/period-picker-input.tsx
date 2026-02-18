@@ -15,7 +15,10 @@ import { P } from "@/components/ui/p";
 import { Tooltip } from "@/components/ui/tooltip";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Props__PeriodPickerInput } from "@/constants/props";
-import { BASE_ICON_BOX_SIZE, C_ACTIVE_INDICATOR_SIZE } from "@/constants/sizes";
+import {
+  BASE_ICON_BOX_SIZE,
+  C_ACTIVE_INDICATOR_SIZE,
+} from "@/constants/styles";
 import { Type__Period } from "@/constants/types";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -134,8 +137,8 @@ export const PeriodPickerInput = (props: Props__PeriodPickerInput) => {
             resolvedInvalid
               ? "border.error"
               : isSubtleVariant
-              ? "transparent"
-              : "border.muted"
+                ? "transparent"
+                : "border.muted"
           }
           {...restProps}
         >

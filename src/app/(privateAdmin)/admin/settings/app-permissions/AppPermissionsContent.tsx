@@ -19,7 +19,7 @@ import { ItemHeaderContainer } from "@/components/widget/ItemHeaderContainer";
 import { LocalSettingsHelperText } from "@/components/widget/LocalSettingsHelperText";
 import { MicVolumeBar } from "@/components/widget/MicVolumeBar";
 import { ToggleSettingContainer } from "@/components/widget/SettingsShell";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useCameraPermission from "@/context/useCameraPermissions";
 import useLang from "@/context/useLang";
 import useLocationPermissions from "@/context/useLocationPermissions";

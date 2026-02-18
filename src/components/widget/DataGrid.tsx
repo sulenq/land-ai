@@ -10,7 +10,7 @@ import {
   Interface__DataProps,
   Interface__FormattedTableRow,
 } from "@/constants/interfaces";
-import { FIREFOX_SCROLL_Y_CLASS_PR_PREFIX } from "@/constants/sizes";
+import { FIREFOX_SCROLL_Y_CLASS_PR_PREFIX } from "@/constants/styles";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";

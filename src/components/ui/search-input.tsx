@@ -3,7 +3,7 @@
 import { StringInput } from "@/components/ui/string-input";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Props__SearchInput } from "@/constants/props";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useDebouncedCallback } from "@/hooks/useDebounceCallback";
 import { HStack, Icon, InputGroup } from "@chakra-ui/react";
@@ -102,8 +102,8 @@ export default function SearchInput(props: Props__SearchInput) {
               invalid
                 ? "border.error"
                 : inputProps?.variant === "subtle" || variant === "subtle"
-                ? "transparent"
-                : "border.muted"
+                  ? "transparent"
+                  : "border.muted"
             }
             variant={variant as any}
             {...inputProps}

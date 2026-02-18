@@ -4,7 +4,7 @@ import { CContainer } from "@/components/ui/c-container";
 import { toaster } from "@/components/ui/toaster";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Props__StringInput } from "@/constants/props";
-import { BASE_ICON_BOX_SIZE, MAIN_INPUT_SIZE } from "@/constants/sizes";
+import { BASE_ICON_BOX_SIZE, MAIN_INPUT_SIZE } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useMergedRefs } from "@/hooks/useMergeRefs";
@@ -116,8 +116,8 @@ export const StringInput = forwardRef<HTMLInputElement, Props__StringInput>(
               resolvedInvalid
                 ? "border.error"
                 : variant === "subtle"
-                ? "transparent"
-                : "border.muted"
+                  ? "transparent"
+                  : "border.muted"
             }
             fontSize={"md"}
             fontWeight={"medium"}
@@ -164,7 +164,7 @@ export const StringInput = forwardRef<HTMLInputElement, Props__StringInput>(
         </CContainer>
       </>
     );
-  }
+  },
 );
 
 StringInput.displayName = "StringInput";
