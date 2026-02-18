@@ -6,20 +6,24 @@ import { HelperText } from "@/components/ui/helper-text";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
+import { Tooltip } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
+import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
-import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
+import { MContainer } from "@/components/widget/MContainer";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
 import { ADMIN_OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
-import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
+import { Props__Layout } from "@/constants/props";
+import { DESKTOP_NAVS_TOOLTIP_MAIN_AXIS } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { isEmptyArray } from "@/utils/array";
 import { formatAbsDate } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
-import { HStack, Icon } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -27,7 +31,7 @@ const NAVS =
   ADMIN_OTHER_PRIVATE_NAV_GROUPS[0].navs.find(
     (n) => n.path === "/admin/settings",
   )?.children || [];
-const DESKTOP_NAVS_COLOR = "ibody";
+const NAVS_COLOR = "ibody";
 const ROOT_PATH = `/admin/settings`;
 
 const NavsList = (props: any) => {
@@ -43,14 +47,14 @@ const NavsList = (props: any) => {
   // States
   const searchTerm = search.toLowerCase();
   const resolvedList = NAVS.reduce<typeof NAVS>(
-    (acc, nav) => {
-      const filteredItems = nav.navs.filter((item) =>
+    (acc, group) => {
+      const filteredItems = group.navs.filter((item) =>
         pluckString(l, item.labelKey).toLowerCase().includes(searchTerm),
       );
 
       if (filteredItems.length > 0) {
         acc.push({
-          ...nav,
+          ...group,
           navs: filteredItems,
         });
       }
@@ -61,7 +65,7 @@ const NavsList = (props: any) => {
   );
 
   return (
-    <CContainer gap={4} {...restProps}>
+    <MContainer className="scrollY" gap={4} {...restProps}>
       {isEmptyArray(resolvedList) && <FeedbackNotFound />}
 
       {!isEmptyArray(resolvedList) &&
@@ -83,34 +87,46 @@ const NavsList = (props: any) => {
                 const isActive = nav.path === pathname;
 
                 return (
-                  <NavLink key={nav.path} to={nav.path} w={"full"}>
-                    <Btn
-                      clicky={false}
-                      justifyContent={"start"}
-                      variant={"ghost"}
-                      px={2}
-                      color={isActive ? "" : DESKTOP_NAVS_COLOR}
-                      pos={"relative"}
-                    >
-                      {isActive && <LeftIndicator />}
+                  <Tooltip
+                    key={nav.path}
+                    content={pluckString(l, nav.labelKey)}
+                    positioning={{
+                      placement: "right",
+                      offset: {
+                        mainAxis: DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
+                      },
+                    }}
+                  >
+                    <NavLink to={nav.path} w={"full"}>
+                      <Btn
+                        clicky={false}
+                        justifyContent={"start"}
+                        variant={"ghost"}
+                        px={2}
+                        color={isActive ? "" : NAVS_COLOR}
+                        pos={"relative"}
+                      >
+                        {isActive && <LeftIndicator />}
 
-                      <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                        <LucideIcon icon={nav.icon} />
-                      </Icon>
+                        <AppIcon icon={nav.icon} />
 
-                      <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
-                    </Btn>
-                  </NavLink>
+                        <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
+                      </Btn>
+                    </NavLink>
+                  </Tooltip>
                 );
               })}
             </CContainer>
           );
         })}
-    </CContainer>
+    </MContainer>
   );
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout(props: Props__Layout) {
+  // Props
+  const { children } = props;
+
   // Hooks
   const pathname = usePathname();
 
@@ -149,13 +165,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               h={"full"}
               maxH={"full"}
               overflowY={"auto"}
-              borderRight={isSmContainer ? "" : "1px solid"}
+              // borderRight={isSmContainer ? "" : "1px solid"}
               borderColor={"border.muted"}
             >
-              <CContainer px={4} pt={3} pb={1}>
-                <P fontSize={"xl"} fontWeight={"semibold"}>
+              <CContainer px={4} mt={4} mb={1}>
+                <ClampText fontSize={"xl"} fontWeight={"semibold"}>
                   {l.settings}
-                </P>
+                </ClampText>
               </CContainer>
 
               <CContainer p={3} pb={1}>
@@ -170,7 +186,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
               <NavsList search={search} p={3} />
 
-              <HStack px={4} pb={4} justify={"space-between"} mt={"auto"}>
+              <HStack justify={"space-between"} px={4} py={4} mt={"auto"}>
                 <HelperText>{`v${APP.version}`}</HelperText>
 
                 <HelperText>
@@ -185,11 +201,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Content */}
           {showContent && (
-            <CContainer className={"scrollY"} flex={1}>
-              {pathname !== ROOT_PATH && <PageTitle />}
+            <MContainer className={"scrollY"} flex={1}>
+              {pathname !== ROOT_PATH && <PageTitle mb={2} />}
 
               <CContainer flex={1}>{children}</CContainer>
-            </CContainer>
+            </MContainer>
           )}
         </HStack>
       )}

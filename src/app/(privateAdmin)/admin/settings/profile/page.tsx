@@ -18,12 +18,12 @@ import SearchInput from "@/components/ui/search-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import Spinner from "@/components/ui/spinner";
 import { StringInput } from "@/components/ui/string-input";
+import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { LucideIcon } from "@/components/widget/Icon";
 import { ImgViewer } from "@/components/widget/ImgViewer";
 import { ItemContainer } from "@/components/widget/ItemContainer";
 import { ItemHeaderContainer } from "@/components/widget/ItemHeaderContainer";
@@ -31,7 +31,11 @@ import ItemHeaderTitle from "@/components/widget/ItemHeaderTitle";
 import { Limitation } from "@/components/widget/Limitation";
 import { Pagination } from "@/components/widget/Pagination";
 import ResetPasswordDisclosureTrigger from "@/components/widget/ResetPasswordDisclosure";
-import { dummyActivityLogs, dummyAuthLogs } from "@/constants/dummyData";
+import {
+  dummyActivityLogs,
+  dummyAuthLogs,
+  dummyUser,
+} from "@/constants/dummyData";
 import { Enum__ActivityAction } from "@/constants/enums";
 import {
   Interface__ActivityLog,
@@ -39,22 +43,16 @@ import {
   Interface__User,
 } from "@/constants/interfaces";
 import { SVGS_PATH } from "@/constants/paths";
-import {
-  BASE_ICON_BOX_SIZE,
-  FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
-} from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
-import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
-import { getUserData } from "@/utils/auth";
 import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
 import { imgUrl } from "@/utils/url";
-import { Circle, HStack, Icon, useDisclosure } from "@chakra-ui/react";
+import { Circle, HStack, useDisclosure } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import {
   ActivityIcon,
@@ -63,29 +61,30 @@ import {
   LogInIcon,
   UserIcon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
 
 interface Props__AvatarInputDisclosureTrigger {
-  children: any;
+  children: React.ReactElement<any>;
   formik: any;
   user?: Interface__User;
 }
-const AvatarInputDisclosureTrigger = (
-  props: Props__AvatarInputDisclosureTrigger,
-) => {
-  // Props
-  const { children, formik, user, ...restProps } = props;
+const AvatarUploadTrigger = (props: Props__AvatarInputDisclosureTrigger) => {
+  const { children, formik, user } = props;
 
-  // Hooks
   const { open, onOpen, onClose } = useDisclosure();
   useBackOnClose(disclosureId(`avatar-input`), open, onOpen, onClose);
 
+  const trigger = React.cloneElement(children, {
+    onClick: (...args: any[]) => {
+      children.props?.onClick?.(...args);
+      onOpen();
+    },
+  });
+
   return (
     <>
-      <CContainer w={"fit"} onClick={onOpen} {...restProps}>
-        {children}
-      </CContainer>
+      {trigger}
 
       <DisclosureRoot open={open} lazyLoad size={"xs"}>
         <DisclosureContent>
@@ -195,102 +194,104 @@ const PersonalInformation = (props: Props__PersonalInformation) => {
 
   return (
     <ItemContainer borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={UserIcon} />
-          </Icon>
+          <AppIcon icon={UserIcon} />
           <ItemHeaderTitle>{l.personal_information}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer p={4}>
-        <form
-          id="personal_info_form"
-          onSubmit={formik.handleSubmit}
-          {...restProps}
+      <CContainer px={4}>
+        <CContainer
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
         >
-          <FieldsetRoot disabled={loading}>
-            <Field
-              invalid={!!formik.errors.avatar}
-              errorText={`${formik.errors.avatar}`}
-            >
-              <HStack gap={4}>
-                <ImgViewer
-                  src={imgUrl(initialData?.avatar?.[0]?.filePath)}
-                  key={imgUrl(initialData?.avatar?.[0]?.filePath)}
-                >
-                  <Img
+          <form
+            id="personal_info_form"
+            onSubmit={formik.handleSubmit}
+            {...restProps}
+          >
+            <FieldsetRoot disabled={loading}>
+              <Field
+                invalid={!!formik.errors.avatar}
+                errorText={`${formik.errors.avatar}`}
+              >
+                <HStack gap={4}>
+                  <ImgViewer
                     src={imgUrl(initialData?.avatar?.[0]?.filePath)}
                     key={imgUrl(initialData?.avatar?.[0]?.filePath)}
-                    fallbackSrc={`${SVGS_PATH}/no-avatar.svg`}
-                    aspectRatio={1}
-                    w={"100px"}
-                    rounded={"full"}
-                  />
-                </ImgViewer>
-
-                <CContainer gap={2}>
-                  <AvatarInputDisclosureTrigger
-                    formik={formik}
-                    user={initialData}
                   >
-                    <Btn variant={"outline"} size={"xs"}>
-                      {l.upload_new_avatar}
-                    </Btn>
-                  </AvatarInputDisclosureTrigger>
+                    <Img
+                      src={imgUrl(initialData?.avatar?.[0]?.filePath)}
+                      key={imgUrl(initialData?.avatar?.[0]?.filePath)}
+                      fallbackSrc={`${SVGS_PATH}/no-avatar.svg`}
+                      aspectRatio={1}
+                      w={"100px"}
+                      rounded={"full"}
+                    />
+                  </ImgViewer>
 
-                  <CContainer color={"fg.subtle"}>
-                    <P>{l.msg_new_avatar_helper}</P>
-                    <P>{`PNG, JPG ${l.is_allowed}`}</P>
+                  <CContainer gap={2}>
+                    <AvatarUploadTrigger formik={formik} user={initialData}>
+                      <Btn w={"fit"} variant={"outline"} size={"xs"}>
+                        {l.upload_new_avatar}
+                      </Btn>
+                    </AvatarUploadTrigger>
+
+                    <CContainer color={"fg.subtle"}>
+                      <P>{l.msg_new_avatar_helper}</P>
+                      <P>{`PNG, JPG ${l.is_allowed}`}</P>
+                    </CContainer>
                   </CContainer>
-                </CContainer>
-              </HStack>
-            </Field>
+                </HStack>
+              </Field>
 
-            <Field
-              label={l.name}
-              invalid={!!formik.errors.name}
-              errorText={`${formik.errors.name}`}
-            >
-              <StringInput
-                inputValue={formik.values.name}
-                onChange={(inputValue) => {
-                  formik.setFieldValue("name", inputValue);
-                }}
-                placeholder="Jolitos Kurniawan"
-              />
-            </Field>
+              <Field
+                label={l.name}
+                invalid={!!formik.errors.name}
+                errorText={`${formik.errors.name}`}
+              >
+                <StringInput
+                  inputValue={formik.values.name}
+                  onChange={(inputValue) => {
+                    formik.setFieldValue("name", inputValue);
+                  }}
+                  placeholder="Jolitos Kurniawan"
+                />
+              </Field>
 
-            <Field
-              label={"Email"}
-              invalid={!!formik.errors.email}
-              errorText={`${formik.errors.email}`}
-            >
-              <StringInput
-                inputValue={formik.values.email}
-                onChange={(inputValue) => {
-                  formik.setFieldValue("email", inputValue);
-                }}
-                placeholder="example@email.com"
-              />
-            </Field>
-          </FieldsetRoot>
+              <Field
+                label={"Email"}
+                invalid={!!formik.errors.email}
+                errorText={`${formik.errors.email}`}
+              >
+                <StringInput
+                  inputValue={formik.values.email}
+                  onChange={(inputValue) => {
+                    formik.setFieldValue("email", inputValue);
+                  }}
+                  placeholder="example@email.com"
+                />
+              </Field>
+            </FieldsetRoot>
 
-          <HStack justify={"space-between"} mt={6}>
-            <ResetPasswordDisclosureTrigger>
-              <Btn variant={"outline"}>Reset password</Btn>
-            </ResetPasswordDisclosureTrigger>
+            <HStack justify={"space-between"} mt={6}>
+              <ResetPasswordDisclosureTrigger>
+                <Btn variant={"outline"}>Reset password</Btn>
+              </ResetPasswordDisclosureTrigger>
 
-            <Btn
-              type="submit"
-              form={"personal_info_form"}
-              colorPalette={themeConfig.colorPalette}
-            >
-              {l.save}
-            </Btn>
-          </HStack>
-        </form>
+              <Btn
+                type="submit"
+                form={"personal_info_form"}
+                colorPalette={themeConfig.colorPalette}
+              >
+                {l.save}
+              </Btn>
+            </HStack>
+          </form>
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
@@ -299,15 +300,12 @@ const PersonalInformation = (props: Props__PersonalInformation) => {
 const AuthLog = () => {
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hooks
-  const dimensions = useContainerDimension(containerRef);
-
   // States
-  const isSmContainer = dimensions?.width < 600;
   const [search, setSearch] = useState("");
   const {
     error,
@@ -339,24 +337,19 @@ const AuthLog = () => {
             <HStack
               key={`${log.id}-${idx}`}
               gap={4}
-              px={4}
+              px={2}
               py={2}
               justify={"space-between"}
               borderTop={idx === 0 ? "" : "1px solid"}
               borderColor={"border.subtle"}
             >
               <Circle p={1} bg={isSignin ? "bg.success" : "bg.error"}>
-                <Icon
-                  boxSize={BASE_ICON_BOX_SIZE}
+                <AppIcon
+                  icon={isSignin ? ArrowDown : ArrowUp}
                   color={isSignin ? "fg.success" : "fg.error"}
-                >
-                  {isSignin ? (
-                    <LucideIcon icon={ArrowDown} />
-                  ) : (
-                    <LucideIcon icon={ArrowUp} />
-                  )}
-                </Icon>
+                />
               </Circle>
+
               <CContainer>
                 <P>
                   {formatDate(log?.createdAt, {
@@ -380,34 +373,21 @@ const AuthLog = () => {
 
   return (
     <ItemContainer ref={containerRef} borderless roundedless>
-      <ItemHeaderContainer withUtils>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={LogInIcon} />
-          </Icon>
+          <AppIcon icon={LogInIcon} />
 
           <ItemHeaderTitle>{l.my_auth_logs}</ItemHeaderTitle>
         </HStack>
-
-        <HStack mr={2}>
-          {!isSmContainer && (
-            <SearchInput
-              onChange={(inputValue) => {
-                setSearch(inputValue || "");
-              }}
-              inputValue={search}
-              inputProps={{
-                size: "xs",
-              }}
-              queryKey={"q_my_log_auth"}
-            />
-          )}
-        </HStack>
       </ItemHeaderContainer>
 
-      <CContainer>
-        {isSmContainer && (
-          <CContainer p={3} pb={0}>
+      <CContainer px={4}>
+        <CContainer
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <CContainer p={3}>
             <SearchInput
               onChange={(inputValue) => {
                 setSearch(inputValue || "");
@@ -416,44 +396,44 @@ const AuthLog = () => {
               queryKey={"q_my_log_auth"}
             />
           </CContainer>
-        )}
 
-        <CContainer
-          className={"scrollY"}
-          h={"310px"}
-          p={2}
-          pr={`calc(8px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
-        >
-          {initialLoading && render.loading}
-          {!initialLoading && (
-            <>
-              {error && render.error}
-              {!error && (
-                <>
-                  {data && render.loaded}
-                  {(!data || isEmptyArray(data)) && render.empty}
-                </>
-              )}
-            </>
-          )}
+          <CContainer
+            px={3}
+            // className={"scrollY"}
+            // h={"318px"}
+            // pr={`calc(8px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
+          >
+            {initialLoading && render.loading}
+            {!initialLoading && (
+              <>
+                {error && render.error}
+                {!error && (
+                  <>
+                    {data && render.loaded}
+                    {(!data || isEmptyArray(data)) && render.empty}
+                  </>
+                )}
+              </>
+            )}
+          </CContainer>
+
+          <HStack
+            justify={"space-between"}
+            wrap={"wrap"}
+            p={3}
+            // borderTop={"1px solid"}
+            borderColor={"border.muted"}
+          >
+            <Limitation limit={limit} setLimit={setLimit} />
+
+            <Pagination
+              page={page}
+              setPage={setPage}
+              totalPage={pagination?.meta?.totalPage}
+            />
+          </HStack>
         </CContainer>
       </CContainer>
-
-      <HStack
-        justify={"space-between"}
-        wrap={"wrap"}
-        p={2}
-        borderTop={"1px solid"}
-        borderColor={"border.muted"}
-      >
-        <Limitation limit={limit} setLimit={setLimit} />
-
-        <Pagination
-          page={page}
-          setPage={setPage}
-          totalPage={pagination?.meta?.totalPage}
-        />
-      </HStack>
     </ItemContainer>
   );
 };
@@ -461,15 +441,12 @@ const AuthLog = () => {
 const ActivityLog = () => {
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hooks
-  const dimensions = useContainerDimension(containerRef);
-
   // States
-  const isSmContainer = dimensions?.width < 600;
   const [search, setSearch] = useState("");
   const activityFormatter: Record<
     string,
@@ -527,7 +504,7 @@ const ActivityLog = () => {
               justify={"space-between"}
               borderTop={idx === 0 ? "" : "1px solid"}
               borderColor={"border.subtle"}
-              px={4}
+              px={2}
               py={2}
             >
               <CContainer>
@@ -553,34 +530,21 @@ const ActivityLog = () => {
 
   return (
     <ItemContainer ref={containerRef} borderless roundedless>
-      <ItemHeaderContainer withUtils>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={ActivityIcon} />
-          </Icon>
+          <AppIcon icon={ActivityIcon} />
 
           <ItemHeaderTitle>{l.my_activity_logs}</ItemHeaderTitle>
         </HStack>
-
-        <HStack mr={2}>
-          {!isSmContainer && (
-            <SearchInput
-              onChange={(inputValue) => {
-                setSearch(inputValue || "");
-              }}
-              inputValue={search}
-              inputProps={{
-                size: "xs",
-              }}
-              queryKey={"q_my_log_auth"}
-            />
-          )}
-        </HStack>
       </ItemHeaderContainer>
 
-      <CContainer>
-        {isSmContainer && (
-          <CContainer p={3} pb={0}>
+      <CContainer px={4}>
+        <CContainer
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <CContainer p={3}>
             <SearchInput
               onChange={(inputValue) => {
                 setSearch(inputValue || "");
@@ -589,54 +553,53 @@ const ActivityLog = () => {
               queryKey={"q_my_log_auth"}
             />
           </CContainer>
-        )}
 
-        <CContainer
-          className={"scrollY"}
-          h={"310px"}
-          p={2}
-          pr={`calc(8px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
-        >
-          {initialLoading && render.loading}
-          {!initialLoading && (
-            <>
-              {error && render.error}
-              {!error && (
-                <>
-                  {data && render.loaded}
-                  {(!data || isEmptyArray(data)) && render.empty}
-                </>
-              )}
-            </>
-          )}
+          <CContainer
+            px={3}
+            // className={"scrollY"}
+            // h={"318px"}
+            // pr={`calc(8px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
+          >
+            {initialLoading && render.loading}
+            {!initialLoading && (
+              <>
+                {error && render.error}
+                {!error && (
+                  <>
+                    {data && render.loaded}
+                    {(!data || isEmptyArray(data)) && render.empty}
+                  </>
+                )}
+              </>
+            )}
+          </CContainer>
+
+          <HStack
+            justify={"space-between"}
+            wrap={"wrap"}
+            p={3}
+            // borderTop={"1px solid"}
+            borderColor={"border.muted"}
+          >
+            <Limitation limit={limit} setLimit={setLimit} />
+
+            <Pagination
+              page={page}
+              setPage={setPage}
+              totalPage={pagination?.meta?.totalPage}
+            />
+          </HStack>
         </CContainer>
       </CContainer>
-
-      <HStack
-        justify={"space-between"}
-        wrap={"wrap"}
-        p={2}
-        borderTop={"1px solid"}
-        borderColor={"border.muted"}
-      >
-        <Limitation limit={limit} setLimit={setLimit} />
-
-        <Pagination
-          page={page}
-          setPage={setPage}
-          totalPage={pagination?.meta?.totalPage}
-        />
-      </HStack>
     </ItemContainer>
   );
 };
 
 export default function Page() {
   // States
-  const user = getUserData() as Interface__User;
-  const { initialLoading, error, data, onRetry } =
+  const { error, initialLoading, data, onRetry } =
     useDataState<Interface__User>({
-      initialData: user,
+      initialData: dummyUser,
       url: ``,
       dataResource: false,
     });
@@ -646,7 +609,7 @@ export default function Page() {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <CContainer flex={1} gap={3} bg={"bgContent"}>
+      <CContainer flex={1} gap={3}>
         <PersonalInformation initialData={data} />
 
         <AuthLog />
@@ -657,7 +620,7 @@ export default function Page() {
   };
 
   return (
-    <>
+    <CContainer pb={4}>
       {/* {render.loading} */}
       {initialLoading && render.loading}
       {!initialLoading && (
@@ -671,6 +634,6 @@ export default function Page() {
           )}
         </>
       )}
-    </>
+    </CContainer>
   );
 }

@@ -25,15 +25,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import SearchInput from "@/components/ui/search-input";
-import { Tooltip, TooltipProps } from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
 import Clock from "@/components/widget/Clock";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import HScroll from "@/components/widget/HScroll";
-import { LucideIcon } from "@/components/widget/Icon";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { MiniMyProfile } from "@/components/widget/MiniMyProfile";
+import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
 import {
   NavBreadcrumb,
   RESOLVED_NAVS,
@@ -42,11 +43,8 @@ import {
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
-import {
-  ADMIN_OTHER_PRIVATE_NAV_GROUPS,
-  ADMIN_PRIVATE_NAV_GROUPS,
-} from "@/constants/navs";
-import { Props__Layout, Props__NavLink } from "@/constants/props";
+import { OTHER_PRIVATE_NAV_GROUPS, PRIVATE_NAV_GROUPS } from "@/constants/navs";
+import { Props__Layout } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
@@ -68,69 +66,40 @@ import {
 } from "@/utils/auth";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
-import { Box, Center, HStack, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  HStack,
+  Icon,
+  StackProps,
+  VStack,
+} from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
+  ServerIcon,
   SidebarCloseIcon,
   SidebarOpenIcon,
   UserIcon,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
+import {
+  DESKTOP_CONTENT_CONTAINER_BG,
+  DESKTOP_NAVS_BG,
+  DESKTOP_NAVS_COLOR,
+  DESKTOP_NAVS_POPOVER_MAIN_AXIS,
+  DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
+  MOBILE_CONTENT_CONTAINER_BG,
+  MOBILE_NAV_LABEL_FONT_SIZE,
+  MOBILE_NAVS_COLOR,
+  MOBILE_POPOVER_MAIN_AXIS,
+  NAVS_COLOR_PALETTE,
+} from "@/constants/styles";
 
 const USER_PROFILE_URL = "/api/get-user-profile";
-const DESKTOP_NAVS_BG = "body";
-const NAVS_COLOR = "ibody";
-const NAVS_COLOR_PALETTE = "gray";
-const DESKTOP_BG_CONTENT_CONTAINER = "bgContent";
-const MOBILE_BG_CONTENT_CONTAINER = "body";
-const DESKTOP_POPOVER_MAIN_AXIS = 20;
-const DESKTOP_TOOLTIP_MAIN_AXIS = 24;
-const MOBILE_NAV_LABEL_FONT_SIZE = "sm";
-const MOBILE_POPOVER_MAIN_AXIS = 22;
 
-const NavTooltip = (props: TooltipProps) => {
-  // Props
-  const { children, ...restProps } = props;
-
-  return (
-    <Tooltip
-      positioning={{
-        placement: "right",
-        offset: {
-          mainAxis: DESKTOP_TOOLTIP_MAIN_AXIS,
-        },
-      }}
-      {...restProps}
-    >
-      {children}
-    </Tooltip>
-  );
-};
-const MobileNavLink = (props: Props__NavLink) => {
-  // Props
-  const { children, ...restProps } = props;
-
-  return (
-    <NavLink
-      minW={"50px"}
-      align={"center"}
-      gap={1}
-      pos={"relative"}
-      {...restProps}
-    >
-      {children}
-    </NavLink>
-  );
-};
-const DesktoMiniMyProfile = (props: any) => {
-  // Props
-  const { navsExpanded, ...restProps } = props;
-
-  // Contexts
-  const { themeConfig } = useThemeConfig();
-
+const MiniMyProfilePopoverTrigger = (props: StackProps) => {
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -138,7 +107,6 @@ const DesktoMiniMyProfile = (props: any) => {
   useClickOutside(containerRef, onClose);
 
   // States
-  const user = getUserData();
   const [open, setOpen] = useState<boolean>(false);
 
   // Utils
@@ -155,52 +123,13 @@ const DesktoMiniMyProfile = (props: any) => {
       positioning={{
         placement: "right-end",
         offset: {
-          mainAxis: DESKTOP_POPOVER_MAIN_AXIS,
+          mainAxis: DESKTOP_NAVS_POPOVER_MAIN_AXIS,
           crossAxis: 4,
         },
       }}
-      {...restProps}
     >
       <PopoverTrigger asChild>
-        <HStack
-          gap={4}
-          w={navsExpanded ? "full" : "36px"}
-          px={"6px"}
-          py={2}
-          rounded={themeConfig.radii.component}
-          cursor={"pointer"}
-          _hover={{
-            bg: "gray.subtle",
-          }}
-          justify={navsExpanded ? "" : "center"}
-          transition={"200ms"}
-          pos={"relative"}
-          onClick={onOpen}
-        >
-          <Avatar
-            src={imgUrl(user?.avatar?.filePath)}
-            name={user?.name}
-            size={navsExpanded ? "md" : "2xs"}
-            mr={"auto"}
-          />
-
-          {navsExpanded && (
-            <>
-              <CContainer>
-                <P lineClamp={1} fontWeight={"semibold"}>
-                  {user?.name || "Signed out"}
-                </P>
-                <P lineClamp={1} color={"fg.subtle"}>
-                  {user?.email || user?.username || "-"}
-                </P>
-              </CContainer>
-
-              <Icon boxSize={BASE_ICON_BOX_SIZE} color={"fg.subtle"} mr={1}>
-                <LucideIcon icon={ChevronsUpDownIcon} />
-              </Icon>
-            </>
-          )}
-        </HStack>
+        <CContainer w={"fit"} onClick={onOpen} {...props} />
       </PopoverTrigger>
 
       <PopoverContent ref={containerRef} w={"235px"} zIndex={10}>
@@ -232,7 +161,7 @@ const MobileLayout = (props: any) => {
   return (
     <CContainer flex={1} overflowY={"auto"} {...restProps}>
       {/* Content */}
-      <CContainer flex={1} bg={MOBILE_BG_CONTENT_CONTAINER} overflowY={"auto"}>
+      <CContainer flex={1} bg={MOBILE_CONTENT_CONTAINER_BG} overflowY={"auto"}>
         {/* Content header */}
         <CContainer gap={2}>
           <HStack w={"full"} justify={"space-between"} pt={2} px={4}>
@@ -269,145 +198,146 @@ const MobileLayout = (props: any) => {
       {/* Navs */}
       <HScroll borderTop={"1px solid"} borderColor={"border.subtle"}>
         <HStack w={"max"} gap={4} px={4} pt={3} pb={5} mx={"auto"}>
-          {ADMIN_PRIVATE_NAV_GROUPS.map((navItem, idx) => {
+          {PRIVATE_NAV_GROUPS.map((group, idx) => {
             return (
               <Fragment key={idx}>
-                {navItem.navs.map((nav, idx) => {
+                {group.navs.map((nav) => {
                   const isMainNavActive = pathname.includes(nav.path);
 
                   return (
-                    idx > 0 && (
-                      <Fragment key={nav.path}>
-                        {!nav.children && (
-                          <MobileNavLink
-                            key={nav.path}
-                            to={nav.children ? "" : nav.path}
-                            color={isMainNavActive ? "" : "fg.muted"}
-                            flex={1}
+                    <Fragment key={nav.path}>
+                      {!nav.children && (
+                        <MobileNavLink
+                          key={nav.path}
+                          to={nav.children ? "" : nav.path}
+                          color={isMainNavActive ? "" : "fg.muted"}
+                          flex={1}
+                        >
+                          <AppIcon icon={nav.icon} />
+
+                          <P
+                            textAlign={"center"}
+                            lineClamp={1}
+                            fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
                           >
-                            <Icon boxSize={5}>
-                              <LucideIcon icon={nav.icon} />
-                            </Icon>
+                            {nav.label ?? pluckString(l, nav.labelKey) ?? "-"}
+                          </P>
 
-                            <P
-                              textAlign={"center"}
-                              lineClamp={1}
-                              fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
-                            >
-                              {pluckString(l, nav.labelKey)}
-                            </P>
+                          {isMainNavActive && <BottomIndicator />}
+                        </MobileNavLink>
+                      )}
 
-                            {isMainNavActive && <BottomIndicator />}
-                          </MobileNavLink>
-                        )}
+                      {nav.children && (
+                        <>
+                          <MenuRoot
+                            positioning={{
+                              placement: "top",
+                              offset: {
+                                mainAxis: MOBILE_POPOVER_MAIN_AXIS,
+                              },
+                            }}
+                          >
+                            <MenuTrigger asChild>
+                              <CContainer
+                                key={nav.path}
+                                minW={"50px"}
+                                align={"center"}
+                                gap={1}
+                                color={isMainNavActive ? "" : "fg.muted"}
+                                pos={"relative"}
+                                cursor={"pointer"}
+                                flex={1}
+                              >
+                                <AppIcon icon={nav.icon} />
 
-                        {nav.children && (
-                          <>
-                            <MenuRoot
-                              positioning={{
-                                placement: "top",
-                                offset: {
-                                  mainAxis: MOBILE_POPOVER_MAIN_AXIS,
-                                },
-                              }}
-                            >
-                              <MenuTrigger asChild>
-                                <CContainer
-                                  key={nav.path}
-                                  minW={"50px"}
-                                  align={"center"}
-                                  gap={1}
-                                  color={isMainNavActive ? "" : "fg.muted"}
-                                  pos={"relative"}
-                                  cursor={"pointer"}
-                                  flex={1}
+                                <P
+                                  fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
+                                  textAlign={"center"}
+                                  lineClamp={1}
                                 >
-                                  <Icon boxSize={5}>
-                                    <LucideIcon icon={nav.icon} />
-                                  </Icon>
+                                  {nav.label ??
+                                    pluckString(l, nav.labelKey) ??
+                                    "-"}
+                                </P>
 
-                                  <P
-                                    fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
-                                    textAlign={"center"}
-                                    lineClamp={1}
+                                {isMainNavActive && <BottomIndicator />}
+                              </CContainer>
+                            </MenuTrigger>
+
+                            <MenuContent>
+                              {nav.children.map((subGroup, idx) => {
+                                return (
+                                  <MenuItemGroup
+                                    key={idx}
+                                    title={
+                                      subGroup.labelKey
+                                        ? pluckString(l, subGroup.labelKey)
+                                        : ""
+                                    }
                                   >
-                                    {pluckString(l, nav.labelKey)}
-                                  </P>
+                                    {subGroup.navs.map((subNav) => {
+                                      const isSubNavsActive =
+                                        pathname === subNav.path;
 
-                                  {isMainNavActive && <BottomIndicator />}
-                                </CContainer>
-                              </MenuTrigger>
-
-                              <MenuContent>
-                                {nav.children.map((menuItem, idx) => {
-                                  return (
-                                    <MenuItemGroup
-                                      key={idx}
-                                      title={
-                                        menuItem.labelKey
-                                          ? pluckString(l, menuItem.labelKey)
-                                          : ""
-                                      }
-                                    >
-                                      {menuItem.navs.map((menu) => {
-                                        const isSubNavsActive =
-                                          pathname === menu.path;
-
-                                        return (
-                                          <NavLink
-                                            key={menu.path}
-                                            w={"full"}
-                                            to={menu.path}
+                                      return (
+                                        <NavLink
+                                          key={subNav.path}
+                                          w={"full"}
+                                          to={subNav.path}
+                                        >
+                                          <MenuItem
+                                            value={subNav.path}
+                                            h={"44px"}
+                                            px={3}
                                           >
-                                            <MenuItem
-                                              value={menu.path}
-                                              h={"44px"}
-                                              px={3}
-                                            >
-                                              {isSubNavsActive && (
-                                                <LeftIndicator />
-                                              )}
+                                            {isSubNavsActive && (
+                                              <LeftIndicator />
+                                            )}
 
-                                              <P lineClamp={1}>
-                                                {pluckString(l, menu.labelKey)}
-                                              </P>
-                                            </MenuItem>
-                                          </NavLink>
-                                        );
-                                      })}
-                                    </MenuItemGroup>
-                                  );
-                                })}
-                              </MenuContent>
-                            </MenuRoot>
-                          </>
-                        )}
-                      </Fragment>
-                    )
+                                            <P lineClamp={1}>
+                                              {subNav.label ??
+                                                pluckString(
+                                                  l,
+                                                  subNav.labelKey,
+                                                ) ??
+                                                "-"}
+                                            </P>
+                                          </MenuItem>
+                                        </NavLink>
+                                      );
+                                    })}
+                                  </MenuItemGroup>
+                                );
+                              })}
+                            </MenuContent>
+                          </MenuRoot>
+                        </>
+                      )}
+                    </Fragment>
                   );
                 })}
               </Fragment>
             );
           })}
 
-          {ADMIN_OTHER_PRIVATE_NAV_GROUPS[0]?.navs.map((nav) => {
+          {OTHER_PRIVATE_NAV_GROUPS.find(
+            (group) => group.labelKey === "other",
+          )?.navs.map((nav) => {
             return (
               <MobileNavLink
                 key={nav.path}
                 to={nav.path}
-                color={pathname === nav.path ? "" : NAVS_COLOR}
+                color={pathname === nav.path ? "" : MOBILE_NAVS_COLOR}
                 flex={1}
               >
-                <Icon boxSize={5}>
-                  <LucideIcon icon={nav.icon} />
-                </Icon>
+                <AppIcon icon={nav.icon} />
 
                 <P
                   textAlign={"center"}
                   lineClamp={1}
                   fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
                 >
-                  {pluckString(l, nav.labelKey)}
+                  {nav.label ?? pluckString(l, nav.labelKey) ?? "-"}
                 </P>
 
                 {pathname === nav.path && <BottomIndicator />}
@@ -415,45 +345,35 @@ const MobileLayout = (props: any) => {
             );
           })}
 
-          <PopoverRoot
-            positioning={{
-              placement: "top",
-              offset: {
-                mainAxis: MOBILE_POPOVER_MAIN_AXIS,
-              },
-            }}
-          >
-            <PopoverTrigger asChild>
-              <MobileNavLink flex={1} color={NAVS_COLOR}>
-                {!user?.avatar?.filePath && (
-                  <Icon boxSize={6}>
-                    <LucideIcon icon={UserIcon} />
-                  </Icon>
-                )}
+          <MiniMyProfilePopoverTrigger flex={1}>
+            <VStack
+              flex={1}
+              color={MOBILE_NAVS_COLOR}
+              cursor={"pointer"}
+              gap={1}
+            >
+              {!user?.avatar?.filePath && (
+                <AppIcon icon={UserIcon} boxSize={5} />
+              )}
 
-                {user?.avatar?.filePath && (
-                  <Avatar
-                    src={imgUrl(user?.avatar?.filePath)}
-                    name={user?.name}
-                    size={"2xs"}
-                  />
-                )}
+              {user?.avatar?.filePath && (
+                <Avatar
+                  src={imgUrl(user?.avatar?.filePath)}
+                  name={user?.name}
+                  size={"2xs"}
+                />
+              )}
 
-                <P
-                  fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
-                  textAlign={"center"}
-                  color={isInProfileRoute ? "" : NAVS_COLOR}
-                  lineClamp={1}
-                >
-                  {l.profile}
-                </P>
-              </MobileNavLink>
-            </PopoverTrigger>
-
-            <PopoverContent w={"200px"} zIndex={10}>
-              <MiniMyProfile />
-            </PopoverContent>
-          </PopoverRoot>
+              <P
+                fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
+                textAlign={"center"}
+                color={isInProfileRoute ? "" : MOBILE_NAVS_COLOR}
+                lineClamp={1}
+              >
+                {l.profile}
+              </P>
+            </VStack>
+          </MiniMyProfilePopoverTrigger>
         </HStack>
       </HScroll>
     </CContainer>
@@ -487,22 +407,22 @@ const DesktopLayout = (props: any) => {
 
   const qNormalized = q?.toLowerCase().trim();
 
-  const resolvedNavs = ADMIN_PRIVATE_NAV_GROUPS.map((nav) => {
+  const resolvedNavs = PRIVATE_NAV_GROUPS.map((nav) => {
     const filteredList = nav.navs
-      .map((item) => {
+      .map((nav) => {
         const labelMain =
-          item.label?.toLowerCase() ||
-          pluckString(l, item.labelKey)?.toLowerCase() ||
+          nav.label?.toLowerCase() ??
+          pluckString(l, nav.labelKey)?.toLowerCase() ??
           "";
-        const allowedMain = isAllowed(item, roleId);
+        const allowedMain = isAllowed(nav, roleId);
 
-        if (!item.children || item.children.length === 0) {
-          if (!qNormalized) return allowedMain ? item : null;
+        if (!nav.children || nav.children.length === 0) {
+          if (!qNormalized) return allowedMain ? nav : null;
           const isMatchMain = qNormalized && labelMain.includes(qNormalized);
-          return allowedMain && isMatchMain ? item : null;
+          return allowedMain && isMatchMain ? nav : null;
         }
 
-        const subsFilteredByRole = item.children
+        const subsFilteredByRole = nav.children
           .map((sub) => ({
             ...sub,
             navs: (sub.navs ?? []).filter((subItem) =>
@@ -514,10 +434,10 @@ const DesktopLayout = (props: any) => {
         if (!qNormalized) {
           if (allowedMain)
             return subsFilteredByRole.length > 0
-              ? { ...item, subMenus: subsFilteredByRole }
-              : { ...item, subMenus: undefined };
+              ? { ...nav, children: subsFilteredByRole }
+              : { ...nav, children: undefined };
           return subsFilteredByRole.length > 0
-            ? { ...item, subMenus: subsFilteredByRole }
+            ? { ...nav, children: subsFilteredByRole }
             : null;
         }
 
@@ -525,11 +445,11 @@ const DesktopLayout = (props: any) => {
 
         if (isMatchMain && allowedMain) {
           return subsFilteredByRole.length > 0
-            ? { ...item, subMenus: subsFilteredByRole }
-            : { ...item, subMenus: undefined };
+            ? { ...nav, children: subsFilteredByRole }
+            : { ...nav, children: undefined };
         }
 
-        const matchedSubs = item.children
+        const matchedSubs = nav.children
           .map((sub) => ({
             ...sub,
             navs: (sub.navs ?? []).filter((subItem) => {
@@ -544,13 +464,13 @@ const DesktopLayout = (props: any) => {
           .filter((s) => (s.navs ?? []).length > 0);
 
         return matchedSubs.length > 0
-          ? { ...item, subMenus: matchedSubs }
+          ? { ...nav, children: matchedSubs }
           : null;
       })
       .filter(Boolean) as typeof nav.navs;
 
     return filteredList.length > 0 ? { ...nav, navs: filteredList } : null;
-  }).filter(Boolean) as typeof ADMIN_PRIVATE_NAV_GROUPS;
+  }).filter(Boolean) as typeof PRIVATE_NAV_GROUPS;
 
   useEffect(() => {
     if (!navsExpanded) {
@@ -565,7 +485,6 @@ const DesktopLayout = (props: any) => {
       align={"stretch"}
       gap={0}
       h={"100dvh"}
-      bg={DESKTOP_NAVS_BG}
       overflowY={"auto"}
       {...restProps}
     >
@@ -573,19 +492,12 @@ const DesktopLayout = (props: any) => {
       <CContainer
         flexShrink={0}
         w={navsExpanded ? "250px" : "60px"}
-        transition={"200ms"}
-        // py={3}
-        // borderRight={"1px solid"}
         borderColor={"border.muted"}
+        bg={navsExpanded ? DESKTOP_NAVS_BG : "body"}
+        transition={"200ms"}
       >
         {/* Logo & Sidebar Toggle */}
-        <CContainer
-          h={navsExpanded ? "52px" : ""}
-          gap={1}
-          px={3}
-          pt={navsExpanded ? 0 : "6px"}
-          justify={"center"}
-        >
+        <CContainer gap={1} px={3} py={2}>
           {!navsExpanded && (
             <NavLink to="/">
               <Center w={"36px"} h={"40px"} mr={"auto"}>
@@ -618,7 +530,7 @@ const DesktopLayout = (props: any) => {
               positioning={{
                 placement: "right",
                 offset: {
-                  mainAxis: DESKTOP_TOOLTIP_MAIN_AXIS,
+                  mainAxis: DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
                 },
               }}
             >
@@ -630,13 +542,13 @@ const DesktopLayout = (props: any) => {
                 variant={"ghost"}
                 colorPalette={NAVS_COLOR_PALETTE}
                 onClick={toggleNavsExpanded}
-                color={NAVS_COLOR}
+                color={DESKTOP_NAVS_COLOR}
+                mt={navsExpanded ? 0 : 3}
+                transition={"0"}
               >
-                <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                  <LucideIcon
-                    icon={navsExpanded ? SidebarCloseIcon : SidebarOpenIcon}
-                  />
-                </Icon>
+                <AppIcon
+                  icon={navsExpanded ? SidebarCloseIcon : SidebarOpenIcon}
+                />
               </Btn>
             </Tooltip>
           </HStack>
@@ -665,7 +577,8 @@ const DesktopLayout = (props: any) => {
           p={3}
           pr={`calc(12px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
         >
-          <CContainer gap={1}>
+          {/* Private Navs */}
+          <CContainer gap={1} mt={navsExpanded ? "12px" : 0}>
             {isEmptyArray(resolvedNavs) && <FeedbackNotFound />}
 
             {!isEmptyArray(resolvedNavs) &&
@@ -692,7 +605,7 @@ const DesktopLayout = (props: any) => {
                         <Fragment key={nav.path}>
                           {!hasSubMenus && (
                             <NavLink key={nav.path} to={nav.path} w={"full"}>
-                              <NavTooltip
+                              <DesktopNavTooltip
                                 content={pluckString(l, nav.labelKey)}
                               >
                                 <Btn
@@ -702,17 +615,15 @@ const DesktopLayout = (props: any) => {
                                   px={2}
                                   justifyContent={"start"}
                                   variant={"ghost"}
-                                  color={isMainNavsActive ? "" : NAVS_COLOR}
+                                  color={
+                                    isMainNavsActive ? "" : DESKTOP_NAVS_COLOR
+                                  }
                                 >
                                   {isMainNavsActive && nav.icon && (
                                     <LeftIndicator />
                                   )}
 
-                                  {nav.icon && (
-                                    <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                      <LucideIcon icon={nav.icon} />
-                                    </Icon>
-                                  )}
+                                  {nav.icon && <AppIcon icon={nav.icon} />}
 
                                   {!nav.icon && (
                                     <Icon
@@ -733,7 +644,7 @@ const DesktopLayout = (props: any) => {
                                     </P>
                                   )}
                                 </Btn>
-                              </NavTooltip>
+                              </DesktopNavTooltip>
                             </NavLink>
                           )}
 
@@ -744,11 +655,11 @@ const DesktopLayout = (props: any) => {
                                   positioning={{
                                     placement: "right-start",
                                     offset: {
-                                      mainAxis: DESKTOP_POPOVER_MAIN_AXIS,
+                                      mainAxis: DESKTOP_NAVS_POPOVER_MAIN_AXIS,
                                     },
                                   }}
                                 >
-                                  <NavTooltip
+                                  <DesktopNavTooltip
                                     content={
                                       nav.label
                                         ? nav.label
@@ -766,36 +677,36 @@ const DesktopLayout = (props: any) => {
                                           colorPalette={NAVS_COLOR_PALETTE}
                                           pos="relative"
                                           color={
-                                            isMainNavsActive ? "" : NAVS_COLOR
+                                            isMainNavsActive
+                                              ? ""
+                                              : DESKTOP_NAVS_COLOR
                                           }
                                         >
                                           {isMainNavsActive && (
                                             <LeftIndicator />
                                           )}
-                                          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                            <LucideIcon icon={nav.icon} />
-                                          </Icon>
+                                          <AppIcon icon={nav.icon} />
                                         </Btn>
                                       </MenuTrigger>
                                     </CContainer>
-                                  </NavTooltip>
+                                  </DesktopNavTooltip>
 
                                   <MenuContent>
                                     {nav.children?.map(
-                                      (menuItem, menuItemIdx) => (
+                                      (subGroup, menuItemIdx) => (
                                         <MenuItemGroup
                                           key={menuItemIdx}
                                           gap={1}
                                           title={
-                                            menuItem.labelKey
+                                            subGroup.labelKey
                                               ? pluckString(
                                                   l,
-                                                  menuItem.labelKey,
+                                                  subGroup.labelKey,
                                                 )
                                               : ""
                                           }
                                         >
-                                          {menuItem.navs.map((menu) => {
+                                          {subGroup.navs.map((menu) => {
                                             const isSubNavsActive =
                                               pathname === menu.path;
 
@@ -825,7 +736,7 @@ const DesktopLayout = (props: any) => {
                                                     color={
                                                       isSubNavsActive
                                                         ? ""
-                                                        : NAVS_COLOR
+                                                        : DESKTOP_NAVS_COLOR
                                                     }
                                                   >
                                                     {isSubNavsActive && (
@@ -862,7 +773,7 @@ const DesktopLayout = (props: any) => {
                                     rounded={themeConfig.radii.component}
                                     _open={{ bg: "transparent" }}
                                   >
-                                    <NavTooltip
+                                    <DesktopNavTooltip
                                       content={pluckString(l, nav.labelKey)}
                                     >
                                       <Btn
@@ -875,15 +786,16 @@ const DesktopLayout = (props: any) => {
                                         pos="relative"
                                         bg="transparent"
                                         color={
-                                          isMainNavsActive ? "" : NAVS_COLOR
+                                          isMainNavsActive
+                                            ? ""
+                                            : DESKTOP_NAVS_COLOR
                                         }
                                         _hover={{ bg: "bg.muted" }}
                                       >
                                         {isMainNavsActive && <LeftIndicator />}
                                         <HStack gap={4}>
-                                          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                                            <LucideIcon icon={nav.icon} />
-                                          </Icon>
+                                          <AppIcon icon={nav.icon} />
+
                                           <P lineClamp={1} textAlign="left">
                                             {nav.label
                                               ? nav.label
@@ -891,17 +803,17 @@ const DesktopLayout = (props: any) => {
                                           </P>
                                         </HStack>
                                       </Btn>
-                                    </NavTooltip>
+                                    </DesktopNavTooltip>
 
                                     <AccordionItemContent p={0}>
                                       <CContainer gap={1} pt={1}>
                                         {nav.children?.map(
-                                          (menuItem, menuItemIdx) => (
+                                          (subGroup, menuItemIdx) => (
                                             <CContainer
                                               key={menuItemIdx}
                                               gap={1}
                                             >
-                                              {menuItem.labelKey && (
+                                              {subGroup.labelKey && (
                                                 <ClampText
                                                   fontSize="sm"
                                                   fontWeight="semibold"
@@ -911,17 +823,17 @@ const DesktopLayout = (props: any) => {
                                                 >
                                                   {pluckString(
                                                     l,
-                                                    menuItem.labelKey,
+                                                    subGroup.labelKey,
                                                   )}
                                                 </ClampText>
                                               )}
 
-                                              {menuItem.navs.map(
+                                              {subGroup.navs.map(
                                                 (menu, idx) => {
                                                   const isFirstIdx = idx === 0;
                                                   const isLastIdx =
                                                     idx ===
-                                                    menuItem.navs.length - 1;
+                                                    subGroup.navs.length - 1;
                                                   const isSubNavsActive =
                                                     pathname === menu.path;
 
@@ -935,16 +847,18 @@ const DesktopLayout = (props: any) => {
                                                         content={
                                                           menu.label
                                                             ? menu.label
-                                                            : pluckString(
-                                                                l,
-                                                                menu.labelKey,
-                                                              )
+                                                            : menu.labelKey
+                                                              ? pluckString(
+                                                                  l,
+                                                                  menu.labelKey,
+                                                                )
+                                                              : "-"
                                                         }
                                                         positioning={{
                                                           placement: "right",
                                                           offset: {
                                                             mainAxis:
-                                                              DESKTOP_TOOLTIP_MAIN_AXIS +
+                                                              DESKTOP_NAVS_TOOLTIP_MAIN_AXIS +
                                                               2,
                                                           },
                                                         }}
@@ -1010,7 +924,7 @@ const DesktopLayout = (props: any) => {
                                                             color={
                                                               isSubNavsActive
                                                                 ? ""
-                                                                : NAVS_COLOR
+                                                                : DESKTOP_NAVS_COLOR
                                                             }
                                                           >
                                                             <P
@@ -1019,10 +933,12 @@ const DesktopLayout = (props: any) => {
                                                             >
                                                               {menu.label
                                                                 ? menu.label
-                                                                : pluckString(
-                                                                    l,
-                                                                    menu.labelKey,
-                                                                  )}
+                                                                : menu.labelKey
+                                                                  ? pluckString(
+                                                                      l,
+                                                                      menu.labelKey,
+                                                                    )
+                                                                  : "-"}
                                                             </P>
                                                           </Btn>
                                                         </HStack>
@@ -1049,11 +965,11 @@ const DesktopLayout = (props: any) => {
               })}
           </CContainer>
 
-          {/* <CContainer gap={1} mt={"auto"}>
-            {ADMIN_OTHER_PRIVATE_NAV_GROUPS[0].navs.map((nav) => {
+          <CContainer gap={1} mt={"auto"}>
+            {/* {OTHER_PRIVATE_NAV_GROUPS[0].navs.map((nav) => {
               return (
                 <NavLink key={nav.path} to={nav.path} w={"full"}>
-                  <NavTooltip content={pluckString(l, nav.labelKey)}>
+                  <DesktopNavTooltip content={pluckString(l, nav.labelKey)}>
                     <Btn
                       clicky={false}
                       gap={4}
@@ -1062,13 +978,11 @@ const DesktopLayout = (props: any) => {
                       colorPalette={NAVS_COLOR_PALETTE}
                       px={2}
                       pos={"relative"}
-                      color={pathname.includes(nav.path) ? "" : NAVS_COLOR}
+                      color={pathname.includes(nav.path) ? "" : DESKTOP_NAVS_COLOR}
                     >
                       {pathname.includes(nav.path) && <LeftIndicator />}
 
-                      <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                        <LucideIcon icon={nav.icon} />
-                      </Icon>
+                      <AppIcon icon={nav.icon} />
 
                       {navsExpanded && (
                         <P lineClamp={1} textAlign={"left"}>
@@ -1076,39 +990,107 @@ const DesktopLayout = (props: any) => {
                         </P>
                       )}
                     </Btn>
-                  </NavTooltip>
+                  </DesktopNavTooltip>
                 </NavLink>
               );
-            })}
-          </CContainer> */}
+            })} */}
 
-          <CContainer mt={"auto"}>
-            <Divider my={2} />
+            <NavLink key={"/master-data"} to={"/master-data"} w={"full"}>
+              <DesktopNavTooltip content={pluckString(l, "navs.master_data")}>
+                <Btn
+                  clicky={false}
+                  gap={4}
+                  justifyContent={"start"}
+                  variant={"ghost"}
+                  colorPalette={NAVS_COLOR_PALETTE}
+                  px={2}
+                  pos={"relative"}
+                  color={
+                    pathname.includes("/master-data") ? "" : DESKTOP_NAVS_COLOR
+                  }
+                >
+                  {pathname.includes("/master-data") && <LeftIndicator />}
 
-            <CContainer mt={1}>
-              <DesktoMiniMyProfile navsExpanded={navsExpanded} />
-            </CContainer>
+                  <AppIcon icon={ServerIcon} />
+
+                  {navsExpanded && (
+                    <P lineClamp={1} textAlign={"left"}>
+                      {pluckString(l, "navs.master_data")}
+                    </P>
+                  )}
+                </Btn>
+              </DesktopNavTooltip>
+            </NavLink>
           </CContainer>
+        </CContainer>
+
+        <CContainer px={3}>
+          <Divider />
+        </CContainer>
+
+        <CContainer p={3}>
+          <MiniMyProfilePopoverTrigger w={"full"}>
+            <HStack
+              gap={4}
+              w={navsExpanded ? "full" : "36px"}
+              px={"6px"}
+              py={2}
+              rounded={themeConfig.radii.component}
+              cursor={"pointer"}
+              _hover={{
+                bg: "gray.subtle",
+              }}
+              justify={navsExpanded ? "" : "center"}
+              transition={"200ms"}
+              pos={"relative"}
+            >
+              <Avatar
+                src={imgUrl(user?.avatar?.filePath)}
+                name={user?.name}
+                size={navsExpanded ? "md" : "2xs"}
+                mr={"auto"}
+              />
+
+              {navsExpanded && (
+                <>
+                  <CContainer>
+                    <P lineClamp={1} fontWeight={"semibold"}>
+                      {user?.name || user?.email || "Signed out"}
+                    </P>
+                    <P lineClamp={1} color={"fg.subtle"}>
+                      {user?.name ? user?.email || user?.username : "-"}
+                    </P>
+                  </CContainer>
+
+                  <AppIcon
+                    icon={ChevronsUpDownIcon}
+                    boxSize={BASE_ICON_BOX_SIZE}
+                    color={"fg.subtle"}
+                    mr={1}
+                  />
+                </>
+              )}
+            </HStack>
+          </MiniMyProfilePopoverTrigger>
         </CContainer>
       </CContainer>
 
       {/* Content */}
       <CContainer
-        // p={3}
-        pl={0}
-        bg={DESKTOP_BG_CONTENT_CONTAINER}
+        bg={DESKTOP_CONTENT_CONTAINER_BG}
         overflowY={"auto"}
         color={"ibody"}
       >
         <CContainer
           flex={1}
           bg={"body"}
-          // rounded={themeConfig.radii.container}
-          borderLeft={"1px solid"}
+          // borderLeft={"1px solid"}
           borderColor={"border.muted"}
           overflow={"auto"}
         >
-          <TopBar />
+          <TopBar
+          // borderBottom={"1px solid"} borderColor={"border.muted"}
+          />
 
           {children}
         </CContainer>
@@ -1119,9 +1101,7 @@ const DesktopLayout = (props: any) => {
 
 export default function Layout(props: Props__Layout) {
   // Toggle auth guard
-  // const ENABLE_AUTH_GUARD = process.env.NODE_ENV !== "development";
-  // TODO remove on real dev and enable above
-  const ENABLE_AUTH_GUARD = false;
+  const ENABLE_AUTH_GUARD = process.env.NEXT_PUBLIC_ENV !== "development";
 
   // Props
   const { ...restProps } = props;

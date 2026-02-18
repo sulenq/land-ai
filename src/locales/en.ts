@@ -350,6 +350,7 @@ const translations = {
     "new_document_analysis": "New Document Analysis",
     "your_da_analysis": "Document Analysis",
     "settings": "Settings",
+    "master_data": "Master Data",
     "profile": "Profile"
   },
   "new_chat": "New chat",
@@ -431,7 +432,7 @@ const translations = {
   "settings": "Settings",
   "settings_adaptive_dark_mode": {
     "title": "Adaptive dark mode",
-    "description": "UI dark mode active at night 18:00 - 06:00"
+    "description": "UI dark mode active at night 18:00 - 06:00 (local time)"
   },
   "settings_camera": {
     "title": "Camera access",

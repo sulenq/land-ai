@@ -10,7 +10,8 @@ import { SelectInput } from "@/components/ui/select-input";
 import { StringInput } from "@/components/ui/string-input";
 import { Switch } from "@/components/ui/switch";
 import { TimePickerInput } from "@/components/ui/time-picker-input";
-import { LucideIcon } from "@/components/widget/Icon";
+import { Tooltip } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { ItemContainer } from "@/components/widget/ItemContainer";
 import { ItemHeaderContainer } from "@/components/widget/ItemHeaderContainer";
@@ -19,21 +20,14 @@ import { LocalSettingsHelperText } from "@/components/widget/LocalSettingsHelper
 import { ToggleSettingContainer } from "@/components/widget/SettingsShell";
 import { COLOR_PALETTES } from "@/constants/colors";
 import { Interface__SelectOption } from "@/constants/interfaces";
+import { ROUNDED_PRESETS } from "@/constants/presets";
 import { OPTIONS_RELIGION } from "@/constants/selectOptions";
-import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useADM from "@/context/useADM";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import { useContainerDimension } from "@/hooks/useContainerDimension";
-import { getGridColumns } from "@/utils/style";
-import {
-  Box,
-  Center,
-  Circle,
-  HStack,
-  Icon,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { formatTime } from "@/utils/formatter";
+import { interpolateString } from "@/utils/string";
+import { Box, Center, Circle, HStack, SimpleGrid } from "@chakra-ui/react";
 import {
   EclipseIcon,
   LayoutPanelLeftIcon,
@@ -118,7 +112,12 @@ const ADMSetting = () => {
     <ToggleSettingContainer>
       <CContainer gap={1}>
         <P>{l.settings_adaptive_dark_mode.title}</P>
-        <P color={"fg.subtle"}>{l.settings_adaptive_dark_mode.description}</P>
+
+        <P color={"fg.subtle"}>
+          {interpolateString(l.settings_adaptive_dark_mode.description, {
+            timeRange: `${formatTime("18:00")} - ${formatTime("06:00")}`,
+          })}
+        </P>
       </CContainer>
 
       <Switch
@@ -135,6 +134,7 @@ const ADMSetting = () => {
 const DarkMode = () => {
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
   const { colorMode, setColorMode } = useColorMode();
 
   // States, Refs
@@ -165,31 +165,31 @@ const DarkMode = () => {
 
   return (
     <ItemContainer borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={EclipseIcon} />
-          </Icon>
+          <AppIcon icon={EclipseIcon} />
 
           <ItemHeaderTitle>{l.dark_mode}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer gap={4} py={3}>
-        <ManualDarkModeSetting />
-        <ADMSetting />
+      <CContainer px={4}>
+        <CContainer
+          gap={4}
+          p={3}
+          px={4}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <ManualDarkModeSetting />
+          <ADMSetting />
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
 };
 const AccentColor = () => {
-  const GRID_COLS_BREAKPOINTS = {
-    0: 1,
-    350: 2,
-    580: 5,
-    750: 10,
-  };
-
   // Contexts
   const { l } = useLang();
   const { themeConfig, setThemeConfig } = useThemeConfig();
@@ -197,135 +197,88 @@ const AccentColor = () => {
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hooks
-  const dimensions = useContainerDimension(containerRef);
-
-  // States
-  const cols = getGridColumns(dimensions.width, GRID_COLS_BREAKPOINTS);
-
   return (
     <ItemContainer ref={containerRef} borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={SwatchBookIcon} />
-          </Icon>
+          <AppIcon icon={SwatchBookIcon} />
+
           <ItemHeaderTitle>{l.accent_color}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer gap={4} p={4}>
-        <SimpleGrid columns={cols} gap={2}>
-          {COLOR_PALETTES.map((color, idx) => {
-            const isActive = color.palette === themeConfig.colorPalette;
-            const isColorPaletteGray = color.palette === "gray";
+      <CContainer px={4}>
+        <CContainer
+          gap={4}
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <SimpleGrid minChildWidth={"56px"} gap={2}>
+            {COLOR_PALETTES.map((color, index) => {
+              const isActive = color.palette === themeConfig.colorPalette;
+              const isColorPaletteGray = color.palette === "gray";
 
-            return (
-              <Center
-                key={idx}
-                w={"full"}
-                aspectRatio={1}
-                bg={isColorPaletteGray ? "ibody" : `${color.palette}.500`}
-                rounded={themeConfig.radii.component}
-                cursor={"pointer"}
-                overflow={"clip"}
-                onClick={() => {
-                  setThemeConfig({
-                    colorPalette: color.palette,
-                    primaryColor: isColorPaletteGray
-                      ? "ibody"
-                      : `${color.palette}.500`,
-                    primaryColorHex: color.primaryHex,
-                  });
-                }}
-                pos={"relative"}
-              >
-                {/* <P
-                  fontSize={"sm"}
-                  color={`${color.palette}.contrast`}
-                  textAlign={"center"}
+              return (
+                <Tooltip
+                  key={`${color.palette}-${index}`}
+                  content={color.label}
                 >
-                  {color.palette}
-                </P> */}
+                  <Center
+                    w={"full"}
+                    aspectRatio={1}
+                    p={2}
+                    bg={isColorPaletteGray ? "ibody" : `${color.palette}.500`}
+                    rounded={themeConfig.radii.component}
+                    cursor={"pointer"}
+                    overflow={"clip"}
+                    onClick={() => {
+                      setThemeConfig({
+                        colorPalette: color.palette,
+                        primaryColor: isColorPaletteGray
+                          ? "ibody"
+                          : `${color.palette}.500`,
+                        primaryColorHex: color.primaryHex,
+                      });
+                    }}
+                    pos={"relative"}
+                  >
+                    {/* <P
+                    fontSize={"sm"}
+                    fontWeight={"medium"}
+                    color={`${color.palette}.contrast`}
+                    textAlign={"center"}
+                    lineClamp={1}
+                  >
+                    {color.label}
+                  </P> */}
 
-                {isActive && (
-                  <DotIndicator
-                    pos={"absolute"}
-                    color={isColorPaletteGray ? "body" : "light"}
-                    top={2}
-                    right={2}
-                  />
-                )}
-              </Center>
-            );
-          })}
-        </SimpleGrid>
+                    {isActive && (
+                      <DotIndicator
+                        pos={"absolute"}
+                        color={isColorPaletteGray ? "body" : "light"}
+                        top={2}
+                        right={2}
+                      />
+                    )}
+                  </Center>
+                </Tooltip>
+              );
+            })}
+          </SimpleGrid>
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
 };
 const Rounded = () => {
-  const GRID_COLS_BREAKPOINTS = {
-    0: 1,
-    350: 2,
-    580: 4,
-    1280: 8,
-  };
-
   // Contexts
   const { l } = useLang();
   const { themeConfig, setThemeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Hooks
-  const dimensions = useContainerDimension(containerRef);
-
-  // States
-  const cols = getGridColumns(dimensions.width, GRID_COLS_BREAKPOINTS);
-  const roundedList = [
-    {
-      label: "None",
-      component: "0px",
-      container: "0px",
-    },
-    {
-      label: "XS",
-      component: "2px",
-      container: "4px",
-    },
-    {
-      label: "Sm",
-      component: "4px",
-      container: "6px",
-    },
-    {
-      label: "Md",
-      component: "6px",
-      container: "8px",
-    },
-    {
-      label: "Lg",
-      component: "8px",
-      container: "12px",
-    },
-    {
-      label: "XL",
-      component: "12px",
-      container: "16px",
-    },
-    {
-      label: "2XL",
-      component: "16px",
-      container: "20px",
-    },
-    {
-      label: "3XL",
-      component: "18px",
-      container: "22px",
-    },
-  ];
 
   // Component
   const RoundedExampel = (props: any) => {
@@ -403,27 +356,34 @@ const Rounded = () => {
 
   return (
     <ItemContainer ref={containerRef} borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={SquareRoundCornerIcon} />
-          </Icon>
+          <AppIcon icon={SquareRoundCornerIcon} />
+
           <ItemHeaderTitle>{l.rounded}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer gap={4} p={4}>
-        <SimpleGrid columns={cols} gap={4}>
-          {roundedList.map((item) => {
-            const isActive = item.component === themeConfig.radii.component;
+      <CContainer px={4}>
+        <CContainer
+          gap={4}
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <SimpleGrid minChildWidth={"140px"} gap={4}>
+            {ROUNDED_PRESETS.map((item, index) => {
+              const isActive = item.component === themeConfig.radii.component;
 
-            return (
-              <CContainer key={item.label}>
-                <RoundedExampel preset={item} isActive={isActive} />
-              </CContainer>
-            );
-          })}
-        </SimpleGrid>
+              return (
+                <CContainer key={`${item.label}-${index}`}>
+                  <RoundedExampel preset={item} isActive={isActive} />
+                </CContainer>
+              );
+            })}
+          </SimpleGrid>
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
@@ -441,71 +401,79 @@ const ExampleUI = () => {
 
   return (
     <ItemContainer borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={LayoutPanelLeftIcon} />
-          </Icon>
+          <AppIcon icon={LayoutPanelLeftIcon} />
+
           <ItemHeaderTitle>{l.example_UI}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <HStack wrap={"wrap"} gapY={4} p={4}>
-        <Btn flex={"1 1 100px"} colorPalette={themeConfig.colorPalette}>
-          Label
-        </Btn>
-
-        <Btn
-          flex={"1 1 100px"}
-          colorPalette={themeConfig.colorPalette}
-          variant={"outline"}
+      <CContainer px={4}>
+        <HStack
+          wrap={"wrap"}
+          gapY={4}
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
         >
-          Label
-        </Btn>
+          <Btn flex={"1 1 100px"} colorPalette={themeConfig.colorPalette}>
+            Label
+          </Btn>
 
-        <Btn
-          flex={"1 1 100px"}
-          colorPalette={themeConfig.colorPalette}
-          variant={"subtle"}
-        >
-          Label
-        </Btn>
+          <Btn
+            flex={"1 1 100px"}
+            colorPalette={themeConfig.colorPalette}
+            variant={"outline"}
+          >
+            Label
+          </Btn>
 
-        <StringInput flex={"1 1 200px"} placeholder="example@email.com" />
+          <Btn
+            flex={"1 1 100px"}
+            colorPalette={themeConfig.colorPalette}
+            variant={"subtle"}
+          >
+            Label
+          </Btn>
 
-        <SelectInput
-          id="example_select_religion"
-          flex={"1 1 200px"}
-          name="select1"
-          selectOptions={OPTIONS_RELIGION}
-          onChange={(inputValue) => {
-            setSelect(inputValue);
-          }}
-          inputValue={select}
-          multiple
-        />
+          <StringInput flex={"1 1 200px"} placeholder="example@email.com" />
 
-        <DatePickerInput flex={"1 1 200px"} multiple />
+          <SelectInput
+            id="example_select_religion"
+            flex={"1 1 200px"}
+            name="select1"
+            selectOptions={OPTIONS_RELIGION}
+            onChange={(inputValue) => {
+              setSelect(inputValue);
+            }}
+            inputValue={select}
+            multiple
+          />
 
-        <TimePickerInput flex={"1 1 200px"} />
+          <DatePickerInput flex={"1 1 200px"} multiple />
 
-        <Checkbox
-          checked={checked}
-          onChange={(e: any) => setChecked(!e.target.checked)}
-          colorPalette={themeConfig.colorPalette}
-          variant={"solid"}
-          size={"lg"}
-        ></Checkbox>
+          <TimePickerInput flex={"1 1 200px"} />
 
-        <Switch colorPalette={themeConfig.colorPalette} />
-      </HStack>
+          <Checkbox
+            checked={checked}
+            onChange={(e: any) => setChecked(!e.target.checked)}
+            colorPalette={themeConfig.colorPalette}
+            variant={"solid"}
+            size={"lg"}
+          ></Checkbox>
+
+          <Switch colorPalette={themeConfig.colorPalette} />
+        </HStack>
+      </CContainer>
     </ItemContainer>
   );
 };
 
 export default function Page() {
   return (
-    <CContainer flex={1} gap={3} bg={"bgContent"}>
+    <CContainer flex={1} gap={3}>
       <DarkMode />
 
       <AccentColor />

@@ -111,19 +111,17 @@ export const NavBreadcrumb = (props: any) => {
   }, [pathname]);
 
   return (
-    <SimplePopover
-      content={activeNavs
-        .map((nav) => {
-          return nav.label || pluckString(l, nav.labelKey);
-        })
-        .join(" / ")}
-      maxW={"400px"}
-    >
-      <HStack gap={1} ml={"-4px"} h={"36px"} cursor={"pointer"} {...restProps}>
-        {backPath && (
-          <BackButton iconButton clicky={false} backPath={backPath} />
-        )}
+    <HStack gap={1} ml={"-4px"} h={"36px"} cursor={"pointer"} {...restProps}>
+      {backPath && <BackButton iconButton clicky={false} backPath={backPath} />}
 
+      <SimplePopover
+        content={activeNavs
+          .map((nav) => {
+            return nav.label || pluckString(l, nav.labelKey);
+          })
+          .join(" / ")}
+        maxW={"400px"}
+      >
         <HStack color={"fg.subtle"} gap={0}>
           <Icon boxSize={5} opacity={0.6} rotate={"-12deg"}>
             <IconSlash stroke={1.5} />
@@ -160,8 +158,8 @@ export const NavBreadcrumb = (props: any) => {
             );
           })}
         </HStack>
-      </HStack>
-    </SimplePopover>
+      </SimplePopover>
+    </HStack>
   );
 };
 

@@ -5,8 +5,9 @@ import { CContainer } from "@/components/ui/c-container";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { toaster } from "@/components/ui/toaster";
+import { Tooltip } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
-import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { ItemContainer } from "@/components/widget/ItemContainer";
 import { ItemHeaderContainer } from "@/components/widget/ItemHeaderContainer";
@@ -16,10 +17,6 @@ import { LocalSettingsHelperText } from "@/components/widget/LocalSettingsHelper
 import { Pagination } from "@/components/widget/Pagination";
 import { DATE_FORMATS } from "@/constants/dateFormats";
 import { LANGUAGES } from "@/constants/languages";
-import {
-  BASE_ICON_BOX_SIZE,
-  FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
-} from "@/constants/styles";
 import { TIME_FORMATS } from "@/constants/timeFormats";
 import { TIME_ZONES } from "@/constants/timezone";
 import {
@@ -33,23 +30,22 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useTimeFormat from "@/context/useTimeFormat";
 import useTimezone from "@/context/useTimezone";
-import useUOM from "@/context/useUOM";
-import { useContainerDimension } from "@/hooks/useContainerDimension";
+import useUOMFormat from "@/context/useUOMFormat";
 import { isEmptyArray } from "@/utils/array";
 import { formatDate, formatTime } from "@/utils/formatter";
 import { capitalizeWords, pluckString } from "@/utils/string";
 import { getLocalTimezone, makeTime } from "@/utils/time";
-import { chakra, HStack, Icon, SimpleGrid, Text } from "@chakra-ui/react";
-import { IconRulerMeasure, IconSparkles } from "@tabler/icons-react";
+import { chakra, HStack, SimpleGrid, Text } from "@chakra-ui/react";
 import {
   CalendarIcon,
   GlobeIcon,
+  HourglassIcon,
   LanguagesIcon,
   RulerDimensionLineIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const DESKTOP_NAVS_COLOR = "fg.muted";
+const NAVS_COLOR = "fg.muted";
 
 const Language = () => {
   // Contexts
@@ -58,69 +54,76 @@ const Language = () => {
 
   return (
     <ItemContainer borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={LanguagesIcon} />
-          </Icon>
+          <AppIcon icon={LanguagesIcon} />
           <ItemHeaderTitle>{l.language}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer gap={4} py={2}>
-        <HStack wrap={"wrap"} px={2}>
-          {LANGUAGES.map((item, i) => {
-            const isActive = lang === item.key;
+      <CContainer px={4}>
+        <CContainer
+          gap={4}
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <HStack wrap={"wrap"}>
+            {LANGUAGES.map((item, i) => {
+              const isActive = lang === item.key;
 
-            return (
-              <Btn
-                key={i}
-                clicky={false}
-                flex={"1 1 180px"}
-                px={[3, null, 3]}
-                rounded={themeConfig.radii.component}
-                variant={"ghost"}
-                justifyContent={"start"}
-                color={isActive ? "" : DESKTOP_NAVS_COLOR}
-                onClick={() => {
-                  setLang(item.key as Type__LanguageOptions);
-                }}
-                pos={"relative"}
-              >
-                <Text fontWeight={"medium"} truncate>
-                  {item.label}{" "}
-                  <chakra.span color={"fg.subtle"} mx={2} fontWeight={"normal"}>
-                    {item.code}
-                  </chakra.span>
-                </Text>
+              return (
+                <Btn
+                  key={i}
+                  clicky={false}
+                  flex={"1 1 180px"}
+                  px={3}
+                  rounded={themeConfig.radii.component}
+                  variant={"ghost"}
+                  justifyContent={"start"}
+                  color={isActive ? "" : NAVS_COLOR}
+                  onClick={() => {
+                    setLang(item.key as Type__LanguageOptions);
+                  }}
+                  pos={"relative"}
+                >
+                  <Text fontWeight={"medium"} truncate>
+                    {item.label}{" "}
+                    <chakra.span
+                      color={"fg.subtle"}
+                      mx={2}
+                      fontWeight={"normal"}
+                    >
+                      {item.code}
+                    </chakra.span>
+                  </Text>
 
-                {isActive && <DotIndicator />}
-              </Btn>
-            );
-          })}
-        </HStack>
+                  {isActive && <DotIndicator />}
+                </Btn>
+              );
+            })}
+          </HStack>
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
 };
 const Timezone = () => {
-  const LIMIT_OPTIONS = [14, 28, 56, 100];
+  const LIMIT_OPTIONS = [10, 20, 50, 100];
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
   const { timeZone, setTimeZone } = useTimezone();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hooks
-  const dimensions = useContainerDimension(containerRef);
-
   // States
-  const isSmContainer = dimensions?.width < 600;
   const localTz = getLocalTimezone();
   const timezones = TIME_ZONES;
-  const [limit, setLimit] = useState<number>([14, 28, 56][0]);
+  const [limit, setLimit] = useState<number>(LIMIT_OPTIONS[0]);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const resolvedTimezones = useMemo(() => {
@@ -135,37 +138,21 @@ const Timezone = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [search]);
+  }, [search, limit]);
 
   return (
     <ItemContainer ref={containerRef} borderless roundedless>
-      <ItemHeaderContainer withUtils>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={GlobeIcon} />
-          </Icon>
+          <AppIcon icon={GlobeIcon} />
 
           <ItemHeaderTitle>{capitalizeWords(l.timezone)}</ItemHeaderTitle>
         </HStack>
 
-        <HStack mr={2}>
-          {!isSmContainer && (
-            <SearchInput
-              onChange={(inputValue) => {
-                setSearch(inputValue || "");
-              }}
-              inputValue={search}
-              inputProps={{
-                size: "xs",
-              }}
-              queryKey={"q_timezone_settings"}
-            />
-          )}
-
+        <HStack>
           <Btn
             size={"xs"}
-            variant={"outline"}
-            pl={2}
+            variant={"ghost"}
             onClick={() => {
               setTimeZone(localTz);
               toaster.info({
@@ -174,17 +161,18 @@ const Timezone = () => {
               });
             }}
           >
-            <Icon>
-              <IconSparkles />
-            </Icon>
             Auto
           </Btn>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer>
-        {isSmContainer && (
-          <CContainer p={3} pb={0}>
+      <CContainer px={4}>
+        <CContainer
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <CContainer p={3}>
             <SearchInput
               onChange={(inputValue) => {
                 setSearch(inputValue || "");
@@ -193,81 +181,80 @@ const Timezone = () => {
               queryKey={"q_timezone_settings"}
             />
           </CContainer>
-        )}
 
-        <CContainer
-          className={"scrollY"}
-          minH={"316px"}
-          p={2}
-          pr={`calc(8px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
-        >
-          {isEmptyArray(resolvedTimezones) && <FeedbackNotFound />}
+          <CContainer px={3}>
+            {isEmptyArray(resolvedTimezones) && <FeedbackNotFound />}
 
-          {!isEmptyArray(resolvedTimezones) && (
-            <SimpleGrid columns={[1, null, 2]} gap={2}>
-              {resolvedTimezones
-                .slice((page - 1) * limit, page * limit)
-                .map((tz, idx) => {
-                  const isActive = timeZone.key === tz.key;
+            {!isEmptyArray(resolvedTimezones) && (
+              <SimpleGrid columns={[1, null, 2]} gap={2}>
+                {resolvedTimezones
+                  .slice((page - 1) * limit, page * limit)
+                  .map((tz, idx) => {
+                    const isActive = timeZone.key === tz.key;
 
-                  return (
-                    <Btn
-                      key={`${tz.key}-${idx}`}
-                      clicky={false}
-                      variant={"ghost"}
-                      justifyContent={"start"}
-                      px={2}
-                      color={isActive ? "" : DESKTOP_NAVS_COLOR}
-                      onClick={() => {
-                        setTimeZone(tz);
-                      }}
-                      pos={"relative"}
-                    >
-                      <P textAlign={"left"} lineClamp={1}>
-                        {tz.key}
-                      </P>
+                    return (
+                      <Tooltip
+                        key={`${tz.key}-${idx}`}
+                        content={`${tz.key} ${tz.localAbbr} (${tz.formattedOffset})`}
+                      >
+                        <Btn
+                          clicky={false}
+                          variant={"ghost"}
+                          justifyContent={"start"}
+                          px={3}
+                          color={isActive ? "" : NAVS_COLOR}
+                          onClick={() => {
+                            setTimeZone(tz);
+                          }}
+                          pos={"relative"}
+                        >
+                          <P textAlign={"left"} lineClamp={1}>
+                            {tz.key}
+                          </P>
 
-                      <P
-                        textAlign={"left"}
-                        color={"fg.subtle"}
-                      >{`${tz.formattedOffset} (${tz.localAbbr})`}</P>
+                          <P
+                            textAlign={"left"}
+                            color={"fg.subtle"}
+                          >{`${tz.localAbbr} (${tz.formattedOffset})`}</P>
 
-                      {isActive && <DotIndicator />}
-                    </Btn>
-                  );
-                })}
-            </SimpleGrid>
-          )}
+                          {isActive && <DotIndicator />}
+                        </Btn>
+                      </Tooltip>
+                    );
+                  })}
+              </SimpleGrid>
+            )}
+          </CContainer>
+
+          <HStack
+            p={3}
+            // borderTop={"1px solid"}
+            borderColor={"border.muted"}
+            justify={"space-between"}
+            wrap={"wrap"}
+          >
+            <CContainer w={"fit"} mb={[1, null, 0]}>
+              <Limitation
+                limit={limit}
+                setLimit={setLimit}
+                limitOptions={LIMIT_OPTIONS}
+              />
+            </CContainer>
+
+            <CContainer w={"fit"}>
+              <Pagination
+                page={page}
+                setPage={setPage}
+                totalPage={
+                  Math.floor(resolvedTimezones.length / limit) === 0
+                    ? undefined
+                    : Math.floor(resolvedTimezones.length / limit)
+                }
+              />
+            </CContainer>
+          </HStack>
         </CContainer>
       </CContainer>
-
-      <HStack
-        p={2}
-        borderTop={"1px solid"}
-        borderColor={"border.muted"}
-        justify={"space-between"}
-        wrap={"wrap"}
-      >
-        <CContainer w={"fit"} mb={[1, null, 0]}>
-          <Limitation
-            limit={limit}
-            setLimit={setLimit}
-            limitOptions={LIMIT_OPTIONS}
-          />
-        </CContainer>
-
-        <CContainer w={"fit"}>
-          <Pagination
-            page={page}
-            setPage={setPage}
-            totalPage={
-              Math.floor(resolvedTimezones.length / limit) === 0
-                ? undefined
-                : Math.floor(resolvedTimezones.length / limit)
-            }
-          />
-        </CContainer>
-      </HStack>
     </ItemContainer>
   );
 };
@@ -279,58 +266,63 @@ const DateFormat = () => {
 
   return (
     <ItemContainer borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={CalendarIcon} />
-          </Icon>
+          <AppIcon icon={CalendarIcon} />
           <ItemHeaderTitle>{l.date_format}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer gap={4} py={2}>
-        <SimpleGrid px={2} columns={[1, 2, 3]} gap={1}>
-          {DATE_FORMATS.map((item) => {
-            const isActive = item.key === dateFormat;
+      <CContainer px={4}>
+        <CContainer
+          gap={4}
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <SimpleGrid columns={[1, 2, 3]} gap={2}>
+            {DATE_FORMATS.map((item) => {
+              const isActive = item.key === dateFormat;
 
-            return (
-              <CContainer
-                key={item.key}
-                px={[3, null, 3]}
-                py={3}
-                rounded={themeConfig.radii.component}
-                color={isActive ? "" : DESKTOP_NAVS_COLOR}
-                onClick={() => {
-                  setDateFormat(item.key as Type__DateFormat);
-                }}
-                cursor={"pointer"}
-                _hover={{ bg: "gray.subtle" }}
-                _active={{ bg: "gray.subtle" }}
-                transition={"200ms"}
-              >
-                <HStack>
-                  <P fontWeight={"medium"} truncate>
-                    {item.label}
+              return (
+                <CContainer
+                  key={item.key}
+                  p={3}
+                  rounded={themeConfig.radii.component}
+                  color={isActive ? "" : NAVS_COLOR}
+                  onClick={() => {
+                    setDateFormat(item.key as Type__DateFormat);
+                  }}
+                  cursor={"pointer"}
+                  _hover={{ bg: "gray.subtle" }}
+                  _active={{ bg: "gray.subtle" }}
+                  transition={"200ms"}
+                >
+                  <HStack>
+                    <P fontWeight={"medium"} truncate>
+                      {item.label}
+                    </P>
+
+                    {isActive && <DotIndicator />}
+                  </HStack>
+
+                  <P color={"fg.muted"} mb={2}>
+                    {item.description}
                   </P>
 
-                  {isActive && <DotIndicator />}
-                </HStack>
-
-                <P color={"fg.muted"} mb={2}>
-                  {item.description}
-                </P>
-
-                {/* Example */}
-                <P color={"fg.subtle"}>
-                  {formatDate(new Date().toISOString(), {
-                    variant: "weekdayDayShortMonthYear",
-                    dateFormat: item.key as Type__DateFormat,
-                  })}
-                </P>
-              </CContainer>
-            );
-          })}
-        </SimpleGrid>
+                  {/* Example */}
+                  <P color={"fg.subtle"}>
+                    {formatDate(new Date().toISOString(), {
+                      variant: "weekdayDayShortMonthYear",
+                      dateFormat: item.key as Type__DateFormat,
+                    })}
+                  </P>
+                </CContainer>
+              );
+            })}
+          </SimpleGrid>
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
@@ -343,53 +335,58 @@ const TimeFormat = () => {
 
   return (
     <ItemContainer borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={RulerDimensionLineIcon} />
-          </Icon>
+          <AppIcon icon={HourglassIcon} />
 
           <ItemHeaderTitle>{l.time_format}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer gap={4} py={2}>
-        <SimpleGrid px={2} columns={[1, 2]} gap={1}>
-          {TIME_FORMATS.map((item) => {
-            const isActive = item.key === timeFormat;
+      <CContainer px={4}>
+        <CContainer
+          gap={4}
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <SimpleGrid columns={[1, 2]} gap={2}>
+            {TIME_FORMATS.map((item) => {
+              const isActive = item.key === timeFormat;
 
-            return (
-              <CContainer
-                key={item.key}
-                px={[3, null, 3]}
-                py={3}
-                rounded={themeConfig.radii.component}
-                color={isActive ? "" : DESKTOP_NAVS_COLOR}
-                onClick={() => {
-                  setTimeFormat(item.key);
-                }}
-                cursor={"pointer"}
-                _hover={{ bg: "gray.subtle" }}
-                _active={{ bg: "gray.subtle" }}
-                transition={"200ms"}
-              >
-                <HStack>
-                  <P fontWeight={"medium"} truncate>
-                    {item.label}
+              return (
+                <CContainer
+                  key={item.key}
+                  p={3}
+                  rounded={themeConfig.radii.component}
+                  color={isActive ? "" : NAVS_COLOR}
+                  onClick={() => {
+                    setTimeFormat(item.key);
+                  }}
+                  cursor={"pointer"}
+                  _hover={{ bg: "gray.subtle" }}
+                  _active={{ bg: "gray.subtle" }}
+                  transition={"200ms"}
+                >
+                  <HStack>
+                    <P fontWeight={"medium"} truncate>
+                      {item.label}
+                    </P>
+
+                    {isActive && <DotIndicator />}
+                  </HStack>
+
+                  <P>
+                    {formatTime(makeTime(new Date().toISOString()), {
+                      timeFormat: item.key as Type__TimeFormat,
+                    })}
                   </P>
-
-                  {isActive && <DotIndicator />}
-                </HStack>
-
-                <P>
-                  {formatTime(makeTime(new Date().toISOString()), {
-                    timeFormat: item.key as Type__TimeFormat,
-                  })}
-                </P>
-              </CContainer>
-            );
-          })}
-        </SimpleGrid>
+                </CContainer>
+              );
+            })}
+          </SimpleGrid>
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
@@ -398,64 +395,70 @@ const UOMFormat = () => {
   // Contexts
   const { themeConfig } = useThemeConfig();
   const { l } = useLang();
-  const { UOM, setUOM } = useUOM();
+  const { UOM, setUOM } = useUOMFormat();
 
   return (
     <ItemContainer borderless roundedless>
-      <ItemHeaderContainer>
+      <ItemHeaderContainer borderless>
         <HStack>
-          <Icon boxSize={5}>
-            <IconRulerMeasure stroke={1.5} />
-          </Icon>
+          <AppIcon icon={RulerDimensionLineIcon} />
           <ItemHeaderTitle>{l.UOM_format}</ItemHeaderTitle>
         </HStack>
       </ItemHeaderContainer>
 
-      <CContainer gap={4} py={2}>
-        <SimpleGrid px={2} columns={[1, 2, 3]} gap={1}>
-          {UOM_FORMATS.map((item) => {
-            const isActive = item.key === UOM;
+      <CContainer px={4}>
+        <CContainer
+          gap={4}
+          p={3}
+          rounded={themeConfig.radii.container}
+          border={"1px solid"}
+          borderColor={"border.muted"}
+        >
+          <SimpleGrid columns={[1, 2, 3]} gap={2}>
+            {UOM_FORMATS.map((item) => {
+              const isActive = item.key === UOM;
 
-            return (
-              <CContainer
-                key={item.key}
-                px={[3, null, 3]}
-                py={3}
-                rounded={themeConfig.radii.component}
-                color={isActive ? "" : DESKTOP_NAVS_COLOR}
-                onClick={() => {
-                  setUOM(item.key);
-                }}
-                cursor={"pointer"}
-                _hover={{ bg: "gray.subtle" }}
-                _active={{ bg: "gray.subtle" }}
-                transition={"200ms"}
-              >
-                <HStack>
-                  <P fontWeight={"medium"} truncate>
-                    {item.label}
+              return (
+                <CContainer
+                  key={item.key}
+                  p={3}
+                  rounded={themeConfig.radii.component}
+                  color={isActive ? "" : NAVS_COLOR}
+                  onClick={() => {
+                    setUOM(item.key);
+                  }}
+                  cursor={"pointer"}
+                  _hover={{ bg: "gray.subtle" }}
+                  _active={{ bg: "gray.subtle" }}
+                  transition={"200ms"}
+                >
+                  <HStack>
+                    <P fontWeight={"medium"} truncate>
+                      {item.label}
+                    </P>
+
+                    {isActive && <DotIndicator />}
+                  </HStack>
+
+                  <P color={"fg.muted"} mb={2}>
+                    {pluckString(l, item.descriptionKey)}
                   </P>
 
-                  {isActive && <DotIndicator />}
-                </HStack>
-
-                <P color={"fg.muted"} mb={2}>
-                  {pluckString(l, item.descriptionKey)}
-                </P>
-
-                {/* Example */}
-                <HStack wrap={"wrap"} mt={"auto"}>
-                  <P color={"fg.subtle"}>{item.units.mass}</P>
-                  <P color={"fg.subtle"}>{item.units.length}</P>
-                  <P color={"fg.subtle"}>{item.units.height}</P>
-                  <P color={"fg.subtle"}>{item.units.volume}</P>
-                  <P color={"fg.subtle"}>{item.units.area}</P>
-                  <P color={"fg.subtle"}>{item.units.speed}</P>
-                </HStack>
-              </CContainer>
-            );
-          })}
-        </SimpleGrid>
+                  {/* Example */}
+                  <HStack wrap={"wrap"} mt={"auto"}>
+                    {Object.keys(item.units).map((key) => {
+                      return (
+                        <P key={key} color={"fg.subtle"}>
+                          {item.units[key as keyof typeof item.units]}
+                        </P>
+                      );
+                    })}
+                  </HStack>
+                </CContainer>
+              );
+            })}
+          </SimpleGrid>
+        </CContainer>
       </CContainer>
     </ItemContainer>
   );
@@ -463,7 +466,7 @@ const UOMFormat = () => {
 
 export default function Page() {
   return (
-    <CContainer flex={1} gap={3} bg={"bgContent"}>
+    <CContainer flex={1} gap={3}>
       <Language />
 
       <Timezone />

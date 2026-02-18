@@ -5,6 +5,7 @@ import { CContainer } from "@/components/ui/c-container";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { toaster } from "@/components/ui/toaster";
+import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { DotIndicator } from "@/components/widget/Indicator";
@@ -29,7 +30,7 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useTimeFormat from "@/context/useTimeFormat";
 import useTimezone from "@/context/useTimezone";
-import useUOM from "@/context/useUOM";
+import useUOMFormat from "@/context/useUOMFormat";
 import { isEmptyArray } from "@/utils/array";
 import { formatDate, formatTime } from "@/utils/formatter";
 import { capitalizeWords, pluckString } from "@/utils/string";
@@ -192,29 +193,33 @@ const Timezone = () => {
                     const isActive = timeZone.key === tz.key;
 
                     return (
-                      <Btn
+                      <Tooltip
                         key={`${tz.key}-${idx}`}
-                        clicky={false}
-                        variant={"ghost"}
-                        justifyContent={"start"}
-                        px={3}
-                        color={isActive ? "" : NAVS_COLOR}
-                        onClick={() => {
-                          setTimeZone(tz);
-                        }}
-                        pos={"relative"}
+                        content={`${tz.key} ${tz.localAbbr} (${tz.formattedOffset})`}
                       >
-                        <P textAlign={"left"} lineClamp={1}>
-                          {tz.key}
-                        </P>
+                        <Btn
+                          clicky={false}
+                          variant={"ghost"}
+                          justifyContent={"start"}
+                          px={3}
+                          color={isActive ? "" : NAVS_COLOR}
+                          onClick={() => {
+                            setTimeZone(tz);
+                          }}
+                          pos={"relative"}
+                        >
+                          <P textAlign={"left"} lineClamp={1}>
+                            {tz.key}
+                          </P>
 
-                        <P
-                          textAlign={"left"}
-                          color={"fg.subtle"}
-                        >{`${tz.localAbbr} (${tz.formattedOffset})`}</P>
+                          <P
+                            textAlign={"left"}
+                            color={"fg.subtle"}
+                          >{`${tz.localAbbr} (${tz.formattedOffset})`}</P>
 
-                        {isActive && <DotIndicator />}
-                      </Btn>
+                          {isActive && <DotIndicator />}
+                        </Btn>
+                      </Tooltip>
                     );
                   })}
               </SimpleGrid>
@@ -390,7 +395,7 @@ const UOMFormat = () => {
   // Contexts
   const { themeConfig } = useThemeConfig();
   const { l } = useLang();
-  const { UOM, setUOM } = useUOM();
+  const { UOM, setUOM } = useUOMFormat();
 
   return (
     <ItemContainer borderless roundedless>
