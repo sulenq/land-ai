@@ -290,7 +290,7 @@ const translations = {
   "msg_app_desc": "Land.ai is an AI-powered application for land and land-use consultation and document analysis. It provides two main features: Chat for interactive consultations on land regulations and procedures, and Analysis for structured, regulation-based review of land-related documents.",
   "msg_assistant_response_error": "An error occurred while processing the response. Please try again.",
   "msg_cannot_be_undone": "This action cannot be undone, please be careful.",
-  "msg_chat_ai_disclaimer": "Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
+  "msg_chat_ai_disclaimer": "*Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
   "msg_chrome_permissions_settings_link": "Settings → Privacy & Security → Site Settings → ",
   "msg_da_disclaimer": "*Uploaded data is used solely for analysis purposes and will be deleted after the analysis is completed to protect user privacy.",
   "msg_da_select_service_helper": "Please select the service you want to use.",

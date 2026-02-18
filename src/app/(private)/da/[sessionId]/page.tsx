@@ -393,7 +393,7 @@ export default function Page() {
   };
 
   return (
-    <PageContainer ref={containerRef} p={4} pos={"relative"}>
+    <PageContainer ref={containerRef} px={4} py={8} pos={"relative"}>
       <CContainer flex={1} gap={4} justify={"space-between"}>
         {initialLoading && render.loading}
         {!initialLoading && (

@@ -188,7 +188,7 @@ export default function Page() {
             </Btn>
 
             <CContainer bg={"body"}>
-              <ContinuePrompt mb={4} />
+              <ContinuePrompt mb={8} />
             </CContainer>
           </ContainerLayout>
         </CContainer>

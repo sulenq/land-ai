@@ -990,8 +990,8 @@ export const msg_da_disclaimer = {
   en: "*Uploaded data is used solely for analysis purposes and will be deleted after the analysis is completed to protect user privacy.",
 };
 export const msg_chat_ai_disclaimer = {
-  id: "Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
-  en: "Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
+  id: "*Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
+  en: "*Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
 };
 export const msg_welcome_1 = {
   id: "Semoga harimu berjalan lancar.",

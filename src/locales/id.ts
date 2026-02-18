@@ -290,7 +290,7 @@ const translations = {
   "msg_app_desc": "Land.ai adalah aplikasi AI untuk konsultasi dan analisis pertanahan. Aplikasi ini menyediakan dua fitur utama: Chat untuk konsultasi interaktif seputar aturan dan prosedur pertanahan, serta Analisa untuk menelaah dan menjelaskan dokumen pertanahan secara terstruktur dan berbasis regulasi.",
   "msg_assistant_response_error": "Terjadi kesalahan saat memproses respons. Silakan coba lagi.",
   "msg_cannot_be_undone": "Aksi ini tidak dapat dibatalkan, harap hati-hati.",
-  "msg_chat_ai_disclaimer": "Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
+  "msg_chat_ai_disclaimer": "*Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
   "msg_chrome_permissions_settings_link": "Pengaturan → Privasi & Keamanan → Pengaturan Situs → ",
   "msg_da_disclaimer": "*Data yang diunggah hanya digunakan untuk proses analisis dan akan dihapus setelah analisis selesai demi menjaga privasi pengguna.",
   "msg_da_select_service_helper": "Silahkan pilih layanan yang ingin Anda gunakan.",
