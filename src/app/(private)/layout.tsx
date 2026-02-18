@@ -425,29 +425,41 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
   const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
 
   return (
-    <Tabs.Root defaultValue={navsTabs.current} w={"full"} mt={4} {...restProps}>
-      <Tabs.List w={"full"}>
+    <Tabs.Root
+      fitted
+      variant="plain"
+      defaultValue={navsTabs.current}
+      mt={4}
+      css={{
+        "--tabs-indicator-bg": "red",
+        "--tabs-indicator-shadow": "shadows.xs",
+        "--tabs-trigger-radius": "radii.full",
+      }}
+      {...restProps}
+    >
+      <Tabs.List>
         {TABS.map((tab) => (
-          <Tabs.Trigger
-            key={tab.value}
-            value={tab.value}
-            w={"full"}
-            onClick={() => {
-              setNavsTabs({
-                current: tab.value,
-              });
-            }}
-          >
-            <Tooltip content={pluckString(l, tab.labelKey)}>
-              <HStack w={"full"} justify={"center"}>
-                <AppIcon icon={tab.icon} />
+          <>
+            <Tabs.Trigger
+              key={tab.value}
+              value={tab.value}
+              onClick={() => {
+                setNavsTabs({
+                  current: tab.value,
+                });
+              }}
+            >
+              <Tooltip content={pluckString(l, tab.labelKey)}>
+                <HStack w={"full"} justify={"center"}>
+                  <AppIcon icon={tab.icon} />
 
-                <P lineClamp={1} textAlign={"left"}>
-                  {pluckString(l, tab.labelKey)}
-                </P>
-              </HStack>
-            </Tooltip>
-          </Tabs.Trigger>
+                  <P lineClamp={1} textAlign={"left"}>
+                    {pluckString(l, tab.labelKey)}
+                  </P>
+                </HStack>
+              </Tooltip>
+            </Tabs.Trigger>
+          </>
         ))}
       </Tabs.List>
 
