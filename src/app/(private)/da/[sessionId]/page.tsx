@@ -48,11 +48,11 @@ const ResultTable = (props: Props__ResultTable) => {
   // Props
   const { containerDimension, daSession, ...restProps } = props;
 
-  // Refs
-  const containerRefInternal = useRef<HTMLDivElement | null>(null);
-
   // Contexts
   const { l } = useLang();
+
+  // Refs
+  const containerRefInternal = useRef<HTMLDivElement | null>(null);
 
   // States
   const result = daSession?.result;
