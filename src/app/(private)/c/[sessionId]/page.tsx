@@ -142,7 +142,8 @@ export default function Page() {
       <CContainer
         ref={containerRef}
         flex={1}
-        p={4}
+        px={4}
+        py={8}
         overflowY={"auto"}
         scrollBehavior={"smooth"}
       >

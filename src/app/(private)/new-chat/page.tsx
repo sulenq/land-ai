@@ -26,7 +26,7 @@ export default function Page() {
   }, [isNewChat, sessionId]);
 
   return (
-    <PageContainer p={4}>
+    <PageContainer px={4} py={8}>
       <ContainerLayout flex={1}>
         <NewPrompt loading={initialLoading} m={"auto"} />
       </ContainerLayout>
