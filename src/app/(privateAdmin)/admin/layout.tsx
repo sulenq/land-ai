@@ -43,7 +43,7 @@ import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
 import {
-  ADMIN_OTHER_PRIVATE_NAV_GROUP,
+  ADMIN_OTHER_PRIVATE_NAV_GROUPS,
   ADMIN_PRIVATE_NAV_GROUPS,
 } from "@/constants/navs";
 import { Props__Layout, Props__NavLink } from "@/constants/props";
@@ -390,7 +390,7 @@ const MobileLayout = (props: any) => {
             );
           })}
 
-          {ADMIN_OTHER_PRIVATE_NAV_GROUP[0]?.navs.map((nav) => {
+          {ADMIN_OTHER_PRIVATE_NAV_GROUPS[0]?.navs.map((nav) => {
             return (
               <MobileNavLink
                 key={nav.path}
@@ -1050,7 +1050,7 @@ const DesktopLayout = (props: any) => {
           </CContainer>
 
           {/* <CContainer gap={1} mt={"auto"}>
-            {ADMIN_OTHER_PRIVATE_NAV_GROUP[0].navs.map((nav) => {
+            {ADMIN_OTHER_PRIVATE_NAV_GROUPS[0].navs.map((nav) => {
               return (
                 <NavLink key={nav.path} to={nav.path} w={"full"}>
                   <NavTooltip content={pluckString(l, nav.labelKey)}>

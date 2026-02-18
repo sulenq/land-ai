@@ -9,7 +9,7 @@ import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
-import { ADMIN_OTHER_PRIVATE_NAV_GROUP } from "@/constants/navs";
+import { ADMIN_OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useLang from "@/context/useLang";
 import { useMasterDataPageContainer } from "@/context/useMasterDataPageContainer";
@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS =
-  ADMIN_OTHER_PRIVATE_NAV_GROUP[0].navs.find((n) => n.path === "/master-data")
+  ADMIN_OTHER_PRIVATE_NAV_GROUPS[0].navs.find((n) => n.path === "/master-data")
     ?.children || [];
 const DESKTOP_NAVS_COLOR = "ibody";
 const ROOT_PATH = `/master-data`;

@@ -10,7 +10,7 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
 import { LucideIcon } from "@/components/widget/Icon";
 import { AUTH_API_SIGNOUT } from "@/constants/apis";
-import { OTHER_PRIVATE_NAV_GROUP } from "@/constants/navs";
+import { OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { SVGS_PATH } from "@/constants/paths";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
@@ -105,7 +105,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
       <Divider />
 
       <CContainer gap={1} p={"6px"}>
-        {OTHER_PRIVATE_NAV_GROUP[0].navs.map((nav) => {
+        {OTHER_PRIVATE_NAV_GROUPS[0].navs.map((nav) => {
           return (
             <NavLink
               key={nav.path}

@@ -406,11 +406,13 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
       value: "your_chats",
       labelKey: "navs.your_chats",
       icon: MessageSquareIcon,
+      content: <ChatSessions />,
     },
     {
       value: "your_da",
       labelKey: "navs.your_da_analysis",
       icon: FileTextIcon,
+      content: <DASessions />,
     },
   ];
 
@@ -423,41 +425,52 @@ const DesktopTabs = (props: Props__DesktopTabs) => {
   const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
 
   return (
-    <Tabs.Root defaultValue={navsTabs.current} mt={4} {...restProps}>
+    <Tabs.Root defaultValue={navsTabs.current} w={"full"} mt={4} {...restProps}>
       <Tabs.List w={"full"}>
-        {TABS.map((tab) => {
-          return (
-            <Tabs.Trigger
-              key={tab.value}
-              value={tab.value}
-              w={"full"}
-              onClick={() => {
-                setNavsTabs({
-                  current: tab.value,
-                });
-              }}
-            >
-              <Tooltip content={pluckString(l, tab.labelKey)}>
-                <HStack w={"full"} justify={"center"}>
-                  <AppIcon icon={tab.icon} />
+        {TABS.map((tab) => (
+          <Tabs.Trigger
+            key={tab.value}
+            value={tab.value}
+            w={"full"}
+            onClick={() => {
+              setNavsTabs({
+                current: tab.value,
+              });
+            }}
+          >
+            <Tooltip content={pluckString(l, tab.labelKey)}>
+              <HStack w={"full"} justify={"center"}>
+                <AppIcon icon={tab.icon} />
 
-                  <P lineClamp={1} textAlign={"left"}>
-                    {pluckString(l, tab.labelKey)}
-                  </P>
-                </HStack>
-              </Tooltip>
-            </Tabs.Trigger>
-          );
-        })}
+                <P lineClamp={1} textAlign={"left"}>
+                  {pluckString(l, tab.labelKey)}
+                </P>
+              </HStack>
+            </Tooltip>
+          </Tabs.Trigger>
+        ))}
       </Tabs.List>
 
-      <Tabs.Content value={"your_chats"}>
-        <ChatSessions />
-      </Tabs.Content>
-
-      <Tabs.Content value={"your_da"}>
-        <DASessions />
-      </Tabs.Content>
+      <CContainer minH={"200px"} pos={"relative"}>
+        {TABS.map((tab, index) => (
+          <Tabs.Content
+            key={index}
+            value={tab.value}
+            position="absolute"
+            inset="0"
+            _open={{
+              animationName: "fade-in, scale-in",
+              animationDuration: "300ms",
+            }}
+            _closed={{
+              animationName: "fade-out, scale-out",
+              animationDuration: "120ms",
+            }}
+          >
+            {tab.content}
+          </Tabs.Content>
+        ))}
+      </CContainer>
     </Tabs.Root>
   );
 };

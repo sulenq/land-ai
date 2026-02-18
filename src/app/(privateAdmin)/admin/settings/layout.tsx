@@ -11,7 +11,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
-import { ADMIN_OTHER_PRIVATE_NAV_GROUP } from "@/constants/navs";
+import { ADMIN_OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
@@ -24,7 +24,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS =
-  ADMIN_OTHER_PRIVATE_NAV_GROUP[0].navs.find(
+  ADMIN_OTHER_PRIVATE_NAV_GROUPS[0].navs.find(
     (n) => n.path === "/admin/settings",
   )?.children || [];
 const DESKTOP_NAVS_COLOR = "ibody";

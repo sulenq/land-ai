@@ -16,7 +16,7 @@ import { ItemContainer } from "@/components/widget/ItemContainer";
 import { ItemHeaderContainer } from "@/components/widget/ItemHeaderContainer";
 import ItemHeaderTitle from "@/components/widget/ItemHeaderTitle";
 import { LocalSettingsHelperText } from "@/components/widget/LocalSettingsHelperText";
-import { SettingsItemContainer } from "@/components/widget/SettingsItemContainer";
+import { ToggleSettingContainer } from "@/components/widget/SettingsShell";
 import { COLOR_PALETTES } from "@/constants/colors";
 import { Interface__SelectOption } from "@/constants/interfaces";
 import { OPTIONS_RELIGION } from "@/constants/selectOptions";
@@ -76,7 +76,7 @@ const ManualDarkModeSetting = () => {
   }, [colorMode]);
 
   return (
-    <SettingsItemContainer disabled={ADM}>
+    <ToggleSettingContainer disabled={ADM}>
       <CContainer gap={1}>
         <P>{l.settings_dark_mode.title}</P>
         <P color={"fg.subtle"}>{l.settings_dark_mode.description}</P>
@@ -89,7 +89,7 @@ const ManualDarkModeSetting = () => {
         }}
         colorPalette={themeConfig.colorPalette}
       />
-    </SettingsItemContainer>
+    </ToggleSettingContainer>
   );
 };
 const ADMSetting = () => {
@@ -115,7 +115,7 @@ const ADMSetting = () => {
   }, [active]);
 
   return (
-    <SettingsItemContainer>
+    <ToggleSettingContainer>
       <CContainer gap={1}>
         <P>{l.settings_adaptive_dark_mode.title}</P>
         <P color={"fg.subtle"}>{l.settings_adaptive_dark_mode.description}</P>
@@ -128,7 +128,7 @@ const ADMSetting = () => {
         }}
         colorPalette={themeConfig.colorPalette}
       />
-    </SettingsItemContainer>
+    </ToggleSettingContainer>
   );
 };
 

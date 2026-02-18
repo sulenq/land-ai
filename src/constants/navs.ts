@@ -75,7 +75,7 @@ export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
     ],
   },
 ];
-export const OTHER_PRIVATE_NAV_GROUP: Interface__NavGroup[] = [
+export const OTHER_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
   {
     labelKey: "other",
     navs: [
@@ -201,7 +201,7 @@ export const ADMIN_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
     ],
   },
 ];
-export const ADMIN_OTHER_PRIVATE_NAV_GROUP: Interface__NavGroup[] = [
+export const ADMIN_OTHER_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
   {
     labelKey: "other",
     navs: [

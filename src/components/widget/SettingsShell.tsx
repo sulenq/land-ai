@@ -4,7 +4,7 @@ interface Props extends StackProps {
   disabled?: boolean;
 }
 
-export const SettingsItemContainer = ({
+export const ToggleSettingContainer = ({
   children,
   disabled,
   ...props
@@ -12,7 +12,6 @@ export const SettingsItemContainer = ({
   return (
     <HStack
       justify={"space-between"}
-      px={4}
       pointerEvents={disabled ? "none" : "auto"}
       opacity={disabled ? 0.4 : 1}
       {...props}

@@ -18,7 +18,7 @@ import { ItemContainer } from "@/components/widget/ItemContainer";
 import { ItemHeaderContainer } from "@/components/widget/ItemHeaderContainer";
 import { LocalSettingsHelperText } from "@/components/widget/LocalSettingsHelperText";
 import { MicVolumeBar } from "@/components/widget/MicVolumeBar";
-import { SettingsItemContainer } from "@/components/widget/SettingsItemContainer";
+import { ToggleSettingContainer } from "@/components/widget/SettingsShell";
 import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
 import useCameraPermission from "@/context/useCameraPermissions";
 import useLang from "@/context/useLang";
@@ -182,7 +182,7 @@ const Camera = () => {
       </ItemHeaderContainer>
 
       <CContainer gap={4} py={3}>
-        <SettingsItemContainer>
+        <ToggleSettingContainer>
           <CContainer>
             <P>{l.settings_camera.title}</P>
             <P color={"fg.subtle"}>{l.settings_camera.description}</P>
@@ -197,7 +197,7 @@ const Camera = () => {
             onChange={requestCameraMic}
             colorPalette={themeConfig.colorPalette}
           />
-        </SettingsItemContainer>
+        </ToggleSettingContainer>
 
         {(cameraPermissionsStatus === "granted" ||
           cameraPermissionsStatus === "denied") && (
@@ -367,7 +367,7 @@ const Microphone = () => {
       </ItemHeaderContainer>
 
       <CContainer gap={4} py={3}>
-        <SettingsItemContainer>
+        <ToggleSettingContainer>
           <CContainer>
             <P>{l.settings_mic.title}</P>
             <P color={"fg.subtle"}>{l.settings_mic.description}</P>
@@ -382,7 +382,7 @@ const Microphone = () => {
             onChange={requestMicPermission}
             colorPalette={themeConfig.colorPalette}
           />
-        </SettingsItemContainer>
+        </ToggleSettingContainer>
 
         {(micPermissionsStatus === "granted" ||
           micPermissionsStatus === "denied") && (
@@ -562,7 +562,7 @@ const Location = () => {
       </ItemHeaderContainer>
 
       <CContainer gap={4} py={3}>
-        <SettingsItemContainer>
+        <ToggleSettingContainer>
           <CContainer>
             <P>{l.settings_location.title}</P>
             <P color={"fg.subtle"}>{l.settings_location.description}</P>
@@ -577,7 +577,7 @@ const Location = () => {
             onChange={requestLocationPermission}
             colorPalette={themeConfig.colorPalette}
           />
-        </SettingsItemContainer>
+        </ToggleSettingContainer>
 
         {(locationPermissionsStatus === "granted" ||
           locationPermissionsStatus === "denied") && (

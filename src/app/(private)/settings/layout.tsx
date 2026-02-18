@@ -6,27 +6,28 @@ import { HelperText } from "@/components/ui/helper-text";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
+import { AppIcon } from "@/components/widget/AppIcon";
+import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
-import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
-import { OTHER_PRIVATE_NAV_GROUP } from "@/constants/navs";
-import { BASE_ICON_BOX_SIZE } from "@/constants/sizes";
+import { OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
+import { Props__Layout } from "@/constants/props";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { isEmptyArray } from "@/utils/array";
 import { formatAbsDate } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
-import { HStack, Icon } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS =
-  OTHER_PRIVATE_NAV_GROUP[0].navs.find((n) => n.path === "/settings")
+  OTHER_PRIVATE_NAV_GROUPS[0].navs.find((n) => n.path === "/settings")
     ?.children || [];
-const DESKTOP_NAVS_COLOR = "ibody";
+const NAVS_COLOR = "ibody";
 const ROOT_PATH = `/settings`;
 
 const NavsList = (props: any) => {
@@ -88,14 +89,12 @@ const NavsList = (props: any) => {
                       justifyContent={"start"}
                       variant={"ghost"}
                       px={2}
-                      color={isActive ? "" : DESKTOP_NAVS_COLOR}
+                      color={isActive ? "" : NAVS_COLOR}
                       pos={"relative"}
                     >
                       {isActive && <LeftIndicator />}
 
-                      <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                        <LucideIcon icon={nav.icon} />
-                      </Icon>
+                      <AppIcon icon={nav.icon} />
 
                       <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
                     </Btn>
@@ -109,7 +108,10 @@ const NavsList = (props: any) => {
   );
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout(props: Props__Layout) {
+  // Props
+  const { children } = props;
+
   // Hooks
   const pathname = usePathname();
 
@@ -148,13 +150,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               h={"full"}
               maxH={"full"}
               overflowY={"auto"}
-              borderRight={isSmContainer ? "" : "1px solid"}
+              // borderRight={isSmContainer ? "" : "1px solid"}
               borderColor={"border.muted"}
             >
-              <CContainer px={4} pt={3} pb={1}>
-                <P fontSize={"xl"} fontWeight={"semibold"}>
+              <CContainer px={4} mt={3} mb={1}>
+                <ClampText fontSize={"xl"} fontWeight={"semibold"}>
                   {l.settings}
-                </P>
+                </ClampText>
               </CContainer>
 
               <CContainer p={3} pb={1}>
@@ -185,7 +187,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Content */}
           {showContent && (
             <CContainer className={"scrollY"} flex={1}>
-              {pathname !== ROOT_PATH && <PageTitle />}
+              {pathname !== ROOT_PATH && <PageTitle mb={1} />}
 
               <CContainer flex={1}>{children}</CContainer>
             </CContainer>
