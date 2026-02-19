@@ -43,11 +43,25 @@ import {
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
-import { OTHER_PRIVATE_NAV_GROUPS, PRIVATE_NAV_GROUPS } from "@/constants/navs";
+import {
+  ADMIN_PRIVATE_NAV_GROUPS,
+  OTHER_PRIVATE_NAV_GROUPS,
+  PRIVATE_NAV_GROUPS,
+} from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
 import {
   BASE_ICON_BOX_SIZE,
+  DESKTOP_CONTENT_CONTAINER_BG,
+  DESKTOP_NAVS_BG,
+  DESKTOP_NAVS_COLOR,
+  DESKTOP_NAVS_POPOVER_MAIN_AXIS,
+  DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
   FIREFOX_SCROLL_Y_CLASS_PR_PREFIX,
+  MOBILE_CONTENT_CONTAINER_BG,
+  MOBILE_NAV_LABEL_FONT_SIZE,
+  MOBILE_NAVS_COLOR,
+  MOBILE_POPOVER_MAIN_AXIS,
+  NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
@@ -84,18 +98,6 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
-import {
-  DESKTOP_CONTENT_CONTAINER_BG,
-  DESKTOP_NAVS_BG,
-  DESKTOP_NAVS_COLOR,
-  DESKTOP_NAVS_POPOVER_MAIN_AXIS,
-  DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
-  MOBILE_CONTENT_CONTAINER_BG,
-  MOBILE_NAV_LABEL_FONT_SIZE,
-  MOBILE_NAVS_COLOR,
-  MOBILE_POPOVER_MAIN_AXIS,
-  NAVS_COLOR_PALETTE,
-} from "@/constants/styles";
 
 const USER_PROFILE_URL = "/api/get-user-profile";
 
@@ -407,7 +409,7 @@ const DesktopLayout = (props: any) => {
 
   const qNormalized = q?.toLowerCase().trim();
 
-  const resolvedNavs = PRIVATE_NAV_GROUPS.map((nav) => {
+  const resolvedNavs = ADMIN_PRIVATE_NAV_GROUPS.map((nav) => {
     const filteredList = nav.navs
       .map((nav) => {
         const labelMain =
