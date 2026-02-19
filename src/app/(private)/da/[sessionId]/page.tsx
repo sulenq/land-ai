@@ -285,13 +285,19 @@ export default function Page() {
                   <P w={"140px"} flexShrink={0} color={"fg.muted"}>
                     {l.name}
                   </P>
-                  <HStack>
+
+                  <HStack
+                    flexDir={["column", null, "row"]}
+                    align={"start"}
+                    gapY={1}
+                  >
                     <Img
                       key={activeDASession?.documentService?.icon}
                       src={imgUrl(activeDASession?.documentService?.icon)}
                       fluid
                       flexShrink={0}
                       w={"20px"}
+                      mt={"2px"}
                     />
 
                     <P>{data?.documentService.title[lang]}</P>
@@ -302,6 +308,7 @@ export default function Page() {
                   <P w={"140px"} flexShrink={0} color={"fg.muted"}>
                     {l.description}
                   </P>
+
                   <P>{data?.documentService.description[lang]}</P>
                 </HStack>
               </CContainer>
