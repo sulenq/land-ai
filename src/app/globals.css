@@ -130,10 +130,6 @@ nextjs-portal {
   --darktrans: #202020cf;
 }
 
-.markdown * {
-  line-height: 1.8;
-}
-
 /* Group table */
 [role="group"]:hover .td-content-group-hover {
   background-color: var(--d0) !important;
@@ -255,8 +251,8 @@ textarea::placeholder {
 .scrollX::-webkit-scrollbar-thumb,
 .scrollY::-webkit-scrollbar-thumb,
 .scrollYAlt::-webkit-scrollbar-thumb {
-  /* background-color: transparent; */
   background-color: var(--d3);
+  /* background-color: transparent; */
   transition: background-color 0.3s;
   border-radius: 3px;
 }
