@@ -5,7 +5,6 @@ import {
   BrainCircuitIcon,
   BrushIcon,
   DatabaseIcon,
-  FilesIcon,
   LanguagesIcon,
   LayoutDashboardIcon,
   ScanTextIcon,
@@ -192,12 +191,12 @@ export const ADMIN_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
         path: `/admin/ai-chat-reference`,
         allowedRoles: [],
       },
-      {
-        icon: FilesIcon,
-        labelKey: "admin_navs.da_service",
-        path: `/admin/da-service`,
-        allowedRoles: [],
-      },
+      // {
+      //   icon: FilesIcon,
+      //   labelKey: "admin_navs.da_service",
+      //   path: `/admin/da-service`,
+      //   allowedRoles: [],
+      // },
     ],
   },
 ];

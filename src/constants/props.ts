@@ -136,6 +136,7 @@ export interface Props__DataTable extends Omit<StackProps, "page"> {
   totalPage?: number;
   footer?: any;
   loading?: boolean;
+  contentContainerProps?: StackProps;
 }
 export interface Props__BatchOptions extends BtnProps {
   selectedRows: any[];

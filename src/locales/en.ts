@@ -316,6 +316,7 @@ const translations = {
   "msg_signin": "Enter your account details to continue.",
   "msg_signout": "Are you sure you want to sign out?",
   "msg_soft_delete": "Data will be hidden but can be restored later.",
+  "msg_suspend": "The account will be suspended and cannot be used temporarily.",
   "msg_toggle_dark_mode": "Toggle dark mode",
   "msg_toggle_protect_session": "The protection status of this chat session will be toggled. When protected, the session cannot be deleted. When unprotected, it can be deleted again.",
   "msg_welcome_1": "Hope your day goes smoothly.",
@@ -432,7 +433,7 @@ const translations = {
   "settings": "Settings",
   "settings_adaptive_dark_mode": {
     "title": "Adaptive dark mode",
-    "description": "UI dark mode active at night 18:00 - 06:00 (local time)"
+    "description": "UI dark mode active at night ${timeRange} (local time)"
   },
   "settings_camera": {
     "title": "Camera access",
@@ -527,6 +528,8 @@ const translations = {
   "successful": "Successful",
   "sunday": "Sunday",
   "super_admin": "Super Admin",
+  "suspend": "Suspend",
+  "suspended": "Suspended",
   "theme": "Theme",
   "thursday": "Thursday",
   "time_format": "Time format",

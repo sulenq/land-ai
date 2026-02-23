@@ -21,16 +21,17 @@ import useUOMFormat from "@/context/useUOMFormat";
 import { UOM_FORMATS } from "@/constants/uomFormats";
 
 export const formatDate = (
-  date?: Date | string | undefined,
+  date?: Date | string | null | undefined,
   options: {
     variant?: Type__DateVariant;
     withTime?: boolean;
     timeFormat?: string; // default HH:mm
     dateFormat?: Type__DateFormat;
     timezoneKey?: string;
+    dashEmpty?: boolean;
   } = {},
 ): string => {
-  if (!date) return "";
+  if (!date) return options.dashEmpty ? "-" : "";
 
   const l = useLang.getState().l;
   const L_WEEKDAYS_0_BASED = [

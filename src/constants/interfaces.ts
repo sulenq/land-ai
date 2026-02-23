@@ -1,6 +1,10 @@
 import { BtnProps } from "@/components/ui/btn";
 import { Enum__ActivityAction } from "@/constants/enums";
-import { Type__DASessionStatus, Type__RenderType } from "@/constants/types";
+import {
+  Type__AccountStatus,
+  Type__DASessionStatus,
+  Type__RenderType,
+} from "@/constants/types";
 import {
   MenuItemProps,
   StackProps,
@@ -28,10 +32,11 @@ export interface Interface__AuthLog extends Interface__CUD {
 }
 export interface Interface__User extends Interface__CUD {
   id: string;
-  role: number;
-  avatar?: Interface__StorageFile[];
   name: string;
   email: string;
+  accountStatus: Type__AccountStatus;
+  role: number;
+  avatar?: Interface__StorageFile[];
   lastLogin: string;
 }
 export interface Interface__Role {

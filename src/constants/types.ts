@@ -1,6 +1,8 @@
 import { Interface__ChatSession } from "@/constants/interfaces";
 import { ButtonProps, ConditionalValue, MenuItemProps } from "@chakra-ui/react";
 
+export type Type__AccountStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";
+
 export type Type__UnitKey =
   | "mass"
   | "length"

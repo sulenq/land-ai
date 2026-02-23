@@ -316,6 +316,7 @@ const translations = {
   "msg_signin": "Masukkan detail akun untuk melanjutkan.",
   "msg_signout": "Anda yakin ingin keluar?",
   "msg_soft_delete": "Data akan disembunyikan dan bisa dikembalikan nanti.",
+  "msg_suspend": "Akun akan ditangguhkan dan tidak bisa digunakan sementara.",
   "msg_toggle_dark_mode": "Toggle mode gelap",
   "msg_toggle_protect_session": "Status perlindungan sesi chat ini akan diubah. Saat dilindungi, sesi tidak dapat dihapus. Saat perlindungan dimatikan, sesi dapat dihapus kembali.",
   "msg_welcome_1": "Semoga harimu berjalan lancar.",
@@ -432,7 +433,7 @@ const translations = {
   "settings": "Pengaturan",
   "settings_adaptive_dark_mode": {
     "title": "Mode gelap adaptif",
-    "description": "UI mode gelap aktif saat malam hari 18:00 - 06:00 (waktu lokal)"
+    "description": "UI mode gelap aktif saat malam hari ${timeRange} (waktu lokal)"
   },
   "settings_camera": {
     "title": "Akses kamera",
@@ -527,6 +528,8 @@ const translations = {
   "successful": "Berhasil",
   "sunday": "Minggu",
   "super_admin": "Super Admin",
+  "suspend": "Tangguhkan",
+  "suspended": "Ditangguhkan",
   "theme": "Tema",
   "thursday": "Kamis",
   "time_format": "Format waktu",

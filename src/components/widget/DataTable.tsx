@@ -33,6 +33,7 @@ export const DataTable = (props: Props__DataTable) => {
     setPage,
     totalPage,
     footer,
+    contentContainerProps,
     ...restProps
   } = props;
 
@@ -181,7 +182,11 @@ export const DataTable = (props: Props__DataTable) => {
       overflow={"auto"}
       {...restProps}
     >
-      <CContainer className="scrollX scrollYAlt" flex={1}>
+      <CContainer
+        className="scrollX scrollYAlt"
+        flex={1}
+        {...contentContainerProps}
+      >
         <Table.Root
           w={headers.length > 1 ? "full" : "fit-content"}
           tableLayout={"auto"}
@@ -484,7 +489,7 @@ export const DataTable = (props: Props__DataTable) => {
         <>
           <HStack
             p={2}
-            borderTop={"1px solid"}
+            // borderTop={"1px solid"}
             borderColor={footerBorderColor}
             justify={"space-between"}
             wrap={"wrap"}

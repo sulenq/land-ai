@@ -719,6 +719,10 @@ export const deactive = {
   id: "Dinonaktifkan",
   en: "Deactivated",
 };
+export const suspended = {
+  id: "Ditangguhkan",
+  en: "Suspended",
+};
 export const activate = {
   id: "Aktifkan",
   en: "Activate",
@@ -726,6 +730,10 @@ export const activate = {
 export const deactivate = {
   id: "Nonaktifkan",
   en: "Deactivate",
+};
+export const suspend = {
+  id: "Tangguhkan",
+  en: "Suspend",
 };
 export const type = {
   id: "Tipe",
@@ -1121,13 +1129,17 @@ export const msg_perma_delete = {
   id: "Data akan dihapus secara permanen.",
   en: "Data will be permanently deleted.",
 };
+export const msg_activate = {
+  id: "Akun akan diaktifkan kembali dan bisa digunakan.",
+  en: "The account will be activated again and can be used.",
+};
 export const msg_deactivate = {
   id: "Akun akan dinonaktifkan dan tidak bisa digunakan sementara.",
   en: "The account will be deactivated and cannot be used temporarily.",
 };
-export const msg_activate = {
-  id: "Akun akan diaktifkan kembali dan bisa digunakan.",
-  en: "The account will be activated again and can be used.",
+export const msg_suspend = {
+  id: "Akun akan ditangguhkan dan tidak bisa digunakan sementara.",
+  en: "The account will be suspended and cannot be used temporarily.",
 };
 export const msg_restore = {
   id: "Data akan dikembalikan ke kondisi semula.",
