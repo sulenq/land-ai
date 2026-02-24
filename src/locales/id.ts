@@ -17,7 +17,7 @@ const translations = {
   "admin_navs": {
     "dashboard": "Dashboard",
     "user": "Pengguna",
-    "ai_chat_reference": "Referensi Obrolan AI",
+    "ai_knowledge": "Pengetahuan AI",
     "da_service": "Layanan Analisa Dokumen",
     "master_data": "Master Data",
     "settings": "Pengaturan",

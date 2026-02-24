@@ -42,9 +42,9 @@ export const admin_navs = {
     id: "Pengguna",
     en: "User",
   },
-  ai_chat_reference: {
-    id: "Referensi Obrolan AI",
-    en: "AI Chat Reference",
+  ai_knowledge: {
+    id: "Pengetahuan AI",
+    en: "AI Knowledge",
   },
   da_service: {
     id: "Layanan Analisa Dokumen",

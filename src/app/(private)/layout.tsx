@@ -1100,7 +1100,7 @@ const TheApp = (props: Props__Layout) => {
 };
 export default function Layout(props: Props__Layout) {
   // Toggle auth guard
-  const ENABLE_AUTH_GUARD = process.env.NEXT_PUBLIC_ENV !== "development";
+  const ENABLE_AUTH_GUARD = process.env.ENABLE_AUTH_GUARD === "true";
 
   // Context / stores
   const authToken = getAccessToken();

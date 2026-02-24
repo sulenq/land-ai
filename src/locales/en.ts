@@ -17,7 +17,7 @@ const translations = {
   "admin_navs": {
     "dashboard": "Dashboard",
     "user": "User",
-    "ai_chat_reference": "AI Chat Reference",
+    "ai_knowledge": "AI Knowledge",
     "da_service": "Document Analysis Service",
     "master_data": "Master Data",
     "settings": "Settings",

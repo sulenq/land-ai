@@ -36,17 +36,15 @@ export interface Interface__User extends Interface__CUD {
   email: string;
   accountStatus: Type__AccountStatus;
   role: number;
+  permissions: string[];
   avatar?: Interface__StorageFile[];
   lastLogin: string;
 }
-export interface Interface__Role {
+export interface Interface__Role extends Interface__CUD {
   id: string;
   name: string;
   description: string;
   permissions: string[];
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
 }
 
 // Navs

@@ -1,3 +1,4 @@
+import { Interface__Role } from "@/constants/interfaces";
 import { getStorage, removeStorage, setStorage } from "@/utils/client";
 
 export function getAccessToken() {
@@ -34,4 +35,13 @@ export function setUserData(user: Record<string, any>) {
 
 export function clearUserData() {
   removeStorage("__user_data");
+}
+
+// below is for dynamic roles
+// export function can(permission: string, user: Interface__User) {
+//   return user.permissions.includes(permission);
+// }
+
+export function can(permission: string, role: Interface__Role) {
+  return role.permissions.includes(permission);
 }
