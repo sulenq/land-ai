@@ -355,14 +355,14 @@ const RoleSelect = () => {
 
               <AppIcon
                 icon={config.icon}
-                boxSize={"100px"}
+                boxSize={"110px"}
                 opacity={0.4}
                 lucideIconProps={{
                   strokeWidth: 1,
                 }}
                 pos={"absolute"}
-                top={"12px"}
-                right={"-20px"}
+                top={"4px"}
+                right={"-28px"}
               />
 
               <P fontSize={"lg"} fontWeight={"semibold"} mt={"auto"}>
@@ -447,7 +447,7 @@ export const SigninForm = (props: StackProps) => {
             </H1>
 
             <P textAlign={"center"} color={"fg.subtle"}>
-              {l.msg_signin}
+              {selectedAuthProviderConfig ? l.msg_signin : l.msg_pre_signin}
             </P>
           </CContainer>
 

@@ -1158,6 +1158,10 @@ export const msg_required_form = {
   en: "Cannot be empty",
 };
 export const msg_signin = {
+  id: "Masukkan detail akun untuk melanjutkan.",
+  en: "Enter your account details to continue.",
+};
+export const msg_pre_signin = {
   id: "Sebelum signin, silahkan pilih role anda.",
   en: "Before signing in, please select your role.",
 };
