@@ -368,11 +368,13 @@ const MobileLayout = (props: Props__Layout) => {
               cursor={"pointer"}
               gap={1}
             >
-              {!user?.avatar && <AppIcon icon={UserIcon} boxSize={5} />}
+              {!user?.avatar?.[0]?.filePath && (
+                <AppIcon icon={UserIcon} boxSize={5} />
+              )}
 
-              {user?.avatar && (
+              {user?.avatar?.[0]?.filePath && (
                 <Avatar
-                  src={imgUrl(user?.avatar)}
+                  src={imgUrl(user?.avatar?.[0]?.filePath)}
                   name={user?.name}
                   size={"2xs"}
                 />
@@ -1041,7 +1043,7 @@ const DesktopLayout = (props: Props__Layout) => {
               pos={"relative"}
             >
               <Avatar
-                src={imgUrl(user?.avatar)}
+                src={imgUrl(user?.avatar?.[0]?.filePath)}
                 name={user?.name}
                 size={navsExpanded ? "md" : "2xs"}
                 mr={"auto"}

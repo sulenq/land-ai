@@ -142,7 +142,7 @@ const Signedin = (props: Props__Signedin) => {
 
   return (
     <VStack gap={4} m={"auto"} {...restProps}>
-      <Avatar size={"2xl"} src={user?.avatar?.[0]?.fileUrl} />
+      <Avatar size={"2xl"} src={user?.avatar?.[0]?.filePath?.[0]?.fileUrl} />
 
       <VStack gap={0}>
         <P fontWeight={"semibold"}>{user?.name}</P>

@@ -92,7 +92,9 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
     >
       <CContainer>
         <Img
-          src={imgUrl(user?.avatar) || `${SVGS_PATH}/no-avatar.svg`}
+          src={
+            imgUrl(user?.avatar?.[0]?.filePath) || `${SVGS_PATH}/no-avatar.svg`
+          }
           alt="avatar"
           aspectRatio={1}
         />
@@ -116,7 +118,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
             <Btn
               clicky={false}
               px={2}
-              variant={"ghost"}  
+              variant={"ghost"}
               justifyContent={"start"}
               pos={"relative"}
               onClick={() => {
