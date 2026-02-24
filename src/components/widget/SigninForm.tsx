@@ -60,6 +60,7 @@ import { StringInput } from "../ui/string-input";
 import ResetPasswordDisclosureTrigger from "./ResetPasswordDisclosure";
 import { back } from "@/utils/client";
 import { DotIndicator } from "@/components/widget/Indicator";
+import { imgUrl } from "@/utils/url";
 
 const AUTH_PROVIDER_CONFIG = {
   superAdmin: {
@@ -142,7 +143,7 @@ const Signedin = (props: Props__Signedin) => {
 
   return (
     <VStack gap={4} m={"auto"} {...restProps}>
-      <Avatar size={"2xl"} src={user?.avatar?.[0]?.filePath?.[0]?.fileUrl} />
+      <Avatar size={"2xl"} src={imgUrl(user?.avatar?.[0]?.filePath)} />
 
       <VStack gap={0}>
         <P fontWeight={"semibold"}>{user?.name}</P>
