@@ -1,6 +1,6 @@
 import { Provider } from "@/components/ui/provider";
 import { Toaster } from "@/components/ui/toaster";
-import ClientSideOnly from "@/components/widget/ClientSideOnly";
+import ClientRoot from "@/components/widget/ClientRoot";
 import { APP } from "@/constants/_meta";
 import { Metadata, Viewport } from "next";
 import { Figtree } from "next/font/google";
@@ -102,7 +102,7 @@ const RootLayout = (props: Props) => {
         />
         <Provider>
           <Toaster />
-          <ClientSideOnly>{children}</ClientSideOnly>
+          <ClientRoot>{children}</ClientRoot>
         </Provider>
       </body>
     </html>

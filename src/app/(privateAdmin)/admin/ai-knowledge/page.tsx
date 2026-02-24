@@ -33,7 +33,7 @@ import {
 } from "@/components/widget/PageShell";
 import { RowOptionMenuTooltip } from "@/components/widget/RowOptions";
 import { TableSkeleton } from "@/components/widget/TableSkeleton";
-import { ADMIN_AI_KNOWLEDGE_BASE } from "@/constants/apis";
+import { ADMIN_API_AI_KNOWLEDGE_BASE } from "@/constants/apis";
 import {
   Interface__BatchOptionsTableOptionGenerator,
   Interface__ChatAIKnowledge,
@@ -53,7 +53,6 @@ import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
 import { capitalize, pluckString } from "@/utils/string";
-import { isDimensionValid } from "@/utils/style";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import { fileValidation } from "@/utils/validationSchema";
 import { HStack } from "@chakra-ui/react";
@@ -63,7 +62,7 @@ import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import * as yup from "yup";
 
-const BASE_ENDPOINT = ADMIN_AI_KNOWLEDGE_BASE;
+const BASE_ENDPOINT = ADMIN_API_AI_KNOWLEDGE_BASE;
 const PREFIX_ID = "ai_knowledge";
 type Interface__Data = Interface__ChatAIKnowledge;
 
@@ -474,7 +473,6 @@ export default function Page() {
 
   // Hooks
   const dimension = useContainerDimension(containerRef);
-  const isValidDimension = isDimensionValid(dimension);
   const isSmContainer = dimension.width < 600;
 
   // States
@@ -502,23 +500,21 @@ export default function Page() {
         </HStack>
       </PageTitle>
 
-      {isValidDimension && (
-        <PageContent overflowY={"auto"}>
-          {isSmContainer && (
-            <HScroll flexShrink={0} px={3} mb={4}>
-              <HStack minW={"full"} justify={"space-between"}>
-                <DataUtils
-                  filter={filter}
-                  setFilter={setFilter}
-                  routeTitle={routeTitle}
-                />
-              </HStack>
-            </HScroll>
-          )}
+      <PageContent overflowY={"auto"}>
+        {isSmContainer && (
+          <HScroll flexShrink={0} px={3} mb={4}>
+            <HStack minW={"full"} justify={"space-between"}>
+              <DataUtils
+                filter={filter}
+                setFilter={setFilter}
+                routeTitle={routeTitle}
+              />
+            </HStack>
+          </HScroll>
+        )}
 
-          <Data filter={filter} routeTitle={routeTitle} />
-        </PageContent>
-      )}
+        <Data filter={filter} routeTitle={routeTitle} />
+      </PageContent>
     </PageContainer>
   );
 }
