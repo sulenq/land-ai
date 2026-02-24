@@ -220,7 +220,7 @@ export const DataGrid = (props: Props) => {
         <>
           <HStack
             p={2}
-            // borderTop={"1px solid"}
+            borderTop={"1px solid"}
             borderColor={"border.subtle"}
             justify={"space-between"}
           >

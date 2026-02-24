@@ -21,6 +21,7 @@ import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import useTimezone from "@/context/useTimezone";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import useRequest from "@/hooks/useRequest";
@@ -50,6 +51,7 @@ const InputForm = (props: Props__InputForm) => {
   const { themeConfig } = useThemeConfig();
   const setSession = useActiveDA((s) => s.setSession);
   const prependToDASessions = useDASessions((s) => s.prependToDASessions);
+  const tz = useTimezone((s) => s.timeZone);
 
   // Hooks
   const { req, loading } = useRequest({
@@ -109,7 +111,7 @@ const InputForm = (props: Props__InputForm) => {
             variant: "numeric",
             withTime: true,
           },
-        )}`,
+        )} ${tz.localAbbr}`,
       );
       payload.append("serviceId", `${daService?.id}`);
       Object.entries(values.files).forEach(([docId, files]) => {

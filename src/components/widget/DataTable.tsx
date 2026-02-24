@@ -14,7 +14,7 @@ import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import { isEmptyArray } from "@/utils/array";
 import { hexWithOpacity } from "@/utils/color";
-import { Center, HStack, Table } from "@chakra-ui/react";
+import { Box, Center, HStack, Table } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export const DataTable = (props: Props__DataTable) => {
@@ -408,7 +408,6 @@ export const DataTable = (props: Props__DataTable) => {
                       whiteSpace={"nowrap"}
                       p={0}
                       fontSize={"md"}
-                      opacity={row.dim || col.dim ? 0.4 : 1}
                       {...col?.tableCellProps}
                     >
                       <HStack
@@ -427,7 +426,9 @@ export const DataTable = (props: Props__DataTable) => {
                         justify={col.align}
                         {...col?.wrapperProps}
                       >
-                        {col?.td}
+                        <Box opacity={row.dim || col.dim ? 0.4 : 1} w="full">
+                          {col?.td}
+                        </Box>
                       </HStack>
                     </Table.Cell>
                   ))}
@@ -489,7 +490,7 @@ export const DataTable = (props: Props__DataTable) => {
         <>
           <HStack
             p={2}
-            // borderTop={"1px solid"}
+            borderTop={"1px solid"}
             borderColor={footerBorderColor}
             justify={"space-between"}
             wrap={"wrap"}

@@ -14,9 +14,6 @@ export const CHAT_API_SESSION_SHOW = `/api/ai/chat/show`; // GET + /:sessionId
 export const CHAT_API_SESSION_RENAME = `/api/ai/chat/rename`; // PATCH + /:sessionId
 export const CHAT_API_SESSION_PROTECT = `/api/ai/chat/protect`; // PATCH + /:sessionId
 export const CHAT_API_SESSION_DELETE = `/api/ai/chat/delete`; // DELETE + /:sessionIds
-export const CHAT_API_KNOWLEDGE_CREATE = "/api/ai/knowledge/create"; // POST
-export const CHAT_API_KNOWLEDGE_GET = "/api/ai/knowledge/get"; // GET
-export const CHAT_API_KNOWLEDGE_DELETE = "/api/ai/knowledge/delete"; // DELETE + /:knowledgeId
 
 // Docs Analysis
 export const DA_API_SERVICE_GET_ALL = `/api/da/services/get`; // GET
@@ -26,3 +23,8 @@ export const DA_API_SESSION_DETAIL = `/api/da/session/get`; // GET + /:daSession
 export const DA_API_SESSION_GET_ALL = `/api/da/session/get-all`; // GET
 export const DA_API_SESSION_RENAME = `/api/da/session/rename`; // PATCH + /:daSessionId
 export const DA_API_SESSION_DELETE = `/api/da/session/delete`; // DELETE + /:daSessionIds
+
+// Admin
+export const ADMIN_KNOWLEDGE_CREATE = "/api/ai/knowledge/create"; // POST
+export const ADMIN_KNOWLEDGE_GET = "/api/ai/knowledge/get"; // GET
+export const ADMIN_KNOWLEDGE_DELETE = "/api/ai/knowledge/delete"; // DELETE + /:knowledgeId

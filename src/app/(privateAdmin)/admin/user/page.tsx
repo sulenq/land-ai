@@ -365,10 +365,7 @@ const Data = (props: any) => {
         setLimit={setLimit}
         page={page}
         setPage={setPage}
-        totalPage={pagination?.meta?.last_page}
-        contentContainerProps={{
-          px: 2,
-        }}
+        totalPage={pagination?.meta?.lastPage}
       />
     ) : (
       <DataGrid
@@ -378,7 +375,7 @@ const Data = (props: any) => {
         setLimit={setLimit}
         page={page}
         setPage={setPage}
-        totalPage={pagination?.meta?.last_page}
+        totalPage={pagination?.meta?.lastPage}
         renderItem={({
           item,
           row,
