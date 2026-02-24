@@ -135,6 +135,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const to_admin = {
+  id: "Ke panel admin",
+  en: "Go to admin panel",
+};
+export const to_app = {
+  id: "Ke aplikasi",
+  en: "Go to app",
+};
 export const file_name = {
   id: "Nama file",
   en: "File name",

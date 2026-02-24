@@ -543,6 +543,8 @@ const translations = {
   "timezone": "Timezone",
   "title": "Title",
   "to": "To",
+  "to_admin": "Go to admin panel",
+  "to_app": "Go to app",
   "total_material": "Total Material",
   "try_camera": "Try Camera",
   "try_location": "Try Location",

@@ -543,6 +543,8 @@ const translations = {
   "timezone": "Zona waktu",
   "title": "Judul",
   "to": "Sampai",
+  "to_admin": "Ke panel admin",
+  "to_app": "Ke aplikasi",
   "total_material": "Total Materi",
   "try_camera": "Coba Kamera",
   "try_location": "Coba Lokasi",

@@ -37,7 +37,7 @@ export interface Interface__User extends Interface__CUD {
   accountStatus: Type__AccountStatus;
   role: number;
   permissions: string[];
-  avatar?: Interface__StorageFile[];
+  avatar?: string;
   lastLogin: string;
 }
 export interface Interface__Role extends Interface__CUD {

@@ -17,11 +17,17 @@ import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useRequest from "@/hooks/useRequest";
-import { clearAccessToken, clearUserData, getUserData } from "@/utils/auth";
+import {
+  clearAccessToken,
+  clearUserData,
+  getUserData,
+  isPublic,
+} from "@/utils/auth";
 import { back } from "@/utils/client";
-import { pluckString } from "@/utils/string";
+import { capitalizeWords, pluckString } from "@/utils/string";
+import { imgUrl } from "@/utils/url";
 import { Icon, StackProps } from "@chakra-ui/react";
-import { LogOutIcon } from "lucide-react";
+import { ArrowUpDownIcon, LogOutIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 interface Props__MiniMyProfile extends StackProps {
@@ -86,7 +92,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
     >
       <CContainer>
         <Img
-          src={user?.avatar || `${SVGS_PATH}/no-avatar.svg`}
+          src={imgUrl(user?.avatar) || `${SVGS_PATH}/no-avatar.svg`}
           alt="avatar"
           aspectRatio={1}
         />
@@ -98,13 +104,32 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
           borderColor={"border.muted"}
         >
           <P fontWeight={"semibold"}>{user?.name || "Signed out"}</P>
-          <P color={"fg.subtle"}>{user?.email || user?.username || "-"}</P>
+          <P color={"fg.subtle"}>{user?.email || "-"}</P>
         </CContainer>
       </CContainer>
 
       <Divider />
 
       <CContainer gap={1} p={"6px"}>
+        {!isPublic() && (
+          <NavLink to={`${isAdminRoute ? "" : "/admin"}`} w={"full"}>
+            <Btn
+              clicky={false}
+              px={2}
+              variant={"ghost"}
+              justifyContent={"start"}
+              pos={"relative"}
+              onClick={() => {
+                onClose?.();
+              }}
+            >
+              <AppIcon icon={ArrowUpDownIcon} />
+
+              {capitalizeWords(isAdminRoute ? l.to_app : l.to_admin)}
+            </Btn>
+          </NavLink>
+        )}
+
         {OTHER_PRIVATE_NAV_GROUPS[0].navs.map((nav) => {
           return (
             <NavLink

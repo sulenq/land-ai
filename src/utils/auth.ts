@@ -1,4 +1,4 @@
-import { Interface__Role } from "@/constants/interfaces";
+import { Interface__Role, Interface__User } from "@/constants/interfaces";
 import { getStorage, removeStorage, setStorage } from "@/utils/client";
 
 export function getAccessToken() {
@@ -13,7 +13,7 @@ export function clearAccessToken() {
   removeStorage("__access_token");
 }
 
-export function getUserData(): Record<string, any> | null {
+export function getUserData(): Interface__User | null {
   const raw = getStorage("__user_data");
   if (!raw) return null;
 
@@ -36,6 +36,10 @@ export function setUserData(user: Record<string, any>) {
 export function clearUserData() {
   removeStorage("__user_data");
 }
+
+export const isPublic = () => {
+  return getUserData()?.role === 3;
+};
 
 // below is for dynamic roles
 // export function can(permission: string, user: Interface__User) {
