@@ -112,7 +112,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
 
       <CContainer gap={1} p={"6px"}>
         {!isPublic() && (
-          <NavLink to={`${isAdminRoute ? "" : "/admin"}`} w={"full"}>
+          <NavLink to={`${isAdminRoute ? "/new-chat" : "/admin"}`} w={"full"}>
             <Btn
               clicky={false}
               px={2}
