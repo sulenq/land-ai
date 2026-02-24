@@ -256,7 +256,7 @@ const Data = (props: any) => {
       dim: !!item.deletedAt,
       columns: [
         {
-          td: <MiniUser user={item} />,
+          td: <MiniUser user={item} minW={"150px"} />,
           value: item.name,
         },
         {
@@ -406,7 +406,7 @@ const Data = (props: any) => {
                     <AccountStatus
                       accountStatus={resolvedItem.accountStatus}
                       pos={"absolute"}
-                      top={2}
+                      top={1}
                       left={2}
                     />
                   </HStack>

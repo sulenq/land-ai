@@ -2,9 +2,9 @@
 
 import { Type__AccountStatus } from "@/constants/types";
 import useLang from "@/context/useLang";
-import { Badge, BadgeProps } from "@chakra-ui/react";
+import { Status, StatusRootProps } from "@chakra-ui/react";
 
-interface Props extends BadgeProps {
+interface Props extends StatusRootProps {
   accountStatus: Type__AccountStatus;
 }
 
@@ -35,12 +35,12 @@ export const AccountStatus = (props: Props) => {
   };
 
   return (
-    <Badge
-      colorPalette={accountStatuses[accountStatus].colorPalette}
-      justifyContent={"center"}
-      {...restProps}
-    >
+    <Status.Root {...restProps}>
+      <Status.Indicator
+        colorPalette={accountStatuses[accountStatus].colorPalette}
+      />
+
       {accountStatuses[accountStatus].label}
-    </Badge>
+    </Status.Root>
   );
 };
