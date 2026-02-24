@@ -4,12 +4,19 @@ import { Avatar } from "@/components/ui/avatar";
 import { Field } from "@/components/ui/field";
 import { H1 } from "@/components/ui/heading";
 import { NavLink } from "@/components/ui/nav-link";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Logo } from "@/components/widget/Logo";
 import { APP } from "@/constants/_meta";
-import { AUTH_API_SIGNIN, AUTH_API_SIGNOUT } from "@/constants/apis";
+import {
+  AUTH_API_SIGNIN_ADMIN,
+  AUTH_API_SIGNIN_PUBLIC,
+  AUTH_API_SIGNIN_SUPER_ADMIN,
+  AUTH_API_SIGNOUT,
+} from "@/constants/apis";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
+import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useRequest from "@/hooks/useRequest";
@@ -21,19 +28,27 @@ import {
   setAccessToken,
   setUserData,
 } from "@/utils/auth";
+import { pluckString } from "@/utils/string";
 import {
   FieldsetRoot,
   HStack,
   Icon,
   InputGroup,
+  SimpleGrid,
   StackProps,
   VStack,
 } from "@chakra-ui/react";
-import { IconLock, IconUser } from "@tabler/icons-react";
+import { IconArrowLeft, IconLock, IconUser } from "@tabler/icons-react";
 import { useFormik } from "formik";
-import { LogInIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import {
+  ArrowRightIcon,
+  LogInIcon,
+  ShieldUserIcon,
+  UserIcon,
+  UserStarIcon,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import * as yup from "yup";
 import { useChatSessions } from "../../context/useChatSessions";
 import { Btn } from "../ui/btn";
@@ -43,20 +58,39 @@ import { P } from "../ui/p";
 import { PasswordInput } from "../ui/password-input";
 import { StringInput } from "../ui/string-input";
 import ResetPasswordDisclosureTrigger from "./ResetPasswordDisclosure";
+import { back } from "@/utils/client";
+import { DotIndicator } from "@/components/widget/Indicator";
 
-interface Props extends StackProps {}
+const AUTH_PROVIDER_CONFIG = {
+  superAdmin: {
+    key: "superAdmin",
+    icon: ShieldUserIcon,
+    nameKey: "super_admin",
+    signinAPI: AUTH_API_SIGNIN_SUPER_ADMIN,
+    indexRoute: "/admin",
+  },
+  admin: {
+    key: "admin",
+    icon: UserStarIcon,
+    nameKey: "admin",
+    signinAPI: AUTH_API_SIGNIN_ADMIN,
+    indexRoute: "/admin",
+  },
+  public: {
+    key: "public",
+    icon: UserIcon,
+    nameKey: "public_",
+    signinAPI: AUTH_API_SIGNIN_PUBLIC,
+    indexRoute: "/",
+  },
+};
+const AUTH_PROVIDER_CONFIG_LIST = Object.values(AUTH_PROVIDER_CONFIG);
+const AUTH_PROVIDER_KEY_PARAM = "authProviderKey";
 
-const INDEX_ROUTE = "/new-chat";
-
-const Signedin = (props: any) => {
-  // Props
-  const { ...restProps } = props;
-
+const SignoutButton = () => {
   // Contexts
   const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
   const removeAuth = useAuthMiddleware((s) => s.removeAuth);
-  const user = getUserData();
 
   // Hooks
   const { req, loading } = useRequest({
@@ -89,36 +123,52 @@ const Signedin = (props: any) => {
   }
 
   return (
+    <Btn w={"140px"} variant={"ghost"} onClick={onSignout} loading={loading}>
+      Sign out
+    </Btn>
+  );
+};
+interface Props__Signedin extends StackProps {
+  indexRoute: string;
+}
+const Signedin = (props: Props__Signedin) => {
+  // Props
+  const { indexRoute, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const user = getUserData();
+
+  return (
     <VStack gap={4} m={"auto"} {...restProps}>
       <Avatar size={"2xl"} src={user?.avatar?.[0]?.fileUrl} />
 
       <VStack gap={0}>
-        <P fontWeight={"semibold"}>Admin</P>
-        <P>admin@gmail.com</P>
+        <P fontWeight={"semibold"}>{user?.name}</P>
+        <P>{user?.email}</P>
       </VStack>
 
       <VStack>
-        <NavLink to={INDEX_ROUTE}>
+        <NavLink to={indexRoute}>
           <Btn w={"140px"} colorPalette={themeConfig.colorPalette}>
             {l.access} App
           </Btn>
         </NavLink>
 
-        <Btn
-          w={"140px"}
-          variant={"ghost"}
-          onClick={onSignout}
-          loading={loading}
-        >
-          Sign in
-        </Btn>
+        <SignoutButton />
       </VStack>
     </VStack>
   );
 };
-const BasicAuthForm = (props: any) => {
+
+interface Props__Form extends StackProps {
+  signinAPI: string;
+  indexRoute: string;
+}
+const Form = (props: Props__Form) => {
   // Props
-  const { signinAPI, ...restProps } = props;
+  const { signinAPI, indexRoute, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -169,7 +219,7 @@ const BasicAuthForm = (props: any) => {
             setVerifiedAuthToken(accessToken);
             setPermissions(permissionsData);
 
-            router.push(INDEX_ROUTE);
+            router.push(indexRoute);
           },
         },
       });
@@ -261,8 +311,87 @@ const BasicAuthForm = (props: any) => {
     </CContainer>
   );
 };
+const RoleSelect = () => {
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
-export const SigninForm = (props: Props) => {
+  // States
+  const [selectedAuthProviderKey, setSelectedAuthProviderKey] =
+    useState<string>("");
+
+  return (
+    <CContainer gap={4}>
+      <SimpleGrid columns={3} gap={2}>
+        {AUTH_PROVIDER_CONFIG_LIST.map((config) => {
+          const isSelected = selectedAuthProviderKey === config.key;
+
+          return (
+            <CContainer
+              key={config.key}
+              gap={2}
+              minH={"204px"}
+              h={"full"}
+              p={4}
+              color={isSelected ? `${themeConfig.colorPalette}.fg` : ""}
+              border={"1px solid"}
+              borderColor={
+                isSelected ? themeConfig.primaryColor : "border.muted"
+              }
+              rounded={themeConfig.radii.container}
+              opacity={isSelected ? 1 : 0.6}
+              cursor={"pointer"}
+              pos={"relative"}
+              overflow={"clip"}
+              transition={"200ms"}
+              onClick={() => {
+                setSelectedAuthProviderKey(config.key);
+              }}
+              _hover={{
+                bg: "bg.muted",
+              }}
+            >
+              {isSelected && <DotIndicator />}
+
+              <AppIcon
+                icon={config.icon}
+                boxSize={"100px"}
+                opacity={0.4}
+                lucideIconProps={{
+                  strokeWidth: 1,
+                }}
+                pos={"absolute"}
+                top={"12px"}
+                right={"-20px"}
+              />
+
+              <P fontSize={"lg"} fontWeight={"semibold"} mt={"auto"}>
+                {pluckString(l, config.nameKey)}
+              </P>
+            </CContainer>
+          );
+        })}
+      </SimpleGrid>
+
+      <NavLink
+        to={`/?${AUTH_PROVIDER_KEY_PARAM}=${selectedAuthProviderKey}`}
+        w={"full"}
+      >
+        <Btn
+          colorPalette={themeConfig.colorPalette}
+          disabled={!selectedAuthProviderKey}
+          size={"lg"}
+        >
+          {l.next}
+
+          <AppIcon icon={ArrowRightIcon} />
+        </Btn>
+      </NavLink>
+    </CContainer>
+  );
+};
+
+export const SigninForm = (props: StackProps) => {
   // Props
   const { ...restProps } = props;
 
@@ -273,13 +402,27 @@ export const SigninForm = (props: Props) => {
   const verifiedAuthToken = useAuthMiddleware((s) => s.verifiedAuthToken);
   const resolvedAuthToken = authToken || verifiedAuthToken;
   const clearChatSessions = useChatSessions((s) => s.clearChatSessions);
+  const clearDASessions = useDASessions((s) => s.clearDASessions);
+
+  // Hooks
+  const searchParams = useSearchParams();
+  const selectedAuthProviderKey = searchParams.get(AUTH_PROVIDER_KEY_PARAM);
 
   // States
-  const signinAPI = AUTH_API_SIGNIN;
+  const selectedAuthProviderConfig = useMemo(() => {
+    if (!selectedAuthProviderKey) {
+      return null;
+    } else {
+      return AUTH_PROVIDER_CONFIG[
+        selectedAuthProviderKey as keyof typeof AUTH_PROVIDER_CONFIG
+      ];
+    }
+  }, [selectedAuthProviderKey]);
 
-  // Clear chat sessions on mount
+  // Clear chat sessions and DA sessions on mount
   useEffect(() => {
     clearChatSessions();
+    clearDASessions();
   }, []);
 
   return (
@@ -293,7 +436,7 @@ export const SigninForm = (props: Props) => {
       {...restProps}
     >
       {resolvedAuthToken ? (
-        <Signedin />
+        <Signedin indexRoute={"/admin"} />
       ) : (
         <>
           <CContainer align={"center"} gap={2} mb={4}>
@@ -308,7 +451,26 @@ export const SigninForm = (props: Props) => {
             </P>
           </CContainer>
 
-          <BasicAuthForm signinAPI={signinAPI} />
+          {selectedAuthProviderConfig && (
+            <CContainer gap={4} mx={"auto"}>
+              <HStack>
+                <Btn size={"md"} variant={"ghost"} onClick={back} pl={3}>
+                  <Icon>
+                    <IconArrowLeft stroke={1.5} />
+                  </Icon>
+
+                  {l.previous}
+                </Btn>
+              </HStack>
+
+              <Form
+                signinAPI={selectedAuthProviderConfig.signinAPI}
+                indexRoute={selectedAuthProviderConfig.indexRoute}
+              />
+            </CContainer>
+          )}
+
+          {!selectedAuthProviderConfig && <RoleSelect />}
         </>
       )}
     </CContainer>

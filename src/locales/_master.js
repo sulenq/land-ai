@@ -135,6 +135,18 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const super_admin = {
+  id: "Super Admin",
+  en: "Super Admin",
+};
+export const admin = {
+  id: "Admin",
+  en: "Admin",
+};
+export const public_ = {
+  id: "Publik",
+  en: "Public",
+};
 export const not_found = {
   id: "Tidak ditemukan",
   en: "Not found",
@@ -675,10 +687,6 @@ export const purpose = {
   id: "Tujuan",
   en: "Purpose",
 };
-export const super_admin = {
-  id: "Super Admin",
-  en: "Super Admin",
-};
 export const educator = {
   id: "Pengajar",
   en: "Educator",
@@ -1150,8 +1158,8 @@ export const msg_required_form = {
   en: "Cannot be empty",
 };
 export const msg_signin = {
-  id: "Masukkan detail akun untuk melanjutkan.",
-  en: "Enter your account details to continue.",
+  id: "Sebelum signin, silahkan pilih role anda.",
+  en: "Before signing in, please select your role.",
 };
 export const msg_signout = {
   id: "Anda yakin ingin keluar?",
