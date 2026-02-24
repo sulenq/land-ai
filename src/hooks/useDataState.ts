@@ -108,6 +108,7 @@ const useDataState = <T = any>({
 
   const onRetry = useCallback(() => {
     makeRequest();
+    setInitialLoading(true);
   }, [makeRequest]);
 
   const loadMore = useCallback(() => {

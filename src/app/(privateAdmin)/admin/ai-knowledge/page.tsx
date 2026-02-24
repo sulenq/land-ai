@@ -23,6 +23,7 @@ import { DataGrid } from "@/components/widget/DataGrid";
 import { DataGridAIKnowledgeItem } from "@/components/widget/DataGridAIKnowledgeItem";
 import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
+import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import HScroll from "@/components/widget/HScroll";
 import {
@@ -391,6 +392,7 @@ const Data = (props: any) => {
     loading: <TableSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
+    notFound: <FeedbackNotFound />,
     loaded: displayTable ? (
       <DataTable
         headers={dataProps.headers}
