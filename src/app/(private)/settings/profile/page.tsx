@@ -98,7 +98,7 @@ const AvatarUploadTrigger = (props: Props__AvatarInputDisclosureTrigger) => {
               onChange={(inputValue) => {
                 formik.setFieldValue(inputValue);
               }}
-              existingFiles={user?.avatar?.[0]?.filePath}
+              existingFiles={user?.avatar}
               onDeleteFile={(fileData) => {
                 formik.setFieldValue(
                   "deleteAvatarIds",
