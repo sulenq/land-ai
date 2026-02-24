@@ -207,6 +207,7 @@ export interface Interface__ChatAIKnowledge {
   id: string;
   fileName: string;
   metaData: {
+    fileName: string;
     filePath: string;
     fileSize: string;
     mimeType: string;
