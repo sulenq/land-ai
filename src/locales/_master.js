@@ -139,9 +139,9 @@ export const to_admin = {
   id: "Ke panel admin",
   en: "Go to admin panel",
 };
-export const to_app = {
-  id: "Ke aplikasi",
-  en: "Go to app",
+export const to_main_app = {
+  id: "Ke aplikasi utama",
+  en: "Go to main app",
 };
 export const file_name = {
   id: "Nama file",

@@ -21,7 +21,7 @@ import useADM from "@/context/useADM";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
 import useScreen from "@/hooks/useScreen";
-import { last } from "@/utils/array";
+import { isEmptyArray, last } from "@/utils/array";
 import { capitalizeWords, pluckString } from "@/utils/string";
 import { getActiveNavs } from "@/utils/url";
 import { HStack, Icon, StackProps } from "@chakra-ui/react";
@@ -97,11 +97,13 @@ export const NavBreadcrumb = (props: any) => {
   const activeNavs = breadcrumbs.activeNavs;
 
   useEffect(() => {
-    const currentActiveNavs = getActiveNavs(pathname, RESOLVED_NAVS);
+    const currentActiveNavs = getActiveNavs(pathname);
     const resolvedBackPath = last(currentActiveNavs)?.backPath;
     const resolvedActiveNavs =
       sw < 960
-        ? [currentActiveNavs[currentActiveNavs.length - 1]]
+        ? !isEmptyArray(currentActiveNavs)
+          ? [currentActiveNavs[currentActiveNavs.length - 1]]
+          : currentActiveNavs
         : currentActiveNavs;
 
     setBreadcrumbs({
@@ -117,7 +119,7 @@ export const NavBreadcrumb = (props: any) => {
       <SimplePopover
         content={activeNavs
           .map((nav) => {
-            return nav.label || pluckString(l, nav.labelKey);
+            return nav?.label || pluckString(l, nav?.labelKey);
           })
           .join(" / ")}
         maxW={"400px"}
@@ -152,7 +154,7 @@ export const NavBreadcrumb = (props: any) => {
                 )}
 
                 <P fontSize={FONT_SIZE} lineClamp={1}>
-                  {nav.label ? nav.label : pluckString(l, nav.labelKey)}
+                  {nav?.label ? nav?.label : pluckString(l, nav.labelKey)}
                 </P>
               </HStack>
             );

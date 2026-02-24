@@ -229,7 +229,7 @@ const MobileLayout = (props: Props__Layout) => {
                             lineClamp={1}
                             fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
                           >
-                            {nav.label || pluckString(l, nav.labelKey) || "-"}
+                            {nav?.label || pluckString(l, nav.labelKey) || "-"}
                           </P>
 
                           {isMainNavActive && <BottomIndicator />}
@@ -264,7 +264,7 @@ const MobileLayout = (props: Props__Layout) => {
                                   textAlign={"center"}
                                   lineClamp={1}
                                 >
-                                  {nav.label ||
+                                  {nav?.label ||
                                     pluckString(l, nav.labelKey) ||
                                     "-"}
                                 </P>
@@ -368,13 +368,11 @@ const MobileLayout = (props: Props__Layout) => {
               cursor={"pointer"}
               gap={1}
             >
-              {!user?.avatar?.filePath && (
-                <AppIcon icon={UserIcon} boxSize={5} />
-              )}
+              {!user?.avatar && <AppIcon icon={UserIcon} boxSize={5} />}
 
-              {user?.avatar?.filePath && (
+              {user?.avatar && (
                 <Avatar
-                  src={imgUrl(user?.avatar?.filePath)}
+                  src={imgUrl(user?.avatar)}
                   name={user?.name}
                   size={"2xs"}
                 />
@@ -497,7 +495,7 @@ const DesktopLayout = (props: Props__Layout) => {
   // States
   const user = getUserData();
   const roleId = user?.role;
-  const isAllowed = (allowedRoles?: string[] | undefined) =>
+  const isAllowed = (allowedRoles?: number[] | undefined) =>
     !allowedRoles ||
     allowedRoles.length === 0 ||
     (roleId && allowedRoles.includes(roleId));
@@ -621,7 +619,9 @@ const DesktopLayout = (props: Props__Layout) => {
                           <NavLink key={nav.path} to={nav.path} w={"full"}>
                             <DesktopNavTooltip
                               content={
-                                nav.label || pluckString(l, nav.labelKey) || "-"
+                                nav?.label ||
+                                pluckString(l, nav.labelKey) ||
+                                "-"
                               }
                             >
                               <Btn
@@ -661,7 +661,7 @@ const DesktopLayout = (props: Props__Layout) => {
 
                                 {navsExpanded && (
                                   <P lineClamp={1} textAlign={"left"}>
-                                    {nav.label ||
+                                    {nav?.label ||
                                       pluckString(l, nav.labelKey) ||
                                       "-"}
                                   </P>
@@ -684,7 +684,7 @@ const DesktopLayout = (props: Props__Layout) => {
                               >
                                 <DesktopNavTooltip
                                   content={
-                                    nav.label ||
+                                    nav?.label ||
                                     pluckString(l, nav.labelKey) ||
                                     "-"
                                   }
@@ -817,7 +817,7 @@ const DesktopLayout = (props: Props__Layout) => {
                                           boxSize={BASE_ICON_BOX_SIZE}
                                         />
                                         <P lineClamp={1} textAlign="left">
-                                          {nav.label ||
+                                          {nav?.label ||
                                             pluckString(l, nav.labelKey) ||
                                             "-"}
                                         </P>
@@ -1030,7 +1030,7 @@ const DesktopLayout = (props: Props__Layout) => {
               pos={"relative"}
             >
               <Avatar
-                src={imgUrl(user?.avatar?.filePath)}
+                src={imgUrl(user?.avatar)}
                 name={user?.name}
                 size={navsExpanded ? "md" : "2xs"}
                 mr={"auto"}
@@ -1043,7 +1043,7 @@ const DesktopLayout = (props: Props__Layout) => {
                       {user?.name || user?.email || "Signed out"}
                     </P>
                     <P lineClamp={1} color={"fg.subtle"}>
-                      {user?.name ? user?.email || user?.username : "-"}
+                      {user?.name ? user?.email : "-"}
                     </P>
                   </CContainer>
 

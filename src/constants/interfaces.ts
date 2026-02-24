@@ -58,7 +58,7 @@ export interface Interface__Nav {
   label?: string;
   path: string;
   backPath?: string;
-  allowedRoles?: string[];
+  allowedRoles?: number[];
   allowedPermissions?: string[];
   children?: Interface__NavGroup[];
   invisibleChildren?: boolean;

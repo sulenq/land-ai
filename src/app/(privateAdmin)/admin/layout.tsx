@@ -222,7 +222,7 @@ const MobileLayout = (props: any) => {
                             lineClamp={1}
                             fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
                           >
-                            {nav.label ?? pluckString(l, nav.labelKey) ?? "-"}
+                            {nav?.label ?? pluckString(l, nav.labelKey) ?? "-"}
                           </P>
 
                           {isMainNavActive && <BottomIndicator />}
@@ -257,7 +257,7 @@ const MobileLayout = (props: any) => {
                                   textAlign={"center"}
                                   lineClamp={1}
                                 >
-                                  {nav.label ??
+                                  {nav?.label ??
                                     pluckString(l, nav.labelKey) ??
                                     "-"}
                                 </P>
@@ -339,7 +339,7 @@ const MobileLayout = (props: any) => {
                   lineClamp={1}
                   fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
                 >
-                  {nav.label ?? pluckString(l, nav.labelKey) ?? "-"}
+                  {nav?.label ?? pluckString(l, nav.labelKey) ?? "-"}
                 </P>
 
                 {pathname === nav.path && <BottomIndicator />}
@@ -354,13 +354,11 @@ const MobileLayout = (props: any) => {
               cursor={"pointer"}
               gap={1}
             >
-              {!user?.avatar?.filePath && (
-                <AppIcon icon={UserIcon} boxSize={5} />
-              )}
+              {!user?.avatar && <AppIcon icon={UserIcon} boxSize={5} />}
 
-              {user?.avatar?.filePath && (
+              {user?.avatar && (
                 <Avatar
-                  src={imgUrl(user?.avatar?.filePath)}
+                  src={imgUrl(user?.avatar)}
                   name={user?.name}
                   size={"2xs"}
                 />
@@ -413,7 +411,7 @@ const DesktopLayout = (props: any) => {
     const filteredList = nav.navs
       .map((nav) => {
         const labelMain =
-          nav.label?.toLowerCase() ??
+          nav?.label?.toLowerCase() ??
           pluckString(l, nav.labelKey)?.toLowerCase() ??
           "";
         const allowedMain = isAllowed(nav, roleId);
@@ -663,8 +661,8 @@ const DesktopLayout = (props: any) => {
                                 >
                                   <DesktopNavTooltip
                                     content={
-                                      nav.label
-                                        ? nav.label
+                                      nav?.label
+                                        ? nav?.label
                                         : pluckString(l, nav.labelKey)
                                     }
                                   >
@@ -799,8 +797,8 @@ const DesktopLayout = (props: any) => {
                                           <AppIcon icon={nav.icon} />
 
                                           <P lineClamp={1} textAlign="left">
-                                            {nav.label
-                                              ? nav.label
+                                            {nav?.label
+                                              ? nav?.label
                                               : pluckString(l, nav.labelKey)}
                                           </P>
                                         </HStack>
@@ -1047,7 +1045,7 @@ const DesktopLayout = (props: any) => {
               pos={"relative"}
             >
               <Avatar
-                src={imgUrl(user?.avatar?.filePath)}
+                src={imgUrl(user?.avatar)}
                 name={user?.name}
                 size={navsExpanded ? "md" : "2xs"}
                 mr={"auto"}

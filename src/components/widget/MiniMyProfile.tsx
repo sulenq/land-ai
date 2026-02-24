@@ -27,7 +27,7 @@ import { back } from "@/utils/client";
 import { capitalizeWords, pluckString } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
 import { Icon, StackProps } from "@chakra-ui/react";
-import { ArrowUpDownIcon, LogOutIcon } from "lucide-react";
+import { LogOutIcon, NavigationIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 interface Props__MiniMyProfile extends StackProps {
@@ -123,9 +123,9 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
                 onClose?.();
               }}
             >
-              <AppIcon icon={ArrowUpDownIcon} />
+              <AppIcon icon={NavigationIcon} />
 
-              {capitalizeWords(isAdminRoute ? l.to_app : l.to_admin)}
+              {capitalizeWords(isAdminRoute ? l.to_main_app : l.to_admin)}
             </Btn>
           </NavLink>
         )}
@@ -149,7 +149,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
               >
                 <AppIcon icon={nav.icon} />
 
-                {nav.label || pluckString(l, nav.labelKey)}
+                {nav?.label || pluckString(l, nav.labelKey)}
 
                 {/* {pathname.includes(nav.path) && (
                   <DotIndicator ml={"auto"} mr={1} />
