@@ -35,10 +35,11 @@ export const AccountStatus = (props: Props) => {
   };
 
   return (
-    <Status.Root {...restProps}>
-      <Status.Indicator
-        colorPalette={accountStatuses[accountStatus].colorPalette}
-      />
+    <Status.Root
+      colorPalette={accountStatuses[accountStatus].colorPalette}
+      {...restProps}
+    >
+      <Status.Indicator />
 
       {accountStatuses[accountStatus].label}
     </Status.Root>
