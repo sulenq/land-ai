@@ -1,10 +1,104 @@
 import {
+  Interface__ChatAIKnowledge,
   Interface__ChatMessage,
   Interface__ChatSession,
   Interface__DASession,
   Interface__DASessionDetail,
   Interface__User,
 } from "@/constants/interfaces";
+
+export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
+  {
+    id: "1",
+    fileName: "document-1.pdf",
+    metaData: { fileSize: "1.2 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-01T08:12:00Z",
+  },
+  {
+    id: "2",
+    fileName: "document-2.pdf",
+    metaData: { fileSize: "980 KB", mimeType: "application/pdf" },
+    createdAt: "2026-02-02T09:20:00Z",
+  },
+  {
+    id: "3",
+    fileName: "document-3.pdf",
+    metaData: { fileSize: "2.4 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-03T10:45:00Z",
+  },
+  {
+    id: "4",
+    fileName: "document-4.pdf",
+    metaData: { fileSize: "760 KB", mimeType: "application/pdf" },
+    createdAt: "2026-02-04T11:30:00Z",
+  },
+  {
+    id: "5",
+    fileName: "document-5.pdf",
+    metaData: { fileSize: "3.1 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-05T12:10:00Z",
+  },
+  {
+    id: "6",
+    fileName: "document-6.pdf",
+    metaData: { fileSize: "1.7 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-06T13:05:00Z",
+  },
+  {
+    id: "7",
+    fileName: "document-7.pdf",
+    metaData: { fileSize: "540 KB", mimeType: "application/pdf" },
+    createdAt: "2026-02-07T14:22:00Z",
+  },
+  {
+    id: "8",
+    fileName: "document-8.pdf",
+    metaData: { fileSize: "2.9 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-08T15:40:00Z",
+  },
+  {
+    id: "9",
+    fileName: "document-9.pdf",
+    metaData: { fileSize: "1.1 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-09T16:18:00Z",
+  },
+  {
+    id: "10",
+    fileName: "document-10.pdf",
+    metaData: { fileSize: "870 KB", mimeType: "application/pdf" },
+    createdAt: "2026-02-10T08:55:00Z",
+  },
+  {
+    id: "11",
+    fileName: "document-11.pdf",
+    metaData: { fileSize: "2.2 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-11T09:42:00Z",
+  },
+  {
+    id: "12",
+    fileName: "document-12.pdf",
+    metaData: { fileSize: "1.6 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-12T10:33:00Z",
+  },
+  {
+    id: "13",
+    fileName: "document-13.pdf",
+    metaData: { fileSize: "3.8 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-13T11:27:00Z",
+  },
+  {
+    id: "14",
+    fileName: "document-14.pdf",
+    metaData: { fileSize: "690 KB", mimeType: "application/pdf" },
+    createdAt: "2026-02-14T12:50:00Z",
+  },
+  {
+    id: "15",
+    fileName: "document-15.pdf",
+    metaData: { fileSize: "2.0 MB", mimeType: "application/pdf" },
+    createdAt: "2026-02-15T13:15:00Z",
+  },
+];
 
 export const DUMMY_USERS: Interface__User[] = [
   {
@@ -477,7 +571,7 @@ export const dummyUser: any = {
       fileUrl:
         "https://cdn.rssehat.id/uploads/profile/profile_rani_kartika.jpg",
       fileMimeType: "image/jpeg",
-      fileSize: "245320",
+      fileSileSize: "245320",
       createdBy: "system",
       updatedBy: "system",
       createdAt: "2023-03-10T08:42:00Z",

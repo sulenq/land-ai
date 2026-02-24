@@ -12,7 +12,11 @@ import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { MiniUser } from "@/components/widget/MiniUser";
-import { PageContainer, PageContent } from "@/components/widget/PageShell";
+import {
+  PageContainer,
+  PageContent,
+  PageTitle,
+} from "@/components/widget/PageShell";
 import { RowOptionMenuTooltip } from "@/components/widget/RowOptions";
 import { TableSkeleton } from "@/components/widget/TableSkeleton";
 import { DUMMY_USERS } from "@/constants/dummyData";
@@ -47,7 +51,7 @@ const DataUtils = (props: any) => {
   const { filter, setFilter, ...restProps } = props;
 
   return (
-    <HStack p={3} {...restProps}>
+    <HStack {...restProps}>
       <SearchInput
         queryKey="user"
         inputValue={filter.search}
@@ -456,11 +460,15 @@ export default function Page() {
 
   return (
     <PageContainer>
+      <PageTitle />
+
       <PageContent overflowY={"auto"}>
         <DataUtils
           filter={filter}
           setFilter={setFilter}
           routeTitle={routeTitle}
+          px={3}
+          mb={4}
         />
         <Data filter={filter} routeTitle={routeTitle} />
       </PageContent>

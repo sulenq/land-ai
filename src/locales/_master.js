@@ -135,6 +135,22 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const file_name = {
+  id: "Nama file",
+  en: "File name",
+};
+export const size = {
+  id: "Ukuran",
+  en: "Size",
+};
+export const file_size = {
+  id: "Ukuran file",
+  en: "File size",
+};
+export const mime_type = {
+  id: "Tipe file",
+  en: "File type",
+};
 export const super_admin = {
   id: "Super Admin",
   en: "Super Admin",

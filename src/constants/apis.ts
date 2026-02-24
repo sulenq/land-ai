@@ -25,6 +25,7 @@ export const DA_API_SESSION_RENAME = `/api/da/session/rename`; // PATCH + /:daSe
 export const DA_API_SESSION_DELETE = `/api/da/session/delete`; // DELETE + /:daSessionIds
 
 // Admin
-export const ADMIN_KNOWLEDGE_CREATE = "/api/ai/knowledge/create"; // POST
-export const ADMIN_KNOWLEDGE_GET = "/api/ai/knowledge/get"; // GET
-export const ADMIN_KNOWLEDGE_DELETE = "/api/ai/knowledge/delete"; // DELETE + /:knowledgeId
+export const ADMIN_AI_KNOWLEDGE_BASE = "/api/admin/ai/knowledge";
+export const ADMIN_KNOWLEDGE_CREATE = "/api/admin/ai/knowledge/create"; // POST
+export const ADMIN_KNOWLEDGE_GET = "/api/admin/ai/knowledge/get"; // GET
+export const ADMIN_KNOWLEDGE_DELETE = "/api/admin/ai/knowledge/delete"; // DELETE + /:knowledgeId

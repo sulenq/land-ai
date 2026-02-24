@@ -71,7 +71,7 @@ export const FileIcon = forwardRef<SVGSVGElement, Props>(
         <IconComponent stroke={1.5} {...iconProps} />
       </ChakraIcon>
     );
-  }
+  },
 );
 
 FileIcon.displayName = "FileIcon";

@@ -78,7 +78,7 @@ export const InputComponent = (props: Props__FileInputInputComponent) => {
     placeholder,
     label,
     dropzone,
-    maxFileSize = 10,
+    maxFileSizeMB = 10,
     maxFiles = 1,
     description,
     disabled,
@@ -116,7 +116,7 @@ export const InputComponent = (props: Props__FileInputInputComponent) => {
   const resolvedDescription = singleFileInputted
     ? formatBytes(singleFile?.size)
     : description ||
-      `up to ${maxFileSize} MB, max ${maxFiles || 1} file${
+      `up to ${maxFileSizeMB} MB, max ${maxFiles || 1} file${
         maxFiles! > 1 ? "s" : ""
       } ${acceptPlaceholder ? `(${acceptPlaceholder})` : ""}`;
 
@@ -171,7 +171,7 @@ export const InputComponent = (props: Props__FileInputInputComponent) => {
             description: l.error_invalid_file.description,
           });
         }}
-        maxFileSize={maxFileSize * 1024 * 1024}
+        maxFileSizeMB={maxFileSizeMB * 1024 * 1024}
         maxFiles={maxFiles}
         gap={2}
         accept={accept}

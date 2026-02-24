@@ -203,6 +203,16 @@ export interface Interface__ActiveChatState {
   hasLoadedHistory: boolean;
   // isNewSession: boolean;
 }
+export interface Interface__ChatAIKnowledge {
+  id: string;
+  fileName: string;
+  metaData: {
+    filePath: string;
+    fileSize: string;
+    mimeType: string;
+  };
+  createdAt: string;
+}
 
 // Modul 2 - Document Analysis
 export interface Interface__DemoDetailPage {
@@ -273,7 +283,6 @@ export interface Interface__DASessionDetail extends Interface__DASession {
   result: Interface__DAAnalysisResultItem[];
 }
 export type Interface__DASessionDraft = Partial<Interface__DASessionDetail>;
-
 export interface Interface__ActiveDAState {
   session: Interface__DASessionDraft | null;
   isNewDA: boolean;
