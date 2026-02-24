@@ -93,11 +93,11 @@ export const NavBreadcrumb = (props: any) => {
   const { sw } = useScreen();
 
   // States
+  const currentActiveNavs = getActiveNavs(pathname);
   const backPath = breadcrumbs.backPath;
   const activeNavs = breadcrumbs.activeNavs;
 
   useEffect(() => {
-    const currentActiveNavs = getActiveNavs(pathname);
     const resolvedBackPath = last(currentActiveNavs)?.backPath;
     const resolvedActiveNavs =
       sw < 960
@@ -110,14 +110,14 @@ export const NavBreadcrumb = (props: any) => {
       activeNavs: resolvedActiveNavs,
       backPath: resolvedBackPath,
     });
-  }, [pathname]);
+  }, [pathname, sw]);
 
   return (
     <HStack gap={1} ml={"-4px"} h={"36px"} cursor={"pointer"} {...restProps}>
       {backPath && <BackButton iconButton clicky={false} backPath={backPath} />}
 
       <SimplePopover
-        content={activeNavs
+        content={currentActiveNavs
           .map((nav) => {
             return nav?.label || pluckString(l, nav?.labelKey);
           })

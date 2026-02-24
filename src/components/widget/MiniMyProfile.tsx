@@ -116,7 +116,7 @@ export const MiniMyProfile = (props: Props__MiniMyProfile) => {
             <Btn
               clicky={false}
               px={2}
-              variant={"ghost"}
+              variant={"ghost"}  
               justifyContent={"start"}
               pos={"relative"}
               onClick={() => {

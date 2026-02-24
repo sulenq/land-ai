@@ -85,6 +85,7 @@ import {
   Center,
   HStack,
   Icon,
+  PopoverRootProps,
   StackProps,
   VStack,
 } from "@chakra-ui/react";
@@ -101,7 +102,15 @@ import { Fragment, useEffect, useRef, useState } from "react";
 
 const USER_PROFILE_URL = "/api/get-user-profile";
 
-const MiniMyProfilePopoverTrigger = (props: StackProps) => {
+interface Props__MiniMyProfilePopoverTrigger extends StackProps {
+  popoverRootProps?: Omit<PopoverRootProps, "children">;
+}
+const MiniMyProfilePopoverTrigger = (
+  props: Props__MiniMyProfilePopoverTrigger,
+) => {
+  // Props
+  const { popoverRootProps, ...restProps } = props;
+
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -120,18 +129,9 @@ const MiniMyProfilePopoverTrigger = (props: StackProps) => {
   }
 
   return (
-    <PopoverRoot
-      open={open}
-      positioning={{
-        placement: "right-end",
-        offset: {
-          mainAxis: DESKTOP_NAVS_POPOVER_MAIN_AXIS,
-          crossAxis: 4,
-        },
-      }}
-    >
+    <PopoverRoot open={open} {...popoverRootProps}>
       <PopoverTrigger asChild>
-        <CContainer w={"fit"} onClick={onOpen} {...props} />
+        <CContainer w={"fit"} onClick={onOpen} {...restProps} />
       </PopoverTrigger>
 
       <PopoverContent ref={containerRef} w={"235px"} zIndex={10}>
@@ -398,9 +398,9 @@ const DesktopLayout = (props: any) => {
   // States
   const user = getUserData();
   const [search, setSearch] = useState<string>("");
-  const roleId = user?.role?.id;
+  const roleId = user?.role;
   const q = (search ?? "").toLowerCase();
-  const isAllowed = (item: { allowedRoles?: string[] }, roleId?: string) =>
+  const isAllowed = (item: { allowedRoles?: number[] }) =>
     !item.allowedRoles ||
     item.allowedRoles.length === 0 ||
     (roleId && item.allowedRoles.includes(roleId));
@@ -414,7 +414,7 @@ const DesktopLayout = (props: any) => {
           nav?.label?.toLowerCase() ??
           pluckString(l, nav.labelKey)?.toLowerCase() ??
           "";
-        const allowedMain = isAllowed(nav, roleId);
+        const allowedMain = isAllowed(nav);
 
         if (!nav.children || nav.children.length === 0) {
           if (!qNormalized) return allowedMain ? nav : null;
@@ -425,9 +425,7 @@ const DesktopLayout = (props: any) => {
         const subsFilteredByRole = nav.children
           .map((sub) => ({
             ...sub,
-            navs: (sub.navs ?? []).filter((subItem) =>
-              isAllowed(subItem, roleId),
-            ),
+            navs: (sub.navs ?? []).filter((subNavs) => isAllowed(subNavs)),
           }))
           .filter((s) => (s.navs ?? []).length > 0);
 
@@ -452,11 +450,11 @@ const DesktopLayout = (props: any) => {
         const matchedSubs = nav.children
           .map((sub) => ({
             ...sub,
-            navs: (sub.navs ?? []).filter((subItem) => {
-              if (!isAllowed(subItem, roleId)) return false;
+            navs: (sub.navs ?? []).filter((subNavs) => {
+              if (!isAllowed(subNavs)) return false;
               const subLabel =
-                subItem.label?.toLowerCase() ||
-                pluckString(l, subItem.labelKey)?.toLowerCase() ||
+                subNavs.label?.toLowerCase() ||
+                pluckString(l, subNavs.labelKey)?.toLowerCase() ||
                 "";
               return qNormalized && subLabel.includes(qNormalized);
             }),
@@ -1029,7 +1027,18 @@ const DesktopLayout = (props: any) => {
         </CContainer>
 
         <CContainer p={3}>
-          <MiniMyProfilePopoverTrigger w={"full"}>
+          <MiniMyProfilePopoverTrigger
+            w={"full"}
+            popoverRootProps={{
+              positioning: {
+                placement: "right-end",
+                offset: {
+                  mainAxis: DESKTOP_NAVS_POPOVER_MAIN_AXIS,
+                  crossAxis: 4,
+                },
+              },
+            }}
+          >
             <HStack
               gap={4}
               w={navsExpanded ? "full" : "36px"}
@@ -1058,7 +1067,7 @@ const DesktopLayout = (props: any) => {
                       {user?.name || user?.email || "Signed out"}
                     </P>
                     <P lineClamp={1} color={"fg.subtle"}>
-                      {user?.name ? user?.email || user?.username : "-"}
+                      {user?.name ? user?.email : "-"}
                     </P>
                   </CContainer>
 

@@ -90,6 +90,7 @@ import {
   Center,
   HStack,
   Icon,
+  PopoverRootProps,
   StackProps,
   Tabs,
   TabsRootProps,
@@ -108,7 +109,15 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useRef, useState } from "react";
 
-const MiniMyProfilePopoverTrigger = (props: StackProps) => {
+interface Props__MiniMyProfilePopoverTrigger extends StackProps {
+  popoverRootProps?: Omit<PopoverRootProps, "children">;
+}
+const MiniMyProfilePopoverTrigger = (
+  props: Props__MiniMyProfilePopoverTrigger,
+) => {
+  // Props
+  const { popoverRootProps, ...restProps } = props;
+
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -127,18 +136,9 @@ const MiniMyProfilePopoverTrigger = (props: StackProps) => {
   }
 
   return (
-    <PopoverRoot
-      open={open}
-      positioning={{
-        placement: "right-end",
-        offset: {
-          mainAxis: DESKTOP_NAVS_POPOVER_MAIN_AXIS,
-          crossAxis: 4,
-        },
-      }}
-    >
+    <PopoverRoot open={open} {...popoverRootProps}>
       <PopoverTrigger asChild>
-        <CContainer w={"fit"} onClick={onOpen} {...props} />
+        <CContainer w={"fit"} onClick={onOpen} {...restProps} />
       </PopoverTrigger>
 
       <PopoverContent ref={containerRef} w={"235px"} zIndex={10}>
@@ -1014,7 +1014,18 @@ const DesktopLayout = (props: Props__Layout) => {
         </CContainer>
 
         <CContainer p={3}>
-          <MiniMyProfilePopoverTrigger w={"full"}>
+          <MiniMyProfilePopoverTrigger
+            w={"full"}
+            popoverRootProps={{
+              positioning: {
+                placement: "right-end",
+                offset: {
+                  mainAxis: DESKTOP_NAVS_POPOVER_MAIN_AXIS,
+                  crossAxis: 4,
+                },
+              },
+            }}
+          >
             <HStack
               gap={4}
               w={navsExpanded ? "full" : "36px"}
