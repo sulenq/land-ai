@@ -383,6 +383,7 @@ const Data = (props: any) => {
             knowledgeIds={ids}
             clearSelectedRows={clearSelectedRows}
             routeTitle={routeTitle}
+            disabled={isEmptyArray(ids)}
           />
         ),
       }),
