@@ -110,7 +110,7 @@ const Create = (props: any) => {
       // values.files.forEach((file: any) => {
       //   payload.append("files[]", file);
       // });
-      payload.append("file", values.files);
+      payload.append("file", values.files?.[0]);
 
       const config = {
         // url: `${BASE_ENDPOINT}/create`,
