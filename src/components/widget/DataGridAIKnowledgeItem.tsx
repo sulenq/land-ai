@@ -12,6 +12,7 @@ import {
 } from "@/constants/interfaces";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { isEmptyArray } from "@/utils/array";
+import { formatBytes } from "@/utils/formatter";
 import { Box, Center, HStack, StackProps } from "@chakra-ui/react";
 import React from "react";
 
@@ -112,7 +113,7 @@ export const DataGridAIKnowledgeItem = (props: Props) => {
             {item.metaData.fileSize}
           </ClampText>
         ) : (
-          item.metaData.fileSize
+          formatBytes(item.metaData.fileSize)
         )}
       </CContainer>
     </CContainer>
