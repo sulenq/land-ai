@@ -22,7 +22,7 @@ export const AccountStatus = (props: Props) => {
   > = {
     INACTIVE: {
       label: l.inactive,
-      colorPalette: "gray",
+      colorPalette: "yellow",
     },
     ACTIVE: {
       label: l.active,
