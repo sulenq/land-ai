@@ -335,6 +335,7 @@ const Data = (props: any) => {
                 name={item.fileName}
                 mimeType={item.metaData.mimeType}
               />
+
               <P>{item.fileName}</P>
             </HStack>
           ),
@@ -345,7 +346,7 @@ const Data = (props: any) => {
           value: item.metaData.fileSize,
         },
         {
-          td: `.${item.fileName.split(".").pop()}`,
+          td: <P>{`.${item.fileName.split(".").pop()}`}</P>,
           value: `.${item.fileName.split(".").pop()}`,
         },
 
@@ -457,10 +458,12 @@ const Data = (props: any) => {
       {!initialLoading && (
         <>
           {error && render.error}
+
           {!error && (
             <>
-              {data && render.loaded}
-              {(!data || isEmptyArray(data)) && render.empty}
+              {!isEmptyArray(data) && render.loaded}
+
+              {isEmptyArray(data) && render.empty}
             </>
           )}
         </>

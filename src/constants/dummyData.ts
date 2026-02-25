@@ -12,7 +12,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "1",
     fileName: "document-1.pdf",
     metaData: {
-      fileSize: "1.2 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -23,7 +23,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "2",
     fileName: "document-2.pdf",
     metaData: {
-      fileSize: "980 KB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -34,7 +34,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "3",
     fileName: "document-3.pdf",
     metaData: {
-      fileSize: "2.4 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -45,7 +45,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "4",
     fileName: "document-4.pdf",
     metaData: {
-      fileSize: "760 KB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -56,7 +56,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "5",
     fileName: "document-5.pdf",
     metaData: {
-      fileSize: "3.1 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -67,7 +67,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "6",
     fileName: "document-6.pdf",
     metaData: {
-      fileSize: "1.7 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -78,7 +78,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "7",
     fileName: "document-7.pdf",
     metaData: {
-      fileSize: "540 KB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -89,7 +89,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "8",
     fileName: "document-8.pdf",
     metaData: {
-      fileSize: "2.9 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -100,7 +100,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "9",
     fileName: "document-9.pdf",
     metaData: {
-      fileSize: "1.1 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -111,7 +111,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "10",
     fileName: "document-10.pdf",
     metaData: {
-      fileSize: "870 KB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -122,7 +122,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "11",
     fileName: "document-11.pdf",
     metaData: {
-      fileSize: "2.2 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -133,7 +133,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "12",
     fileName: "document-12.pdf",
     metaData: {
-      fileSize: "1.6 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -144,7 +144,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "13",
     fileName: "document-13.pdf",
     metaData: {
-      fileSize: "3.8 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -155,7 +155,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "14",
     fileName: "document-14.pdf",
     metaData: {
-      fileSize: "690 KB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",
@@ -166,7 +166,7 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     id: "15",
     fileName: "document-15.pdf",
     metaData: {
-      fileSize: "2.0 MB",
+      fileSize: 10000,
       mimeType: "application/pdf",
       filePath: "/",
       fileName: "",

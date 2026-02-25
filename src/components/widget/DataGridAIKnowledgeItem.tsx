@@ -108,13 +108,11 @@ export const DataGridAIKnowledgeItem = (props: Props) => {
           )}
         </HStack>
 
-        {typeof item.metaData.fileSize === "string" ? (
-          <ClampText w={"full"} color={"fg.subtle"} lineClamp={1}>
-            {item.metaData.fileSize}
-          </ClampText>
-        ) : (
-          formatBytes(item.metaData.fileSize)
-        )}
+        <ClampText w={"full"} fontSize={"sm"} color={"fg.subtle"} lineClamp={1}>
+          {typeof item.metaData.fileSize === "number"
+            ? formatBytes(item.metaData.fileSize)
+            : item.metaData.fileSize}
+        </ClampText>
       </CContainer>
     </CContainer>
   );
