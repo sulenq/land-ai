@@ -163,7 +163,10 @@ export const DataGrid = (props: Props) => {
           px={3}
           pr={`calc(12px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
         >
-          <SimpleGrid minChildWidth={minChildWidth} gap={4}>
+          <SimpleGrid
+            templateColumns={`repeat(auto-fill, minmax(${minChildWidth}, 1fr))`}
+            gap={4}
+          >
             {data?.map((item, idx) => {
               const row = dataProps.rows?.[idx] as Interface__FormattedTableRow;
               const details = row.columns.map((col, rowIdx) => {

@@ -209,7 +209,7 @@ export interface Interface__ChatAIKnowledge {
   metaData: {
     fileName: string;
     filePath: string;
-    fileSize: string;
+    fileSize: number; // bytes
     mimeType: string;
   };
   createdAt: string;

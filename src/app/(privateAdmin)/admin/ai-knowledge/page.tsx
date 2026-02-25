@@ -51,7 +51,7 @@ import useRequest from "@/hooks/useRequest";
 import { isEmptyArray, last } from "@/utils/array";
 import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
-import { formatDate } from "@/utils/formatter";
+import { formatBytes, formatDate } from "@/utils/formatter";
 import { capitalize, pluckString } from "@/utils/string";
 import { isDimensionValid } from "@/utils/style";
 import { getActiveNavs, imgUrl } from "@/utils/url";
@@ -163,7 +163,7 @@ const Create = (props: any) => {
                   <FileInput
                     dropzone
                     maxFileSizeMB={50}
-                    // maxFiles={10}
+                    maxFiles={10}
                     inputValue={formik.values.files}
                     onChange={(inputValue) => {
                       formik.setFieldValue("files", inputValue);
@@ -331,14 +331,17 @@ const Data = (props: any) => {
         {
           td: (
             <HStack>
-              <FileIcon mimeType={item.metaData.mimeType} />
+              <FileIcon
+                name={item.fileName}
+                mimeType={item.metaData.mimeType}
+              />
               <P>{item.fileName}</P>
             </HStack>
           ),
           value: item.fileName,
         },
         {
-          td: item.metaData.fileSize,
+          td: formatBytes(item.metaData.fileSize),
           value: item.metaData.fileSize,
         },
         {

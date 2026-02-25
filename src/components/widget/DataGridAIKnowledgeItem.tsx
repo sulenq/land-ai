@@ -85,7 +85,11 @@ export const DataGridAIKnowledgeItem = (props: Props) => {
       </HStack>
 
       <Center mb={1}>
-        <FileIcon mimeType={item.metaData.mimeType} boxSize={14} />
+        <FileIcon
+          name={item.fileName}
+          mimeType={item.metaData.mimeType}
+          boxSize={14}
+        />
       </Center>
 
       <CContainer
