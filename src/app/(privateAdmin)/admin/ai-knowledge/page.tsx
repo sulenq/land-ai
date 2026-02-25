@@ -53,6 +53,7 @@ import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
 import { capitalize, pluckString } from "@/utils/string";
+import { isDimensionValid } from "@/utils/style";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import { fileValidation } from "@/utils/validationSchema";
 import { HStack } from "@chakra-ui/react";
@@ -475,6 +476,7 @@ export default function Page() {
 
   // Hooks
   const dimension = useContainerDimension(containerRef);
+  const isValidDimension = isDimensionValid(dimension);
   const isSmContainer = dimension.width < 600;
 
   // States
@@ -502,21 +504,23 @@ export default function Page() {
         </HStack>
       </PageTitle>
 
-      <PageContent overflowY={"auto"}>
-        {isSmContainer && (
-          <HScroll flexShrink={0} px={3} mb={4}>
-            <HStack minW={"full"} justify={"space-between"}>
-              <DataUtils
-                filter={filter}
-                setFilter={setFilter}
-                routeTitle={routeTitle}
-              />
-            </HStack>
-          </HScroll>
-        )}
+      {isValidDimension && (
+        <PageContent overflowY={"auto"}>
+          {isSmContainer && (
+            <HScroll flexShrink={0} px={3} mb={4}>
+              <HStack minW={"full"} justify={"space-between"}>
+                <DataUtils
+                  filter={filter}
+                  setFilter={setFilter}
+                  routeTitle={routeTitle}
+                />
+              </HStack>
+            </HScroll>
+          )}
 
-        <Data filter={filter} routeTitle={routeTitle} />
-      </PageContent>
+          <Data filter={filter} routeTitle={routeTitle} />
+        </PageContent>
+      )}
     </PageContainer>
   );
 }
