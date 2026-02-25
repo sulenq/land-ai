@@ -108,14 +108,12 @@ const Create = (props: any) => {
       back();
 
       const payload = new FormData();
-      // values.files.forEach((file: any) => {
-      //   payload.append("files[]", file);
-      // });
-      payload.append("file", values.files?.[0]);
+      values.files.forEach((file: any) => {
+        payload.append("files[]", file);
+      });
 
       const config = {
-        // url: `${BASE_ENDPOINT}/create`,
-        url: `/api/ai/upload-pdf`,
+        url: `${BASE_ENDPOINT}/create`,
         method: "POST",
         data: payload,
       };
