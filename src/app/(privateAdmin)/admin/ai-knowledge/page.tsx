@@ -107,12 +107,14 @@ const Create = (props: any) => {
       back();
 
       const payload = new FormData();
-      values.files.forEach((file: any) => {
-        payload.append("files[]", file);
-      });
+      // values.files.forEach((file: any) => {
+      //   payload.append("files[]", file);
+      // });
+      payload.append("file", values.files);
 
       const config = {
-        url: `${BASE_ENDPOINT}/create`,
+        // url: `${BASE_ENDPOINT}/create`,
+        url: `/api/ai/upload-pdf`,
         method: "POST",
         data: payload,
       };
@@ -162,7 +164,7 @@ const Create = (props: any) => {
                   <FileInput
                     dropzone
                     maxFileSizeMB={50}
-                    maxFiles={10}
+                    // maxFiles={10}
                     inputValue={formik.values.files}
                     onChange={(inputValue) => {
                       formik.setFieldValue("files", inputValue);
