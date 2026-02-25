@@ -155,6 +155,10 @@ export const file_size = {
   id: "Ukuran file",
   en: "File size",
 };
+export const file_extension = {
+  id: "Ekstensi file",
+  en: "File extension",
+};
 export const mime_type = {
   id: "Tipe file",
   en: "File type",

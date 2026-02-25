@@ -313,7 +313,7 @@ const Data = (props: any) => {
         sortable: true,
       },
       {
-        th: l.mime_type,
+        th: l.file_extension,
         sortable: true,
       },
 
@@ -342,8 +342,8 @@ const Data = (props: any) => {
           value: item.metaData.fileSize,
         },
         {
-          td: item.metaData.mimeType,
-          value: item.metaData.mimeType,
+          td: `.${item.fileName.split(".").pop()}`,
+          value: `.${item.fileName.split(".").pop()}`,
         },
 
         // timestamps
@@ -403,7 +403,7 @@ const Data = (props: any) => {
         setLimit={setLimit}
         page={page}
         setPage={setPage}
-        totalPage={pagination?.meta?.lastPage}
+        totalPage={pagination?.lastPage}
       />
     ) : (
       <DataGrid
@@ -413,7 +413,7 @@ const Data = (props: any) => {
         setLimit={setLimit}
         page={page}
         setPage={setPage}
-        totalPage={pagination?.meta?.lastPage}
+        totalPage={pagination?.lastPage}
         minChildWidth="150px"
         gridItem={({
           item,
