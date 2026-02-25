@@ -39,7 +39,7 @@ export const AccountStatus = (props: Props) => {
       colorPalette={accountStatuses[accountStatus].colorPalette}
       {...restProps}
     >
-      <Status.Indicator />
+      <Status.Indicator boxSize={"6px"} />
 
       {accountStatuses[accountStatus].label}
     </Status.Root>
