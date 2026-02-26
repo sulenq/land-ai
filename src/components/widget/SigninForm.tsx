@@ -318,7 +318,7 @@ export const SigninForm = (props: StackProps) => {
           indexRoute={
             AUTH_PROVIDER_CONFIG[
               `${getUserData()?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
-            ]?.indexRoute ?? "/new-chat"
+            ]?.indexRoute
           }
         />
       ) : (
