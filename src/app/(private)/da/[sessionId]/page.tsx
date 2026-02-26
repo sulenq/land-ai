@@ -46,7 +46,8 @@ import { useParams, useRouter } from "next/navigation";
 import {
   SuratKuasaPDF,
   SuratPermohonanPDF,
-} from "public/DADocTemplate/SuratKuasa";
+  SuratPernyataanPDF,
+} from "public/DADocTemplate/DALetterTemplate";
 import { useEffect, useRef, useState } from "react";
 
 interface Props__ResultTable extends Props__DataTable {
@@ -211,15 +212,14 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
       pdf: <SuratKuasaPDF data={rawData} />,
     },
     {
-      key: "suratPernyataan",
-      label: "Surat Pernyataan",
+      key: "suratPermohonan",
+      label: "Surat Permohonan",
       pdf: <SuratPermohonanPDF data={rawData} />,
     },
     {
-      key: "suratPermohonan",
-      label: "Surat Permohonan",
-      // TODO match pdf
-      pdf: <SuratPermohonanPDF data={rawData} />,
+      key: "suratPernyataan",
+      label: "Surat Pernyataan",
+      pdf: <SuratPernyataanPDF data={rawData} />,
     },
   ];
 
@@ -248,31 +248,6 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
               </PDFDownloadLink>
             );
           })}
-          {/* {LETTERS.map((letter, index) => (
-            <div key={letter.key}>
-              <div
-                ref={(el) => {
-                  letterRefs.current[index] = el;
-                }}
-                style={{ position: "absolute", left: "-9999px", top: 0 }}
-              >
-                {letter.pdf}
-              </div>
-
-              <Btn
-                w={"fit"}
-                variant={"outline"}
-                size={"xs"}
-                onClick={() => {
-                  const dom = letterRefs.current[index];
-                  if (dom) downloadDomAsPDF(dom, `${letter.label}.pdf`);
-                }}
-              >
-                <AppIcon icon={DownloadIcon} />
-                {l.download} {letter.label} PDF
-              </Btn>
-            </div>
-          ))} */}
         </HStack>
 
         {/* <Btn w={"fit"} variant={"outline"} size={"xs"} onClick={downloadAll}>
@@ -537,13 +512,15 @@ export default function Page() {
           )}
 
           {completed && (
-            <ResultTable
-              daSession={data}
-              containerDimension={containerDimension}
-            />
-          )}
+            <>
+              <ResultTable
+                daSession={data}
+                containerDimension={containerDimension}
+              />
 
-          <GenerateLetterButtons data={data} mt={4} />
+              <GenerateLetterButtons data={data} mt={4} />
+            </>
+          )}
 
           <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
             <NavLink to={"/new-da"}>

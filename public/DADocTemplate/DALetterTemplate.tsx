@@ -322,6 +322,173 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
   </Document>
 );
 
+interface Props_SuratPernyataan {
+  data: {
+    name: string;
+    occupation: string;
+    address: string;
+    nik: string;
+
+    titleType: string;
+    titleNumber: string;
+    certificateSerialNumber: string;
+    registeredOwner: string;
+
+    province: string;
+    city: string;
+    district: string;
+    village: string;
+    road: string;
+
+    imgDate: string;
+    imgNumber: string;
+    nib: string;
+    area: string;
+
+    dateStamp: string;
+  };
+}
+export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <Text style={styles.titleCenter}>SURAT PERNYATAAN</Text>
+
+      <Text style={styles.paragraph}>Yang bertandatangan di bawah ini :</Text>
+
+      {/* Identity */}
+      <View style={styles.row}>
+        <Text style={styles.label}>Nama</Text>
+        <Text>: {data.name}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Pekerjaan</Text>
+        <Text>: {data.occupation}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Alamat</Text>
+        <Text>: {data.address}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>KTP/NIK</Text>
+        <Text>: {data.nik}</Text>
+      </View>
+
+      <Text style={[styles.paragraph, { marginTop: 8 }]}>
+        Dengan ini menyatakan bahwa :
+      </Text>
+
+      {/* Point 1 */}
+      <Text style={styles.paragraph}>
+        1. Saya adalah pemegang hak atas tanah dengan data sebagai berikut :
+      </Text>
+
+      <View style={{ marginLeft: 12 }}>
+        <View style={styles.row}>
+          <Text style={styles.label}>a. Jenis Hak</Text>
+          <Text>: {data.titleType}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>b. Nomor</Text>
+          <Text>: {data.titleNumber}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>c. Nomor Seri Blanko</Text>
+          <Text>: {data.certificateSerialNumber}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>d. Atas Nama</Text>
+          <Text>: {data.registeredOwner}</Text>
+        </View>
+
+        <Text style={{ marginTop: 4 }}>e. Letak Tanah :</Text>
+
+        <View style={{ marginLeft: 12 }}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Provinsi</Text>
+            <Text>: {data.province}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Kota</Text>
+            <Text>: {data.city}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Kecamatan</Text>
+            <Text>: {data.district}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Kelurahan</Text>
+            <Text>: {data.village}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Jalan</Text>
+            <Text>: {data.road}</Text>
+          </View>
+        </View>
+
+        <Text style={{ marginTop: 4 }}>f. Gambar Situasi :</Text>
+
+        <View style={{ marginLeft: 12 }}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Tanggal</Text>
+            <Text>: {data.imgDate}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Nomor</Text>
+            <Text>: {data.imgNumber}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>NIB</Text>
+            <Text>: {data.nib}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Luas</Text>
+            <Text>: {data.area}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Point 2-5 */}
+      <Text style={styles.paragraph}>
+        2. Saya menjamin keaslian sertipikat tersebut dan nama yang tercantum
+        dalam sertipikat merupakan nama pemegang hak yang sebenarnya dan
+        beritikad baik serta bertanggung jawab sepenuhnya atas penggunaan data
+        yang diakses.
+      </Text>
+
+      <Text style={styles.paragraph}>
+        3. Saya menjamin bahwa hak atas tanah tersebut benar milik saya dan
+        tidak ada orang/pihak lain yang turut memiliki atau ikut mempunyai
+        sesuatu hak pun di atasnya, serta tidak tersangkut dalam suatu sengketa,
+        bebas dari sitaan.
+      </Text>
+
+      <Text style={styles.paragraph}>
+        4. Saya menjamin bahwa surat bukti hak atas tanah tersebut adalah
+        satu-satunya yang sah/tidak pernah dipalsukan dan tidak pernah dibuat
+        duplikatnya oleh instansi yang berwenang atas permintaan saya.
+      </Text>
+
+      <Text style={styles.paragraph}>
+        5. Apabila pernyataan ini tidak benar, maka saya bertanggung jawab
+        secara perdata maupun pidana tanpa melibatkan pihak Kantor Pertanahan.
+      </Text>
+
+      <Text style={[styles.paragraph, { marginTop: 8 }]}>
+        Demikian Surat Pernyataan ini dibuat untuk dipergunakan sebagaimana
+        mestinya.
+      </Text>
+
+      <Text style={{ textAlign: "right", marginTop: 16 }}>
+        {`${data.city}, ${data.dateStamp}`}
+      </Text>
+
+      <Text style={{ textAlign: "right", marginTop: 12 }}>Hormat Saya</Text>
+
+      <Text style={{ textAlign: "right", marginTop: 40 }}>{data.name}</Text>
+    </Page>
+  </Document>
+);
+
 // DOM to PDF(img) purpose
 interface Props__SuratKuasa extends StackProps {
   data: {
