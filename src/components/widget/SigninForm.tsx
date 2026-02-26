@@ -54,7 +54,7 @@ const AUTH_PROVIDER_CONFIG = {
     indexRoute: `/admin`,
   },
   "3": {
-    indexRoute: "/",
+    indexRoute: "/new-chat",
   },
 };
 
@@ -314,7 +314,13 @@ export const SigninForm = (props: StackProps) => {
       {...restProps}
     >
       {resolvedAuthToken ? (
-        <Signedin indexRoute={"/admin"} />
+        <Signedin
+          indexRoute={
+            AUTH_PROVIDER_CONFIG[
+              `${getUserData()?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
+            ]?.indexRoute ?? "/new-chat"
+          }
+        />
       ) : (
         <>
           <CContainer align={"center"} gap={2} mb={4}>

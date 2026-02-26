@@ -82,11 +82,18 @@ const AUTH_PROVIDER_CONFIG = {
     icon: UserIcon,
     nameKey: "public_",
     signinAPI: AUTH_API_SIGNIN_PUBLIC,
-    indexRoute: "/",
+    indexRoute: "/new-chat",
   },
 };
 const AUTH_PROVIDER_CONFIG_LIST = Object.values(AUTH_PROVIDER_CONFIG);
 const AUTH_PROVIDER_KEY_PARAM = "authProviderKey";
+
+// Maps numeric role ID → AUTH_PROVIDER_CONFIG key
+const ROLE_INDEX_ROUTE_MAP: Record<string, string> = {
+  "1": AUTH_PROVIDER_CONFIG.superAdmin.indexRoute,
+  "2": AUTH_PROVIDER_CONFIG.admin.indexRoute,
+  "3": AUTH_PROVIDER_CONFIG.public.indexRoute,
+};
 
 const SignoutButton = () => {
   // Contexts
@@ -437,7 +444,11 @@ export const SigninForm = (props: StackProps) => {
       {...restProps}
     >
       {resolvedAuthToken ? (
-        <Signedin indexRoute={"/admin"} />
+        <Signedin
+          indexRoute={
+            ROLE_INDEX_ROUTE_MAP[`${getUserData()?.role}`] ?? "/new-chat"
+          }
+        />
       ) : (
         <>
           <CContainer align={"center"} gap={2} mb={4}>
