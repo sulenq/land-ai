@@ -47,7 +47,7 @@ import {
   SuratKuasaPDF,
   SuratPermohonanPDF,
   SuratPernyataanPDF,
-} from "public/DADocTemplate/DALetterTemplate";
+} from "@/components/widget/DALetterTemplate";
 import { useEffect, useRef, useState } from "react";
 
 interface Props__ResultTable extends Props__DataTable {

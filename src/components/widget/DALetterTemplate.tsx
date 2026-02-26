@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   row: { flexDirection: "row", marginBottom: 2 },
-  label: { width: 120 },
+  label: { width: 120, flexShrink: 0 },
   value: { flex: 1 },
   sectionTitle: {
     textAlign: "center",
