@@ -30,10 +30,10 @@ import { Icon, StackProps } from "@chakra-ui/react";
 import { LogOutIcon, NavigationIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
-interface Props__MiniMyProfile extends StackProps {
+interface Props__ProfileMenu extends StackProps {
   onClose?: () => void;
 }
-export const MiniMyProfile = (props: Props__MiniMyProfile) => {
+export const ProfileMenu = (props: Props__ProfileMenu) => {
   // Props
   const { onClose, ...restProps } = props;
 

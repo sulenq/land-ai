@@ -40,7 +40,7 @@ import HScroll from "@/components/widget/HScroll";
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { MContainer } from "@/components/widget/MContainer";
-import { MiniMyProfile } from "@/components/widget/MiniMyProfile";
+import { ProfileMenu } from "@/components/widget/ProfileMenu";
 import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
 import {
   NavBreadcrumb,
@@ -142,7 +142,7 @@ const MiniMyProfilePopoverTrigger = (
       </PopoverTrigger>
 
       <PopoverContent ref={containerRef} w={"235px"} zIndex={10}>
-        <MiniMyProfile onClose={onClose} />
+        <ProfileMenu onClose={onClose} />
       </PopoverContent>
     </PopoverRoot>
   );
