@@ -34,6 +34,14 @@ export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
         allowedRoles: [],
         allowedPermissions: [],
       },
+      {
+        icon: SquarePenIcon, // Reusing an icon for writing/documents
+        labelKey: "navs.create_letter",
+        label: "Buat Surat", // Fallback label in case translations don't have it yet
+        path: "/download-surat",
+        allowedRoles: [],
+        allowedPermissions: [],
+      },
     ],
   },
 ];
