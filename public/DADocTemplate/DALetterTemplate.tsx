@@ -134,7 +134,7 @@ export const SuratKuasaPDF = ({ data }: Props_SuratKuasa) => (
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Luas</Text>
-        <Text>: {data.area}</Text>
+        <Text>: {data.area} m²</Text>
       </View>
 
       <Text style={[styles.paragraph, { marginTop: 8 }]}>
@@ -166,21 +166,21 @@ interface Props_SuratPermohonan {
   data: {
     city: string;
 
-    applicantName: string;
-    applicantOccupation: string;
-    applicantAddress: string;
+    granteeName: string;
+    granteeOccupation: string;
+    granteeAddress: string;
 
-    principalName: string;
-    principalOccupation: string;
-    principalNik: string;
-    principalAddress: string;
+    grantorName: string;
+    grantorOccupation: string;
+    grantorNik: string;
+    grantorAddress: string;
 
     noSuratKuasa: string;
     suratKuasaDate: string;
 
     subject: string;
 
-    landLocation: string;
+    road: string;
     village: string;
     district: string;
     province: string;
@@ -212,15 +212,15 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
       >
         <View style={styles.row}>
           <Text style={styles.label}>Nama</Text>
-          <Text>: {data.applicantName}</Text>
+          <Text>: {data.granteeName}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Pekerjaan</Text>
-          <Text>: {data.applicantOccupation}</Text>
+          <Text>: {data.granteeOccupation}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Alamat</Text>
-          <Text>: {data.applicantAddress}</Text>
+          <Text>: {data.granteeAddress}</Text>
         </View>
       </View>
 
@@ -237,19 +237,19 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
       >
         <View style={styles.row}>
           <Text style={styles.label}>Nama</Text>
-          <Text>: {data.principalName}</Text>
+          <Text>: {data.grantorName}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Pekerjaan</Text>
-          <Text>: {data.principalOccupation}</Text>
+          <Text>: {data.grantorOccupation}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>No. KTP/SIM</Text>
-          <Text>: {data.principalNik}</Text>
+          <Text>: {data.grantorNik}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Alamat</Text>
-          <Text>: {data.principalAddress}</Text>
+          <Text>: {data.grantorAddress}</Text>
         </View>
       </View>
 
@@ -279,7 +279,7 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
       >
         <View style={styles.row}>
           <Text style={styles.label}>Letak tanah</Text>
-          <Text>: {data.landLocation}</Text>
+          <Text>: {data.road}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Kelurahan</Text>
@@ -316,7 +316,7 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
       <Text style={{ textAlign: "right", marginTop: 12 }}>Hormat Kami</Text>
 
       <Text style={{ textAlign: "right", marginTop: 40 }}>
-        {data.applicantName}
+        {data.granteeName}
       </Text>
     </Page>
   </Document>
@@ -324,15 +324,14 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
 
 interface Props_SuratPernyataan {
   data: {
-    name: string;
-    occupation: string;
+    grantorName: string;
+    grantorOccupation: string;
     address: string;
-    nik: string;
+    grantorNik: string;
 
     titleType: string;
     titleNumber: string;
     certificateSerialNumber: string;
-    registeredOwner: string;
 
     province: string;
     city: string;
@@ -358,11 +357,11 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
       {/* Identity */}
       <View style={styles.row}>
         <Text style={styles.label}>Nama</Text>
-        <Text>: {data.name}</Text>
+        <Text>: {data.grantorName}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Pekerjaan</Text>
-        <Text>: {data.occupation}</Text>
+        <Text>: {data.grantorOccupation}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Alamat</Text>
@@ -370,7 +369,7 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>KTP/NIK</Text>
-        <Text>: {data.nik}</Text>
+        <Text>: {data.grantorNik}</Text>
       </View>
 
       <Text style={[styles.paragraph, { marginTop: 8 }]}>
@@ -397,7 +396,6 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>d. Atas Nama</Text>
-          <Text>: {data.registeredOwner}</Text>
         </View>
 
         <Text style={{ marginTop: 4 }}>e. Letak Tanah :</Text>
@@ -442,7 +440,7 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Luas</Text>
-            <Text>: {data.area}</Text>
+            <Text>: {data.area} m²</Text>
           </View>
         </View>
       </View>
@@ -484,7 +482,9 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
 
       <Text style={{ textAlign: "right", marginTop: 12 }}>Hormat Saya</Text>
 
-      <Text style={{ textAlign: "right", marginTop: 40 }}>{data.name}</Text>
+      <Text style={{ textAlign: "right", marginTop: 40 }}>
+        {data.grantorName}
+      </Text>
     </Page>
   </Document>
 );
@@ -717,7 +717,7 @@ export const SuratKuasa = (props: Props__SuratKuasa) => {
               <PSerif lineHeight={1.2}>:</PSerif>
             </Table.Cell>
             <Table.Cell py={1}>
-              <PSerif lineHeight={1.2}>{data.area}</PSerif>
+              <PSerif lineHeight={1.2}>{data.area} m²</PSerif>
             </Table.Cell>
           </Table.Row>
         </Table.Body>
