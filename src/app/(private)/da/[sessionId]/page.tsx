@@ -81,9 +81,17 @@ const ResultTable = (props: Props__ResultTable) => {
       idx: idx,
       data: r,
       columns: [
-        { td: r.label, value: r.label, dataType: "string" },
+        {
+          td: <P>{r.label}</P>,
+          value: r.label,
+          dataType: "string",
+        },
         ...r.values.map((v) => ({
-          td: v.value === "NOT_FOUND" ? l.not_found : v.value || "-",
+          td: (
+            <ClampText maxW={"150px"}>
+              {v.value === "NOT_FOUND" ? l.not_found : v.value || "-"}
+            </ClampText>
+          ),
           dim: v.value === "NOT_FOUND" || v.value === null,
           value: v.value,
           dataType: v.renderType,
