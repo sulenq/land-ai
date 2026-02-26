@@ -4,10 +4,16 @@ import { Avatar } from "@/components/ui/avatar";
 import { Field } from "@/components/ui/field";
 import { H1 } from "@/components/ui/heading";
 import { NavLink } from "@/components/ui/nav-link";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { LucideIcon } from "@/components/widget/Icon";
 import { Logo } from "@/components/widget/Logo";
 import { APP } from "@/constants/_meta";
-import { AUTH_API_SIGNIN, AUTH_API_SIGNOUT } from "@/constants/apis";
+import {
+  AUTH_API_SIGNIN_ADMIN,
+  AUTH_API_SIGNIN_PUBLIC,
+  AUTH_API_SIGNIN_SUPER_ADMIN,
+  AUTH_API_SIGNOUT,
+} from "@/constants/apis";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import { useDASessions } from "@/context/useDASessions";
@@ -22,20 +28,27 @@ import {
   setAccessToken,
   setUserData,
 } from "@/utils/auth";
-import { imgUrl } from "@/utils/url";
+import { pluckString } from "@/utils/string";
 import {
   FieldsetRoot,
   HStack,
   Icon,
   InputGroup,
+  SimpleGrid,
   StackProps,
   VStack,
 } from "@chakra-ui/react";
-import { IconLock, IconUser } from "@tabler/icons-react";
+import { IconArrowLeft, IconLock, IconUser } from "@tabler/icons-react";
 import { useFormik } from "formik";
-import { LogInIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import {
+  ArrowRightIcon,
+  LogInIcon,
+  ShieldUserIcon,
+  UserIcon,
+  UserStarIcon,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import * as yup from "yup";
 import { useChatSessions } from "../../context/useChatSessions";
 import { Btn } from "../ui/btn";
@@ -45,18 +58,35 @@ import { P } from "../ui/p";
 import { PasswordInput } from "../ui/password-input";
 import { StringInput } from "../ui/string-input";
 import ResetPasswordDisclosureTrigger from "./ResetPasswordDisclosure";
+import { back } from "@/utils/client";
+import { DotIndicator } from "@/components/widget/Indicator";
+import { imgUrl } from "@/utils/url";
 
 const AUTH_PROVIDER_CONFIG = {
-  "1": {
-    indexRoute: `/admin`,
+  superAdmin: {
+    key: "superAdmin",
+    icon: ShieldUserIcon,
+    nameKey: "super_admin",
+    signinAPI: AUTH_API_SIGNIN_SUPER_ADMIN,
+    indexRoute: "/admin",
   },
-  "2": {
-    indexRoute: `/admin`,
+  admin: {
+    key: "admin",
+    icon: UserStarIcon,
+    nameKey: "admin",
+    signinAPI: AUTH_API_SIGNIN_ADMIN,
+    indexRoute: "/admin",
   },
-  "3": {
+  public: {
+    key: "public",
+    icon: UserIcon,
+    nameKey: "public_",
+    signinAPI: AUTH_API_SIGNIN_PUBLIC,
     indexRoute: "/",
   },
 };
+const AUTH_PROVIDER_CONFIG_LIST = Object.values(AUTH_PROVIDER_CONFIG);
+const AUTH_PROVIDER_KEY_PARAM = "authProviderKey";
 
 const SignoutButton = () => {
   // Contexts
@@ -133,10 +163,13 @@ const Signedin = (props: Props__Signedin) => {
   );
 };
 
-interface Props__Form extends StackProps {}
+interface Props__Form extends StackProps {
+  signinAPI: string;
+  indexRoute: string;
+}
 const Form = (props: Props__Form) => {
   // Props
-  const { ...restProps } = props;
+  const { signinAPI, indexRoute, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -171,7 +204,7 @@ const Form = (props: Props__Form) => {
       };
       const config = {
         method: "POST",
-        url: AUTH_API_SIGNIN,
+        url: signinAPI,
         data: payload,
       };
       req({
@@ -179,19 +212,15 @@ const Form = (props: Props__Form) => {
         onResolve: {
           onSuccess: (r: any) => {
             const accessToken = r.data?.data?.authToken;
-            const user = r.data?.data?.user;
+            const userData = r.data?.data?.user;
             const permissionsData = r.data?.data?.user?.permissions;
 
             setAccessToken(accessToken);
-            setUserData(user);
+            setUserData(userData);
             setVerifiedAuthToken(accessToken);
             setPermissions(permissionsData);
 
-            router.push(
-              AUTH_PROVIDER_CONFIG[
-                `${user?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
-              ].indexRoute,
-            );
+            router.push(indexRoute);
           },
         },
       });
@@ -283,6 +312,85 @@ const Form = (props: Props__Form) => {
     </CContainer>
   );
 };
+const RoleSelect = () => {
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+
+  // States
+  const [selectedAuthProviderKey, setSelectedAuthProviderKey] =
+    useState<string>("");
+
+  return (
+    <CContainer gap={4}>
+      <SimpleGrid columns={3} gap={2}>
+        {AUTH_PROVIDER_CONFIG_LIST.map((config) => {
+          const isSelected = selectedAuthProviderKey === config.key;
+
+          return (
+            <CContainer
+              key={config.key}
+              gap={2}
+              minH={"204px"}
+              h={"full"}
+              p={4}
+              color={isSelected ? `${themeConfig.colorPalette}.fg` : ""}
+              border={"1px solid"}
+              borderColor={
+                isSelected ? themeConfig.primaryColor : "border.muted"
+              }
+              rounded={themeConfig.radii.container}
+              opacity={isSelected ? 1 : 0.6}
+              cursor={"pointer"}
+              pos={"relative"}
+              overflow={"clip"}
+              transition={"200ms"}
+              onClick={() => {
+                setSelectedAuthProviderKey(config.key);
+              }}
+              _hover={{
+                bg: "bg.muted",
+              }}
+            >
+              {isSelected && <DotIndicator />}
+
+              <AppIcon
+                icon={config.icon}
+                boxSize={"110px"}
+                opacity={0.4}
+                lucideIconProps={{
+                  strokeWidth: 1,
+                }}
+                pos={"absolute"}
+                top={"4px"}
+                right={"-28px"}
+              />
+
+              <P fontSize={"lg"} fontWeight={"semibold"} mt={"auto"}>
+                {pluckString(l, config.nameKey)}
+              </P>
+            </CContainer>
+          );
+        })}
+      </SimpleGrid>
+
+      <NavLink
+        to={`/?${AUTH_PROVIDER_KEY_PARAM}=${selectedAuthProviderKey}`}
+        w={"full"}
+      >
+        <Btn
+          colorPalette={themeConfig.colorPalette}
+          disabled={!selectedAuthProviderKey}
+          size={"lg"}
+        >
+          {l.next}
+
+          <AppIcon icon={ArrowRightIcon} />
+        </Btn>
+      </NavLink>
+    </CContainer>
+  );
+};
 
 export const SigninForm = (props: StackProps) => {
   // Props
@@ -296,6 +404,21 @@ export const SigninForm = (props: StackProps) => {
   const resolvedAuthToken = authToken || verifiedAuthToken;
   const clearChatSessions = useChatSessions((s) => s.clearChatSessions);
   const clearDASessions = useDASessions((s) => s.clearDASessions);
+
+  // Hooks
+  const searchParams = useSearchParams();
+  const selectedAuthProviderKey = searchParams.get(AUTH_PROVIDER_KEY_PARAM);
+
+  // States
+  const selectedAuthProviderConfig = useMemo(() => {
+    if (!selectedAuthProviderKey) {
+      return null;
+    } else {
+      return AUTH_PROVIDER_CONFIG[
+        selectedAuthProviderKey as keyof typeof AUTH_PROVIDER_CONFIG
+      ];
+    }
+  }, [selectedAuthProviderKey]);
 
   // Clear chat sessions and DA sessions on mount
   useEffect(() => {
@@ -325,13 +448,30 @@ export const SigninForm = (props: StackProps) => {
             </H1>
 
             <P textAlign={"center"} color={"fg.subtle"}>
-              {l.msg_signin}
+              {selectedAuthProviderConfig ? l.msg_signin : l.msg_pre_signin}
             </P>
           </CContainer>
 
-          <CContainer gap={4} mx={"auto"}>
-            <Form />
-          </CContainer>
+          {selectedAuthProviderConfig && (
+            <CContainer gap={4} mx={"auto"}>
+              <HStack>
+                <Btn size={"md"} variant={"ghost"} onClick={back} pl={3}>
+                  <Icon>
+                    <IconArrowLeft stroke={1.5} />
+                  </Icon>
+
+                  {l.previous}
+                </Btn>
+              </HStack>
+
+              <Form
+                signinAPI={selectedAuthProviderConfig.signinAPI}
+                indexRoute={selectedAuthProviderConfig.indexRoute}
+              />
+            </CContainer>
+          )}
+
+          {!selectedAuthProviderConfig && <RoleSelect />}
         </>
       )}
     </CContainer>
