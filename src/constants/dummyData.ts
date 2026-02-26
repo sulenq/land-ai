@@ -379,6 +379,7 @@ export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
   id: "1",
   title: "DA Service Analysis Session",
   status: "COMPLETED",
+  rawData: {},
   documentService: {
     id: "101",
     icon: `/uploads/services/service-1770357423697-697371719.png`,
