@@ -95,6 +95,7 @@ const translations = {
   "deleted_file": "Removed file",
   "description": "Description",
   "document_analysis_service": "Document Analysis Service",
+  "download": "Download",
   "educator": "Educator",
   "empty_prompt": "Empty prompt",
   "end_date": "End date",

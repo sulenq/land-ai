@@ -282,6 +282,7 @@ export interface Interface__DASessionDetail extends Interface__DASession {
   documentService: Interface__DAServiceDetail;
   uploadedDocuments: Interface__DAUploadedDocument[];
   result: Interface__DAAnalysisResultItem[];
+  rawData: any;
 }
 export type Interface__DASessionDraft = Partial<Interface__DASessionDetail>;
 export interface Interface__ActiveDAState {

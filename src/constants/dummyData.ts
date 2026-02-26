@@ -7,6 +7,25 @@ import {
   Interface__User,
 } from "@/constants/interfaces";
 
+export const DUMMY_SURAT_KUASA_DATA = {
+  grantorName: "Budi Santoso",
+  grantorBirthPlaceDate: "Jakarta, 12 Januari 1975",
+  grantorNik: "3175012301750001",
+  grantorAddress: "Jl. Melati No. 12, RT 05/RW 03, Jakarta Pusat",
+  granteeName: "Siti Aminah",
+  granteeBirthPlaceDate: "Bandung, 20 Februari 1980",
+  granteeNIK: "3278012002800002",
+  granteeAddress: "Jl. Anggrek No. 45, RT 07/RW 02, Bandung",
+  city: "Jakarta",
+  subject: "Pembuatan Sertifikat Tanah",
+  road: "Jl. Kenanga No. 99",
+  village: "Kampung Baru",
+  district: "Sawah Besar",
+  titleNumber: "12345/2026",
+  area: "150 m²",
+  dateStamp: "25 Februari 2026",
+};
+
 export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
   {
     id: "1",
@@ -174,7 +193,6 @@ export const DUMMY_CHAT_AI_KNOWLEDGE: Interface__ChatAIKnowledge[] = [
     createdAt: "2026-02-15T13:15:00Z",
   },
 ];
-
 export const DUMMY_USERS: Interface__User[] = [
   {
     id: "1",
@@ -357,7 +375,6 @@ export const DUMMY_USERS: Interface__User[] = [
     createdBy: "system",
   },
 ];
-
 export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
   id: "1",
   title: "DA Service Analysis Session",

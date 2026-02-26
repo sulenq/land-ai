@@ -135,6 +135,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const download = {
+  id: "Unduh",
+  en: "Download",
+};
 export const to_admin = {
   id: "Ke panel admin",
   en: "Go to admin panel",

@@ -35,9 +35,18 @@ import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
-import { HStack } from "@chakra-ui/react";
-import { AlertTriangleIcon, ArrowUpRightIcon } from "lucide-react";
+import { HStack, StackProps } from "@chakra-ui/react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import {
+  AlertTriangleIcon,
+  ArrowUpRightIcon,
+  DownloadIcon,
+} from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import {
+  SuratKuasaPDF,
+  SuratPermohonanPDF,
+} from "public/DADocTemplate/SuratKuasa";
 import { useEffect, useRef, useState } from "react";
 
 interface Props__ResultTable extends Props__DataTable {
@@ -118,6 +127,160 @@ const ResultTable = (props: Props__ResultTable) => {
         mb={4}
       />
     </CContainer>
+  );
+};
+
+// interface Props__LetterPreview extends StackProps {
+//   id: string;
+//   title: string;
+//   pdf: React.ReactNode;
+// }
+// const LetterPreviewTrigger = (props: Props__LetterPreview) => {
+//   // Props
+//   const { children, id, title, pdf, ...restProps } = props;
+
+//   // Contexts
+//   const { l } = useLang();
+
+//   // Hooks
+//   const { isOpen, onOpen } = usePopDisclosure(
+//     disclosureId(`generate_letter_preview_${id}`),
+//   );
+
+//   return (
+//     <>
+//       <CContainer w={"fit"} onClick={onOpen} {...restProps}>
+//         {children}
+//       </CContainer>
+
+//       <DisclosureRoot open={isOpen} lazyLoad size={"cover"}>
+//         <DisclosureContent>
+//           <DisclosureHeader>
+//             <DisclosureHeaderContent title={`Preview ${title}`} />
+//           </DisclosureHeader>
+
+//           <DisclosureBody>
+//             <CContainer className="scrollX scrollY">
+//               <Box id={`letter_preview_${id}`} m={"auto"}>
+//                 <PDFViewer width="100%" height="800">
+//                   {pdf}
+//                 </PDFViewer>
+//               </Box>
+//             </CContainer>
+//           </DisclosureBody>
+
+//           <DisclosureFooter>
+//             <BackButton />
+
+//             <PDFDownloadLink document={pdf as any} fileName="Surat Kuasa.pdf">
+//               <PBtn>
+//                 <AppIcon icon={DownloadIcon} />
+//                 <>
+//                   {({ loading }: any) =>
+//                     loading ? "Loading PDF..." : `${l.download} PDF`
+//                   }
+//                 </>
+//               </PBtn>
+//             </PDFDownloadLink>
+//             {/* <PBtn>
+//               <AppIcon icon={DownloadIcon} />
+//               {l.download} PDF
+//             </PBtn> */}
+//           </DisclosureFooter>
+//         </DisclosureContent>
+//       </DisclosureRoot>
+//     </>
+//   );
+// };
+interface Props__GenerateLetterButtons extends StackProps {
+  data?: Interface__DASessionDetail;
+}
+const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
+  // Props
+  const { data, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // States
+  const rawData = data?.rawData;
+  const LETTERS = [
+    {
+      key: "suratKuasa",
+      label: "Surat Kuasa",
+      pdf: <SuratKuasaPDF data={rawData} />,
+    },
+    {
+      key: "suratPernyataan",
+      label: "Surat Pernyataan",
+      pdf: <SuratPermohonanPDF data={rawData} />,
+    },
+    {
+      key: "suratPermohonan",
+      label: "Surat Permohonan",
+      // TODO match pdf
+      pdf: <SuratPermohonanPDF data={rawData} />,
+    },
+  ];
+
+  // Utils
+  // function downloadAll() {}
+
+  return (
+    <ContainerLayout {...restProps}>
+      <CContainer gap={2} align={"center"}>
+        <HStack wrap={"wrap"} justify={"center"}>
+          {LETTERS.map((letter) => {
+            return (
+              <PDFDownloadLink
+                key={letter.key}
+                document={letter.pdf as any}
+                fileName="Surat Kuasa.pdf"
+              >
+                {({ loading }: any) => (
+                  <Btn variant={"outline"} size={"xs"}>
+                    <AppIcon icon={DownloadIcon} boxSize={4} />
+                    {loading
+                      ? "Loading PDF..."
+                      : `${l.download} ${letter.label} PDF`}
+                  </Btn>
+                )}
+              </PDFDownloadLink>
+            );
+          })}
+          {/* {LETTERS.map((letter, index) => (
+            <div key={letter.key}>
+              <div
+                ref={(el) => {
+                  letterRefs.current[index] = el;
+                }}
+                style={{ position: "absolute", left: "-9999px", top: 0 }}
+              >
+                {letter.pdf}
+              </div>
+
+              <Btn
+                w={"fit"}
+                variant={"outline"}
+                size={"xs"}
+                onClick={() => {
+                  const dom = letterRefs.current[index];
+                  if (dom) downloadDomAsPDF(dom, `${letter.label}.pdf`);
+                }}
+              >
+                <AppIcon icon={DownloadIcon} />
+                {l.download} {letter.label} PDF
+              </Btn>
+            </div>
+          ))} */}
+        </HStack>
+
+        {/* <Btn w={"fit"} variant={"outline"} size={"xs"} onClick={downloadAll}>
+          <AppIcon icon={DownloadIcon} />
+          {l.download} {l.all}
+        </Btn> */}
+      </CContainer>
+    </ContainerLayout>
   );
 };
 
@@ -380,6 +543,8 @@ export default function Page() {
             />
           )}
 
+          <GenerateLetterButtons data={data} mt={4} />
+
           <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
             <NavLink to={"/new-da"}>
               <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
@@ -401,6 +566,10 @@ export default function Page() {
 
   return (
     <PageContainer ref={containerRef} px={4} py={8} pos={"relative"}>
+      {/* <PDFViewer height={"800px"}>
+        <SuratPermohonanPDF data={data?.rawData} />
+      </PDFViewer> */}
+
       <CContainer flex={1} gap={4} justify={"space-between"}>
         {initialLoading && render.loading}
         {!initialLoading && (

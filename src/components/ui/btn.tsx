@@ -114,4 +114,12 @@ export const Btn = forwardRef<HTMLButtonElement, BtnProps>((props, ref) => {
   );
 });
 
+export const PBtn = forwardRef<HTMLButtonElement, BtnProps>((props, ref) => {
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+
+  return <Btn ref={ref} colorPalette={themeConfig.colorPalette} {...props} />;
+});
+
 Btn.displayName = "Btn";
+PBtn.displayName = "PBtn";

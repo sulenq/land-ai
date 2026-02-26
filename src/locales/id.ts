@@ -95,6 +95,7 @@ const translations = {
   "deleted_file": "File dihapus",
   "description": "Deskripsi",
   "document_analysis_service": "Layanan Analisis Dokumen",
+  "download": "Unduh",
   "educator": "Pengajar",
   "empty_prompt": "Prompt kosong",
   "end_date": "Tanggal selesai",
