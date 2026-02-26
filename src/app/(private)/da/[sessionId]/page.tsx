@@ -235,7 +235,7 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
               <PDFDownloadLink
                 key={letter.key}
                 document={letter.pdf as any}
-                fileName="Surat Kuasa.pdf"
+                fileName={`${letter.label}.pdf`}
               >
                 {({ loading }: any) => (
                   <Btn variant={"outline"} size={"xs"}>
