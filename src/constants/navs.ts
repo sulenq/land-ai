@@ -4,6 +4,7 @@ import {
   BrainCircuitIcon,
   BrushIcon,
   DatabaseIcon,
+  FilePenLineIcon,
   LanguagesIcon,
   LayoutDashboardIcon,
   LockKeyholeIcon,
@@ -35,7 +36,7 @@ export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
         allowedPermissions: [],
       },
       {
-        icon: SquarePenIcon, // Reusing an icon for writing/documents
+        icon: FilePenLineIcon,
         labelKey: "navs.create_letter",
         label: "Buat Surat", // Fallback label in case translations don't have it yet
         path: "/download-surat",
