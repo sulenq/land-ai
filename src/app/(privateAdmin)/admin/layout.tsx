@@ -46,7 +46,6 @@ import { APP } from "@/constants/_meta";
 import {
   ADMIN_PRIVATE_NAV_GROUPS,
   OTHER_PRIVATE_NAV_GROUPS,
-  PRIVATE_NAV_GROUPS,
 } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
 import {
@@ -200,7 +199,7 @@ const MobileLayout = (props: any) => {
       {/* Navs */}
       <HScroll borderTop={"1px solid"} borderColor={"border.subtle"}>
         <HStack w={"max"} gap={4} px={4} pt={3} pb={5} mx={"auto"}>
-          {PRIVATE_NAV_GROUPS.map((group, idx) => {
+          {ADMIN_PRIVATE_NAV_GROUPS.map((group, idx) => {
             return (
               <Fragment key={idx}>
                 {group.navs.map((nav) => {
@@ -470,7 +469,7 @@ const DesktopLayout = (props: any) => {
       .filter(Boolean) as typeof nav.navs;
 
     return filteredList.length > 0 ? { ...nav, navs: filteredList } : null;
-  }).filter(Boolean) as typeof PRIVATE_NAV_GROUPS;
+  }).filter(Boolean) as typeof ADMIN_PRIVATE_NAV_GROUPS;
 
   useEffect(() => {
     if (!navsExpanded) {
