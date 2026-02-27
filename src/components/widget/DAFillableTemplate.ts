@@ -176,7 +176,7 @@ function addRow(
   ctx: Ctx,
   label: string,
   fieldName: string,
-  value: string,
+  value: any,
   indentX = 0,
 ) {
   const x = ML + indentX;
@@ -203,7 +203,8 @@ function addRow(
 
   // Add editable field
   const tf = ctx.form.createTextField(fieldName);
-  if (value && value !== "____________________") tf.setText(value);
+  const strValue = value != null ? String(value) : "";
+  if (strValue && strValue !== "____________________") tf.setText(strValue);
   tf.addToPage(ctx.page, {
     x: fieldX,
     y: ty(ctx.cursor) - FIELD_H + 10,
@@ -256,7 +257,9 @@ export async function createSuratKuasaFillable(
   });
 
   const tfAlamatPemberi = ctx.form.createTextField("pemberi_alamat");
-  tfAlamatPemberi.setText(data.grantorAddress || "");
+  const valAlamatPemberi =
+    data.grantorAddress != null ? String(data.grantorAddress) : "";
+  tfAlamatPemberi.setText(valAlamatPemberi);
   tfAlamatPemberi.enableMultiline();
   tfAlamatPemberi.addToPage(ctx.page, {
     x: ML + LABEL_W + 10,
@@ -296,7 +299,9 @@ export async function createSuratKuasaFillable(
   });
 
   const tfAlamat = ctx.form.createTextField("penerima_alamat");
-  tfAlamat.setText(data.granteeAddress || "");
+  const valAlamat =
+    data.granteeAddress != null ? String(data.granteeAddress) : "";
+  tfAlamat.setText(valAlamat);
   tfAlamat.enableMultiline();
   tfAlamat.addToPage(ctx.page, {
     x: ML + LABEL_W + 10,
@@ -334,7 +339,8 @@ export async function createSuratKuasaFillable(
   });
 
   const tfJalanKuasa = ctx.form.createTextField("tanah_letak_kuasa");
-  tfJalanKuasa.setText(data.road || "");
+  const valJalanKuasa = data.road != null ? String(data.road) : "";
+  tfJalanKuasa.setText(valJalanKuasa);
   tfJalanKuasa.enableMultiline();
   tfJalanKuasa.addToPage(ctx.page, {
     x: ML + LABEL_W + 10,
@@ -379,7 +385,8 @@ export async function createSuratKuasaFillable(
 
   // Grantee signature name (fillable)
   const granteeTf = ctx.form.createTextField("ttd_penerima");
-  granteeTf.setText(data.granteeName || "");
+  const valGranteeTf = data.granteeName != null ? String(data.granteeName) : "";
+  granteeTf.setText(valGranteeTf);
   granteeTf.addToPage(ctx.page, {
     x: ML,
     y: ty(ctx.cursor) - FIELD_H + 7,
@@ -392,7 +399,8 @@ export async function createSuratKuasaFillable(
   // Grantor signature name (static for now as it aligns right, or we can make it fillable too)
   // Making it fillable & right-aligned:
   const grantorTf = ctx.form.createTextField("ttd_pemberi");
-  grantorTf.setText(data.grantorName || "");
+  const valGrantorTf = data.grantorName != null ? String(data.grantorName) : "";
+  grantorTf.setText(valGrantorTf);
   grantorTf.setAlignment(1); // Center align within its box
   grantorTf.addToPage(ctx.page, {
     x: PW - MR - 200,
@@ -487,7 +495,9 @@ export async function createSuratPermohonanFillable(
   });
 
   const tfAlamatPem = ctx.form.createTextField("pem_alamat");
-  tfAlamatPem.setText(data.granteeAddress || "");
+  const valAlamatPem =
+    data.granteeAddress != null ? String(data.granteeAddress) : "";
+  tfAlamatPem.setText(valAlamatPem);
   tfAlamatPem.enableMultiline();
   tfAlamatPem.addToPage(ctx.page, {
     x: ML + indentX1 + labelW1 + 10,
@@ -530,7 +540,9 @@ export async function createSuratPermohonanFillable(
   });
 
   const tfAlamatKu = ctx.form.createTextField("ku_alamat");
-  tfAlamatKu.setText(data.grantorAddress || "");
+  const valAlamatKu =
+    data.grantorAddress != null ? String(data.grantorAddress) : "";
+  tfAlamatKu.setText(valAlamatKu);
   tfAlamatKu.enableMultiline();
   tfAlamatKu.addToPage(ctx.page, {
     x: ML + indentX2 + labelW2 + 10,
@@ -560,7 +572,8 @@ export async function createSuratPermohonanFillable(
   });
 
   const nomSkTf = ctx.form.createTextField("sk_nomor");
-  nomSkTf.setText(data.noSuratKuasa || "");
+  const valNomSk = data.noSuratKuasa != null ? String(data.noSuratKuasa) : "";
+  nomSkTf.setText(valNomSk);
   nomSkTf.addToPage(ctx.page, {
     x: ML + w1,
     y: ty(ctx.cursor) - FIELD_H + 7,
@@ -579,7 +592,9 @@ export async function createSuratPermohonanFillable(
   });
 
   const tglSkTf = ctx.form.createTextField("sk_tgl");
-  tglSkTf.setText(data.suratKuasaDate || "");
+  const valTglSk =
+    data.suratKuasaDate != null ? String(data.suratKuasaDate) : "";
+  tglSkTf.setText(valTglSk);
   tglSkTf.addToPage(ctx.page, {
     x: ML + w1 + fieldW1 + w2,
     y: ty(ctx.cursor) - FIELD_H + 7,
@@ -630,7 +645,8 @@ export async function createSuratPermohonanFillable(
   });
 
   const tfJalanPermohonan = ctx.form.createTextField("tanah_letak_permohonan");
-  tfJalanPermohonan.setText(data.road || "");
+  const valJalanPermohonan = data.road != null ? String(data.road) : "";
+  tfJalanPermohonan.setText(valJalanPermohonan);
   tfJalanPermohonan.enableMultiline();
   tfJalanPermohonan.addToPage(ctx.page, {
     x: ML + indentX + labelW + 10,
@@ -664,7 +680,8 @@ export async function createSuratPermohonanFillable(
   ctx.cursor += RH * 5; // Extra space for materai/stempel
 
   const pemohonTf = ctx.form.createTextField("ttd_pemohon");
-  pemohonTf.setText(data.granteeName || "");
+  const valPemohon = data.granteeName != null ? String(data.granteeName) : "";
+  pemohonTf.setText(valPemohon);
   pemohonTf.setAlignment(1); // Center align
   pemohonTf.addToPage(ctx.page, {
     x: PW - MR - 200,
@@ -713,7 +730,8 @@ export async function createSuratPernyataanFillable(
   });
 
   const tfAlamatPr = ctx.form.createTextField("pr_alamat");
-  tfAlamatPr.setText(data.address || "");
+  const valAlamatPr = data.address != null ? String(data.address) : "";
+  tfAlamatPr.setText(valAlamatPr);
   tfAlamatPr.enableMultiline();
   tfAlamatPr.addToPage(ctx.page, {
     x: FIELD_X,
@@ -774,7 +792,8 @@ export async function createSuratPernyataanFillable(
   });
 
   const tfJalanPernyataan = ctx.form.createTextField("tanah_jalan_pernyataan");
-  tfJalanPernyataan.setText(data.road || "");
+  const valJalanPernyataan = data.road != null ? String(data.road) : "";
+  tfJalanPernyataan.setText(valJalanPernyataan);
   tfJalanPernyataan.enableMultiline();
   tfJalanPernyataan.addToPage(ctx.page, {
     x: ML + indentX + labelWPernyataan + 10,

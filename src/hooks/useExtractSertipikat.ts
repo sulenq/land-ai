@@ -1,30 +1,12 @@
-import { DA_API_EXTRACT_SERTIPIKAT, DA_API_STATUS } from "@/constants/apis";
+import {
+  DA_API_EXTRACT_SERTIPIKAT,
+  DA_API_SESSION_DETAIL,
+} from "@/constants/apis";
 import useRequest from "@/hooks/useRequest";
 import { useCallback, useEffect, useState } from "react";
 
-export interface DashboardExtractStatusResponse {
-  status: number;
-  message: string;
-  data: {
-    status: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
-    result?: {
-      fileName: string;
-      totalPages: number;
-      pagesDetail: {
-        data: Record<string, any>;
-        pageNumber: number;
-      }[];
-      extractedData: Record<string, any>;
-      validationSummary: {
-        note: string;
-        isValid: boolean;
-      };
-    };
-  };
-}
-
 export default function useExtractSertipikat() {
-  const [jobId, setJobId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
   const [extractedData, setExtractedData] = useState<Record<
     string,
@@ -50,7 +32,7 @@ export default function useExtractSertipikat() {
 
   const uploadSertipikat = useCallback(
     async (file: File, serviceId: string, requirementId?: string) => {
-      setJobId(null);
+      setSessionId(null);
       setExtractedData(null);
 
       const formData = new FormData();
@@ -72,10 +54,13 @@ export default function useExtractSertipikat() {
           },
         });
 
-        // Status 202 Accepted — onSuccess won't fire so we read the response directly
-        const jobId = res?.data?.data?.jobId;
-        if (jobId) {
-          setJobId(jobId);
+        // The upload response returns a sessionId (or jobId which IS the sessionId)
+        const id =
+          res?.data?.data?.sessionId ||
+          res?.data?.data?.jobId ||
+          res?.data?.data?.id;
+        if (id) {
+          setSessionId(id);
           setIsPolling(true);
         }
       } catch (e) {
@@ -86,25 +71,24 @@ export default function useExtractSertipikat() {
   );
 
   const pollStatus = useCallback(async () => {
-    if (!jobId || !isPolling) return;
+    if (!sessionId || !isPolling) return;
 
     try {
       await statusReq({
         config: {
           method: "GET",
-          url: `${DA_API_STATUS}/${jobId}`,
+          url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
         },
         onResolve: {
           onSuccess: (res: any) => {
-            const data = res.data
-              ?.data as DashboardExtractStatusResponse["data"];
+            const data = res.data?.data;
             if (data?.status === "COMPLETED") {
               setIsPolling(false);
-              const extracted = data.result?.extractedData || {};
-              setExtractedData(extracted);
+              // Use rawData from the session detail response
+              const rawData = data.rawData || {};
+              setExtractedData(rawData);
             } else if (data?.status === "FAILED") {
               setIsPolling(false);
-              // Handle failed state if necessary
             }
           },
         },
@@ -113,7 +97,7 @@ export default function useExtractSertipikat() {
       console.error("Polling failed", e);
       setIsPolling(false);
     }
-  }, [jobId, isPolling, statusReq]);
+  }, [sessionId, isPolling, statusReq]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -137,7 +121,7 @@ export default function useExtractSertipikat() {
     extractedData,
     setExtractedData,
     reset: () => {
-      setJobId(null);
+      setSessionId(null);
       setExtractedData(null);
       setIsPolling(false);
     },

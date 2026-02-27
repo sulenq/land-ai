@@ -151,33 +151,47 @@ export default function Page() {
   }).format(new Date());
 
   const sharedData: FillableData = {
-    dateStamp: dateNowStr,
-    city: extractedData?.kabupatenKota || "",
-    grantorName: extractedData?.namaPemilik || "",
-    grantorNik: extractedData?.nikPemberi || "",
-    grantorBirthPlaceDate: extractedData?.ttlPemberi || "",
-    grantorOccupation: "",
-    grantorAddress: extractedData?.alamatPemberi || "",
-    granteeName: extractedData?.namaPenerima || "",
-    granteeNIK: extractedData?.nikPenerima || "",
-    granteeBirthPlaceDate: extractedData?.ttlPenerima || "",
-    granteeOccupation: "",
-    granteeAddress: extractedData?.alamatPenerima || "",
-    road: extractedData?.jalan || "",
-    village: extractedData?.desaKelurahan || "",
-    district: extractedData?.kecamatan || "",
-    province: "",
-    titleNumber: extractedData?.nomorHakSertipikat || "",
-    area: extractedData?.luasTanahM2 ? `${extractedData.luasTanahM2} m²` : "",
-    nib: "",
-    imgDate: "",
-    imgNumber: "",
-    titleType: extractedData?.jenisHak || "Hak Milik",
-    certificateSerialNumber: extractedData?.nomorSeriMaterai || "",
-    subject: "SURAT KETERANGAN PENDAFTARAN TANAH",
-    address: "",
-    noSuratKuasa: "",
-    suratKuasaDate: "",
+    dateStamp: extractedData?.dateStamp || dateNowStr,
+    city: extractedData?.city || extractedData?.kabupatenKota || "",
+    grantorName: extractedData?.grantorName || extractedData?.namaPemilik || "",
+    grantorNik: extractedData?.grantorNik || extractedData?.nikPemberi || "",
+    grantorBirthPlaceDate:
+      extractedData?.grantorBirthPlaceDate || extractedData?.ttlPemberi || "",
+    grantorOccupation: extractedData?.grantorOccupation || "",
+    grantorAddress:
+      extractedData?.grantorAddress || extractedData?.alamatPemberi || "",
+    granteeName:
+      extractedData?.granteeName || extractedData?.namaPenerima || "",
+    granteeNIK: extractedData?.granteeNIK || extractedData?.nikPenerima || "",
+    granteeBirthPlaceDate:
+      extractedData?.granteeBirthPlaceDate || extractedData?.ttlPenerima || "",
+    granteeOccupation: extractedData?.granteeOccupation || "",
+    granteeAddress:
+      extractedData?.granteeAddress || extractedData?.alamatPenerima || "",
+    road: extractedData?.road || extractedData?.jalan || "",
+    village: extractedData?.village || extractedData?.desaKelurahan || "",
+    district: extractedData?.district || extractedData?.kecamatan || "",
+    province: extractedData?.province || "",
+    titleNumber:
+      extractedData?.titleNumber || extractedData?.nomorHakSertipikat || "",
+    area: extractedData?.area
+      ? extractedData.area
+      : extractedData?.luasTanahM2
+        ? `${extractedData.luasTanahM2} m²`
+        : "",
+    nib: extractedData?.nib || "",
+    imgDate: extractedData?.imgDate || "",
+    imgNumber: extractedData?.imgNumber || "",
+    titleType:
+      extractedData?.titleType || extractedData?.jenisHak || "Hak Milik",
+    certificateSerialNumber:
+      extractedData?.certificateSerialNumber ||
+      extractedData?.nomorSeriMaterai ||
+      "",
+    subject: extractedData?.subject || "SURAT KETERANGAN PENDAFTARAN TANAH",
+    address: extractedData?.address || "",
+    noSuratKuasa: extractedData?.noSuratKuasa || "",
+    suratKuasaDate: extractedData?.suratKuasaDate || "",
   };
 
   const [isZipping, setIsZipping] = useState(false);
