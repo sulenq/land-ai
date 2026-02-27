@@ -187,7 +187,7 @@ export default function useRequest<T = any>(props: Props) {
           response: r,
         });
 
-        if ([200, 201, 304].includes(r.status)) {
+        if ([200, 201, 202, 204, 304].includes(r.status)) {
           onResolve?.onSuccess?.(r);
           if (showSuccessToast) {
             setTimeout(() => {

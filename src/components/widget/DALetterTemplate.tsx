@@ -5,16 +5,17 @@ import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 72,
+    paddingVertical: 54, // ~2cm
+    paddingHorizontal: 54, // ~2cm
     fontFamily: "Times-Roman",
-    fontSize: 12,
-    lineHeight: 1.4,
+    fontSize: 11, // Reduced from 12
+    lineHeight: 1.3, // Tighten line height
   },
   titleCenter: {
     textAlign: "center",
     fontWeight: "bold",
     textDecoration: "underline",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   row: { flexDirection: "row", marginBottom: 2 },
   label: { width: 120, flexShrink: 0 },
@@ -23,16 +24,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     textDecoration: "underline",
-    marginVertical: 8,
+    marginVertical: 4,
   },
-  paragraph: { marginBottom: 4, textAlign: "justify" },
+  paragraph: { marginBottom: 3, textAlign: "justify" },
   signatureContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginTop: 12,
   },
   signatureBox: { flex: 1, alignItems: "center" },
-  signatureText: { marginTop: 60 },
+  signatureText: { marginTop: 40 }, // Reduced gap for signature
 });
 
 interface Props_SuratKuasa {
@@ -80,7 +81,7 @@ export const SuratKuasaPDF = ({ data }: Props_SuratKuasa) => (
         <Text>: {data.grantorAddress}</Text>
       </View>
 
-      <Text style={[styles.paragraph, { marginTop: 4 }]}>
+      <Text style={[styles.paragraph, { marginTop: 2 }]}>
         Dengan ini memberi kuasa kepada :
       </Text>
 
@@ -137,12 +138,12 @@ export const SuratKuasaPDF = ({ data }: Props_SuratKuasa) => (
         <Text>: {data.area} m²</Text>
       </View>
 
-      <Text style={[styles.paragraph, { marginTop: 8 }]}>
+      <Text style={[styles.paragraph, { marginTop: 4 }]}>
         Demikian Surat Kuasa ini dibuat dengan sebenar-benarnya dan dapat
         dipergunakan sebagaimana mestinya.
       </Text>
 
-      <Text style={{ textAlign: "right", marginTop: 12 }}>
+      <Text style={{ textAlign: "right", marginTop: 6 }}>
         {`${data.city}, ${data.dateStamp}`}
       </Text>
 
@@ -194,11 +195,10 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
     <Page size="A4" style={styles.page}>
       <View style={{ fontWeight: "bold" }}>
         <Text>Sdr.</Text>
-
-        <Text style={{ marginTop: 4 }}>Kepada Yth,</Text>
+        <Text style={{ marginTop: 2 }}>Kepada Yth,</Text>
         <Text>Kepala Kantor Pertanahan</Text>
         <Text>{data.city}</Text>
-        <Text style={{ marginBottom: 12 }}>Di {data.city}</Text>
+        <Text style={{ marginBottom: 6 }}>Di {data.city}</Text>
       </View>
 
       <Text style={styles.paragraph}>Dengan Hormat,</Text>
@@ -224,7 +224,7 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
         </View>
       </View>
 
-      <Text style={[styles.paragraph, { marginTop: 6 }]}>
+      <Text style={[styles.paragraph, { marginTop: 4 }]}>
         Dalam hal ini bertindak untuk dan atas nama diri sendiri / selaku kuasa
         dari :
       </Text>
@@ -253,13 +253,13 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
         </View>
       </View>
 
-      <Text style={[styles.paragraph, { marginTop: 6 }]}>
+      <Text style={[styles.paragraph, { marginTop: 4 }]}>
         Berdasarkan Surat Kuasa Nomor {data.noSuratKuasa} tanggal{" "}
         {data.suratKuasaDate} dengan ini mengajukan permohonan :
       </Text>
 
       <Text
-        style={[styles.paragraph, { fontWeight: "bold", marginVertical: 4 }]}
+        style={[styles.paragraph, { fontWeight: "bold", marginVertical: 2 }]}
       >
         {data.subject}
       </Text>
@@ -299,23 +299,23 @@ export const SuratPermohonanPDF = ({ data }: Props_SuratPermohonan) => (
         </View>
       </View>
 
-      <Text style={[styles.paragraph, { marginTop: 8 }]}>
+      <Text style={[styles.paragraph, { marginTop: 4 }]}>
         Untuk melengkapi permohonan dimaksud, bersama ini kami lampirkan :
       </Text>
 
       <Text style={{ marginLeft: 12, marginTop: 4 }}>
-        1. Asli Sertifikat HM {data.titleNumber}
+        1. Asli Sertipikat HM {data.titleNumber}
       </Text>
       <Text style={{ marginLeft: 12 }}>2.</Text>
       <Text style={{ marginLeft: 12 }}>3.</Text>
 
-      <Text style={{ textAlign: "right", marginTop: 16 }}>
+      <Text style={{ textAlign: "right", marginTop: 8 }}>
         {`${data.city}, ${data.dateStamp}`}
       </Text>
 
-      <Text style={{ textAlign: "right", marginTop: 12 }}>Hormat Kami</Text>
+      <Text style={{ textAlign: "right", marginTop: 8 }}>Hormat Kami</Text>
 
-      <Text style={{ textAlign: "right", marginTop: 40 }}>
+      <Text style={{ textAlign: "right", marginTop: 30 }}>
         {data.granteeName}
       </Text>
     </Page>
@@ -349,10 +349,21 @@ interface Props_SuratPernyataan {
 }
 export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
   <Document>
-    <Page size="A4" style={styles.page}>
+    <Page
+      size="A4"
+      style={{
+        fontFamily: "Times-Roman",
+        fontSize: 10,
+        lineHeight: 1.2,
+        paddingVertical: 40,
+        paddingHorizontal: 54,
+      }}
+    >
       <Text style={styles.titleCenter}>SURAT PERNYATAAN</Text>
 
-      <Text style={styles.paragraph}>Yang bertandatangan di bawah ini :</Text>
+      <Text style={[styles.paragraph, { marginBottom: 1 }]}>
+        Yang bertandatangan di bawah ini :
+      </Text>
 
       {/* Identity */}
       <View style={styles.row}>
@@ -372,12 +383,12 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
         <Text>: {data.grantorNik}</Text>
       </View>
 
-      <Text style={[styles.paragraph, { marginTop: 8 }]}>
+      <Text style={[styles.paragraph, { marginTop: 3 }]}>
         Dengan ini menyatakan bahwa :
       </Text>
 
       {/* Point 1 */}
-      <Text style={styles.paragraph}>
+      <Text style={[styles.paragraph, { marginBottom: 1 }]}>
         1. Saya adalah pemegang hak atas tanah dengan data sebagai berikut :
       </Text>
 
@@ -398,7 +409,7 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
           <Text style={styles.label}>d. Atas Nama</Text>
         </View>
 
-        <Text style={{ marginTop: 4 }}>e. Letak Tanah :</Text>
+        <Text style={{ marginTop: 2 }}>e. Letak Tanah :</Text>
 
         <View style={{ marginLeft: 12 }}>
           <View style={styles.row}>
@@ -423,7 +434,7 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
           </View>
         </View>
 
-        <Text style={{ marginTop: 4 }}>f. Gambar Situasi :</Text>
+        <Text style={{ marginTop: 2 }}>f. Gambar Situasi :</Text>
 
         <View style={{ marginLeft: 12 }}>
           <View style={styles.row}>
@@ -446,7 +457,7 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
       </View>
 
       {/* Point 2-5 */}
-      <Text style={styles.paragraph}>
+      <Text style={[styles.paragraph, { marginTop: 2 }]}>
         2. Saya menjamin keaslian sertipikat tersebut dan nama yang tercantum
         dalam sertipikat merupakan nama pemegang hak yang sebenarnya dan
         beritikad baik serta bertanggung jawab sepenuhnya atas penggunaan data
@@ -471,18 +482,18 @@ export const SuratPernyataanPDF = ({ data }: Props_SuratPernyataan) => (
         secara perdata maupun pidana tanpa melibatkan pihak Kantor Pertanahan.
       </Text>
 
-      <Text style={[styles.paragraph, { marginTop: 8 }]}>
+      <Text style={[styles.paragraph, { marginTop: 2 }]}>
         Demikian Surat Pernyataan ini dibuat untuk dipergunakan sebagaimana
         mestinya.
       </Text>
 
-      <Text style={{ textAlign: "right", marginTop: 16 }}>
+      <Text style={{ textAlign: "right", marginTop: 6 }}>
         {`${data.city}, ${data.dateStamp}`}
       </Text>
 
-      <Text style={{ textAlign: "right", marginTop: 12 }}>Hormat Saya</Text>
+      <Text style={{ textAlign: "right", marginTop: 4 }}>Hormat Saya</Text>
 
-      <Text style={{ textAlign: "right", marginTop: 40 }}>
+      <Text style={{ textAlign: "right", marginTop: 24 }}>
         {data.grantorName}
       </Text>
     </Page>
