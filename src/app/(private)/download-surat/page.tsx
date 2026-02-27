@@ -31,7 +31,7 @@ import {
   createSuratPermohonanFillable,
   createSuratPernyataanFillable,
   type FillableData,
-} from "public/DADocTemplate/DAFillableTemplate";
+} from "@/components/widget/DAFillableTemplate";
 import {
   ArrowLeftIcon,
   DownloadIcon,
