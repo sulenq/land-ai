@@ -36,7 +36,7 @@ export const P = forwardRef<HTMLParagraphElement, Props>((props, ref) => {
               }
             },
           })
-        : "Invalid string"}
+        : children}
     </Text>
   );
 });

@@ -142,6 +142,13 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
     },
   };
 
+  // Remove used sources block
+  const rawText = String(children ?? "");
+  const processedText = rawText.replace(
+    /<<USED_SOURCES>>[\s\S]*?<<END_SOURCES>>/g,
+    "",
+  );
+
   return (
     <Box
       className="markdown"
@@ -155,7 +162,7 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
         rehypePlugins={[rehypeHighlight, [rehypeSanitize, sanitizeSchema]]}
         components={components}
       >
-        {String(children ?? "")}
+        {processedText}
       </ReactMarkdown>
     </Box>
   );
