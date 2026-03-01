@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
   // --- GENERAL CONFIG ---
   devIndicators: false,
   reactStrictMode: false,
+  transpilePackages: ["pdfjs-dist", "@swc/helpers"],
 
   // --- WEBPACK & MEMORY LEAK FIX ---
   webpack(config, { dev, isServer }) {
