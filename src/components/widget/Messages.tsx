@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { P } from "@/components/ui/p";
-import Spinner from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";

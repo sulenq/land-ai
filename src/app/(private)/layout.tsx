@@ -36,7 +36,8 @@ import {
   DASessions,
   DASessionssDisclosureTrigger,
 } from "@/components/widget/DASessions";
-import HScroll from "@/components/widget/HScroll";
+import { HScroll } from "@/components/widget/HScroll";
+
 import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { MContainer } from "@/components/widget/MContainer";

@@ -24,7 +24,8 @@ import { DataGridItem } from "@/components/widget/DataGridItem";
 import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import HScroll from "@/components/widget/HScroll";
+import { HScroll } from "@/components/widget/HScroll";
+
 import { MiniUser } from "@/components/widget/MiniUser";
 import {
   PageContainer,

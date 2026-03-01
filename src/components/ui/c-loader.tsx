@@ -1,6 +1,6 @@
 import { CContainer } from "@/components/ui/c-container";
 import { Skeleton } from "@/components/ui/skeleton";
-import Spinner from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { SimpleGrid, SpinnerProps, StackProps } from "@chakra-ui/react";
 
 interface Props extends StackProps {

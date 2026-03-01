@@ -61,7 +61,7 @@ export const DateTimePickerInput = (props: Props__DateTimePickerInput) => {
       setTime(
         extractTime(localized, {
           withSeconds: true,
-        })
+        }),
       );
     }
   }, []);

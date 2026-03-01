@@ -1,6 +1,6 @@
 import { CContainer } from "@/components/ui/c-container";
 import { P } from "@/components/ui/p";
-import Spinner from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";

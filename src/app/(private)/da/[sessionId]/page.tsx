@@ -7,7 +7,7 @@ import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
-import Spinner from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
 import { DataTable } from "@/components/widget/DataTable";

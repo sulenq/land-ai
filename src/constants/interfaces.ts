@@ -1,4 +1,4 @@
-import { BtnProps } from "@/components/ui/btn";
+import { Props__Btn } from "@/components/ui/btn";
 import { Enum__ActivityAction } from "@/constants/enums";
 import {
   Type__AccountStatus,
@@ -104,7 +104,7 @@ export interface Interface__TableOption {
     description: string;
     confirmLabel: string;
     onConfirm: () => void;
-    confirmButtonProps?: BtnProps;
+    confirmButtonProps?: Props__Btn;
     loading?: boolean;
     disabled?: boolean;
   };

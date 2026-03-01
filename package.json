@@ -10,7 +10,8 @@
     "d": "next dev",
     "t": "npx tsc --noEmit --watch --preserveWatchOutput",
     "l": "node src/scripts/generate-translation.js",
-    "s": "node src/scripts/generate-sitemap.js"
+    "s": "node src/scripts/generate-sitemap.js",
+    "rm": "rimraf node_modules package-lock.json"
   },
   "dependencies": {
     "@chakra-ui/charts": "^3.30.0",
@@ -66,9 +67,10 @@
     "eslint": "^9.39.1",
     "eslint-config-next": "15.5.0",
     "eslint-plugin-unused-imports": "^4.3.0",
+    "rimraf": "^6.1.3",
     "typescript": "^5.9.3"
   },
-    "overrides": {
+  "overrides": {
     "serialize-javascript": "^7.0.3",
     "tar": "^7.5.8",
     "pdfjs-dist": "5.3.93"

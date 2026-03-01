@@ -15,7 +15,8 @@
 // import { useEffect, useRef, useState } from "react";
 
 // import { Tooltip } from "@/components/ui/tooltip";
-// import HScroll from "@/components/widget/HScroll";
+// import { HScroll } from "@/components/widget/HScroll";
+
 // import useLang from "@/context/useLang";
 
 // import * as pdfjsLib from "pdfjs-dist";

@@ -1,4 +1,4 @@
-import { BtnProps } from "@/components/ui/btn";
+import { Props__Btn } from "@/components/ui/btn";
 import {
   Interface__BatchOptionsTableOptionGenerator,
   Interface__FormattedTableHeader,
@@ -138,7 +138,7 @@ export interface Props__DataTable extends Omit<StackProps, "page"> {
   loading?: boolean;
   contentContainerProps?: StackProps;
 }
-export interface Props__BatchOptions extends BtnProps {
+export interface Props__BatchOptions extends Props__Btn {
   selectedRows: any[];
   clearSelectedRows: () => void;
   batchOptions?: Interface__BatchOptionsTableOptionGenerator[];
@@ -147,7 +147,7 @@ export interface Props__BatchOptions extends BtnProps {
   tableContainerRef?: RefObject<HTMLDivElement | null>;
   menuRootProps?: Omit<MenuRootProps, "children">;
 }
-export interface Props_RowOptions extends BtnProps {
+export interface Props_RowOptions extends Props__Btn {
   row: Interface__FormattedTableRow;
   rowOptions?: Interface__RowOptionsTableOptionGenerator<Interface__FormattedTableRow>[];
   tableContainerRef?: RefObject<HTMLDivElement | null>;
@@ -194,7 +194,7 @@ export interface Props__FeedbackState extends StackProps {
   icon?: any;
 }
 
-export interface Props__SelectInput extends Omit<BtnProps, "onChange"> {
+export interface Props__SelectInput extends Omit<Props__Btn, "onChange"> {
   id: string;
   title?: string;
   inputValue?: Interface__SelectOption[] | null;
@@ -316,7 +316,7 @@ export interface Props__FileList extends Omit<StackProps, "onChange"> {
   onChange?: Props__FileInput["onChange"];
 }
 
-export interface Props__PeriodPickerInput extends Omit<BtnProps, "onChange"> {
+export interface Props__PeriodPickerInput extends Omit<Props__Btn, "onChange"> {
   id?: string;
   title?: string;
   inputValue?: Type__Period | null;
@@ -330,7 +330,7 @@ export interface Props__PeriodPickerInput extends Omit<BtnProps, "onChange"> {
   withIcon?: boolean;
 }
 
-export interface Props__DatePickerInput extends Omit<BtnProps, "onChange"> {
+export interface Props__DatePickerInput extends Omit<Props__Btn, "onChange"> {
   id?: string;
   title?: string;
   inputValue?: string[] | null;
@@ -356,7 +356,7 @@ export interface Props__SelectedDateList {
   selected: Date[];
   formattedSelectedLabel: string;
 }
-export interface Props__TimePicker extends Omit<BtnProps, "onChange"> {
+export interface Props__TimePicker extends Omit<Props__Btn, "onChange"> {
   id?: string;
   name?: string;
   title?: string;
