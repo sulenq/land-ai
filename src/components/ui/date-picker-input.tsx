@@ -55,7 +55,7 @@ export const DEFAULT_PERIOD = {
   year: new Date().getFullYear(),
 };
 
-export const PeriodPicker = (props: any) => {
+const PeriodPicker = (props: any) => {
   // Props
   const { period, setPeriod, ...restProps } = props;
 
@@ -125,7 +125,7 @@ export const PeriodPicker = (props: any) => {
     </Group>
   );
 };
-export const DatePicker = (props: Props__DatePicker) => {
+const DatePicker = (props: Props__DatePicker) => {
   // Props
   const { period, selected, setSelected, multiple, ...restProps } = props;
 

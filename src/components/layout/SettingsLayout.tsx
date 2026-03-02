@@ -2,40 +2,43 @@
 
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import { HelperText } from "@/components/ui/helper-text";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import SearchInput from "@/components/ui/search-input";
 import { Tooltip } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
-import { LucideIcon } from "@/components/widget/Icon";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import { PageContainer, PageTitle } from "@/components/widget/PageShell";
-import { OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
-import { Props__Layout } from "@/constants/props";
+import { APP } from "@/constants/_meta";
 import {
-  BASE_ICON_BOX_SIZE,
-  DESKTOP_NAVS_TOOLTIP_MAIN_AXIS,
-} from "@/constants/styles";
+  OTHER_PRIVATE_NAV_GROUPS,
+  PREFIX_ADMIN_ROUTES,
+} from "@/constants/navs";
+import { Props__Layout } from "@/constants/props";
+import { DESKTOP_NAVS_TOOLTIP_MAIN_AXIS } from "@/constants/styles";
 import useLang from "@/context/useLang";
-import { useMasterDataPageContainer } from "@/context/useMasterDataPageContainer";
+import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { isEmptyArray } from "@/utils/array";
+import { formatAbsDate } from "@/utils/formatter";
 import { pluckString } from "@/utils/string";
-import { HStack, Icon } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const NAVS =
-  OTHER_PRIVATE_NAV_GROUPS[0].navs.find((n) => n.path === "/master-data")
+  OTHER_PRIVATE_NAV_GROUPS[0].navs.find((n) => n.path === "/settings")
     ?.children || [];
-const DESKTOP_NAVS_COLOR = "ibody";
-const ROOT_PATH = `/master-data`;
+const NAVS_COLOR = "ibody";
+const ROOT_PATH = `/settings`;
 
 const NavsList = (props: any) => {
   // Props
-  const { search, ...restProps } = props;
+  const { isAdminRoutes, search, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -96,20 +99,25 @@ const NavsList = (props: any) => {
                       },
                     }}
                   >
-                    <NavLink to={nav.path} w={"full"}>
+                    <NavLink
+                      to={
+                        isAdminRoutes
+                          ? `${PREFIX_ADMIN_ROUTES}${nav.path}`
+                          : nav.path
+                      }
+                      w={"full"}
+                    >
                       <Btn
                         clicky={false}
                         justifyContent={"start"}
                         variant={"ghost"}
                         px={2}
-                        color={isActive ? "" : DESKTOP_NAVS_COLOR}
+                        color={isActive ? "" : NAVS_COLOR}
                         pos={"relative"}
                       >
                         {isActive && <LeftIndicator />}
 
-                        <Icon boxSize={BASE_ICON_BOX_SIZE}>
-                          <LucideIcon icon={nav.icon} />
-                        </Icon>
+                        <AppIcon icon={nav.icon} />
 
                         <P textAlign={"left"}>{pluckString(l, nav.labelKey)}</P>
                       </Btn>
@@ -124,7 +132,10 @@ const NavsList = (props: any) => {
   );
 };
 
-export default function Layout({ children }: Props__Layout) {
+export default function SettingsLayout(props: Props__Layout) {
+  // Props
+  const { children } = props;
+
   // Hooks
   const pathname = usePathname();
 
@@ -133,14 +144,19 @@ export default function Layout({ children }: Props__Layout) {
   const containerDimension = useContainerDimension(containerRef);
 
   // Contexts
-  const setContainerDimension = useMasterDataPageContainer(
+  const { l } = useLang();
+  const setContainerDimension = useSettingsPageContainer(
     (s) => s.setContainerDimension,
   );
 
   // States
+  const isAdminRoutes = pathname.startsWith(PREFIX_ADMIN_ROUTES);
+  const resolvedRootPath = isAdminRoutes
+    ? `${PREFIX_ADMIN_ROUTES}${ROOT_PATH}`
+    : ROOT_PATH;
   const [search, setSearch] = useState<string>("");
   const isSmContainer = containerDimension.width < 720;
-  const isAtSettingsIndexRoute = pathname === ROOT_PATH;
+  const isAtSettingsIndexRoute = pathname === resolvedRootPath;
   const showSidebar =
     !isSmContainer || (isSmContainer && isAtSettingsIndexRoute);
   const showContent =
@@ -151,7 +167,7 @@ export default function Layout({ children }: Props__Layout) {
   }, [containerDimension]);
 
   return (
-    <PageContainer id="settings_page_container" ref={containerRef} p={0}>
+    <PageContainer id="settings_route_container" ref={containerRef} p={0}>
       {containerDimension.width > 0 && (
         <HStack align={"stretch"} flex={1} gap={0} overflowY={"auto"}>
           {/* Sidebar */}
@@ -167,7 +183,7 @@ export default function Layout({ children }: Props__Layout) {
             >
               <CContainer px={4} mt={4} mb={1}>
                 <ClampText fontSize={"xl"} fontWeight={"semibold"}>
-                  Master Data
+                  {l.settings}
                 </ClampText>
               </CContainer>
 
@@ -181,14 +197,25 @@ export default function Layout({ children }: Props__Layout) {
                 />
               </CContainer>
 
-              <NavsList search={search} p={3} />
+              <NavsList isAdminRoutes={isAdminRoutes} search={search} p={3} />
+
+              <HStack justify={"space-between"} px={4} py={4} mt={"auto"}>
+                <HelperText>{`v${APP.version}`}</HelperText>
+
+                <HelperText>
+                  {`Last updated: 
+                ${formatAbsDate(APP.lastUpdated, {
+                  variant: "numeric",
+                })}`}
+                </HelperText>
+              </HStack>
             </CContainer>
           )}
 
           {/* Content */}
           {showContent && (
             <MContainer className={"scrollY"} flex={1}>
-              {pathname !== ROOT_PATH && <PageTitle mb={2} />}
+              {!isAtSettingsIndexRoute && <PageTitle mb={2} />}
 
               <CContainer flex={1}>{children}</CContainer>
             </MContainer>

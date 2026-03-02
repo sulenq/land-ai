@@ -43,11 +43,7 @@ import { Logo } from "@/components/widget/Logo";
 import { MContainer } from "@/components/widget/MContainer";
 import { ProfileMenu } from "@/components/widget/ProfileMenu";
 import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
-import {
-  NavBreadcrumb,
-  RESOLVED_NAVS,
-  TopBar,
-} from "@/components/widget/PageShell";
+import { NavBreadcrumb, TopBar } from "@/components/widget/PageShell";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
@@ -162,7 +158,7 @@ const MobileLayout = (props: Props__Layout) => {
 
   // States
   const user = getUserData();
-  const activeNavs = getActiveNavs(pathname, RESOLVED_NAVS);
+  const activeNavs = getActiveNavs(pathname);
   const resolvedActiveNavs =
     sw < 360 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
   const backPath = last(activeNavs)?.backPath;

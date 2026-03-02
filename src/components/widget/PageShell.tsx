@@ -11,12 +11,6 @@ import { DotIndicator } from "@/components/widget/Indicator";
 import SimplePopover from "@/components/widget/SimplePopover";
 import { Today } from "@/components/widget/Today";
 import { Interface__Nav } from "@/constants/interfaces";
-import {
-  ADMIN_OTHER_PRIVATE_NAV_GROUPS,
-  ADMIN_PRIVATE_NAV_GROUPS,
-  OTHER_PRIVATE_NAV_GROUPS,
-  PRIVATE_NAV_GROUPS,
-} from "@/constants/navs";
 import useADM from "@/context/useADM";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
@@ -30,12 +24,6 @@ import { usePathname } from "next/navigation";
 import { forwardRef, useEffect } from "react";
 
 const FONT_SIZE = "md";
-export const RESOLVED_NAVS = [
-  ...PRIVATE_NAV_GROUPS,
-  ...OTHER_PRIVATE_NAV_GROUPS,
-  ...ADMIN_PRIVATE_NAV_GROUPS,
-  ...ADMIN_OTHER_PRIVATE_NAV_GROUPS,
-];
 
 export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {
@@ -174,7 +162,7 @@ export const TopBar = () => {
   const pathname = usePathname();
 
   // States
-  const activeNavs = getActiveNavs(pathname, RESOLVED_NAVS);
+  const activeNavs = getActiveNavs(pathname);
   const resolvedActiveNavs =
     sw < 960 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
   const backPath = last(activeNavs)?.backPath;
@@ -224,7 +212,7 @@ export const PageTitle = (props: StackProps) => {
   const pathname = usePathname();
 
   // States
-  const activeNavs = getActiveNavs(pathname, RESOLVED_NAVS);
+  const activeNavs = getActiveNavs(pathname);
   const title = pluckString(l, last<any>(activeNavs)?.labelKey);
 
   return (
