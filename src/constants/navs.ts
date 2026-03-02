@@ -1,14 +1,18 @@
 import { Interface__NavGroup } from "@/constants/interfaces";
 import {
+  ActivityIcon,
   BrainCircuitIcon,
   BrushIcon,
+  DatabaseIcon,
   FilePenLineIcon,
   LanguagesIcon,
   LayoutDashboardIcon,
+  LockKeyholeIcon,
   ScanTextIcon,
   SettingsIcon,
   ShieldHalfIcon,
   SquarePenIcon,
+  UserCogIcon,
   UserIcon,
   UsersIcon,
 } from "lucide-react";
@@ -126,9 +130,116 @@ export const OTHER_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
     ],
   },
 ];
+export const ADMIN_OTHER_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
+  {
+    labelKey: "others",
+    navs: [
+      {
+        icon: LockKeyholeIcon,
+        labelKey: "navs.master_data",
+        path: `/admin/master-data`,
+        allowedRoles: [],
+        allowedPermissions: [],
+        children: [
+          {
+            labelKey: "master_data_navs.hr.index",
+            navs: [
+              {
+                icon: UserCogIcon,
+                labelKey: "master_data_navs.hr.employment_status",
+                path: `/admin/master-data/employment-status`,
+                allowedRoles: [],
+                allowedPermissions: [],
+                backPath: `/master-data`,
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        icon: SettingsIcon,
+        labelKey: "navs.settings",
+        path: `/admin/settings`,
+        allowedRoles: [],
+        allowedPermissions: [],
+        children: [
+          {
+            labelKey: "settings_navs.main.index",
+            navs: [
+              {
+                icon: UserIcon,
+                labelKey: "my_profile",
+                path: `/admin/settings/profile`,
+                allowedRoles: [],
+                allowedPermissions: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: LanguagesIcon,
+                labelKey: "settings_navs.main.regional",
+                path: `/admin/settings/regional`,
+                allowedRoles: [],
+                allowedPermissions: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: BrushIcon,
+                labelKey: "settings_navs.main.personalization",
+                path: `/admin/settings/personalization`,
+                allowedRoles: [],
+                allowedPermissions: [],
+                backPath: `/admin/settings`,
+              },
+              {
+                icon: ShieldHalfIcon,
+                labelKey: "settings_navs.main.app_permissions",
+                path: `/admin/settings/app-permissions`,
+                allowedRoles: [],
+                allowedPermissions: [],
+                backPath: `/admin/settings`,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        icon: DatabaseIcon,
+        labelKey: "navs.master_data",
+        path: `/admin/security`,
+        allowedRoles: [],
+        allowedPermissions: [],
+        children: [
+          {
+            labelKey: "security_navs.index",
+            navs: [
+              {
+                icon: UserCogIcon,
+                labelKey: "security_navs.role_permissions",
+                path: `/admin/security/role-permission`,
+                allowedRoles: [],
+                allowedPermissions: [],
+                backPath: `./admin/security`,
+              },
+              {
+                icon: ActivityIcon,
+                labelKey: "security_navs.activity_log",
+                path: `/admin/security/activity-log`,
+                allowedRoles: [],
+                allowedPermissions: [],
+                backPath: `/admin/security`,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
 
 export const RESOLVED_NAVS = [
   ...PRIVATE_NAV_GROUPS,
-  ...OTHER_PRIVATE_NAV_GROUPS,
   ...ADMIN_PRIVATE_NAV_GROUPS,
+  ...OTHER_PRIVATE_NAV_GROUPS,
+  ...ADMIN_OTHER_PRIVATE_NAV_GROUPS,
 ];
