@@ -51,7 +51,7 @@ export default function Clock(props: Props__ClockProps) {
       <P fontSize={props?.fontSize}>{time}</P>
 
       {showTimezone && (
-        <P color={"fg.subtle"} fontSize={props?.fontSize}>
+        <P color={"fg.muted"} fontSize={props?.fontSize}>
           {tz.localAbbr}
         </P>
       )}

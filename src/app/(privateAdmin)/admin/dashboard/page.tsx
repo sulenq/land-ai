@@ -101,8 +101,7 @@ const OverviewItem = (props: Props__OverviewItem) => {
       px={4}
       py={3}
       bg={"item"}
-      // border={"1px solid"}
-      borderColor={"border.muted"}
+      borderColor={"border.subtle"}
       rounded={themeConfig.radii.component}
       pos={"relative"}
       overflow={"clip"}
