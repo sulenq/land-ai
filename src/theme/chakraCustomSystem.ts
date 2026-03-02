@@ -23,7 +23,7 @@ const customConfig = defineConfig({
     tokens: {
       colors: {
         light: { value: "#fff" },
-        dark: { value: "#181818" },
+        dark: { value: "#191919" },
         darktrans: { value: "#202020cf" },
         d0: { value: "#8a8a8a0f" },
         d1: { value: "#8a8a8a15" },
@@ -333,12 +333,13 @@ const customConfig = defineConfig({
         text: { value: { base: "{colors.dark}", _dark: "#ddd" } },
         body: { value: { base: "{colors.light}", _dark: "{colors.dark}" } },
         bgContent: {
-          value: { base: "#fafafa", _dark: "#161616" },
+          value: { base: "#fbfbfb", _dark: "#161616" },
         },
         bodytrans: {
           value: { base: "{colors.light}aa", _dark: "{colors.dark}aa" },
         },
         ibody: { value: { base: "{colors.dark}", _dark: "{colors.light}" } },
+        item: { value: { base: "#fbfbfb", _dark: "#1d1d1d" } },
         border: {
           subtle: {
             value: {

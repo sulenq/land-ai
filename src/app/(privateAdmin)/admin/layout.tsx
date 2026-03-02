@@ -9,7 +9,6 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
-import { Divider } from "@/components/ui/divider";
 import {
   MenuContent,
   MenuItem,
@@ -384,7 +383,7 @@ const DesktopLayout = (props: any) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const navsExpanded = useNavs((s) => s.navsExpanded);
+  const isNavsExpanded = useNavs((s) => s.isNavsExpanded);
   const toggleNavsExpanded = useNavs((s) => s.toggleNavsExpanded);
 
   // Refs
@@ -469,12 +468,12 @@ const DesktopLayout = (props: any) => {
   }).filter(Boolean) as typeof ADMIN_PRIVATE_NAV_GROUPS;
 
   useEffect(() => {
-    if (!navsExpanded) {
+    if (!isNavsExpanded) {
       setSearch("");
     } else {
       searchInputRef.current?.focus();
     }
-  }, [navsExpanded]);
+  }, [isNavsExpanded]);
 
   return (
     <HStack
@@ -487,20 +486,22 @@ const DesktopLayout = (props: any) => {
       {/* Sidebar */}
       <CContainer
         flexShrink={0}
-        w={navsExpanded ? "250px" : "60px"}
+        w={isNavsExpanded ? "250px" : "60px"}
+        bg={isNavsExpanded ? "bgContent" : DESKTOP_NAVS_BG}
+        // bg={"body"}
+        // border={isNavsExpanded ? "1px solid" : ""}
         borderColor={"border.muted"}
-        bg={navsExpanded ? "bgContent" : DESKTOP_NAVS_BG}
         transition={"200ms"}
       >
         {/* Logo & Sidebar Toggle */}
         <CContainer
-          h={navsExpanded ? "52px" : ""}
+          h={isNavsExpanded ? "52px" : ""}
           gap={1}
           px={3}
-          pt={navsExpanded ? 0 : "6px"}
+          pt={isNavsExpanded ? 0 : "6px"}
           justify={"center"}
         >
-          {!navsExpanded && (
+          {!isNavsExpanded && (
             <NavLink to="/">
               <Center w={"36px"} h={"40px"} mr={"auto"}>
                 <Logo size={15} />
@@ -509,7 +510,7 @@ const DesktopLayout = (props: any) => {
           )}
 
           <HStack justify={"space-between"} h={"40px"}>
-            {navsExpanded && (
+            {isNavsExpanded && (
               <NavLink to="/">
                 <HStack ml={"6px"} gap={3}>
                   <Logo size={15} />
@@ -528,7 +529,7 @@ const DesktopLayout = (props: any) => {
 
             {/* Toggle Side Navs */}
             <Tooltip
-              content={navsExpanded ? l.minimize : l.maximize}
+              content={isNavsExpanded ? l.minimize : l.maximize}
               positioning={{
                 placement: "right",
                 offset: {
@@ -537,7 +538,7 @@ const DesktopLayout = (props: any) => {
               }}
             >
               <Btn
-                order={navsExpanded ? 2 : 1}
+                order={isNavsExpanded ? 2 : 1}
                 iconButton
                 clicky={false}
                 w={"36px"}
@@ -547,7 +548,7 @@ const DesktopLayout = (props: any) => {
                 color={DESKTOP_NAVS_COLOR}
               >
                 <AppIcon
-                  icon={navsExpanded ? SidebarCloseIcon : SidebarOpenIcon}
+                  icon={isNavsExpanded ? SidebarCloseIcon : SidebarOpenIcon}
                   boxSize={BASE_ICON_BOX_SIZE}
                 />
               </Btn>
@@ -556,7 +557,7 @@ const DesktopLayout = (props: any) => {
         </CContainer>
 
         {/* Search */}
-        {navsExpanded && (
+        {isNavsExpanded && (
           <CContainer px={3} pt={2} pb={1}>
             <SearchInput
               inputRef={searchInputRef}
@@ -579,14 +580,14 @@ const DesktopLayout = (props: any) => {
           pr={`calc(12px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
         >
           {/* Private Navs */}
-          <CContainer gap={1} mt={navsExpanded ? "12px" : 0}>
+          <CContainer gap={1} mt={isNavsExpanded ? "12px" : 0}>
             {isEmptyArray(resolvedNavs) && <FeedbackNotFound />}
 
             {!isEmptyArray(resolvedNavs) &&
               resolvedNavs.map((navItem, navItemIdx) => {
                 return (
                   <CContainer key={navItemIdx} gap={1}>
-                    {navsExpanded && navItem.labelKey && (
+                    {isNavsExpanded && navItem.labelKey && (
                       <ClampText
                         fontSize={"sm"}
                         fontWeight={"semibold"}
@@ -610,7 +611,7 @@ const DesktopLayout = (props: any) => {
                                 content={pluckString(l, nav.labelKey)}
                               >
                                 <Btn
-                                  iconButton={navsExpanded ? false : true}
+                                  iconButton={isNavsExpanded ? false : true}
                                   clicky={false}
                                   gap={4}
                                   px={2}
@@ -639,7 +640,7 @@ const DesktopLayout = (props: any) => {
                                     </Icon>
                                   )}
 
-                                  {navsExpanded && (
+                                  {isNavsExpanded && (
                                     <P lineClamp={1} textAlign={"left"}>
                                       {pluckString(l, nav.labelKey)}
                                     </P>
@@ -651,7 +652,7 @@ const DesktopLayout = (props: any) => {
 
                           {hasSubMenus && (
                             <>
-                              {!navsExpanded && (
+                              {!isNavsExpanded && (
                                 <MenuRoot
                                   positioning={{
                                     placement: "right-start",
@@ -763,7 +764,7 @@ const DesktopLayout = (props: any) => {
                                 </MenuRoot>
                               )}
 
-                              {navsExpanded && (
+                              {isNavsExpanded && (
                                 <AccordionRoot
                                   multiple
                                   value={search ? [nav.path] : undefined}
@@ -985,7 +986,7 @@ const DesktopLayout = (props: any) => {
 
                       <AppIcon icon={nav.icon} />
 
-                      {navsExpanded && (
+                      {isNavsExpanded && (
                         <P lineClamp={1} textAlign={"left"}>
                           {pluckString(l, nav.labelKey)}
                         </P>
@@ -1014,7 +1015,7 @@ const DesktopLayout = (props: any) => {
 
                   <AppIcon icon={ServerIcon} />
 
-                  {navsExpanded && (
+                  {isNavsExpanded && (
                     <P lineClamp={1} textAlign={"left"}>
                       {pluckString(l, "navs.master_data")}
                     </P>
@@ -1025,9 +1026,9 @@ const DesktopLayout = (props: any) => {
           </CContainer>
         </CContainer>
 
-        <CContainer px={3}>
+        {/* <CContainer px={3}>
           <Divider />
-        </CContainer>
+        </CContainer> */}
 
         <CContainer p={3}>
           <MiniMyProfilePopoverTrigger
@@ -1044,7 +1045,7 @@ const DesktopLayout = (props: any) => {
           >
             <HStack
               gap={4}
-              w={navsExpanded ? "full" : "36px"}
+              w={isNavsExpanded ? "full" : "36px"}
               px={"6px"}
               py={2}
               rounded={themeConfig.radii.component}
@@ -1052,18 +1053,18 @@ const DesktopLayout = (props: any) => {
               _hover={{
                 bg: "gray.subtle",
               }}
-              justify={navsExpanded ? "" : "center"}
+              justify={isNavsExpanded ? "" : "center"}
               transition={"200ms"}
               pos={"relative"}
             >
               <Avatar
                 src={imgUrl(user?.avatar?.[0]?.filePath)}
                 name={user?.name}
-                size={navsExpanded ? "md" : "2xs"}
+                size={isNavsExpanded ? "md" : "2xs"}
                 mr={"auto"}
               />
 
-              {navsExpanded && (
+              {isNavsExpanded && (
                 <>
                   <CContainer>
                     <P lineClamp={1} fontWeight={"semibold"}>
@@ -1095,7 +1096,6 @@ const DesktopLayout = (props: any) => {
       >
         <CContainer
           flex={1}
-          bg={"body"}
           // borderLeft={"1px solid"}
           borderColor={"border.muted"}
           overflow={"auto"}

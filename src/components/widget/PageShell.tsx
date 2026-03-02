@@ -177,7 +177,6 @@ export const TopBar = () => {
       px={4}
       pr={"10px"}
       justify={"space-between"}
-      bg={"body"}
       // borderBottom={"1px solid"}
       borderColor={"border.muted"}
     >
@@ -236,7 +235,7 @@ export const PageContent = forwardRef<HTMLDivElement, StackProps>(
     const { children, ...restProps } = props;
 
     return (
-      <CContainer ref={ref} flex={1} bg={"body"} {...restProps}>
+      <CContainer ref={ref} flex={1} {...restProps}>
         {children}
       </CContainer>
     );
