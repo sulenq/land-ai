@@ -45,7 +45,10 @@ const Services = (props: StackProps) => {
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <SimpleGrid minChildWidth={"200px"} gap={4}>
+      <SimpleGrid
+        templateColumns={`repeat(auto-fill, minmax(200px, 1fr))`}
+        gap={4}
+      >
         {data?.map((service) => {
           return (
             <NavLink
