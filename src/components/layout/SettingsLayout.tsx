@@ -86,7 +86,7 @@ const NavsList = (props: any) => {
               )}
 
               {navItem.navs.map((nav) => {
-                const isActive = nav.path === pathname;
+                const isActive = pathname.includes(nav.path);
 
                 return (
                   <Tooltip

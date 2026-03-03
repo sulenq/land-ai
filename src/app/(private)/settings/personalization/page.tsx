@@ -419,7 +419,7 @@ const ExampleUI = () => {
           borderColor={"border.muted"}
         >
           <Btn flex={"1 1 100px"} colorPalette={themeConfig.colorPalette}>
-            Label
+            Solid
           </Btn>
 
           <Btn
@@ -427,7 +427,7 @@ const ExampleUI = () => {
             colorPalette={themeConfig.colorPalette}
             variant={"outline"}
           >
-            Label
+            Outline
           </Btn>
 
           <Btn
@@ -435,7 +435,7 @@ const ExampleUI = () => {
             colorPalette={themeConfig.colorPalette}
             variant={"subtle"}
           >
-            Label
+            Subtle
           </Btn>
 
           <StringInput flex={"1 1 200px"} placeholder="example@email.com" />

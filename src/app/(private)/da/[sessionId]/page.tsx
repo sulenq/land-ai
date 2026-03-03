@@ -171,9 +171,9 @@ const ResultTable = (props: Props__ResultTable) => {
 //           <DisclosureBody>
 //             <CContainer className="scrollX scrollY">
 //               <Box id={`letter_preview_${id}`} m={"auto"}>
-//                 <PDFViewer width="100%" height="800">
+//                 <PdfViewer width="100%" height="800">
 //                   {pdf}
-//                 </PDFViewer>
+//                 </PdfViewer>
 //               </Box>
 //             </CContainer>
 //           </DisclosureBody>
@@ -551,9 +551,9 @@ export default function Page() {
 
   return (
     <PageContainer ref={containerRef} px={4} py={8} pos={"relative"}>
-      {/* <PDFViewer height={"800px"}>
+      {/* <PdfViewer height={"800px"}>
         <SuratPermohonanPDF data={data?.rawData} />
-      </PDFViewer> */}
+      </PdfViewer> */}
 
       <CContainer flex={1} gap={4} justify={"space-between"}>
         {initialLoading && render.loading}

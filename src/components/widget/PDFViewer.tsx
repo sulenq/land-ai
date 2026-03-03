@@ -259,7 +259,7 @@ export interface Props__PdfViewer extends StackProps {
   fileUrl: string;
   fileName?: string;
 }
-export const PDFViewer = (props: Props__PdfViewer) => {
+export const PdfViewer = (props: Props__PdfViewer) => {
   // Props
   const { fileUrl, fileName, ...restProps } = props;
 
