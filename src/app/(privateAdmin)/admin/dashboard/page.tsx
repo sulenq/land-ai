@@ -235,12 +235,12 @@ export default function Page() {
     loaded: (
       <>
         <Overview
-          totalUsers={data?.totalUsers}
-          totalDocument={data?.totalDocument}
-          totalQueryThisDay={data?.totalQueryThisDay}
-          totalDOcumentCompared={data?.totalDOcumentCompared}
-          AnswerSuccessRate={data?.AnswerSuccessRate}
-          AvgResponseTime={data?.AvgResponseTime}
+          totalUsers={data?.overview?.totalUsers}
+          totalDocument={data?.overview?.totalDocument}
+          totalQueryThisDay={data?.overview?.totalQueryThisDay}
+          totalDOcumentCompared={data?.overview?.totalDOcumentCompared}
+          AnswerSuccessRate={data?.overview?.AnswerSuccessRate}
+          AvgResponseTime={data?.overview?.AvgResponseTime}
         />
       </>
     ),

@@ -8,12 +8,17 @@ import {
 } from "@/constants/interfaces";
 
 export const DUMMY_DASHBOARD_DATA = {
-  totalUsers: 1284,
-  totalDocument: 356,
-  totalQueryThisDay: 742,
-  totalDOcumentCompared: 189,
-  AnswerSuccessRate: 0.94,
-  AvgResponseTime: 1820,
+  overview: {
+    totalUsers: 1284,
+    totalDocument: 356,
+    totalQueryThisDay: 742,
+    totalDOcumentCompared: 189,
+    AnswerSuccessRate: 0.94,
+    AvgResponseTime: 1820,
+  },
+  usage: {},
+  modelPerformance: {},
+  comparison: {},
 };
 
 export const DUMMY_SURAT_KUASA_DATA = {
