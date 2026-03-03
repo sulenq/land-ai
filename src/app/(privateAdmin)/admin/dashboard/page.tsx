@@ -101,6 +101,7 @@ const OverviewItem = (props: Props__OverviewItem) => {
       px={4}
       py={3}
       bg={"item"}
+      // border={"1px solid"}
       borderColor={"border.subtle"}
       rounded={themeConfig.radii.component}
       pos={"relative"}
@@ -195,7 +196,7 @@ const Overview = (props: Props__Overview) => {
   return (
     <Grid
       templateColumns={`repeat(auto-fill, minmax(${minChildWidth}, 1fr))`}
-      gap={3}
+      gap={4}
       {...restProps}
     >
       {data.map((item, index) => {

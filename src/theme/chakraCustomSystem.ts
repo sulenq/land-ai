@@ -347,13 +347,13 @@ const customConfig = defineConfig({
         text: { value: { base: "{colors.dark}", _dark: "#ddd" } },
         body: { value: { base: "{colors.light}", _dark: "{colors.dark}" } },
         bgContent: {
-          value: { base: "#fbfbfb", _dark: "#161616" },
+          value: { base: "#fafafa", _dark: "#161616" },
         },
         bodytrans: {
           value: { base: "{colors.light}aa", _dark: "{colors.dark}aa" },
         },
         ibody: { value: { base: "{colors.dark}", _dark: "{colors.light}" } },
-        item: { value: { base: "#fbfbfb", _dark: "#1d1d1d" } },
+        item: { value: { base: "#fafafa", _dark: "#1d1d1d" } },
 
         border: {
           subtle: {
