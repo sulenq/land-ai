@@ -20,13 +20,19 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useClickOutside from "@/hooks/useClickOutside";
 import useRequest from "@/hooks/useRequest";
-import { getUserData } from "@/utils/auth";
+import { getUserData, isPublic } from "@/utils/auth";
 import { back, removeStorage } from "@/utils/client";
-import { pluckString } from "@/utils/string";
+import { capitalizeWords, pluckString } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
 import { Icon, PopoverRootProps, StackProps } from "@chakra-ui/react";
-import { EclipseIcon, LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import {
+  EclipseIcon,
+  LogOutIcon,
+  NavigationIcon,
+  SettingsIcon,
+  UserIcon,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 const SIGNOUT_EP = "/api/rski/dashboard/logout";
@@ -65,9 +71,11 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
   });
   const router = useRouter();
   router.prefetch("/");
+  const pathname = usePathname();
 
   // States
   const user = getUserData();
+  const isAdminRoute = pathname.startsWith("/admin");
 
   // Utils
   function onSignout() {
@@ -122,6 +130,42 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
       <Divider />
 
       <CContainer gap={1} p={"6px"}>
+        {!isPublic() && (
+          <NavLink to={`${isAdminRoute ? "/new-chat" : "/admin"}`} w={"full"}>
+            <Btn
+              clicky={false}
+              px={2}
+              variant={"ghost"}
+              justifyContent={"start"}
+              pos={"relative"}
+              onClick={() => {
+                onClose?.();
+              }}
+            >
+              <AppIcon icon={NavigationIcon} />
+
+              {capitalizeWords(isAdminRoute ? l.to_main_app : l.to_admin)}
+            </Btn>
+          </NavLink>
+        )}
+
+        {!ADM && (
+          <Btn
+            clicky={false}
+            variant={"ghost"}
+            px={2}
+            onClick={toggleColorMode}
+          >
+            <AppIcon icon={EclipseIcon} />
+            Dark Mode
+            <DotIndicator
+              color={colorMode === "dark" ? "fg.success" : "gray.muted"}
+              ml={"auto"}
+              mr={1}
+            />
+          </Btn>
+        )}
+
         {MENUS.map((menu) => {
           return (
             <NavLink key={menu.path} to={menu.path} w={"full"}>
@@ -142,23 +186,6 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
             </NavLink>
           );
         })}
-
-        {!ADM && (
-          <Btn
-            clicky={false}
-            variant={"ghost"}
-            px={2}
-            onClick={toggleColorMode}
-          >
-            <AppIcon icon={EclipseIcon} />
-            Dark Mode
-            <DotIndicator
-              color={colorMode === "dark" ? "fg.success" : "gray.muted"}
-              ml={"auto"}
-              mr={1}
-            />
-          </Btn>
-        )}
 
         <ConfirmationDisclosureTrigger
           id="signout"

@@ -7,6 +7,7 @@ import { Segmented } from "@/components/ui/segment-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { AppIcon } from "@/components/widget/AppIcon";
+import { ChartTooltip } from "@/components/widget/ChartTooltip";
 import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
@@ -434,7 +435,7 @@ const Chart1 = (props: any) => {
               <Tooltip
                 animationDuration={100}
                 cursor={{ stroke: chart.color("border") }}
-                content={<Chart.Tooltip />}
+                content={ChartTooltip}
               />
 
               {chart.series.map((item) => {

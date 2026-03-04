@@ -492,7 +492,7 @@ export default function Page() {
             <>
               <ResultSection daSession={data} />
 
-              <GenerateLetterButtons data={data} mt={4} />
+              <GenerateLetterButtons data={data} mt={8} />
             </>
           )}
 

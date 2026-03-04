@@ -138,8 +138,8 @@ nextjs-portal {
 /* Smooth shadow */
 .ss {
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.03),
-    0 1px 4px rgba(0, 0, 0, 0.02) !important;
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 /* Dark Transparent Blured */
