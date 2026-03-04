@@ -86,19 +86,20 @@ export const NavBreadcrumb = (props: any) => {
   const activeNavs = breadcrumbs.activeNavs;
 
   useEffect(() => {
-    const resolvedBackPath = last(currentActiveNavs)?.backPath;
+    const sourceNavs = !isEmptyArray(activeNavs)
+      ? activeNavs
+      : currentActiveNavs;
+
+    const resolvedBackPath = last(sourceNavs)?.backPath;
+
     const resolvedActiveNavs =
-      sw < 960
-        ? !isEmptyArray(currentActiveNavs)
-          ? [currentActiveNavs[currentActiveNavs.length - 1]]
-          : currentActiveNavs
-        : currentActiveNavs;
+      sw < 960 ? (sourceNavs.length > 0 ? [sourceNavs[0]] : []) : sourceNavs;
 
     setBreadcrumbs({
       activeNavs: resolvedActiveNavs,
       backPath: resolvedBackPath,
     });
-  }, [pathname]);
+  }, [pathname, sw]);
 
   return (
     <HStack gap={1} ml={"-4px"} h={"36px"} cursor={"pointer"} {...restProps}>
