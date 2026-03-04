@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "api-landai.mapgis.cloud",
+        hostname: "api-landai.exium.my.id",
         pathname: "/**",
       },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },

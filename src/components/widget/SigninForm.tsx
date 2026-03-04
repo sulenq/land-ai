@@ -17,7 +17,6 @@ import useRequest from "@/hooks/useRequest";
 import {
   clearAccessToken,
   clearUserData,
-  getAccessToken,
   getUserData,
   setAccessToken,
   setUserData,
@@ -99,6 +98,7 @@ const SignoutButton = () => {
     </Btn>
   );
 };
+
 interface Props__Signedin extends StackProps {
   indexRoute: string;
 }
@@ -133,10 +133,12 @@ const Signedin = (props: Props__Signedin) => {
   );
 };
 
-interface Props__Form extends StackProps {}
+interface Props__Form extends StackProps {
+  indexRoute: string;
+}
 const Form = (props: Props__Form) => {
   // Props
-  const { ...restProps } = props;
+  const { indexRoute, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -187,11 +189,7 @@ const Form = (props: Props__Form) => {
             setVerifiedAuthToken(accessToken);
             setPermissions(permissionsData);
 
-            router.push(
-              AUTH_PROVIDER_CONFIG[
-                `${user?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
-              ].indexRoute,
-            );
+            router.push(indexRoute);
           },
         },
       });
@@ -291,11 +289,16 @@ export const SigninForm = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const authToken = getAccessToken();
   const verifiedAuthToken = useAuthMiddleware((s) => s.verifiedAuthToken);
-  const resolvedAuthToken = authToken || verifiedAuthToken;
+  const resolvedAuthToken = verifiedAuthToken;
   const clearChatSessions = useChatSessions((s) => s.clearChatSessions);
   const clearDASessions = useDASessions((s) => s.clearDASessions);
+
+  // States
+  const indexRoute =
+    AUTH_PROVIDER_CONFIG[
+      `${getUserData()?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
+    ]?.indexRoute ?? AUTH_PROVIDER_CONFIG["3"].indexRoute;
 
   // Clear chat sessions and DA sessions on mount
   useEffect(() => {
@@ -314,13 +317,7 @@ export const SigninForm = (props: StackProps) => {
       {...restProps}
     >
       {resolvedAuthToken ? (
-        <Signedin
-          indexRoute={
-            AUTH_PROVIDER_CONFIG[
-              `${getUserData()?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
-            ]?.indexRoute
-          }
-        />
+        <Signedin indexRoute={indexRoute} />
       ) : (
         <>
           <CContainer align={"center"} gap={2} mb={4}>
@@ -336,7 +333,7 @@ export const SigninForm = (props: StackProps) => {
           </CContainer>
 
           <CContainer gap={4} mx={"auto"}>
-            <Form />
+            <Form indexRoute={indexRoute} />
           </CContainer>
         </>
       )}

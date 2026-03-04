@@ -11,6 +11,7 @@ import { DotIndicator } from "@/components/widget/Indicator";
 import SimplePopover from "@/components/widget/SimplePopover";
 import { Today } from "@/components/widget/Today";
 import { Interface__Nav } from "@/constants/interfaces";
+import { TOPBAR_H } from "@/constants/styles";
 import useADM from "@/context/useADM";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
@@ -173,7 +174,7 @@ export const TopBar = () => {
   return (
     <HStack
       flexShrink={0}
-      h={"52px"}
+      h={TOPBAR_H}
       gap={4}
       px={4}
       pr={"10px"}

@@ -244,6 +244,13 @@ export interface Interface__DAServiceDocumentRequirement {
   name: string;
   description: string;
   isMandatory: boolean;
+  extractionSchema: {
+    aggregation: string;
+    instruction: string;
+    key: string;
+    label: string;
+    type: string;
+  }[];
 }
 export interface Interface__DAServiceDetail extends Interface__DAService {
   documentRequirements: Interface__DAServiceDocumentRequirement[];
@@ -267,7 +274,7 @@ export interface Interface__DAAnalysisValidation {
 }
 // Schema?
 export interface Interface__DAAnalysisResultItem {
-  key: string;
+  // key: string;
   label: string;
   values: Interface__DAAnalysisValue[];
   validation: Interface__DAAnalysisValidation;

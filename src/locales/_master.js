@@ -135,6 +135,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const open_all = {
+  id: "Buka semua",
+  en: "Open all",
+};
+export const close_all = {
+  id: "Tutup semua",
+  en: "Close all",
+};
 export const total_users = {
   title: { id: "Total pengguna", en: "Total users" },
   description: {

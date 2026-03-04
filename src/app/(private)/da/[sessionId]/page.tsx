@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from "@/components/ui/accordion";
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { DASessonPageSkeleton } from "@/components/ui/c-loader";
@@ -10,32 +16,30 @@ import { P } from "@/components/ui/p";
 import { Spinner } from "@/components/ui/spinner";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
-import { DataTable } from "@/components/widget/DataTable";
+import {
+  SuratKuasaPDF,
+  SuratPermohonanPDF,
+  SuratPernyataanPDF,
+} from "@/components/widget/DALetterTemplate";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
-import { HorizontalScrollbar } from "@/components/widget/HorizontalScrollbar";
 import { LucideIcon } from "@/components/widget/Icon";
+import ItemHeaderTitle from "@/components/widget/ItemHeaderTitle";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
-import {
-  Interface__DASessionDetail,
-  Interface__FormattedTableHeader,
-  Interface__FormattedTableRow,
-} from "@/constants/interfaces";
-import { Props__DataTable } from "@/constants/props";
+import { Interface__DASessionDetail } from "@/constants/interfaces";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
-import { HStack, StackProps } from "@chakra-ui/react";
+import { Badge, HStack, StackProps } from "@chakra-ui/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
@@ -43,164 +47,134 @@ import {
   DownloadIcon,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  SuratKuasaPDF,
-  SuratPermohonanPDF,
-  SuratPernyataanPDF,
-} from "@/components/widget/DALetterTemplate";
 import { useEffect, useRef, useState } from "react";
 
-interface Props__ResultTable extends Props__DataTable {
-  containerDimension: { width: number; height: number };
+interface Props__ResultSection extends StackProps {
   daSession?: Interface__DASessionDetail;
 }
-const ResultTable = (props: Props__ResultTable) => {
+const ResultSection = (props: Props__ResultSection) => {
   // Props
-  const { containerDimension, daSession, ...restProps } = props;
+  const { daSession, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
-
-  // Refs
-  const containerRefInternal = useRef<HTMLDivElement | null>(null);
+  const { themeConfig } = useThemeConfig();
 
   // States
   const result = daSession?.result;
+  const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const uploadedDocuments = daSession?.uploadedDocuments;
-  const headers: Interface__FormattedTableHeader[] = [
-    { th: "Item Validasi", sortable: true },
-    ...(uploadedDocuments ?? []).map((doc) => ({
-      th: doc.documentRequirement.name,
-      sortable: true,
-    })),
-    { th: "Validasi", sortable: true },
-  ];
-  const rows: Interface__FormattedTableRow[] = (result ?? []).map((r, idx) => {
-    return {
-      id: `${idx}`,
-      idx: idx,
-      data: r,
-      columns: [
-        {
-          td: <P>{r.label}</P>,
-          value: r.label,
-          dataType: "string",
-        },
-        ...r.values.map((v) => ({
-          td: (
-            <ClampText maxW={"150px"}>
-              {v.value === "NOT_FOUND" ? l.not_found : v.value || "-"}
-            </ClampText>
-          ),
-          dim: v.value === "NOT_FOUND" || v.value === null,
-          value: v.value,
-          dataType: v.renderType,
-        })),
-        {
-          td: r.validation.status ? (
-            <P color={"fg.success"}>{l.match}</P>
-          ) : (
-            <P color={"fg.subtle"}>{l.mismatch}</P>
-          ),
-          value: r.validation.status,
-          dataType: "boolean",
-        },
-      ],
-    };
-  });
+  const documentRequirements = daSession?.documentService?.documentRequirements;
+
+  // Utils
+  const getValueResult = (label: string, index: number) => {
+    const field = result?.find((item) => item.label === label);
+    return field?.values?.[index]?.value ?? null;
+  };
 
   return (
-    <CContainer gap={2}>
-      <ContainerLayout>
-        <P fontWeight={"medium"}>{capitalizeWords(l.analysis_result)}</P>
-      </ContainerLayout>
-
-      <CContainer
-        className="noScroll"
-        ref={containerRefInternal}
-        overflowX={"auto"}
+    <ContainerLayout pos={"relative"} {...restProps}>
+      <HStack
+        justify={"space-between"}
+        pb={2}
+        bg="linear-gradient(
+              to bottom,
+              var(--chakra-colors-body) 80%,
+              transparent 100%
+            )"
+        pos={"sticky"}
+        top={"-32px"}
+        zIndex={"sticky"}
       >
-        <CContainer
-          w={"max"}
-          px={`calc((${containerDimension.width || 0}px - 720px)/2)`}
-        >
-          <DataTable headers={headers} rows={rows} minH={0} {...restProps} />
-        </CContainer>
-      </CContainer>
+        <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
 
-      <HorizontalScrollbar
-        containerRef={containerRefInternal}
-        maxW={"200px"}
-        mx={"auto"}
-        mt={2}
-        mb={4}
-      />
-    </CContainer>
+        <HStack rounded={themeConfig.radii.component}>
+          <Btn
+            variant="outline"
+            size="xs"
+            onClick={() => {
+              if (uploadedDocuments) {
+                setAccordionValue(
+                  uploadedDocuments.map((doc) => {
+                    return `${doc.documentRequirement.id}`;
+                  }),
+                );
+              }
+            }}
+          >
+            {l.open_all}
+          </Btn>
+
+          <Btn
+            variant="outline"
+            size="xs"
+            onClick={() => {
+              setAccordionValue([]);
+            }}
+          >
+            {l.close_all}
+          </Btn>
+        </HStack>
+      </HStack>
+
+      <CContainer bg={"bg.muted"} rounded={themeConfig.radii.container}>
+        <AccordionRoot
+          collapsible
+          multiple
+          value={accordionValue}
+          onValueChange={(e) => setAccordionValue(e.value)}
+        >
+          {uploadedDocuments?.map((doc, index) => {
+            const isLastIndex = index === uploadedDocuments.length - 1;
+            const documentRequirement = documentRequirements?.find((dr) => {
+              return dr.id === doc.documentRequirement.id;
+            });
+
+            return (
+              <AccordionItem
+                key={doc.documentRequirement.id}
+                value={`${doc.documentRequirement.id}`}
+                borderBottom={isLastIndex ? "none" : "1px solid"}
+                borderColor={"d1"}
+                px={4}
+              >
+                <AccordionItemTrigger cursor={"pointer"}>
+                  <ItemHeaderTitle
+                    autoHeight
+                    popoverContent={doc.documentRequirement.description}
+                  >
+                    {doc.documentRequirement.name}
+                  </ItemHeaderTitle>
+                </AccordionItemTrigger>
+
+                <AccordionItemContent>
+                  <CContainer gap={2}>
+                    {documentRequirement?.extractionSchema?.map((field) => {
+                      const value = getValueResult(field.label, index);
+
+                      return (
+                        <HStack key={field.key} gap={4}>
+                          <ClampText w={"200px"} color={"fg.muted"}>
+                            {field.label}
+                          </ClampText>
+
+                          {value === "NOT_FOUND" ? null : (
+                            <ClampText>{value || "-"}</ClampText>
+                          )}
+                        </HStack>
+                      );
+                    })}
+                  </CContainer>
+                </AccordionItemContent>
+              </AccordionItem>
+            );
+          })}
+        </AccordionRoot>
+      </CContainer>
+    </ContainerLayout>
   );
 };
 
-// interface Props__LetterPreview extends StackProps {
-//   id: string;
-//   title: string;
-//   pdf: React.ReactNode;
-// }
-// const LetterPreviewTrigger = (props: Props__LetterPreview) => {
-//   // Props
-//   const { children, id, title, pdf, ...restProps } = props;
-
-//   // Contexts
-//   const { l } = useLang();
-
-//   // Hooks
-//   const { isOpen, onOpen } = usePopDisclosure(
-//     disclosureId(`generate_letter_preview_${id}`),
-//   );
-
-//   return (
-//     <>
-//       <CContainer w={"fit"} onClick={onOpen} {...restProps}>
-//         {children}
-//       </CContainer>
-
-//       <DisclosureRoot open={isOpen} lazyLoad size={"cover"}>
-//         <DisclosureContent>
-//           <DisclosureHeader>
-//             <DisclosureHeaderContent title={`Preview ${title}`} />
-//           </DisclosureHeader>
-
-//           <DisclosureBody>
-//             <CContainer className="scrollX scrollY">
-//               <Box id={`letter_preview_${id}`} m={"auto"}>
-//                 <PdfViewer width="100%" height="800">
-//                   {pdf}
-//                 </PdfViewer>
-//               </Box>
-//             </CContainer>
-//           </DisclosureBody>
-
-//           <DisclosureFooter>
-//             <BackButton />
-
-//             <PDFDownloadLink document={pdf as any} fileName="Surat Kuasa.pdf">
-//               <PBtn>
-//                 <AppIcon icon={DownloadIcon} />
-//                 <>
-//                   {({ loading }: any) =>
-//                     loading ? "Loading PDF..." : `${l.download} PDF`
-//                   }
-//                 </>
-//               </PBtn>
-//             </PDFDownloadLink>
-//             {/* <PBtn>
-//               <AppIcon icon={DownloadIcon} />
-//               {l.download} PDF
-//             </PBtn> */}
-//           </DisclosureFooter>
-//         </DisclosureContent>
-//       </DisclosureRoot>
-//     </>
-//   );
-// };
 interface Props__GenerateLetterButtons extends StackProps {
   data?: Interface__DASessionDetail;
 }
@@ -285,7 +259,6 @@ export default function Page() {
   // Hooks
   const { sessionId } = useParams();
   const router = useRouter();
-  const containerDimension = useContainerDimension(containerRef);
 
   // States
   const activeDASession = activeDA.session;
@@ -299,23 +272,7 @@ export default function Page() {
       dependencies: [sessionId, pollingTick],
       loadingBarInitialOnly: true,
     });
-  const formattedDocuments =
-    data?.documentService?.documentRequirements.map((req) => {
-      const uploaded = data?.uploadedDocuments?.find(
-        (u) => u.documentRequirement.id === req.id,
-      );
-
-      return {
-        documentRequirement: req,
-        uploadedFile: uploaded
-          ? {
-              metaData: {
-                fileName: uploaded.metaData.fileName,
-              },
-            }
-          : null,
-      };
-    }) ?? [];
+  const uploadedDocuments = data?.uploadedDocuments;
 
   const processing = data?.status === "PROCESSING";
   const failed = data?.status === "FAILED";
@@ -417,7 +374,9 @@ export default function Page() {
           {/* Meta */}
           <>
             <CContainer gap={2}>
-              <P fontWeight={"medium"}>{capitalizeWords(l.service)}</P>
+              <HStack h={"32px"}>
+                <P fontWeight={"semibold"}>{capitalizeWords(l.service)}</P>
+              </HStack>
 
               <CContainer
                 gap={2}
@@ -440,10 +399,10 @@ export default function Page() {
                     <Img
                       key={activeDASession?.documentService?.icon}
                       src={imgUrl(activeDASession?.documentService?.icon)}
-                      fluid
                       flexShrink={0}
                       w={"20px"}
-                      mt={"2px"}
+                      h={"20px"}
+                      objectFit={"contain"}
                     />
 
                     <P>{data?.documentService.title[lang]}</P>
@@ -461,7 +420,11 @@ export default function Page() {
             </CContainer>
 
             <CContainer gap={2}>
-              <P fontWeight={"medium"}>{capitalizeWords(l.uploaded_file)}</P>
+              <HStack h={"32px"}>
+                <P fontWeight={"semibold"}>
+                  {capitalizeWords(l.uploaded_file)}
+                </P>
+              </HStack>
 
               <CContainer
                 gap={2}
@@ -471,20 +434,26 @@ export default function Page() {
                 borderColor={"border.muted"}
                 bg={"d0"}
               >
-                {formattedDocuments?.map((doc) => {
+                {uploadedDocuments?.map((doc) => {
                   return (
                     <HStack
                       key={doc.documentRequirement.id}
                       align={"start"}
                       gap={4}
                     >
-                      <ClampText w={"140px"} flexShrink={0} color={"fg.muted"}>
-                        {doc.documentRequirement.name}
-                      </ClampText>
+                      <HStack flexShrink={0} w={"200px"}>
+                        <ClampText color={"fg.muted"}>
+                          {doc.documentRequirement.name}
+                        </ClampText>
 
-                      {doc.uploadedFile?.metaData.fileName ? (
+                        {!doc.documentRequirement.isMandatory && (
+                          <Badge bg={"d1"}>{l.optional}</Badge>
+                        )}
+                      </HStack>
+
+                      {doc.metaData.fileName ? (
                         <ClampText fontWeight={"medium"}>
-                          {doc.uploadedFile?.metaData.fileName}
+                          {doc.metaData.fileName}
                         </ClampText>
                       ) : (
                         <P>-</P>
@@ -521,10 +490,7 @@ export default function Page() {
 
           {completed && (
             <>
-              <ResultTable
-                daSession={data}
-                containerDimension={containerDimension}
-              />
+              <ResultSection daSession={data} />
 
               <GenerateLetterButtons data={data} mt={4} />
             </>
