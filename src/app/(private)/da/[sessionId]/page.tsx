@@ -26,7 +26,7 @@ import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
-import ItemHeaderTitle from "@/components/widget/ItemHeaderTitle";
+import { DotIndicator } from "@/components/widget/Indicator";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { Interface__DASessionDetail } from "@/constants/interfaces";
@@ -125,7 +125,6 @@ const ResultSection = (props: Props__ResultSection) => {
           onValueChange={(e) => setAccordionValue(e.value)}
         >
           {uploadedDocuments?.map((doc, index) => {
-            const isLastIndex = index === uploadedDocuments.length - 1;
             const documentRequirement = documentRequirements?.find((dr) => {
               return dr.id === doc.documentRequirement.id;
             });
@@ -134,17 +133,11 @@ const ResultSection = (props: Props__ResultSection) => {
               <AccordionItem
                 key={doc.documentRequirement.id}
                 value={`${doc.documentRequirement.id}`}
-                borderBottom={isLastIndex ? "none" : "1px solid"}
                 borderColor={"d1"}
                 px={4}
               >
                 <AccordionItemTrigger cursor={"pointer"}>
-                  <ItemHeaderTitle
-                    autoHeight
-                    popoverContent={doc.documentRequirement.description}
-                  >
-                    {doc.documentRequirement.name}
-                  </ItemHeaderTitle>
+                  <P>{doc.documentRequirement.name}</P>
                 </AccordionItemTrigger>
 
                 <AccordionItemContent>
@@ -169,6 +162,39 @@ const ResultSection = (props: Props__ResultSection) => {
               </AccordionItem>
             );
           })}
+
+          <AccordionItem
+            value={`validation`}
+            borderBottom={"none"}
+            borderColor={"d1"}
+            px={4}
+          >
+            <AccordionItemTrigger cursor={"pointer"}>
+              <DotIndicator />
+              <P>{l.validation}</P>
+            </AccordionItemTrigger>
+
+            <AccordionItemContent>
+              <CContainer gap={2}>
+                {result?.map((r) => {
+                  const fieldLabel = r.label;
+                  const isMatch = r.validation.status;
+
+                  return (
+                    <HStack key={r.label} gap={4}>
+                      <ClampText w={"200px"} color={"fg.muted"}>
+                        {fieldLabel}
+                      </ClampText>
+
+                      <P color={isMatch ? "fg.success" : "fg.muted"}>
+                        {isMatch ? l.match : l.mismatch}
+                      </P>
+                    </HStack>
+                  );
+                })}
+              </CContainer>
+            </AccordionItemContent>
+          </AccordionItem>
         </AccordionRoot>
       </CContainer>
     </ContainerLayout>
