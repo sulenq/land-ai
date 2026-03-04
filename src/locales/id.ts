@@ -16,6 +16,7 @@ const translations = {
   "address_not_found": "Alamat tidak ditemukan",
   "admin": "Admin",
   "admin_navs": {
+    "home": "Beranda",
     "dashboard": "Dashboard",
     "user": "Pengguna",
     "ai_knowledge": "Pengetahuan AI",

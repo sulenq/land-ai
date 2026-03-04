@@ -1,20 +1,19 @@
 "use client";
 
 import { CContainer } from "@/components/ui/c-container";
-import { ColorModeButton } from "@/components/ui/color-mode";
 import { P } from "@/components/ui/p";
 import BackButton from "@/components/widget/BackButton";
 import { CalendarDisclosureTrigger } from "@/components/widget/CalendarDisclosure";
 import { ClampText } from "@/components/widget/ClampText";
-import Clock from "@/components/widget/Clock";
+import { Clock } from "@/components/widget/Clock";
+
 import { DotIndicator } from "@/components/widget/Indicator";
 import SimplePopover from "@/components/widget/SimplePopover";
 import { Today } from "@/components/widget/Today";
 import { Interface__Nav } from "@/constants/interfaces";
-import { TOPBAR_H } from "@/constants/styles";
-import useADM from "@/context/useADM";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
+import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useScreen from "@/hooks/useScreen";
 import { isEmptyArray, last } from "@/utils/array";
 import { capitalizeWords, pluckString } from "@/utils/string";
@@ -22,7 +21,15 @@ import { getActiveNavs } from "@/utils/url";
 import { HStack, Icon, StackProps } from "@chakra-ui/react";
 import { IconSlash } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
-import { forwardRef, useEffect } from "react";
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from "react";
 
 const FONT_SIZE = "md";
 
@@ -35,7 +42,7 @@ export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
       <CContainer
         className="page-layout"
         ref={ref}
-        maxW={"720px"}
+        maxW={"1280px"}
         mx={"auto"}
         {...restProps}
       >
@@ -45,21 +52,52 @@ export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
   },
 );
 
+type PageContainerContextType = {
+  isValidDimension: boolean;
+  isSmContainer: boolean;
+};
+const PageContainerContext = createContext<PageContainerContextType | null>(
+  null,
+);
+export function usePageContainerContext() {
+  const context = useContext(PageContainerContext);
+  if (!context) {
+    throw new Error(
+      "usePageContainerContext must be used inside PageContainer",
+    );
+  }
+  return context;
+}
 export const PageContainer = forwardRef<HTMLDivElement, StackProps>(
-  (props, ref) => {
-    // Props
-    const { children, ...restProps } = props;
+  ({ children, ...restProps }, ref) => {
+    // Refs
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // Hooks
+    useImperativeHandle(ref, () => containerRef.current as HTMLDivElement);
+    const dimension = useContainerDimension(containerRef);
+
+    // States
+    const isValidDimension = dimension.width > 0 && dimension.height > 0;
+    const isSmContainer = dimension.width < 600;
+
+    const contextValue = useMemo(
+      () => ({ isValidDimension, isSmContainer }),
+      [isValidDimension, isSmContainer],
+    );
 
     return (
-      <CContainer
-        ref={ref}
-        className="page-container"
-        flex={1}
-        overflow={"auto"}
-        {...restProps}
-      >
-        {children}
-      </CContainer>
+      <PageContainerContext.Provider value={contextValue}>
+        <CContainer
+          ref={containerRef}
+          className="page-container"
+          flex={1}
+          overflow={"auto"}
+          {...restProps}
+        >
+          {children}
+        </CContainer>
+      </PageContainerContext.Provider>
     );
   },
 );
@@ -87,14 +125,13 @@ export const NavBreadcrumb = (props: any) => {
   const activeNavs = breadcrumbs.activeNavs;
 
   useEffect(() => {
-    const sourceNavs = !isEmptyArray(activeNavs)
-      ? activeNavs
-      : currentActiveNavs;
-
-    const resolvedBackPath = last(sourceNavs)?.backPath;
-
+    const resolvedBackPath = last(currentActiveNavs)?.backPath;
     const resolvedActiveNavs =
-      sw < 960 ? (sourceNavs.length > 0 ? [sourceNavs[0]] : []) : sourceNavs;
+      sw < 960
+        ? !isEmptyArray(currentActiveNavs)
+          ? [currentActiveNavs[currentActiveNavs.length - 1]]
+          : currentActiveNavs
+        : currentActiveNavs;
 
     setBreadcrumbs({
       activeNavs: resolvedActiveNavs,
@@ -156,9 +193,6 @@ export const NavBreadcrumb = (props: any) => {
 };
 
 export const TopBar = () => {
-  // Contexts
-  const ADM = useADM((s) => s.ADM);
-
   // Hooks
   const { sw } = useScreen();
   const pathname = usePathname();
@@ -174,11 +208,11 @@ export const TopBar = () => {
   return (
     <HStack
       flexShrink={0}
-      h={TOPBAR_H}
+      h={"52px"}
       gap={4}
       px={4}
-      pr={"10px"}
       justify={"space-between"}
+      bg={"body"}
       // borderBottom={"1px solid"}
       borderColor={"border.muted"}
     >
@@ -195,8 +229,6 @@ export const TopBar = () => {
 
           <Clock showTimezone fontSize={FONT_SIZE} />
         </HStack>
-
-        {!ADM && <ColorModeButton rounded={"full"} size={"xs"} />}
       </HStack>
     </HStack>
   );
@@ -217,7 +249,15 @@ export const PageTitle = (props: StackProps) => {
   const title = pluckString(l, last<any>(activeNavs)?.labelKey);
 
   return (
-    <HStack flexShrink={0} w={"fit"} minH={"36px"} px={4} my={3} {...restProps}>
+    <HStack
+      flexShrink={0}
+      w={"full"}
+      minH={"36px"}
+      px={4}
+      mt={2}
+      mb={3}
+      {...restProps}
+    >
       <ClampText
         fontSize={"xl"}
         fontWeight={"semibold"}
@@ -233,12 +273,14 @@ export const PageTitle = (props: StackProps) => {
 
 export const PageContent = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {
-    // Props
     const { children, ...restProps } = props;
 
+    // Consume context dari PageContainer
+    const { isValidDimension } = usePageContainerContext();
+
     return (
-      <CContainer ref={ref} flex={1} {...restProps}>
-        {children}
+      <CContainer ref={ref} flex={1} bg={"body"} {...restProps}>
+        {isValidDimension ? children : null}
       </CContainer>
     );
   },

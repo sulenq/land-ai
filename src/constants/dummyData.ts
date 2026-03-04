@@ -3,10 +3,120 @@ import {
   Interface__ChatMessage,
   Interface__ChatSession,
   Interface__DASession,
-  Interface__DASessionDetail,
   Interface__User,
 } from "@/constants/interfaces";
 
+const generate1D = () => {
+  let v23 = 80;
+  let v24 = 90;
+  let v25 = 100;
+
+  return Array.from({ length: 366 }, (_, i) => {
+    v23 += Math.floor(Math.random() * 7 - 3);
+    v24 += Math.floor(Math.random() * 7 - 3);
+    v25 += Math.floor(Math.random() * 7 - 3);
+
+    v23 = Math.max(20, Math.min(160, v23));
+    v24 = Math.max(20, Math.min(160, v24));
+    v25 = Math.max(20, Math.min(160, v25));
+
+    return {
+      2023: v23,
+      2024: v24,
+      2025: v25,
+      day: i + 1,
+    };
+  });
+};
+const generate1W = () => {
+  let v23 = 90;
+  let v24 = 100;
+  let v25 = 110;
+
+  return Array.from({ length: 52 }, (_, i) => {
+    v23 += Math.floor(Math.random() * 9 - 4);
+    v24 += Math.floor(Math.random() * 9 - 4);
+    v25 += Math.floor(Math.random() * 9 - 4);
+
+    v23 = Math.max(30, Math.min(180, v23));
+    v24 = Math.max(30, Math.min(180, v24));
+    v25 = Math.max(30, Math.min(180, v25));
+
+    return {
+      2023: v23,
+      2024: v24,
+      2025: v25,
+      week: i + 1,
+    };
+  });
+};
+const generate1M = () => {
+  let v23 = 90;
+  let v24 = 100;
+  let v25 = 110;
+
+  return [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ].map((month) => {
+    v23 += Math.floor(Math.random() * 5 - 2);
+    v24 += Math.floor(Math.random() * 5 - 2);
+    v25 += Math.floor(Math.random() * 5 - 2);
+
+    v23 = Math.max(60, Math.min(140, v23));
+    v24 = Math.max(60, Math.min(140, v24));
+    v25 = Math.max(60, Math.min(140, v25));
+
+    return {
+      2023: v23,
+      2024: v24,
+      2025: v25,
+      month,
+    };
+  });
+};
+const generate3M = () => {
+  let v23 = 95;
+  let v24 = 105;
+  let v25 = 115;
+
+  return ["January", "April", "July", "October"].map((month) => {
+    v23 += Math.floor(Math.random() * 3 - 1);
+    v24 += Math.floor(Math.random() * 3 - 1);
+    v25 += Math.floor(Math.random() * 3 - 1);
+
+    v23 = Math.max(80, Math.min(130, v23));
+    v24 = Math.max(80, Math.min(130, v24));
+    v25 = Math.max(80, Math.min(130, v25));
+
+    return {
+      2023: v23,
+      2024: v24,
+      2025: v25,
+      month,
+    };
+  });
+};
+
+export const DUMMY_CHART_DATA = {
+  "1D": generate1D(),
+
+  "1W": generate1W(),
+
+  "1M": generate1M(),
+
+  "3M": generate3M(),
+};
 export const DUMMY_DASHBOARD_DATA = {
   overview: {
     totalUsers: 1284,
@@ -16,7 +126,7 @@ export const DUMMY_DASHBOARD_DATA = {
     AnswerSuccessRate: 0.94,
     AvgResponseTime: 1820,
   },
-  usage: {},
+  usage: DUMMY_CHART_DATA,
   modelPerformance: {},
   comparison: {},
 };
@@ -400,90 +510,90 @@ export const DUMMY_USERS: Interface__User[] = [
     createdBy: "system",
   },
 ];
-export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
-  id: "1",
-  title: "DA Service Analysis Session",
-  status: "COMPLETED",
-  rawData: {},
-  documentService: {
-    id: "101",
-    icon: `/uploads/services/service-1770357423697-697371719.png`,
-    title: {
-      id: "Business Registration Verification",
-      en: "Business Registration Verification",
-    },
-    description: {
-      id: "Verification service for registered business entities.",
-      en: "Verification service for registered business entities.",
-    },
-    documentRequirements: [
-      {
-        id: 1,
-        name: "Business License",
-        description: "Official business license issued by authorities.",
-        isMandatory: true,
-      },
-      {
-        id: 2,
-        name: "Tax Identification Number",
-        description: "Valid tax identification document.",
-        isMandatory: true,
-      },
-      {
-        id: 3,
-        name: "Company Profile",
-        description: "Overview of company background and operations.",
-        isMandatory: false,
-      },
-    ],
-    createdAt: "2026-02-05T10:15:30.000Z",
-  },
-  uploadedDocuments: [
-    {
-      documentRequirement: {
-        id: 1,
-        name: "Surat Pengantar",
-        description: "Official business license issued by authorities.",
-        isMandatory: true,
-      },
-      metaData: {
-        fileName: "",
-      },
-    },
-    {
-      documentRequirement: {
-        id: 2,
-        name: "Sertipikat",
-        description: "Valid tax identification document.",
-        isMandatory: true,
-      },
-      metaData: {
-        fileName: "",
-      },
-    },
-  ],
-  result: [
-    {
-      key: "nama_pemilik",
-      label: "Nama Pemilik",
-      values: [
-        { documentId: 12, renderType: "string", value: "Jolitos" },
-        { documentId: 27, renderType: "string", value: "Jolitos" },
-      ],
-      validation: { status: true }, // object aja sapa tau ada tambahan entity lain nantinya
-    },
-    {
-      key: "tanggal",
-      label: "Tanggal Hak/Sertipikat",
-      values: [
-        { documentId: 12, renderType: "date", value: "2023-01-01" },
-        { documentId: 27, renderType: "date", value: "2023-01-02" },
-      ],
-      validation: { status: false },
-    },
-  ],
-  createdAt: "2026-02-05T10:15:30.000Z",
-};
+// export const DUMMY_ACTIVE_DA_SESSION: Interface__DASessionDetail = {
+//   id: "1",
+//   title: "DA Service Analysis Session",
+//   status: "COMPLETED",
+//   rawData: {},
+//   documentService: {
+//     id: "101",
+//     icon: `/uploads/services/service-1770357423697-697371719.png`,
+//     title: {
+//       id: "Business Registration Verification",
+//       en: "Business Registration Verification",
+//     },
+//     description: {
+//       id: "Verification service for registered business entities.",
+//       en: "Verification service for registered business entities.",
+//     },
+//     documentRequirements: [
+//       {
+//         id: 1,
+//         name: "Business License",
+//         description: "Official business license issued by authorities.",
+//         isMandatory: true,
+//       },
+//       {
+//         id: 2,
+//         name: "Tax Identification Number",
+//         description: "Valid tax identification document.",
+//         isMandatory: true,
+//       },
+//       {
+//         id: 3,
+//         name: "Company Profile",
+//         description: "Overview of company background and operations.",
+//         isMandatory: false,
+//       },
+//     ],
+//     createdAt: "2026-02-05T10:15:30.000Z",
+//   },
+//   uploadedDocuments: [
+//     {
+//       documentRequirement: {
+//         id: 1,
+//         name: "Surat Pengantar",
+//         description: "Official business license issued by authorities.",
+//         isMandatory: true,
+//       },
+//       metaData: {
+//         fileName: "",
+//       },
+//     },
+//     {
+//       documentRequirement: {
+//         id: 2,
+//         name: "Sertipikat",
+//         description: "Valid tax identification document.",
+//         isMandatory: true,
+//       },
+//       metaData: {
+//         fileName: "",
+//       },
+//     },
+//   ],
+//   result: [
+//     {
+//       key: "nama_pemilik",
+//       label: "Nama Pemilik",
+//       values: [
+//         { documentId: 12, renderType: "string", value: "Jolitos" },
+//         { documentId: 27, renderType: "string", value: "Jolitos" },
+//       ],
+//       validation: { status: true }, // object aja sapa tau ada tambahan entity lain nantinya
+//     },
+//     {
+//       key: "tanggal",
+//       label: "Tanggal Hak/Sertipikat",
+//       values: [
+//         { documentId: 12, renderType: "date", value: "2023-01-01" },
+//         { documentId: 27, renderType: "date", value: "2023-01-02" },
+//       ],
+//       validation: { status: false },
+//     },
+//   ],
+//   createdAt: "2026-02-05T10:15:30.000Z",
+// };
 export const DUMMY_DA_SESSIONS: Interface__DASession[] = [
   {
     id: "da_session_1",
@@ -565,108 +675,6 @@ Dokumen ini menjadi dasar bagi pelaksanaan teknis penataan ruang dan koordinasi 
       sources: ["https://example.com/doc/123", "https://example.com/doc/456"],
     },
   ],
-};
-
-const generate1D = () => {
-  let v23 = 80;
-  let v24 = 90;
-  let v25 = 100;
-
-  return Array.from({ length: 366 }, (_, i) => {
-    v23 += Math.floor(Math.random() * 7 - 3);
-    v24 += Math.floor(Math.random() * 7 - 3);
-    v25 += Math.floor(Math.random() * 7 - 3);
-
-    v23 = Math.max(20, Math.min(160, v23));
-    v24 = Math.max(20, Math.min(160, v24));
-    v25 = Math.max(20, Math.min(160, v25));
-
-    return {
-      2023: v23,
-      2024: v24,
-      2025: v25,
-      day: i + 1,
-    };
-  });
-};
-const generate1W = () => {
-  let v23 = 90;
-  let v24 = 100;
-  let v25 = 110;
-
-  return Array.from({ length: 52 }, (_, i) => {
-    v23 += Math.floor(Math.random() * 9 - 4);
-    v24 += Math.floor(Math.random() * 9 - 4);
-    v25 += Math.floor(Math.random() * 9 - 4);
-
-    v23 = Math.max(30, Math.min(180, v23));
-    v24 = Math.max(30, Math.min(180, v24));
-    v25 = Math.max(30, Math.min(180, v25));
-
-    return {
-      2023: v23,
-      2024: v24,
-      2025: v25,
-      week: i + 1,
-    };
-  });
-};
-const generate1M = () => {
-  let v23 = 90;
-  let v24 = 100;
-  let v25 = 110;
-
-  return [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ].map((month) => {
-    v23 += Math.floor(Math.random() * 5 - 2);
-    v24 += Math.floor(Math.random() * 5 - 2);
-    v25 += Math.floor(Math.random() * 5 - 2);
-
-    v23 = Math.max(60, Math.min(140, v23));
-    v24 = Math.max(60, Math.min(140, v24));
-    v25 = Math.max(60, Math.min(140, v25));
-
-    return {
-      2023: v23,
-      2024: v24,
-      2025: v25,
-      month,
-    };
-  });
-};
-const generate3M = () => {
-  let v23 = 95;
-  let v24 = 105;
-  let v25 = 115;
-
-  return ["January", "April", "July", "October"].map((month) => {
-    v23 += Math.floor(Math.random() * 3 - 1);
-    v24 += Math.floor(Math.random() * 3 - 1);
-    v25 += Math.floor(Math.random() * 3 - 1);
-
-    v23 = Math.max(80, Math.min(130, v23));
-    v24 = Math.max(80, Math.min(130, v24));
-    v25 = Math.max(80, Math.min(130, v25));
-
-    return {
-      2023: v23,
-      2024: v24,
-      2025: v25,
-      month,
-    };
-  });
 };
 
 export const dummyChartData = {

@@ -5,8 +5,8 @@ import {
   BrushIcon,
   DatabaseIcon,
   FilePenLineIcon,
+  HomeIcon,
   LanguagesIcon,
-  LayoutDashboardIcon,
   LockKeyholeIcon,
   ScanTextIcon,
   SettingsIcon,
@@ -53,9 +53,9 @@ export const ADMIN_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
     labelKey: "main",
     navs: [
       {
-        icon: LayoutDashboardIcon,
-        labelKey: "admin_navs.dashboard",
-        path: `/admin/dashboard`,
+        icon: HomeIcon,
+        labelKey: "admin_navs.home",
+        path: `/admin/home`,
         allowedRoles: [],
         allowedPermissions: [],
       },

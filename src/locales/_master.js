@@ -34,6 +34,10 @@ export const navs = {
   },
 };
 export const admin_navs = {
+  home: {
+    id: "Beranda",
+    en: "Home",
+  },
   dashboard: {
     id: "Dashboard",
     en: "Dashboard",

@@ -99,20 +99,20 @@ const SignoutButton = () => {
   );
 };
 
-interface Props__Signedin extends StackProps {
-  indexRoute: string;
-}
-const Signedin = (props: Props__Signedin) => {
-  // Props
-  const { indexRoute, ...restProps } = props;
-
+const Signedin = () => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const user = getUserData();
 
+  // States
+  const indexRoute =
+    AUTH_PROVIDER_CONFIG[
+      `${getUserData()?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
+    ]?.indexRoute ?? AUTH_PROVIDER_CONFIG["3"].indexRoute;
+
   return (
-    <VStack gap={4} m={"auto"} {...restProps}>
+    <VStack gap={4} m={"auto"}>
       <Avatar size={"2xl"} src={imgUrl(user?.avatar?.[0]?.filePath)} />
 
       <VStack gap={0}>
@@ -133,13 +133,7 @@ const Signedin = (props: Props__Signedin) => {
   );
 };
 
-interface Props__Form extends StackProps {
-  indexRoute: string;
-}
-const Form = (props: Props__Form) => {
-  // Props
-  const { indexRoute, ...restProps } = props;
-
+const Form = () => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
@@ -189,6 +183,11 @@ const Form = (props: Props__Form) => {
             setVerifiedAuthToken(accessToken);
             setPermissions(permissionsData);
 
+            const indexRoute =
+              AUTH_PROVIDER_CONFIG[
+                `${user.role}` as keyof typeof AUTH_PROVIDER_CONFIG
+              ]?.indexRoute ?? AUTH_PROVIDER_CONFIG["3"].indexRoute;
+
             router.push(indexRoute);
           },
         },
@@ -197,7 +196,7 @@ const Form = (props: Props__Form) => {
   });
 
   return (
-    <CContainer {...restProps}>
+    <CContainer>
       <form id="signin_form" onSubmit={formik.handleSubmit}>
         <FieldsetRoot disabled={loading}>
           <Field
@@ -294,12 +293,6 @@ export const SigninForm = (props: StackProps) => {
   const clearChatSessions = useChatSessions((s) => s.clearChatSessions);
   const clearDASessions = useDASessions((s) => s.clearDASessions);
 
-  // States
-  const indexRoute =
-    AUTH_PROVIDER_CONFIG[
-      `${getUserData()?.role}` as keyof typeof AUTH_PROVIDER_CONFIG
-    ]?.indexRoute ?? AUTH_PROVIDER_CONFIG["3"].indexRoute;
-
   // Clear chat sessions and DA sessions on mount
   useEffect(() => {
     clearChatSessions();
@@ -317,7 +310,7 @@ export const SigninForm = (props: StackProps) => {
       {...restProps}
     >
       {resolvedAuthToken ? (
-        <Signedin indexRoute={indexRoute} />
+        <Signedin />
       ) : (
         <>
           <CContainer align={"center"} gap={2} mb={4}>
@@ -333,7 +326,7 @@ export const SigninForm = (props: StackProps) => {
           </CContainer>
 
           <CContainer gap={4} mx={"auto"}>
-            <Form indexRoute={indexRoute} />
+            <Form />
           </CContainer>
         </>
       )}

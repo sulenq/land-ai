@@ -9,7 +9,7 @@ interface Props extends Omit<SegmentGroupRootProps, "onChange"> {
   onChange?: (inputValue: string) => void;
 }
 
-export const Segment = (props: Props) => {
+export const Segmented = (props: Props) => {
   // Props
   const { items = [], inputValue, onChange, size = "md", ...restProps } = props;
 

@@ -30,7 +30,7 @@ import {
   ChatSessionsDisclosureTrigger,
 } from "@/components/widget/ChatSessions";
 import { ClampText } from "@/components/widget/ClampText";
-import Clock from "@/components/widget/Clock";
+import { Clock } from "@/components/widget/Clock";
 import {
   DASessions,
   DASessionssDisclosureTrigger,

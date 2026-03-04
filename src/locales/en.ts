@@ -16,6 +16,7 @@ const translations = {
   "address_not_found": "Address not found",
   "admin": "Admin",
   "admin_navs": {
+    "home": "Home",
     "dashboard": "Dashboard",
     "user": "User",
     "ai_knowledge": "AI Knowledge",

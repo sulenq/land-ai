@@ -2,38 +2,51 @@
 
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import { useColorMode } from "@/components/ui/color-mode";
 import { Divider } from "@/components/ui/divider";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
+import { Popover } from "@/components/ui/popover";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
 import { LucideIcon } from "@/components/widget/Icon";
-import { AUTH_API_SIGNOUT } from "@/constants/apis";
-import { OTHER_PRIVATE_NAV_GROUPS } from "@/constants/navs";
+import { DotIndicator } from "@/components/widget/Indicator";
 import { SVGS_PATH } from "@/constants/paths";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
+import useADM from "@/context/useADM";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import useClickOutside from "@/hooks/useClickOutside";
 import useRequest from "@/hooks/useRequest";
-import {
-  clearAccessToken,
-  clearUserData,
-  getUserData,
-  isPublic,
-} from "@/utils/auth";
-import { back } from "@/utils/client";
-import { capitalizeWords, pluckString } from "@/utils/string";
+import { getUserData } from "@/utils/auth";
+import { back, removeStorage } from "@/utils/client";
+import { pluckString } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
-import { Icon, StackProps } from "@chakra-ui/react";
-import { LogOutIcon, NavigationIcon } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { Icon, PopoverRootProps, StackProps } from "@chakra-ui/react";
+import { EclipseIcon, LogOutIcon, SettingsIcon, UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
-interface Props__ProfileMenu extends StackProps {
+const SIGNOUT_EP = "/api/rski/dashboard/logout";
+const MENUS = [
+  {
+    labelKey: "my_profile",
+    icon: UserIcon,
+    path: "/settings/profile",
+  },
+  {
+    labelKey: "navs.settings",
+    icon: SettingsIcon,
+    path: "/settings",
+  },
+];
+
+interface Props__MiniMyProfile extends StackProps {
   onClose?: () => void;
 }
-export const ProfileMenu = (props: Props__ProfileMenu) => {
+export const ProfileMenu = (props: Props__MiniMyProfile) => {
   // Props
   const { onClose, ...restProps } = props;
 
@@ -41,37 +54,37 @@ export const ProfileMenu = (props: Props__ProfileMenu) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const removeAuth = useAuthMiddleware((s) => s.removeAuth);
+  const ADM = useADM((s) => s.ADM);
 
   // Hooks
+  const { colorMode, toggleColorMode } = useColorMode();
   const { req } = useRequest({
-    id: "signout",
-    loadingMessage: l.loading_signout,
-    successMessage: l.success_signout,
+    id: "sign_out",
+    loadingMessage: { ...l.loading_signout },
+    successMessage: { ...l.success_signout },
   });
   const router = useRouter();
   router.prefetch("/");
-  const pathname = usePathname();
 
   // States
   const user = getUserData();
-  const isAdminRoute = pathname.startsWith("/admin");
 
   // Utils
   function onSignout() {
     back();
 
-    const url = AUTH_API_SIGNOUT;
+    const url = SIGNOUT_EP;
     const config = {
       url,
-      method: "POST",
+      method: "GET",
     };
 
     req({
       config,
       onResolve: {
         onSuccess: () => {
-          clearAccessToken();
-          clearUserData();
+          removeStorage("__access_token");
+          removeStorage("__user_data");
           removeAuth();
           router.push("/");
         },
@@ -97,14 +110,10 @@ export const ProfileMenu = (props: Props__ProfileMenu) => {
           }
           alt="avatar"
           aspectRatio={1}
+          rounded={themeConfig.radii.component}
         />
 
-        <CContainer
-          bg={"body"}
-          p={4}
-          // borderTop={"1px solid"}
-          borderColor={"border.muted"}
-        >
+        <CContainer bg={"body"} p={4} borderColor={"border.muted"}>
           <P fontWeight={"semibold"}>{user?.name || "Signed out"}</P>
           <P color={"fg.subtle"}>{user?.email || "-"}</P>
         </CContainer>
@@ -113,32 +122,9 @@ export const ProfileMenu = (props: Props__ProfileMenu) => {
       <Divider />
 
       <CContainer gap={1} p={"6px"}>
-        {!isPublic() && (
-          <NavLink to={`${isAdminRoute ? "/new-chat" : "/admin"}`} w={"full"}>
-            <Btn
-              clicky={false}
-              px={2}
-              variant={"ghost"}
-              justifyContent={"start"}
-              pos={"relative"}
-              onClick={() => {
-                onClose?.();
-              }}
-            >
-              <AppIcon icon={NavigationIcon} />
-
-              {capitalizeWords(isAdminRoute ? l.to_main_app : l.to_admin)}
-            </Btn>
-          </NavLink>
-        )}
-
-        {OTHER_PRIVATE_NAV_GROUPS[0].navs.map((nav) => {
+        {MENUS.map((menu) => {
           return (
-            <NavLink
-              key={nav.path}
-              to={`${isAdminRoute ? "/admin" : ""}${nav.path}`}
-              w={"full"}
-            >
+            <NavLink key={menu.path} to={menu.path} w={"full"}>
               <Btn
                 clicky={false}
                 px={2}
@@ -149,20 +135,33 @@ export const ProfileMenu = (props: Props__ProfileMenu) => {
                   onClose?.();
                 }}
               >
-                <AppIcon icon={nav.icon} />
+                <AppIcon icon={menu.icon} />
 
-                {nav?.label || pluckString(l, nav.labelKey)}
-
-                {/* {pathname.includes(nav.path) && (
-                  <DotIndicator ml={"auto"} mr={1} />
-                )} */}
+                {pluckString(l, menu.labelKey)}
               </Btn>
             </NavLink>
           );
         })}
 
+        {!ADM && (
+          <Btn
+            clicky={false}
+            variant={"ghost"}
+            px={2}
+            onClick={toggleColorMode}
+          >
+            <AppIcon icon={EclipseIcon} />
+            Dark Mode
+            <DotIndicator
+              color={colorMode === "dark" ? "fg.success" : "gray.muted"}
+              ml={"auto"}
+              mr={1}
+            />
+          </Btn>
+        )}
+
         <ConfirmationDisclosureTrigger
-          id="signing_out"
+          id="signout"
           title="Sign out"
           description={l.msg_signout}
           confirmLabel="Sign out"
@@ -188,21 +187,44 @@ export const ProfileMenu = (props: Props__ProfileMenu) => {
             Sign Out
           </Btn>
         </ConfirmationDisclosureTrigger>
-
-        {/* <Btn
-          clicky={false}
-          px={2}
-          variant={"ghost"}
-          color={"fg.error"}
-          justifyContent={"start"}
-          onClick={onSignout}
-        >
-          <Icon boxSize={BASE_ICON_BOX_SIZE}>
-            <LucideIcon icon={LogOutIcon} />
-          </Icon>
-          Sign Out
-        </Btn> */}
       </CContainer>
     </CContainer>
+  );
+};
+
+interface Props__ProfileMenuTrigger extends StackProps {
+  popoverRootProps?: Omit<PopoverRootProps, "children">;
+}
+export const ProfileMenuTrigger = (props: Props__ProfileMenuTrigger) => {
+  // Props
+  const { popoverRootProps, ...restProps } = props;
+
+  // Refss
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Hooks
+  useClickOutside(containerRef, onClose);
+
+  // States
+  const [open, setOpen] = useState<boolean>(false);
+
+  // Utils
+  function onOpen() {
+    setOpen(true);
+  }
+  function onClose() {
+    setOpen(false);
+  }
+
+  return (
+    <Popover.Root open={open} {...popoverRootProps}>
+      <Popover.Trigger asChild>
+        <CContainer w={"fit"} onClick={onOpen} {...restProps} />
+      </Popover.Trigger>
+
+      <Popover.Content ref={containerRef} w={"225px"} zIndex={10}>
+        <ProfileMenu onClose={onClose} />
+      </Popover.Content>
+    </Popover.Root>
   );
 };
