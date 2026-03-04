@@ -9,6 +9,7 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
+import { Divider } from "@/components/ui/divider";
 import {
   MenuContent,
   MenuItem,
@@ -18,11 +19,6 @@ import {
 } from "@/components/ui/menu";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
-import {
-  PopoverContent,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import SearchInput from "@/components/ui/search-input";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
@@ -35,7 +31,7 @@ import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
 import { NavBreadcrumb, TopBar } from "@/components/widget/PageShell";
-import { ProfileMenu } from "@/components/widget/ProfileMenu";
+import { ProfileMenuTrigger } from "@/components/widget/ProfileMenu";
 import { Today } from "@/components/widget/Today";
 import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
@@ -62,7 +58,6 @@ import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import useClickOutside from "@/hooks/useClickOutside";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import useRequest from "@/hooks/useRequest";
 import useScreen from "@/hooks/useScreen";
@@ -75,15 +70,7 @@ import {
 } from "@/utils/auth";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
-import {
-  Box,
-  Center,
-  HStack,
-  Icon,
-  PopoverRootProps,
-  StackProps,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Center, HStack, Icon, VStack } from "@chakra-ui/react";
 import { IconCircleFilled } from "@tabler/icons-react";
 import {
   ChevronsUpDownIcon,
@@ -96,45 +83,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 const USER_PROFILE_URL = "/api/get-user-profile";
-
-interface Props__MiniMyProfilePopoverTrigger extends StackProps {
-  popoverRootProps?: Omit<PopoverRootProps, "children">;
-}
-const MiniMyProfilePopoverTrigger = (
-  props: Props__MiniMyProfilePopoverTrigger,
-) => {
-  // Props
-  const { popoverRootProps, ...restProps } = props;
-
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Hooks
-  useClickOutside(containerRef, onClose);
-
-  // States
-  const [open, setOpen] = useState<boolean>(false);
-
-  // Utils
-  function onOpen() {
-    setOpen(true);
-  }
-  function onClose() {
-    setOpen(false);
-  }
-
-  return (
-    <PopoverRoot open={open} {...popoverRootProps}>
-      <PopoverTrigger asChild>
-        <CContainer w={"fit"} onClick={onOpen} {...restProps} />
-      </PopoverTrigger>
-
-      <PopoverContent ref={containerRef} w={"235px"} zIndex={10}>
-        <ProfileMenu onClose={onClose} />
-      </PopoverContent>
-    </PopoverRoot>
-  );
-};
 
 const MobileLayout = (props: any) => {
   // Props
@@ -342,7 +290,7 @@ const MobileLayout = (props: any) => {
             );
           })}
 
-          <MiniMyProfilePopoverTrigger flex={1}>
+          <ProfileMenuTrigger flex={1}>
             <VStack
               flex={1}
               color={MOBILE_NAVS_COLOR}
@@ -370,7 +318,7 @@ const MobileLayout = (props: any) => {
                 {l.profile}
               </P>
             </VStack>
-          </MiniMyProfilePopoverTrigger>
+          </ProfileMenuTrigger>
         </HStack>
       </HScroll>
     </CContainer>
@@ -1026,12 +974,14 @@ const DesktopLayout = (props: any) => {
           </CContainer>
         </CContainer>
 
-        {/* <CContainer px={3}>
-          <Divider />
-        </CContainer> */}
+        {isNavsExpanded && (
+          <CContainer px={3}>
+            <Divider />
+          </CContainer>
+        )}
 
-        <CContainer p={3}>
-          <MiniMyProfilePopoverTrigger
+        <CContainer p={3} pt={isNavsExpanded ? 3 : 0}>
+          <ProfileMenuTrigger
             w={"full"}
             popoverRootProps={{
               positioning: {
@@ -1084,7 +1034,7 @@ const DesktopLayout = (props: any) => {
                 </>
               )}
             </HStack>
-          </MiniMyProfilePopoverTrigger>
+          </ProfileMenuTrigger>
         </CContainer>
       </CContainer>
 

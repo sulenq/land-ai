@@ -489,7 +489,8 @@ export const DataTable = (props: Props__DataTable) => {
       {hasFooter && (
         <>
           <HStack
-            p={2}
+            px={1}
+            py={3}
             borderTop={"1px solid"}
             borderColor={footerBorderColor}
             justify={"space-between"}
