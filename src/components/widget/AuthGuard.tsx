@@ -7,9 +7,10 @@ import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const ENABLE_AUTH_GUARD = process.env.ENABLE_AUTH_GUARD === "true";
+  const ENABLE_AUTH_GUARD =
+    process.env.NEXT_PUBLIC_ENABLE_AUTH_GUARD === "true";
 
-  const authToken = getAccessToken();
+  const accessToken = getAccessToken();
   const verifiedAuthToken = useAuthMiddleware((s) => s.verifiedAuthToken);
   const setRole = useAuthMiddleware((s) => s.setRole);
   const setPermissions = useAuthMiddleware((s) => s.setPermissions);
@@ -30,12 +31,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     return children;
   }
 
-  if (!authToken) {
+  if (!accessToken) {
     router.replace("/");
     return <VerifyingScreen />;
   }
 
-  if (authToken && !verifiedAuthToken) {
+  if (accessToken && !verifiedAuthToken) {
     if (!verificationStartedRef.current) {
       verificationStartedRef.current = true;
 
@@ -46,9 +47,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         onResolve: {
           onSuccess: (r: any) => {
             const user = r.data.data;
-            setAccessToken(authToken);
+            setAccessToken(accessToken);
             setUserData(user);
-            setVerifiedAuthToken(authToken);
+            setVerifiedAuthToken(accessToken);
             setRole(user?.role);
             setPermissions(user?.role?.permissions);
           },
