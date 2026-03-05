@@ -144,17 +144,20 @@ const ResultSection = (props: Props__ResultSection) => {
                   <CContainer gap={2}>
                     {documentRequirement?.extractionSchema?.map((field) => {
                       const value = getValueResult(field.label, index);
+                      const isNotFound = value === "NOT_FOUND";
 
                       return (
-                        <HStack key={field.key} gap={4}>
-                          <ClampText w={"200px"} color={"fg.muted"}>
-                            {field.label}
-                          </ClampText>
+                        value && (
+                          <HStack key={field.key} gap={4}>
+                            <ClampText w={"200px"} color={"fg.muted"}>
+                              {field.label}
+                            </ClampText>
 
-                          {value === "NOT_FOUND" ? null : (
-                            <ClampText>{value || "-"}</ClampText>
-                          )}
-                        </HStack>
+                            <ClampText color={isNotFound ? "fg.muted" : ""}>
+                              {isNotFound ? l.not_found : value}
+                            </ClampText>
+                          </HStack>
+                        )
                       );
                     })}
                   </CContainer>
