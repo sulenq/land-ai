@@ -21,6 +21,7 @@ import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
+import { AuthGuard } from "@/components/widget/AuthGuard";
 import {
   ChatSessions,
   ChatSessionsDisclosureTrigger,
@@ -40,9 +41,7 @@ import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
 import { NavBreadcrumb, TopBar } from "@/components/widget/PageShell";
 import { ProfileMenuTrigger } from "@/components/widget/ProfileMenu";
 import { Today } from "@/components/widget/Today";
-import { VerifyingScreen } from "@/components/widget/VerifyingScreen";
 import { APP } from "@/constants/_meta";
-import { AUTH_API_USER_PROFILE } from "@/constants/apis";
 import { PRIVATE_NAV_GROUPS } from "@/constants/navs";
 import { Props__Layout } from "@/constants/props";
 import {
@@ -59,21 +58,14 @@ import {
   MOBILE_POPOVER_MAIN_AXIS,
   NAVS_COLOR_PALETTE,
 } from "@/constants/styles";
-import useAuthMiddleware from "@/context/useAuthMiddleware";
 import useLang from "@/context/useLang";
 import useNavs from "@/context/useNavs";
 import { useNavsTabs } from "@/context/useNavsTabs";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
-import useRequest from "@/hooks/useRequest";
 import useScreen from "@/hooks/useScreen";
 import { last } from "@/utils/array";
-import {
-  getAccessToken,
-  getUserData,
-  setAccessToken,
-  setUserData,
-} from "@/utils/auth";
+import { getUserData } from "@/utils/auth";
 import { pluckString } from "@/utils/string";
 import { getActiveNavs, imgUrl } from "@/utils/url";
 import {
@@ -95,8 +87,89 @@ import {
   SidebarOpenIcon,
   UserIcon,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { Fragment, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { Fragment } from "react";
+
+const DesktopTabs = (props: TabsRootProps) => {
+  const TABS = [
+    {
+      value: "your_chats",
+      labelKey: "navs.your_chats",
+      icon: MessageSquareIcon,
+      content: <ChatSessions />,
+    },
+    {
+      value: "your_da",
+      labelKey: "navs.your_da_analysis",
+      icon: FileTextIcon,
+      content: <DASessions />,
+    },
+  ];
+
+  // Props
+  const { ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const navsTabs = useNavsTabs((s) => s.navsTabs);
+  const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
+
+  return (
+    <Tabs.Root
+      defaultValue={navsTabs.current}
+      fitted
+      variant={"subtle"}
+      {...restProps}
+    >
+      <Tabs.List>
+        {TABS.map((tab) => (
+          <Tabs.Trigger
+            key={tab.value}
+            value={tab.value}
+            rounded={themeConfig.radii.component}
+            onClick={() => {
+              setNavsTabs({
+                current: tab.value,
+              });
+            }}
+          >
+            <Tooltip content={pluckString(l, tab.labelKey)}>
+              <HStack w={"full"} justify={"center"}>
+                <AppIcon icon={tab.icon} />
+
+                <P lineClamp={1} textAlign={"left"}>
+                  {pluckString(l, tab.labelKey)}
+                </P>
+              </HStack>
+            </Tooltip>
+          </Tabs.Trigger>
+        ))}
+      </Tabs.List>
+
+      <CContainer minH={"200px"} pos={"relative"} mt={-2}>
+        {TABS.map((tab, index) => (
+          <Tabs.Content
+            key={index}
+            value={tab.value}
+            position="absolute"
+            inset="0"
+            _open={{
+              animationName: "fade-in, scale-in",
+              animationDuration: "200ms",
+            }}
+            _closed={{
+              animationName: "fade-out, scale-out",
+              animationDuration: "120ms",
+            }}
+          >
+            {tab.content}
+          </Tabs.Content>
+        ))}
+      </CContainer>
+    </Tabs.Root>
+  );
+};
 
 const MobileLayout = (props: Props__Layout) => {
   // Props
@@ -346,87 +419,6 @@ const MobileLayout = (props: Props__Layout) => {
   );
 };
 
-interface Props__DesktopTabs extends TabsRootProps {}
-const DesktopTabs = (props: Props__DesktopTabs) => {
-  const TABS = [
-    {
-      value: "your_chats",
-      labelKey: "navs.your_chats",
-      icon: MessageSquareIcon,
-      content: <ChatSessions />,
-    },
-    {
-      value: "your_da",
-      labelKey: "navs.your_da_analysis",
-      icon: FileTextIcon,
-      content: <DASessions />,
-    },
-  ];
-
-  // Props
-  const { ...restProps } = props;
-
-  // Contexts
-  const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
-  const navsTabs = useNavsTabs((s) => s.navsTabs);
-  const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
-
-  return (
-    <Tabs.Root
-      defaultValue={navsTabs.current}
-      fitted
-      variant={"subtle"}
-      {...restProps}
-    >
-      <Tabs.List>
-        {TABS.map((tab) => (
-          <Tabs.Trigger
-            key={tab.value}
-            value={tab.value}
-            rounded={themeConfig.radii.component}
-            onClick={() => {
-              setNavsTabs({
-                current: tab.value,
-              });
-            }}
-          >
-            <Tooltip content={pluckString(l, tab.labelKey)}>
-              <HStack w={"full"} justify={"center"}>
-                <AppIcon icon={tab.icon} />
-
-                <P lineClamp={1} textAlign={"left"}>
-                  {pluckString(l, tab.labelKey)}
-                </P>
-              </HStack>
-            </Tooltip>
-          </Tabs.Trigger>
-        ))}
-      </Tabs.List>
-
-      <CContainer minH={"200px"} pos={"relative"} mt={-2}>
-        {TABS.map((tab, index) => (
-          <Tabs.Content
-            key={index}
-            value={tab.value}
-            position="absolute"
-            inset="0"
-            _open={{
-              animationName: "fade-in, scale-in",
-              animationDuration: "200ms",
-            }}
-            _closed={{
-              animationName: "fade-out, scale-out",
-              animationDuration: "120ms",
-            }}
-          >
-            {tab.content}
-          </Tabs.Content>
-        ))}
-      </CContainer>
-    </Tabs.Root>
-  );
-};
 const DesktopLayout = (props: Props__Layout) => {
   // Props
   const {
@@ -1052,92 +1044,16 @@ const DesktopLayout = (props: Props__Layout) => {
   );
 };
 
-const TheApp = (props: Props__Layout) => {
-  // Props
+export default function Layout(props: Props__Layout) {
   const { ...restProps } = props;
 
-  // Hooks
   const iss = useIsSmScreenWidth();
 
   return (
-    <CContainer id="app_layout" h={"100dvh"} {...restProps}>
-      {iss ? <MobileLayout {...props} /> : <DesktopLayout {...props} />}
-    </CContainer>
+    <AuthGuard>
+      <CContainer id="app_layout" h={"100dvh"} {...restProps}>
+        {iss ? <MobileLayout {...props} /> : <DesktopLayout {...props} />}
+      </CContainer>
+    </AuthGuard>
   );
-};
-export default function Layout(props: Props__Layout) {
-  // Toggle auth guard
-  const ENABLE_AUTH_GUARD =
-    process.env.NEXT_PUBLIC_ENABLE_AUTH_GUARD === "true";
-
-  // Context / stores
-  const authToken = getAccessToken();
-  const verifiedAuthToken = useAuthMiddleware((s) => s.verifiedAuthToken);
-  const setRole = useAuthMiddleware((s) => s.setRole);
-  const setPermissions = useAuthMiddleware((s) => s.setPermissions);
-  const setVerifiedAuthToken = useAuthMiddleware((s) => s.setVerifiedAuthToken);
-
-  // Refs
-  const verificationStartedRef = useRef(false);
-
-  // Hooks
-  const router = useRouter();
-  const { req, loading } = useRequest({
-    id: "user-profile",
-    showLoadingToast: false,
-    showSuccessToast: false,
-    showErrorToast: false,
-  });
-
-  // If guard disabled -> render directly
-  if (!ENABLE_AUTH_GUARD) {
-    return <TheApp {...props} />;
-  }
-
-  // If there's no token at all -> redirect immediately
-  if (!authToken) {
-    router.replace("/");
-    return <VerifyingScreen />;
-  }
-
-  // If token exists but not verified yet
-  if (authToken && !verifiedAuthToken) {
-    if (!verificationStartedRef.current) {
-      verificationStartedRef.current = true;
-
-      const config = { method: "GET", url: AUTH_API_USER_PROFILE };
-
-      req({
-        config,
-        onResolve: {
-          onSuccess: (r: any) => {
-            const user = r.data.data;
-            setAccessToken(authToken);
-            setUserData(user);
-            setVerifiedAuthToken(authToken);
-            setRole(user?.role);
-            setPermissions(user?.role?.permissions);
-          },
-          onError: () => {
-            setVerifiedAuthToken(null);
-          },
-        },
-      });
-    }
-
-    return <VerifyingScreen />;
-  }
-
-  // If request hook return loading
-  if (loading) {
-    return <VerifyingScreen />;
-  }
-
-  // After verification, if still invalid -> redirect
-  if (!verifiedAuthToken) {
-    router.replace("/");
-    return <VerifyingScreen />;
-  }
-
-  return <TheApp {...props} />;
 }
