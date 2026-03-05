@@ -44,6 +44,8 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
   ArrowUpRightIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   DownloadIcon,
   LayoutListIcon,
   TableIcon,
@@ -66,6 +68,9 @@ const ResultSection = (props: Props__ResultSection) => {
   const result = daSession?.result;
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"accordion" | "table">("table");
+  const [selectedValidationField, setSelectedValidationField] = useState<
+    string | null
+  >(null);
   const uploadedDocuments = daSession?.uploadedDocuments;
   const documentRequirements = daSession?.documentService?.documentRequirements;
 
@@ -237,21 +242,88 @@ const ResultSection = (props: Props__ResultSection) => {
               </AccordionItemTrigger>
 
               <AccordionItemContent>
-                <CContainer gap={2}>
+                <CContainer gap={1} pb={2}>
                   {result?.map((r) => {
                     const fieldLabel = r.label;
                     const isMatch = r.validation.status;
+                    const isExpanded = selectedValidationField === fieldLabel;
 
                     return (
-                      <HStack key={r.label} gap={4}>
-                        <ClampText w={"200px"} color={"fg.muted"}>
-                          {fieldLabel}
-                        </ClampText>
+                      <CContainer key={r.label}>
+                        <HStack
+                          gap={4}
+                          py={2}
+                          px={2}
+                          rounded={"md"}
+                          cursor={"pointer"}
+                          _hover={{ bg: "d1" }}
+                          transition={"100ms"}
+                          onClick={() =>
+                            setSelectedValidationField(
+                              isExpanded ? null : fieldLabel,
+                            )
+                          }
+                        >
+                          <ClampText w={"200px"} color={"fg.muted"}>
+                            {fieldLabel}
+                          </ClampText>
 
-                        <P color={isMatch ? "fg.success" : "fg.muted"}>
-                          {isMatch ? l.match : l.mismatch}
-                        </P>
-                      </HStack>
+                          <P
+                            flex={1}
+                            color={isMatch ? "fg.success" : "fg.error"}
+                          >
+                            {isMatch ? l.match : l.mismatch}
+                          </P>
+
+                          <AppIcon
+                            icon={isExpanded ? ChevronUpIcon : ChevronDownIcon}
+                            color={"fg.muted"}
+                            boxSize={3}
+                          />
+                        </HStack>
+
+                        {/* Expanded: per-document comparison */}
+                        {isExpanded && (
+                          <CContainer
+                            bg={"d1"}
+                            rounded={"md"}
+                            p={3}
+                            gap={2}
+                            mb={1}
+                          >
+                            {uploadedDocuments?.map((doc, docIndex) => {
+                              const val = getValueResult(fieldLabel, docIndex);
+                              const isNotFound = val === "NOT_FOUND";
+                              return (
+                                <HStack
+                                  key={doc.documentRequirement.id}
+                                  gap={4}
+                                  align={"start"}
+                                >
+                                  <ClampText
+                                    w={"160px"}
+                                    flexShrink={0}
+                                    fontSize={"sm"}
+                                    color={"fg.muted"}
+                                  >
+                                    {doc.documentRequirement.name}
+                                  </ClampText>
+                                  <P
+                                    fontSize={"sm"}
+                                    color={isNotFound ? "fg.muted" : ""}
+                                  >
+                                    {val
+                                      ? isNotFound
+                                        ? l.not_found
+                                        : val
+                                      : "-"}
+                                  </P>
+                                </HStack>
+                              );
+                            })}
+                          </CContainer>
+                        )}
+                      </CContainer>
                     );
                   })}
                 </CContainer>
