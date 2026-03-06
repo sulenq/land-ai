@@ -111,7 +111,7 @@ const InputForm = (props: Props__InputForm) => {
             variant: "numeric",
             withTime: true,
           },
-        )} ${tz.localAbbr}`,
+        )} ${tz.formattedOffset}`,
       );
       payload.append("serviceId", `${daService?.id}`);
       Object.entries(values.files).forEach(([docId, files]) => {
