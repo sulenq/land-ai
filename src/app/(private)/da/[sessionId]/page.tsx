@@ -126,10 +126,10 @@ const AccordionMode = (props: Props__AccordionMode) => {
 
                       return (
                         value && (
-                          <HStack key={field.key} gap={4}>
+                          <HStack key={field.key}>
                             <ClampText
                               flexShrink={0}
-                              w={"200px"}
+                              w={"240px"}
                               color={"fg.muted"}
                             >
                               {field.label}
@@ -158,8 +158,8 @@ const AccordionMode = (props: Props__AccordionMode) => {
             }}
           >
             <AccordionItemTrigger cursor={"pointer"} px={4}>
-              <DotIndicator />
               <P>{l.validation}</P>
+              <DotIndicator />
             </AccordionItemTrigger>
 
             <AccordionItemContent p={0}>
@@ -184,7 +184,12 @@ const AccordionMode = (props: Props__AccordionMode) => {
                         <AccordionItemTrigger cursor={"pointer"}>
                           <HStack>
                             <Tooltip content={r.label}>
-                              <P lineClamp={1} w={"200px"} color={"fg.muted"}>
+                              <P
+                                flexShrink={0}
+                                lineClamp={1}
+                                w={"240px"}
+                                // color={"fg.muted"}
+                              >
                                 {r.label}
                               </P>
                             </Tooltip>
@@ -204,7 +209,7 @@ const AccordionMode = (props: Props__AccordionMode) => {
                                 <HStack key={doc.documentRequirement.id}>
                                   <ClampText
                                     flexShrink={0}
-                                    w={"200px"}
+                                    w={"240px"}
                                     color={"fg.muted"}
                                   >
                                     {doc.documentRequirement.name}
