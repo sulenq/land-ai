@@ -13,7 +13,9 @@ import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
+import { Segmented } from "@/components/ui/segment-group";
 import { Spinner } from "@/components/ui/spinner";
+import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { ClampText } from "@/components/widget/ClampText";
 import {
@@ -21,31 +23,36 @@ import {
   SuratPermohonanPDF,
   SuratPernyataanPDF,
 } from "@/components/widget/DALetterTemplate";
+import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
+import { HorizontalScrollbar } from "@/components/widget/HorizontalScrollbar";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
-import { Interface__DASessionDetail } from "@/constants/interfaces";
+import {
+  Interface__DASessionDetail,
+  Interface__FormattedTableHeader,
+  Interface__FormattedTableRow,
+} from "@/constants/interfaces";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
-import { Badge, Box, HStack, Table, StackProps } from "@chakra-ui/react";
+import { Badge, Box, HStack, StackProps } from "@chakra-ui/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
   ArrowUpRightIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   DownloadIcon,
   LayoutListIcon,
   TableIcon,
@@ -53,47 +60,23 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-interface Props__ResultSection extends StackProps {
+interface Props__AccordionMode extends StackProps {
   daSession?: Interface__DASessionDetail;
+  accordionValue: string[];
+  setAccordionValue: React.Dispatch<React.SetStateAction<string[]>>;
 }
-const ResultSection = (props: Props__ResultSection) => {
+const AccordionMode = (props: Props__AccordionMode) => {
   // Props
-  const { daSession, ...restProps } = props;
+  const { daSession, accordionValue, setAccordionValue } = props;
 
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
 
   // States
-  const result = daSession?.result;
-  const [accordionValue, setAccordionValue] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<"accordion" | "table">("table");
-  const [selectedValidationField, setSelectedValidationField] = useState<
-    string | null
-  >(null);
-  const uploadedDocuments = daSession?.uploadedDocuments;
   const documentRequirements = daSession?.documentService?.documentRequirements;
-
-  // Drag-to-scroll for table
-  const tableScrollRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const dragStartX = useRef(0);
-  const scrollStartLeft = useRef(0);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    isDragging.current = true;
-    dragStartX.current = e.clientX;
-    scrollStartLeft.current = tableScrollRef.current?.scrollLeft ?? 0;
-  };
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging.current || !tableScrollRef.current) return;
-    e.preventDefault();
-    const dx = e.clientX - dragStartX.current;
-    tableScrollRef.current.scrollLeft = scrollStartLeft.current - dx;
-  };
-  const stopDrag = () => {
-    isDragging.current = false;
-  };
+  const result = daSession?.result;
+  const uploadedDocuments = daSession?.uploadedDocuments;
 
   // Utils
   const getValueResult = (label: string, index: number) => {
@@ -102,386 +85,377 @@ const ResultSection = (props: Props__ResultSection) => {
   };
 
   return (
-    <ContainerLayout pos={"relative"} {...restProps}>
-      <HStack
-        justify={"space-between"}
-        pb={2}
-        bg="linear-gradient(
-              to bottom,
-              var(--chakra-colors-body) 80%,
-              transparent 100%
-            )"
-        pos={"sticky"}
-        top={"-32px"}
-        zIndex={"sticky"}
+    <ContainerLayout>
+      <CContainer
+        // border={"1px solid"}
+        borderColor={"border.muted"}
+        rounded={themeConfig.radii.container}
       >
-        <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
+        <AccordionRoot
+          collapsible
+          multiple
+          value={accordionValue}
+          onValueChange={(e) => setAccordionValue(e.value)}
+          rounded={themeConfig.radii.container}
+          overflow={"clip"}
+        >
+          {uploadedDocuments?.map((doc, index) => {
+            const documentRequirement = documentRequirements?.find((dr) => {
+              return dr.id === doc.documentRequirement.id;
+            });
 
-        <HStack gap={2}>
-          {/* View mode toggle */}
-          <HStack
-            border={"1px solid"}
-            borderColor={"border.subtle"}
-            rounded={themeConfig.radii.component}
-            p={"2px"}
-            gap={"2px"}
-          >
-            <Btn
-              variant={viewMode === "accordion" ? "solid" : "ghost"}
-              size="xs"
-              onClick={() => setViewMode("accordion")}
-              aria-label="Accordion view"
-              px={2}
-            >
-              <AppIcon icon={LayoutListIcon} />
-            </Btn>
-            <Btn
-              variant={viewMode === "table" ? "solid" : "ghost"}
-              size="xs"
-              onClick={() => setViewMode("table")}
-              aria-label="Table view"
-              px={2}
-            >
-              <AppIcon icon={TableIcon} />
-            </Btn>
-          </HStack>
-
-          {/* Accordion controls - only in accordion mode */}
-          {viewMode === "accordion" && (
-            <HStack rounded={themeConfig.radii.component}>
-              <Btn
-                variant="outline"
-                size="xs"
-                onClick={() => {
-                  if (uploadedDocuments) {
-                    setAccordionValue(
-                      uploadedDocuments.map((doc) => {
-                        return `${doc.documentRequirement.id}`;
-                      }),
-                    );
-                  }
+            return (
+              <AccordionItem
+                key={doc.documentRequirement.id}
+                value={`${doc.documentRequirement.id}`}
+                borderColor={"d1"}
+                px={4}
+                _open={{
+                  bg: "d0",
                 }}
               >
-                {l.open_all}
-              </Btn>
+                <AccordionItemTrigger cursor={"pointer"}>
+                  <P>{doc.documentRequirement.name}</P>
+                </AccordionItemTrigger>
 
-              <Btn
-                variant="outline"
-                size="xs"
-                onClick={() => {
-                  setAccordionValue([]);
-                }}
-              >
-                {l.close_all}
-              </Btn>
-            </HStack>
-          )}
-        </HStack>
-      </HStack>
+                <AccordionItemContent>
+                  <CContainer gap={2}>
+                    {documentRequirement?.extractionSchema?.map((field) => {
+                      const value = getValueResult(field.label, index);
+                      const isNotFound = value === "NOT_FOUND";
 
-      {/* Accordion View */}
-      {viewMode === "accordion" && (
-        <CContainer bg={"bg.muted"} rounded={themeConfig.radii.container}>
-          <AccordionRoot
-            collapsible
-            multiple
-            value={accordionValue}
-            onValueChange={(e) => setAccordionValue(e.value)}
+                      return (
+                        value && (
+                          <HStack key={field.key} gap={4}>
+                            <ClampText
+                              flexShrink={0}
+                              w={"200px"}
+                              color={"fg.muted"}
+                            >
+                              {field.label}
+                            </ClampText>
+
+                            <ClampText color={isNotFound ? "fg.muted" : ""}>
+                              {isNotFound ? l.not_found : value}
+                            </ClampText>
+                          </HStack>
+                        )
+                      );
+                    })}
+                  </CContainer>
+                </AccordionItemContent>
+              </AccordionItem>
+            );
+          })}
+
+          <AccordionItem
+            value={`validation`}
+            borderBottom={"none"}
+            borderColor={"d1"}
+            px={0}
+            _open={{
+              bg: "d0",
+            }}
           >
-            {uploadedDocuments?.map((doc, index) => {
-              const documentRequirement = documentRequirements?.find((dr) => {
-                return dr.id === doc.documentRequirement.id;
-              });
+            <AccordionItemTrigger cursor={"pointer"} px={4}>
+              <DotIndicator />
+              <P>{l.validation}</P>
+            </AccordionItemTrigger>
 
-              return (
-                <AccordionItem
-                  key={doc.documentRequirement.id}
-                  value={`${doc.documentRequirement.id}`}
-                  borderColor={"d1"}
-                  px={4}
-                >
-                  <AccordionItemTrigger cursor={"pointer"}>
-                    <P>{doc.documentRequirement.name}</P>
-                  </AccordionItemTrigger>
-
-                  <AccordionItemContent>
-                    <CContainer gap={2}>
-                      {documentRequirement?.extractionSchema?.map((field) => {
-                        const value = getValueResult(field.label, index);
-                        const isNotFound = value === "NOT_FOUND";
-
-                        return (
-                          value && (
-                            <HStack key={field.key} gap={4}>
-                              <ClampText w={"200px"} color={"fg.muted"}>
-                                {field.label}
-                              </ClampText>
-
-                              <ClampText color={isNotFound ? "fg.muted" : ""}>
-                                {isNotFound ? l.not_found : value}
-                              </ClampText>
-                            </HStack>
-                          )
-                        );
-                      })}
-                    </CContainer>
-                  </AccordionItemContent>
-                </AccordionItem>
-              );
-            })}
-
-            <AccordionItem
-              value={`validation`}
-              borderBottom={"none"}
-              borderColor={"d1"}
-              px={4}
-            >
-              <AccordionItemTrigger cursor={"pointer"}>
-                <DotIndicator />
-                <P>{l.validation}</P>
-              </AccordionItemTrigger>
-
-              <AccordionItemContent>
-                <CContainer gap={1} pb={2}>
-                  {result?.map((r) => {
+            <AccordionItemContent p={0}>
+              <CContainer gap={1}>
+                <AccordionRoot collapsible multiple>
+                  {result?.map((r, index) => {
+                    const isLastIndex = index === result.length - 1;
                     const fieldLabel = r.label;
                     const isMatch = r.validation.status;
-                    const isExpanded = selectedValidationField === fieldLabel;
 
                     return (
-                      <CContainer key={r.label}>
-                        <HStack
-                          gap={4}
-                          py={2}
-                          px={2}
-                          rounded={"md"}
-                          cursor={"pointer"}
-                          _hover={{ bg: "d1" }}
-                          transition={"100ms"}
-                          onClick={() =>
-                            setSelectedValidationField(
-                              isExpanded ? null : fieldLabel,
-                            )
-                          }
-                        >
-                          <ClampText w={"200px"} color={"fg.muted"}>
-                            {fieldLabel}
-                          </ClampText>
+                      <AccordionItem
+                        key={r.label}
+                        value={r.label}
+                        borderBottom={isLastIndex ? "none" : "1px solid"}
+                        borderColor={"d1"}
+                        px={4}
+                        _open={{
+                          bg: "d0",
+                        }}
+                      >
+                        <AccordionItemTrigger cursor={"pointer"}>
+                          <HStack>
+                            <Tooltip content={r.label}>
+                              <P lineClamp={1} w={"200px"} color={"fg.muted"}>
+                                {r.label}
+                              </P>
+                            </Tooltip>
 
-                          <P
-                            flex={1}
-                            color={isMatch ? "fg.success" : "fg.error"}
-                          >
-                            {isMatch ? l.match : l.mismatch}
-                          </P>
+                            <P color={isMatch ? "fg.success" : "fg.error"}>
+                              {isMatch ? l.match : l.mismatch}
+                            </P>
+                          </HStack>
+                        </AccordionItemTrigger>
 
-                          <AppIcon
-                            icon={isExpanded ? ChevronUpIcon : ChevronDownIcon}
-                            color={"fg.muted"}
-                            boxSize={3}
-                          />
-                        </HStack>
-
-                        {/* Expanded: per-document comparison */}
-                        {isExpanded && (
-                          <CContainer
-                            bg={"d1"}
-                            rounded={"md"}
-                            p={3}
-                            gap={2}
-                            mb={1}
-                          >
+                        <AccordionItemContent px={0} py={2}>
+                          <CContainer rounded={"md"} gap={2}>
                             {uploadedDocuments?.map((doc, docIndex) => {
                               const val = getValueResult(fieldLabel, docIndex);
                               const isNotFound = val === "NOT_FOUND";
                               return (
-                                <HStack
-                                  key={doc.documentRequirement.id}
-                                  gap={4}
-                                  align={"start"}
-                                >
+                                <HStack key={doc.documentRequirement.id}>
                                   <ClampText
-                                    w={"160px"}
                                     flexShrink={0}
-                                    fontSize={"sm"}
+                                    w={"200px"}
                                     color={"fg.muted"}
                                   >
                                     {doc.documentRequirement.name}
                                   </ClampText>
-                                  <P
-                                    fontSize={"sm"}
-                                    color={isNotFound ? "fg.muted" : ""}
-                                  >
+
+                                  <ClampText>
                                     {val
                                       ? isNotFound
                                         ? l.not_found
                                         : val
                                       : "-"}
-                                  </P>
+                                  </ClampText>
                                 </HStack>
                               );
                             })}
                           </CContainer>
-                        )}
-                      </CContainer>
+                        </AccordionItemContent>
+                      </AccordionItem>
                     );
                   })}
-                </CContainer>
-              </AccordionItemContent>
-            </AccordionItem>
-          </AccordionRoot>
+                </AccordionRoot>
+              </CContainer>
+            </AccordionItemContent>
+          </AccordionItem>
+        </AccordionRoot>
+      </CContainer>
+    </ContainerLayout>
+  );
+};
+
+interface Props__TableMode extends StackProps {
+  daSession?: Interface__DASessionDetail;
+  containerDimension?: {
+    width: number;
+    height: number;
+  };
+}
+const TableMode = (props: Props__TableMode) => {
+  // Props
+  const { daSession, containerDimension } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // Refs
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const scrollStartLeft = useRef(0);
+
+  // States
+  const uploadedDocuments = daSession?.uploadedDocuments;
+  const result = daSession?.result;
+  const headers: Interface__FormattedTableHeader[] = [
+    { th: "Item Validasi", sortable: true },
+    ...(uploadedDocuments ?? []).map((doc) => ({
+      th: doc.documentRequirement.name,
+      sortable: true,
+    })),
+    { th: "Validasi", sortable: true },
+  ];
+  const rows: Interface__FormattedTableRow[] = (result ?? []).map((r, idx) => {
+    const isMatch = r.validation.status;
+
+    return {
+      id: `${idx}`,
+      idx: idx,
+      data: r,
+      columns: [
+        { td: r.label, value: r.label, dataType: "string" },
+        ...r.values.map((v) => ({
+          td: v.value === "NOT_FOUND" ? l.not_found : v.value || "-",
+          dim: v.value === "NOT_FOUND" || v.value === null,
+          value: v.value,
+          dataType: v.renderType,
+        })),
+        {
+          td: (
+            <P color={isMatch ? "fg.success" : "fg.error"}>
+              {isMatch ? l.match : l.mismatch}
+            </P>
+          ),
+          value: r.validation.status,
+          dataType: "boolean",
+        },
+      ],
+    };
+  });
+
+  // Utils
+  function handleMouseDown(e: React.MouseEvent) {
+    isDragging.current = true;
+    dragStartX.current = e.clientX;
+    scrollStartLeft.current = containerRef.current?.scrollLeft ?? 0;
+  }
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!isDragging.current || !containerRef.current) return;
+    e.preventDefault();
+    const dx = e.clientX - dragStartX.current;
+    containerRef.current.scrollLeft = scrollStartLeft.current - dx;
+  }
+  function stopDrag() {
+    isDragging.current = false;
+  }
+
+  return (
+    <>
+      <CContainer
+        ref={containerRef}
+        className={"noScroll"}
+        overflowX={"auto"}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={stopDrag}
+        onMouseLeave={stopDrag}
+        cursor={isDragging.current ? "grabbing" : "grab"}
+      >
+        <CContainer
+          w={"max"}
+          px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
+        >
+          <DataTable
+            headers={headers}
+            rows={rows}
+            minH={0}
+            // border={"1px solid"}
+            borderColor={"border.muted"}
+          />
         </CContainer>
+      </CContainer>
+
+      <HorizontalScrollbar
+        containerRef={containerRef}
+        maxW={"200px"}
+        mx={"auto"}
+        my={4}
+      />
+    </>
+  );
+};
+
+interface Props__ResultSection extends StackProps {
+  daSession?: Interface__DASessionDetail;
+  containerDimension?: {
+    width: number;
+    height: number;
+  };
+}
+const ResultSection = (props: Props__ResultSection) => {
+  // Props
+  const { daSession, containerDimension, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+
+  // States
+  const [viewMode, setViewMode] = useState<"accordion" | "table">("accordion");
+  const [accordionValue, setAccordionValue] = useState<string[]>([]);
+  const uploadedDocuments = daSession?.uploadedDocuments;
+
+  return (
+    <CContainer pos={"relative"} {...restProps}>
+      <ContainerLayout pos={"sticky"} top={"-32px"} zIndex={"sticky"}>
+        <HStack
+          justify={"space-between"}
+          pb={2}
+          bg="linear-gradient(
+              to bottom,
+              var(--chakra-colors-body) 80%,
+              transparent 100%
+            )"
+        >
+          <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
+
+          <HStack gap={2}>
+            {/* Accordion controls - only in accordion mode */}
+            {viewMode === "accordion" && (
+              <HStack rounded={themeConfig.radii.component}>
+                <Btn
+                  variant="outline"
+                  size="xs"
+                  onClick={() => {
+                    if (uploadedDocuments) {
+                      setAccordionValue([
+                        ...uploadedDocuments.map((doc) => {
+                          return `${doc.documentRequirement.id}`;
+                        }),
+                        "validation",
+                      ]);
+                    }
+                  }}
+                >
+                  {l.open_all}
+                </Btn>
+
+                <Btn
+                  variant="outline"
+                  size="xs"
+                  onClick={() => {
+                    setAccordionValue([]);
+                  }}
+                >
+                  {l.close_all}
+                </Btn>
+              </HStack>
+            )}
+
+            {/* View mode toggle */}
+            <Tooltip content={l.change_view_mode}>
+              <Box>
+                <Segmented
+                  items={[
+                    {
+                      value: "accordion",
+                      label: <AppIcon icon={LayoutListIcon} />,
+                    },
+                    {
+                      value: "table",
+                      label: <AppIcon icon={TableIcon} />,
+                    },
+                  ]}
+                  inputValue={viewMode}
+                  onChange={(value) =>
+                    setViewMode(value as "table" | "accordion")
+                  }
+                  size={"xs"}
+                />
+              </Box>
+            </Tooltip>
+          </HStack>
+        </HStack>
+      </ContainerLayout>
+
+      {/* Accordion View */}
+      {viewMode === "accordion" && (
+        <AccordionMode
+          daSession={daSession}
+          accordionValue={accordionValue}
+          setAccordionValue={setAccordionValue}
+        />
       )}
 
       {/* Table View - cross-document comparison */}
-      {viewMode === "table" &&
-        (() => {
-          // Collect all unique labels from all document schemas
-          const allLabels = Array.from(
-            new Set(
-              documentRequirements?.flatMap(
-                (dr) => dr.extractionSchema?.map((f) => f.label) ?? [],
-              ) ?? [],
-            ),
-          );
-
-          return (
-            <CContainer
-              bg={"bg.muted"}
-              rounded={themeConfig.radii.container}
-              overflow={"hidden"}
-            >
-              <Box
-                ref={tableScrollRef}
-                overflowX={"auto"}
-                cursor={"grab"}
-                _active={{ cursor: "grabbing" }}
-                userSelect={"none"}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={stopDrag}
-                onMouseLeave={stopDrag}
-              >
-                <Table.Root size={"sm"} style={{ minWidth: "600px" }}>
-                  <Table.Header>
-                    <Table.Row bg={"d1"}>
-                      <Table.ColumnHeader
-                        borderColor={"d1"}
-                        py={3}
-                        px={3}
-                        w={"40px"}
-                        color={"fg.muted"}
-                        fontSize={"xs"}
-                      >
-                        No.
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader
-                        borderColor={"d1"}
-                        py={3}
-                        px={3}
-                        color={"fg.muted"}
-                        fontSize={"xs"}
-                        minW={"140px"}
-                      >
-                        Item Validasi
-                      </Table.ColumnHeader>
-                      {uploadedDocuments?.map((doc) => (
-                        <Table.ColumnHeader
-                          key={doc.documentRequirement.id}
-                          borderColor={"d1"}
-                          py={3}
-                          px={3}
-                          color={"fg.muted"}
-                          fontSize={"xs"}
-                          minW={"140px"}
-                        >
-                          {doc.documentRequirement.name}
-                        </Table.ColumnHeader>
-                      ))}
-                      <Table.ColumnHeader
-                        borderColor={"d1"}
-                        py={3}
-                        px={3}
-                        color={"fg.muted"}
-                        fontSize={"xs"}
-                        minW={"90px"}
-                      >
-                        Validasi
-                      </Table.ColumnHeader>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {allLabels.map((label, rowIndex) => {
-                      const resultEntry = result?.find(
-                        (r) => r.label === label,
-                      );
-                      const isMatch = resultEntry?.validation?.status;
-                      const hasValidation = resultEntry !== undefined;
-
-                      return (
-                        <Table.Row key={label}>
-                          <Table.Cell
-                            borderColor={"d1"}
-                            py={2}
-                            px={3}
-                            color={"fg.muted"}
-                            fontSize={"xs"}
-                          >
-                            {rowIndex + 1}
-                          </Table.Cell>
-                          <Table.Cell
-                            borderColor={"d1"}
-                            py={2}
-                            px={3}
-                            color={"fg.muted"}
-                            fontWeight={"medium"}
-                          >
-                            {label}
-                          </Table.Cell>
-                          {uploadedDocuments?.map((doc, docIndex) => {
-                            const val = getValueResult(label, docIndex);
-                            const isNotFound = val === "NOT_FOUND";
-                            return (
-                              <Table.Cell
-                                key={doc.documentRequirement.id}
-                                borderColor={"d1"}
-                                py={2}
-                                px={3}
-                                color={isNotFound ? "fg.muted" : ""}
-                              >
-                                {val ? (isNotFound ? l.not_found : val) : "-"}
-                              </Table.Cell>
-                            );
-                          })}
-                          <Table.Cell
-                            borderColor={"d1"}
-                            py={2}
-                            px={3}
-                            color={
-                              !hasValidation
-                                ? "fg.muted"
-                                : isMatch
-                                  ? "fg.success"
-                                  : "fg.error"
-                            }
-                            fontWeight={"medium"}
-                          >
-                            {!hasValidation
-                              ? "-"
-                              : isMatch
-                                ? l.match
-                                : l.mismatch}
-                          </Table.Cell>
-                        </Table.Row>
-                      );
-                    })}
-                  </Table.Body>
-                </Table.Root>
-              </Box>
-            </CContainer>
-          );
-        })()}
-    </ContainerLayout>
+      {viewMode === "table" && (
+        <TableMode
+          daSession={daSession}
+          containerDimension={containerDimension}
+        />
+      )}
+    </CContainer>
   );
 };
 
@@ -514,9 +488,6 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
       pdf: <SuratPernyataanPDF data={rawData} />,
     },
   ];
-
-  // Utils
-  // function downloadAll() {}
 
   return (
     <ContainerLayout {...restProps}>
@@ -569,6 +540,7 @@ export default function Page() {
   // Hooks
   const { sessionId } = useParams();
   const router = useRouter();
+  const containerDimension = useContainerDimension(containerRef);
 
   // States
   const activeDASession = activeDA.session;
@@ -800,7 +772,10 @@ export default function Page() {
 
           {completed && (
             <>
-              <ResultSection daSession={data} />
+              <ResultSection
+                daSession={data}
+                containerDimension={containerDimension}
+              />
 
               <GenerateLetterButtons data={data} mt={8} />
             </>

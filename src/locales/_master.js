@@ -139,6 +139,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const change_view_mode = {
+  id: "Ubah mode tampilan",
+  en: "Change view mode",
+};
 export const open_all = {
   id: "Buka semua",
   en: "Open all",

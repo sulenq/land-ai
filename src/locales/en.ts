@@ -85,6 +85,7 @@ const translations = {
   "cancel": "Cancel",
   "category": "Category",
   "certificate": "Certificate",
+  "change_view_mode": "Change view mode",
   "clear": "Clear",
   "close": "Close",
   "close_all": "Close all",

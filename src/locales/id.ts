@@ -85,6 +85,7 @@ const translations = {
   "cancel": "Batal",
   "category": "Kategori",
   "certificate": "Sertipikat",
+  "change_view_mode": "Ubah mode tampilan",
   "clear": "Clear",
   "close": "Tutup",
   "close_all": "Tutup semua",
