@@ -133,21 +133,24 @@ const AccordionMode = (props: Props__AccordionMode) => {
 
                         {documentRequirement?.extractionSchema?.map((field) => {
                           const value = getValueResult(field.label, index);
+                          const isNotFound = value === "NOT_FOUND";
 
                           return (
-                            <HStack key={field.key}>
-                              <ClampText
-                                flexShrink={0}
-                                w={"240px"}
-                                color={"fg.muted"}
-                              >
-                                {field.label}
-                              </ClampText>
+                            value && (
+                              <HStack key={field.key}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"240px"}
+                                  color={"fg.muted"}
+                                >
+                                  {field.label}
+                                </ClampText>
 
-                              <ClampText color={value ? "" : "fg.muted"}>
-                                {value || l.not_found}
-                              </ClampText>
-                            </HStack>
+                                <ClampText color={value ? "" : "fg.muted"}>
+                                  {isNotFound ? l.not_found : value}
+                                </ClampText>
+                              </HStack>
+                            )
                           );
                         })}
                       </CContainer>
@@ -277,8 +280,8 @@ const TableMode = (props: Props__TableMode) => {
   const scrollStartLeft = useRef(0);
 
   // States
+  // const documentRequirements = daSession?.documentService?.documentRequirements;
   const uploadedDocuments = daSession?.uploadedDocuments;
-  const documentRequirements = daSession?.documentService?.documentRequirements;
   const result = daSession?.result;
   const headers: Interface__FormattedTableHeader[] = [
     { th: "Item Validasi", sortable: true },
@@ -299,19 +302,19 @@ const TableMode = (props: Props__TableMode) => {
       columns: [
         { td: r.label, value: r.label, dataType: "string" },
         ...r.values.map((v) => {
-          const documentRequirement = documentRequirements?.find((dr) => {
-            return dr.id === v.documentId;
-          });
-          const isInSchema = documentRequirement?.extractionSchema?.find(
-            (es) => {
-              return es.label === r.label;
-            },
-          );
-          const isNotFound = !v.value && !isInSchema;
+          // const documentRequirement = documentRequirements?.find((dr) => {
+          //   return dr.id === v.documentId;
+          // });
+          // const isInSchema = documentRequirement?.extractionSchema?.find(
+          //   (es) => {
+          //     return es.label === r.label;
+          //   },
+          // );
+          const isNotFound = v.value === "NOT_FOUND";
 
           return {
             td: (
-              <ClampText maxW={"200px"}>
+              <ClampText color={isNotFound ? "fg.warning" : ""} maxW={"200px"}>
                 {v.value || (isNotFound ? l.not_found : "-")}
               </ClampText>
             ),
