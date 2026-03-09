@@ -415,7 +415,6 @@ export const ChatSessions = (props: any) => {
           colorPalette={isActive ? themeConfig.colorPalette : ""}
           justifyContent={"space-between"}
           rounded={themeConfig.radii.component}
-          _hover={{ bg: "bg.muted" }}
           transition={"200ms"}
           pos={"relative"}
         >

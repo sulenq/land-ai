@@ -336,7 +336,6 @@ export const DASessions = (props: any) => {
           gap={0}
           justifyContent={"space-between"}
           rounded={themeConfig.radii.component}
-          _hover={{ bg: "bg.muted" }}
           transition={"200ms"}
           pos={"relative"}
         >
