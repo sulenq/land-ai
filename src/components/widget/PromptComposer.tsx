@@ -227,7 +227,14 @@ export const PromptHelperText = (props: TextProps) => {
   // Contexts
   const { l } = useLang();
 
-  return <HelperText {...props}>{l.msg_chat_ai_disclaimer}</HelperText>;
+  return (
+    <CContainer gap={1}>
+      <HelperText
+        {...props}
+      >{`*${l.msg_based_on_official_documents}`}</HelperText>
+      <HelperText {...props}>{l.msg_chat_ai_disclaimer}</HelperText>
+    </CContainer>
+  );
 };
 
 export const NewPrompt = (props: Props__NewChat) => {

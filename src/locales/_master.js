@@ -1100,8 +1100,8 @@ export const msg_welcome_to_the_app = {
   en: "Welcome to ${appName}",
 };
 export const msg_based_on_official_documents = {
-  id: "Berdasarkan dokumen resmi",
-  en: "Based on official documents",
+  id: "Jawaban berdasarkan dokumen resmi",
+  en: "Answers based on official documents",
 };
 export const msg_welcome_context = {
   id: "Konsultasi Hukum Pertanahan",
