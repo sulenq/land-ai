@@ -3,6 +3,7 @@
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { ChatSessionPageSkeleton } from "@/components/ui/c-loader";
+import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
@@ -47,7 +48,7 @@ export default function Page() {
   // States
   const activeChatSessionId = activeChat?.session?.id;
   const shouldFetchHistory = !activeChat.hasLoadedHistory;
-  // const initialLoading = true;
+  // const initialLoading = false;
   const { initialLoading, error, status, data, onRetry } = useDataState<any>({
     url: `${CHAT_API_SESSION_SHOW}/${sessionId}`,
     dataResource: false,
@@ -138,37 +139,50 @@ export default function Page() {
   };
 
   return (
-    <PageContainer pos={"relative"}>
-      <CContainer flex={1} overflowY={"auto"} scrollBehavior={"smooth"}>
-        <MContainer
-          ref={containerRef}
-          flex={1}
-          pt={8}
-          px={4}
-          maskingBottom={"24px"}
-          overflowY={"auto"}
-        >
-          <ContainerLayout
-            gap={8}
-            pb={8}
-            // pb={messageContainerStyle?.pb}
+    <PageContainer flex={1} overflowY={"clip"} pos={"relative"}>
+      <CContainer flex={1} overflowY={"auto"}>
+        <CContainer flex={1} overflowY={"auto"}>
+          <MContainer
+            ref={containerRef}
+            flex={1}
+            px={4}
+            maskingBottom={"24px"}
+            overflowY={"auto"}
+            scrollBehavior={"smooth"}
           >
-            {shouldFetchHistory && (
-              <>
-                {initialLoading && render.loading}
-                {!initialLoading && (
-                  <>
-                    {error && render.error}
-                    {!error && <>{!isEmptyArray(messages) && render.loaded}</>}
-                  </>
-                )}
-              </>
-            )}
+            <ContainerLayout
+              gap={8}
+              py={8}
+              // pb={messageContainerStyle?.pb}
+            >
+              {shouldFetchHistory && (
+                <>
+                  <FadingSkeletonContainer loading={initialLoading}>
+                    <ContainerLayout flex={1} mt={8}>
+                      {render.loading}
+                    </ContainerLayout>
+                  </FadingSkeletonContainer>
 
-            {!shouldFetchHistory && <>{render.loaded}</>}
-          </ContainerLayout>
-        </MContainer>
+                  {!initialLoading && (
+                    <>
+                      {error && render.error}
+                      {!error && (
+                        <>
+                          {data && render.loaded}
+                          {(!data || isEmptyArray(data)) && render.empty}
+                        </>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
 
+              {!shouldFetchHistory && <>{render.loaded}</>}
+            </ContainerLayout>
+          </MContainer>
+        </CContainer>
+
+        {/* Prompt Input */}
         <CContainer align={"center"} gap={4} px={4} pb={4}>
           <ContainerLayout gap={4} align={"center"}>
             <Btn

@@ -32,13 +32,17 @@ export const ChatSessionPageSkeleton = () => {
   return (
     <CContainer flex={1} gap={4}>
       <CContainer gap={4}>
-        <Skeleton w={"full"} maxW={"400px"} h={"24px"} />
-        <Skeleton w={"full"} maxW={"300px"} h={"21px"} />
+        <Skeleton w={"full"} maxW={"400px"} h={"40px"} />
+        <Skeleton w={"full"} maxW={"300px"} h={"24px"} />
       </CContainer>
 
-      <CContainer my={"auto"} gap={4}>
-        <Skeleton w={"70%"} h={"100px"} ml={"auto"} />
+      <CContainer flex={1} my={"auto"} gap={4}>
+        <Skeleton w={"full"} flex={1} />
+        {/* <Skeleton w={"70%"} h={"85px"} ml={"auto"} />
         <Skeleton w={"full"} h={"200px"} mr={"auto"} />
+
+        <Skeleton w={"70%"} h={"85px"} ml={"auto"} />
+        <Skeleton w={"full"} h={"200px"} mr={"auto"} /> */}
       </CContainer>
     </CContainer>
   );
@@ -48,8 +52,8 @@ export const DASessonPageSkeleton = () => {
   return (
     <CContainer flex={1} gap={8}>
       <CContainer gap={4}>
-        <Skeleton w={"full"} maxW={"400px"} h={"24px"} />
-        <Skeleton w={"full"} maxW={"300px"} h={"21px"} />
+        <Skeleton w={"full"} maxW={"400px"} h={"40px"} />
+        <Skeleton w={"full"} maxW={"300px"} h={"24px"} />
       </CContainer>
 
       <Skeleton flex={1} />

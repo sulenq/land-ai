@@ -422,7 +422,7 @@ export const DASessions = (props: any) => {
         />
       </CContainer>
 
-      <CContainer gap={1}>
+      <CContainer gap={1} pb={3}>
         <>
           {loading && render.loading}
 

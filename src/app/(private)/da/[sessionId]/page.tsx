@@ -14,6 +14,7 @@ import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import { Segmented } from "@/components/ui/segment-group";
+import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
@@ -575,6 +576,7 @@ export default function Page() {
   const activeDASession = activeDA.session;
   const activeDASessionId = activeDASession?.id;
   const [pollingTick, setPollingTick] = useState(0);
+  // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
       // initialData: DUMMY_ACTIVE_DA_SESSION,
@@ -658,11 +660,7 @@ export default function Page() {
   }, [data?.status]);
 
   const render = {
-    loading: (
-      <ContainerLayout flex={1}>
-        <DASessonPageSkeleton />
-      </ContainerLayout>
-    ),
+    loading: <DASessonPageSkeleton />,
     error: <FeedbackRetry onRetry={onRetry} m={"auto"} />,
     empty: <FeedbackNoData m={"auto"} />,
     notFound: <FeedbackNotFound m={"auto"} />,
@@ -672,9 +670,9 @@ export default function Page() {
           <ContainerLayout gap={8}>
             {/* Header */}
             <CContainer gap={1}>
-              <P fontSize={"3xl"} fontWeight={"semibold"}>
+              <ClampText fontSize={"3xl"} fontWeight={"semibold"}>
                 {activeDASession?.title}
-              </P>
+              </ClampText>
 
               <P fontSize={"lg"} color={"fg.subtle"}>
                 {formatDate(activeDASession?.createdAt, {
@@ -827,6 +825,8 @@ export default function Page() {
             </NavLink>
           </HStack>
         </CContainer>
+
+        <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
       </CContainer>
     ),
   };
@@ -838,20 +838,23 @@ export default function Page() {
       </PdfViewer> */}
 
       <CContainer flex={1} gap={4} justify={"space-between"}>
-        {initialLoading && render.loading}
+        <FadingSkeletonContainer loading={initialLoading}>
+          <ContainerLayout flex={1} mt={8} pb={8}>
+            {render.loading}
+          </ContainerLayout>
+        </FadingSkeletonContainer>
+
         {!initialLoading && (
           <>
             {error && render.error}
             {!error && (
               <>
-                {data && render.loaded}
-                {!data && render.empty}
+                {activeDASession && render.loaded}
+                {!activeDASession && !data && render.empty}
               </>
             )}
           </>
         )}
-
-        <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
       </CContainer>
     </PageContainer>
   );

@@ -7,6 +7,7 @@ import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
+import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
@@ -112,28 +113,24 @@ const Services = (props: StackProps) => {
   };
 
   return (
-    <CContainer position="relative" {...restProps}>
-      <CContainer
-        position={"absolute"}
-        inset={"0"}
-        pointerEvents={"none"}
-        zIndex={2}
-        animation={
-          !initialLoading ? "fade-out 200ms ease-in forwards" : undefined
-        }
-      >
+    <CContainer overflow={"clip"} position="relative" {...restProps}>
+      <FadingSkeletonContainer loading={initialLoading}>
         {render.loading}
-      </CContainer>
+      </FadingSkeletonContainer>
 
-      <>
-        {error && render.error}
-        {!error && (
+      <CContainer overflowY={"auto"}>
+        {!initialLoading && (
           <>
-            {data && render.loaded}
-            {(!data || isEmptyArray(data)) && render.empty}
+            {error && render.error}
+            {!error && (
+              <>
+                {data && render.loaded}
+                {(!data || isEmptyArray(data)) && render.empty}
+              </>
+            )}
           </>
         )}
-      </>
+      </CContainer>
     </CContainer>
   );
 };

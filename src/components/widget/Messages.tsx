@@ -102,7 +102,7 @@ export const Messages = (props: Props__Messages) => {
         </P>
 
         <P fontSize={"lg"} color={"fg.subtle"}>
-          {formatDate(activeChat.session?.createdAt)}
+          {formatDate(activeChat.session?.createdAt) || "-"}
         </P>
       </CContainer>
 
@@ -120,9 +120,9 @@ export const Messages = (props: Props__Messages) => {
             if (message.role === "user") {
               return (
                 <CContainer key={message.id} gap={2}>
-                  <UserBubbleChat>{message.content}</UserBubbleChat>
+                  <UserBubbleChat ml={"auto"}>{message.content}</UserBubbleChat>
 
-                  <HStack wrap={"wrap"} justify={"end"}>
+                  <HStack wrap={"wrap"} ml={"auto"}>
                     <Clipboard>{message.content}</Clipboard>
                   </HStack>
                 </CContainer>
@@ -139,7 +139,7 @@ export const Messages = (props: Props__Messages) => {
                     <HStack align={"start"} gap={4}>
                       <Logo size={15} />
 
-                      <CContainer gap={4}>
+                      <CContainer gap={2}>
                         <MarkdownChat error={true}>
                           {message.content}
                         </MarkdownChat>
@@ -163,8 +163,8 @@ export const Messages = (props: Props__Messages) => {
                           wrap={"wrap"}
                           gap={1}
                           w={"fit"}
-                          bg={"bg.muted"}
-                          p={1}
+                          // bg={"bg.muted"}
+                          // p={1}
                           rounded={themeConfig.radii.component}
                         >
                           <Clipboard>{message.content}</Clipboard>
