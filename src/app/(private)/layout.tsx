@@ -158,12 +158,12 @@ const DesktopTabs = (props: TabsRootProps) => {
             position="absolute"
             inset="0"
             _open={{
-              animationName: "fade-in, scale-in",
+              animationName: "slide-from-left-full",
               animationDuration: "200ms",
             }}
             _closed={{
-              animationName: "fade-out, scale-out",
-              animationDuration: "120ms",
+              animationName: "fade-out",
+              animationDuration: "200ms",
             }}
           >
             <CContainer pb={3}>{tab.content}</CContainer>
