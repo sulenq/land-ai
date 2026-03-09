@@ -124,18 +124,16 @@ export default function Page() {
       <ContainerLayout ref={containerRef} flex={1}>
         <CContainer flex={1} gap={8} justify={"space-between"}>
           <VStack gap={1}>
-            <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
+            <P fontSize={"xl"} fontWeight={"semibold"}>
               {l.document_analysis_service}
             </P>
 
-            <P color={"fg.subtle"} textAlign={"center"}>
-              {l.msg_da_select_service_helper}
-            </P>
+            <P color={"fg.subtle"}>{l.msg_da_select_service_helper}</P>
           </VStack>
 
           <Services />
 
-          <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+          <HelperText>{l.msg_da_disclaimer}</HelperText>
         </CContainer>
       </ContainerLayout>
     </PageContainer>

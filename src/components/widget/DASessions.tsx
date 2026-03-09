@@ -326,9 +326,13 @@ export const DASessions = (props: any) => {
       const failed = session.status === "FAILED";
 
       return (
-        <HStack
+        <Btn
           key={session.id}
+          clicky={false}
+          variant={isActive ? "subtle" : "ghost"}
+          colorPalette={isActive ? themeConfig.colorPalette : ""}
           pl={"10px"}
+          pr={0}
           gap={0}
           justifyContent={"space-between"}
           rounded={themeConfig.radii.component}
@@ -381,7 +385,7 @@ export const DASessions = (props: any) => {
               <Delete value="delete" sessionId={session.id} />
             </MenuContent>
           </MenuRoot>
-        </HStack>
+        </Btn>
       );
     });
   }

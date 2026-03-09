@@ -31,13 +31,7 @@ import useBackOnClose from "@/hooks/useBackOnClose";
 import { startChatStream } from "@/service/chatStream";
 import { getUserData } from "@/utils/auth";
 import { disclosureId } from "@/utils/disclosure";
-import {
-  Group,
-  HStack,
-  StackProps,
-  TextProps,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Group, HStack, StackProps, useDisclosure } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, SquareIcon } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -223,16 +217,14 @@ export const PromptInput = (props: Props__PromptInput) => {
   );
 };
 
-export const PromptHelperText = (props: TextProps) => {
+export const PromptHelperText = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
 
   return (
-    <CContainer gap={1}>
-      <HelperText
-        {...props}
-      >{`*${l.msg_based_on_official_documents}`}</HelperText>
-      <HelperText {...props}>{l.msg_chat_ai_disclaimer}</HelperText>
+    <CContainer gap={1} {...props}>
+      <HelperText>{`*${l.msg_based_on_official_documents}`}</HelperText>
+      <HelperText>{l.msg_chat_ai_disclaimer}</HelperText>
     </CContainer>
   );
 };
@@ -243,6 +235,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
   const clearActiveChat = useActiveChat((s) => s.clearActiveChat);
   const initSession = useActiveChat((s) => s.initSession);
   const appendMessage = useActiveChat((s) => s.appendMessage);
@@ -278,7 +271,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   return (
     <CContainer gap={8} {...restProps}>
-      <CContainer>
+      <CContainer px={themeConfig.radii.container}>
         <HStack gap={4}>
           <Logo />
           <P
@@ -305,7 +298,7 @@ export const NewPrompt = (props: Props__NewChat) => {
           loading={loading}
         />
 
-        <PromptHelperText />
+        <PromptHelperText px={themeConfig.radii.container} />
       </CContainer>
     </CContainer>
   );

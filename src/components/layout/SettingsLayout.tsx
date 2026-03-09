@@ -26,6 +26,7 @@ import { Props__Layout } from "@/constants/props";
 import { DESKTOP_NAVS_TOOLTIP_MAIN_AXIS } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { isEmptyArray } from "@/utils/array";
 import { formatAbsDate } from "@/utils/formatter";
@@ -46,6 +47,7 @@ const NavsList = (props: any) => {
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // Hooks
   const pathname = usePathname();
@@ -114,7 +116,8 @@ const NavsList = (props: any) => {
                       <Btn
                         clicky={false}
                         justifyContent={"start"}
-                        variant={"ghost"}
+                        variant={isActive ? "subtle" : "ghost"}
+                        colorPalette={isActive ? themeConfig.colorPalette : ""}
                         px={2}
                         color={isActive ? "" : NAVS_COLOR}
                         pos={"relative"}
@@ -219,7 +222,7 @@ export default function SettingsLayout(props: Props__Layout) {
           {/* Content */}
           {showContent && (
             <MContainer className={"scrollY"} flex={1}>
-              <ContainerLayout>
+              <ContainerLayout flex={1}>
                 {!isAtSettingsIndexRoute && <PageTitle mb={2} />}
 
                 <CContainer flex={1}>{children}</CContainer>

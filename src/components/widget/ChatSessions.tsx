@@ -405,10 +405,14 @@ export const ChatSessions = (props: any) => {
       const isProtected = session.isProtected as boolean;
 
       return (
-        <HStack
+        <Btn
           key={session.id}
-          pl={"10px"}
+          clicky={false}
           gap={0}
+          pl={"10px"}
+          pr={0}
+          variant={isActive ? "subtle" : "ghost"}
+          colorPalette={isActive ? themeConfig.colorPalette : ""}
           justifyContent={"space-between"}
           rounded={themeConfig.radii.component}
           _hover={{ bg: "bg.muted" }}
@@ -464,7 +468,7 @@ export const ChatSessions = (props: any) => {
               />
             </MenuContent>
           </MenuRoot>
-        </HStack>
+        </Btn>
       );
     });
   }
