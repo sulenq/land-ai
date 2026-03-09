@@ -166,7 +166,7 @@ const DesktopTabs = (props: TabsRootProps) => {
               animationDuration: "120ms",
             }}
           >
-            {tab.content}
+            <CContainer pb={3}>{tab.content}</CContainer>
           </Tabs.Content>
         ))}
       </CContainer>

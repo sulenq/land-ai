@@ -1,4 +1,4 @@
-import { Btn } from "@/components/ui/btn";
+import { Btn, Props__Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import {
   DisclosureBody,
@@ -360,7 +360,7 @@ const Delete = (props: Props__Delete) => {
   );
 };
 
-const DeleteAllButton = () => {
+const DeleteAllButton = (props: Props__Btn) => {
   // Contexts
   const { l } = useLang();
   const chatSessions = useChatSessions((s) => s.chatSessions);
@@ -405,7 +405,7 @@ const DeleteAllButton = () => {
       w={"full"}
       mt={1}
     >
-      <Btn variant={"ghost"} color={"fg.error"}>
+      <Btn variant={"ghost"} color={"fg.error"} {...props}>
         {l.delete_all}
       </Btn>
     </ConfirmationDisclosureTrigger>
@@ -546,13 +546,13 @@ export const ChatSessions = (props: any) => {
       <>
         {loadedContent}
 
-        <DeleteAllButton />
+        <DeleteAllButton mt={"auto"} />
       </>
     ),
   };
 
   return (
-    <CContainer gap={2} {...restProps}>
+    <CContainer flex={1} gap={2} {...restProps}>
       <CContainer>
         <SearchInput
           queryKey={"q_sidebar_navs"}
@@ -564,7 +564,7 @@ export const ChatSessions = (props: any) => {
         />
       </CContainer>
 
-      <CContainer gap={1} pb={3}>
+      <CContainer flex={1} gap={1}>
         <>
           {loading && render.loading}
 
