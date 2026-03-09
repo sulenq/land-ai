@@ -96,11 +96,13 @@ export const Messages = (props: Props__Messages) => {
   return (
     <CContainer ref={containerRef} flex={1} gap={4} px={2} {...restProps}>
       <CContainer gap={1} mb={4}>
-        <P fontSize={"xl"} fontWeight={"semibold"}>
+        <P fontSize={"3xl"} fontWeight={"semibold"}>
           {activeChat.session?.title}
         </P>
 
-        <P color={"fg.subtle"}>{formatDate(activeChat.session?.createdAt)}</P>
+        <P fontSize={"lg"} color={"fg.subtle"}>
+          {formatDate(activeChat.session?.createdAt)}
+        </P>
       </CContainer>
 
       <CContainer gap={4}>

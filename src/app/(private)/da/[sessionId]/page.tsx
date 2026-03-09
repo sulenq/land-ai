@@ -661,11 +661,11 @@ export default function Page() {
         <ContainerLayout gap={8}>
           {/* Header */}
           <CContainer gap={1}>
-            <P fontSize={"xl"} fontWeight={"semibold"}>
+            <P fontSize={"3xl"} fontWeight={"semibold"}>
               {activeDASession?.title}
             </P>
 
-            <P color={"fg.subtle"}>
+            <P fontSize={"lg"} color={"fg.subtle"}>
               {formatDate(activeDASession?.createdAt, {
                 withTime: true,
               })}
