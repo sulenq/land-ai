@@ -31,6 +31,7 @@ import FeedbackState from "@/components/widget/FeedbackState";
 import { HorizontalScrollbar } from "@/components/widget/HorizontalScrollbar";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
+import { MContainer } from "@/components/widget/MContainer";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import {
@@ -85,168 +86,170 @@ const AccordionMode = (props: Props__AccordionMode) => {
   };
 
   return (
-    <ContainerLayout>
-      <CContainer
-        // border={"1px solid"}
-        borderColor={"border.muted"}
-        rounded={themeConfig.radii.container}
-      >
-        <AccordionRoot
-          collapsible
-          multiple
-          value={accordionValue}
-          onValueChange={(e) => setAccordionValue(e.value)}
+    <CContainer px={4}>
+      <ContainerLayout>
+        <CContainer
+          // border={"1px solid"}
+          borderColor={"border.muted"}
           rounded={themeConfig.radii.container}
-          overflow={"clip"}
         >
-          <CContainer gap={2}>
-            {uploadedDocuments?.map((doc, index) => {
-              const documentRequirement = documentRequirements?.find((dr) => {
-                return dr.id === doc.documentRequirement.id;
-              });
+          <AccordionRoot
+            collapsible
+            multiple
+            value={accordionValue}
+            onValueChange={(e) => setAccordionValue(e.value)}
+            rounded={themeConfig.radii.container}
+            overflow={"clip"}
+          >
+            <CContainer gap={2}>
+              {uploadedDocuments?.map((doc, index) => {
+                const documentRequirement = documentRequirements?.find((dr) => {
+                  return dr.id === doc.documentRequirement.id;
+                });
 
-              return (
-                <AccordionItem
-                  key={doc.documentRequirement.id}
-                  value={`${doc.documentRequirement.id}`}
-                  px={4}
-                  border={"1px solid"}
-                  borderColor={"border.muted"}
-                  rounded={themeConfig.radii.container}
-                  _open={{
-                    bg: "d0",
-                  }}
-                >
-                  <AccordionItemTrigger cursor={"pointer"}>
-                    <P>{doc.documentRequirement.name}</P>
-                  </AccordionItemTrigger>
+                return (
+                  <AccordionItem
+                    key={doc.documentRequirement.id}
+                    value={`${doc.documentRequirement.id}`}
+                    px={4}
+                    border={"1px solid"}
+                    borderColor={"border.muted"}
+                    rounded={themeConfig.radii.container}
+                    _open={{
+                      bg: "d0",
+                    }}
+                  >
+                    <AccordionItemTrigger cursor={"pointer"}>
+                      <P>{doc.documentRequirement.name}</P>
+                    </AccordionItemTrigger>
 
-                  <AccordionItemContent>
-                    <CContainer gap={2}>
-                      {documentRequirement?.extractionSchema?.map((field) => {
-                        const value = getValueResult(field.label, index);
-                        const isNotFound = value === "NOT_FOUND";
+                    <AccordionItemContent>
+                      <CContainer gap={2}>
+                        {documentRequirement?.extractionSchema?.map((field) => {
+                          const value = getValueResult(field.label, index);
+                          const isNotFound = value === "NOT_FOUND";
+
+                          return (
+                            value && (
+                              <HStack key={field.key}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"240px"}
+                                  color={"fg.muted"}
+                                >
+                                  {field.label}
+                                </ClampText>
+
+                                <ClampText color={isNotFound ? "fg.muted" : ""}>
+                                  {isNotFound ? l.not_found : value}
+                                </ClampText>
+                              </HStack>
+                            )
+                          );
+                        })}
+                      </CContainer>
+                    </AccordionItemContent>
+                  </AccordionItem>
+                );
+              })}
+
+              <AccordionItem
+                value={`validation`}
+                borderBottom={"none"}
+                px={0}
+                border={"1px solid"}
+                borderColor={"border.muted"}
+                rounded={themeConfig.radii.container}
+                _open={{
+                  bg: "d0",
+                }}
+              >
+                <AccordionItemTrigger cursor={"pointer"} px={4}>
+                  <P>{l.validation}</P>
+                  <DotIndicator />
+                </AccordionItemTrigger>
+
+                <AccordionItemContent p={0}>
+                  <CContainer gap={1}>
+                    <AccordionRoot collapsible multiple>
+                      {result?.map((r, index) => {
+                        const isLastIndex = index === result.length - 1;
+                        const fieldLabel = r.label;
+                        const isMatch = r.validation.status;
 
                         return (
-                          value && (
-                            <HStack key={field.key}>
-                              <ClampText
-                                flexShrink={0}
-                                w={"240px"}
-                                color={"fg.muted"}
-                              >
-                                {field.label}
-                              </ClampText>
+                          <AccordionItem
+                            key={r.label}
+                            value={r.label}
+                            borderBottom={isLastIndex ? "none" : "1px solid"}
+                            borderColor={"d1"}
+                            px={4}
+                            _open={{
+                              bg: "d0",
+                            }}
+                          >
+                            <AccordionItemTrigger cursor={"pointer"}>
+                              <HStack>
+                                <Tooltip content={r.label}>
+                                  <P
+                                    flexShrink={0}
+                                    lineClamp={1}
+                                    w={"240px"}
+                                    // color={"fg.muted"}
+                                  >
+                                    {r.label}
+                                  </P>
+                                </Tooltip>
 
-                              <ClampText color={isNotFound ? "fg.muted" : ""}>
-                                {isNotFound ? l.not_found : value}
-                              </ClampText>
-                            </HStack>
-                          )
+                                <P color={isMatch ? "fg.success" : "fg.error"}>
+                                  {isMatch ? l.match : l.mismatch}
+                                </P>
+                              </HStack>
+                            </AccordionItemTrigger>
+
+                            <AccordionItemContent px={0} py={2}>
+                              <CContainer rounded={"md"} gap={2}>
+                                {uploadedDocuments?.map((doc, docIndex) => {
+                                  const val = getValueResult(
+                                    fieldLabel,
+                                    docIndex,
+                                  );
+                                  const isNotFound = val === "NOT_FOUND";
+
+                                  return (
+                                    <HStack key={doc.documentRequirement.id}>
+                                      <ClampText
+                                        flexShrink={0}
+                                        w={"240px"}
+                                        color={"fg.muted"}
+                                      >
+                                        {doc.documentRequirement.name}
+                                      </ClampText>
+
+                                      <ClampText>
+                                        {val
+                                          ? isNotFound
+                                            ? l.not_found
+                                            : val
+                                          : "-"}
+                                      </ClampText>
+                                    </HStack>
+                                  );
+                                })}
+                              </CContainer>
+                            </AccordionItemContent>
+                          </AccordionItem>
                         );
                       })}
-                    </CContainer>
-                  </AccordionItemContent>
-                </AccordionItem>
-              );
-            })}
-
-            <AccordionItem
-              value={`validation`}
-              borderBottom={"none"}
-              px={0}
-              border={"1px solid"}
-              borderColor={"border.muted"}
-              rounded={themeConfig.radii.container}
-              _open={{
-                bg: "d0",
-              }}
-            >
-              <AccordionItemTrigger cursor={"pointer"} px={4}>
-                <P>{l.validation}</P>
-                <DotIndicator />
-              </AccordionItemTrigger>
-
-              <AccordionItemContent p={0}>
-                <CContainer gap={1}>
-                  <AccordionRoot collapsible multiple>
-                    {result?.map((r, index) => {
-                      const isLastIndex = index === result.length - 1;
-                      const fieldLabel = r.label;
-                      const isMatch = r.validation.status;
-
-                      return (
-                        <AccordionItem
-                          key={r.label}
-                          value={r.label}
-                          borderBottom={isLastIndex ? "none" : "1px solid"}
-                          borderColor={"d1"}
-                          px={4}
-                          _open={{
-                            bg: "d0",
-                          }}
-                        >
-                          <AccordionItemTrigger cursor={"pointer"}>
-                            <HStack>
-                              <Tooltip content={r.label}>
-                                <P
-                                  flexShrink={0}
-                                  lineClamp={1}
-                                  w={"240px"}
-                                  // color={"fg.muted"}
-                                >
-                                  {r.label}
-                                </P>
-                              </Tooltip>
-
-                              <P color={isMatch ? "fg.success" : "fg.error"}>
-                                {isMatch ? l.match : l.mismatch}
-                              </P>
-                            </HStack>
-                          </AccordionItemTrigger>
-
-                          <AccordionItemContent px={0} py={2}>
-                            <CContainer rounded={"md"} gap={2}>
-                              {uploadedDocuments?.map((doc, docIndex) => {
-                                const val = getValueResult(
-                                  fieldLabel,
-                                  docIndex,
-                                );
-                                const isNotFound = val === "NOT_FOUND";
-
-                                return (
-                                  <HStack key={doc.documentRequirement.id}>
-                                    <ClampText
-                                      flexShrink={0}
-                                      w={"240px"}
-                                      color={"fg.muted"}
-                                    >
-                                      {doc.documentRequirement.name}
-                                    </ClampText>
-
-                                    <ClampText>
-                                      {val
-                                        ? isNotFound
-                                          ? l.not_found
-                                          : val
-                                        : "-"}
-                                    </ClampText>
-                                  </HStack>
-                                );
-                              })}
-                            </CContainer>
-                          </AccordionItemContent>
-                        </AccordionItem>
-                      );
-                    })}
-                  </AccordionRoot>
-                </CContainer>
-              </AccordionItemContent>
-            </AccordionItem>
-          </CContainer>
-        </AccordionRoot>
-      </CContainer>
-    </ContainerLayout>
+                    </AccordionRoot>
+                  </CContainer>
+                </AccordionItemContent>
+              </AccordionItem>
+            </CContainer>
+          </AccordionRoot>
+        </CContainer>
+      </ContainerLayout>
+    </CContainer>
   );
 };
 
@@ -331,9 +334,13 @@ const TableMode = (props: Props__TableMode) => {
 
   return (
     <>
-      <CContainer
+      <MContainer
         ref={containerRef}
         className={"noScroll"}
+        maskingTop={0}
+        maskingBottom={0}
+        maskingLeft={"100px"}
+        maskingRight={"100px"}
         overflowX={"auto"}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -344,6 +351,7 @@ const TableMode = (props: Props__TableMode) => {
         <CContainer
           w={"max"}
           px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
+          pointerEvents={"none"}
         >
           <DataTable
             headers={headers}
@@ -353,7 +361,7 @@ const TableMode = (props: Props__TableMode) => {
             borderColor={"border.muted"}
           />
         </CContainer>
-      </CContainer>
+      </MContainer>
 
       <HorizontalScrollbar
         containerRef={containerRef}
@@ -387,76 +395,78 @@ const ResultSection = (props: Props__ResultSection) => {
 
   return (
     <CContainer pos={"relative"} {...restProps}>
-      <ContainerLayout pos={"sticky"} top={"-32px"} zIndex={"sticky"}>
-        <HStack
-          justify={"space-between"}
-          pb={2}
-          bg="linear-gradient(
+      <CContainer px={4}>
+        <ContainerLayout pos={"sticky"} top={"-32px"} zIndex={"sticky"}>
+          <HStack
+            justify={"space-between"}
+            pb={2}
+            bg="linear-gradient(
               to bottom,
               var(--chakra-colors-body) 80%,
               transparent 100%
             )"
-        >
-          <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
+          >
+            <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
 
-          <HStack gap={2}>
-            {/* Accordion controls - only in accordion mode */}
-            {viewMode === "accordion" && (
-              <HStack rounded={themeConfig.radii.component}>
-                <Btn
-                  variant="outline"
-                  size="xs"
-                  onClick={() => {
-                    if (uploadedDocuments) {
-                      setAccordionValue([
-                        ...uploadedDocuments.map((doc) => {
-                          return `${doc.documentRequirement.id}`;
-                        }),
-                        "validation",
-                      ]);
+            <HStack gap={2}>
+              {/* Accordion controls - only in accordion mode */}
+              {viewMode === "accordion" && (
+                <HStack rounded={themeConfig.radii.component}>
+                  <Btn
+                    variant="outline"
+                    size="xs"
+                    onClick={() => {
+                      if (uploadedDocuments) {
+                        setAccordionValue([
+                          ...uploadedDocuments.map((doc) => {
+                            return `${doc.documentRequirement.id}`;
+                          }),
+                          "validation",
+                        ]);
+                      }
+                    }}
+                  >
+                    {l.open_all}
+                  </Btn>
+
+                  <Btn
+                    variant="outline"
+                    size="xs"
+                    onClick={() => {
+                      setAccordionValue([]);
+                    }}
+                  >
+                    {l.close_all}
+                  </Btn>
+                </HStack>
+              )}
+
+              {/* View mode toggle */}
+              <Tooltip content={l.change_view_mode}>
+                <Box>
+                  <Segmented
+                    items={[
+                      {
+                        value: "accordion",
+                        label: <AppIcon icon={LayoutListIcon} />,
+                      },
+                      {
+                        value: "table",
+                        label: <AppIcon icon={TableIcon} />,
+                      },
+                    ]}
+                    inputValue={viewMode}
+                    onChange={(value) =>
+                      setViewMode(value as "table" | "accordion")
                     }
-                  }}
-                >
-                  {l.open_all}
-                </Btn>
-
-                <Btn
-                  variant="outline"
-                  size="xs"
-                  onClick={() => {
-                    setAccordionValue([]);
-                  }}
-                >
-                  {l.close_all}
-                </Btn>
-              </HStack>
-            )}
-
-            {/* View mode toggle */}
-            <Tooltip content={l.change_view_mode}>
-              <Box>
-                <Segmented
-                  items={[
-                    {
-                      value: "accordion",
-                      label: <AppIcon icon={LayoutListIcon} />,
-                    },
-                    {
-                      value: "table",
-                      label: <AppIcon icon={TableIcon} />,
-                    },
-                  ]}
-                  inputValue={viewMode}
-                  onChange={(value) =>
-                    setViewMode(value as "table" | "accordion")
-                  }
-                  size={"xs"}
-                />
-              </Box>
-            </Tooltip>
+                    size={"xs"}
+                  />
+                </Box>
+              </Tooltip>
+            </HStack>
           </HStack>
-        </HStack>
-      </ContainerLayout>
+        </ContainerLayout>
+      </CContainer>
 
       {/* Accordion View */}
       {viewMode === "accordion" && (
@@ -658,114 +668,116 @@ export default function Page() {
     notFound: <FeedbackNotFound m={"auto"} />,
     loaded: (
       <CContainer flex={1} gap={8}>
-        <ContainerLayout gap={8}>
-          {/* Header */}
-          <CContainer gap={1}>
-            <P fontSize={"3xl"} fontWeight={"semibold"}>
-              {activeDASession?.title}
-            </P>
+        <CContainer px={4}>
+          <ContainerLayout gap={8}>
+            {/* Header */}
+            <CContainer gap={1}>
+              <P fontSize={"3xl"} fontWeight={"semibold"}>
+                {activeDASession?.title}
+              </P>
 
-            <P fontSize={"lg"} color={"fg.subtle"}>
-              {formatDate(activeDASession?.createdAt, {
-                withTime: true,
-              })}
-            </P>
-          </CContainer>
-
-          {/* Meta */}
-          <>
-            <CContainer gap={2}>
-              <HStack h={"32px"}>
-                <P fontWeight={"semibold"}>{capitalizeWords(l.service)}</P>
-              </HStack>
-
-              <CContainer
-                gap={2}
-                p={4}
-                rounded={themeConfig.radii.container}
-                // border={"1px solid"}
-                borderColor={"border.muted"}
-                bg={"d0"}
-              >
-                <HStack gap={4} align={"start"}>
-                  <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-                    {l.name}
-                  </P>
-
-                  <HStack
-                    flexDir={["column", null, "row"]}
-                    align={"start"}
-                    gapY={1}
-                  >
-                    <Img
-                      key={activeDASession?.documentService?.icon}
-                      src={imgUrl(activeDASession?.documentService?.icon)}
-                      flexShrink={0}
-                      w={"20px"}
-                      h={"20px"}
-                      objectFit={"contain"}
-                    />
-
-                    <P>{data?.documentService.title[lang]}</P>
-                  </HStack>
-                </HStack>
-
-                <HStack gap={4} align={"start"}>
-                  <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-                    {l.description}
-                  </P>
-
-                  <P>{data?.documentService.description[lang]}</P>
-                </HStack>
-              </CContainer>
+              <P fontSize={"lg"} color={"fg.subtle"}>
+                {formatDate(activeDASession?.createdAt, {
+                  withTime: true,
+                })}
+              </P>
             </CContainer>
 
-            <CContainer gap={2}>
-              <HStack h={"32px"}>
-                <P fontWeight={"semibold"}>
-                  {capitalizeWords(l.uploaded_file)}
-                </P>
-              </HStack>
+            {/* Meta */}
+            <>
+              <CContainer gap={2}>
+                <HStack h={"32px"}>
+                  <P fontWeight={"semibold"}>{capitalizeWords(l.service)}</P>
+                </HStack>
 
-              <CContainer
-                gap={2}
-                p={4}
-                rounded={themeConfig.radii.container}
-                // border={"1px solid"}
-                borderColor={"border.muted"}
-                bg={"d0"}
-              >
-                {uploadedDocuments?.map((doc) => {
-                  return (
+                <CContainer
+                  gap={2}
+                  p={4}
+                  rounded={themeConfig.radii.container}
+                  // border={"1px solid"}
+                  borderColor={"border.muted"}
+                  bg={"d0"}
+                >
+                  <HStack gap={4} align={"start"}>
+                    <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+                      {l.name}
+                    </P>
+
                     <HStack
-                      key={doc.documentRequirement.id}
+                      flexDir={["column", null, "row"]}
                       align={"start"}
-                      gap={4}
+                      gapY={1}
                     >
-                      <HStack flexShrink={0} w={"200px"}>
-                        <ClampText color={"fg.muted"}>
-                          {doc.documentRequirement.name}
-                        </ClampText>
+                      <Img
+                        key={activeDASession?.documentService?.icon}
+                        src={imgUrl(activeDASession?.documentService?.icon)}
+                        flexShrink={0}
+                        w={"20px"}
+                        h={"20px"}
+                        objectFit={"contain"}
+                      />
 
-                        {!doc.documentRequirement.isMandatory && (
-                          <Badge bg={"d1"}>{l.optional}</Badge>
+                      <P>{data?.documentService.title[lang]}</P>
+                    </HStack>
+                  </HStack>
+
+                  <HStack gap={4} align={"start"}>
+                    <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+                      {l.description}
+                    </P>
+
+                    <P>{data?.documentService.description[lang]}</P>
+                  </HStack>
+                </CContainer>
+              </CContainer>
+
+              <CContainer gap={2}>
+                <HStack h={"32px"}>
+                  <P fontWeight={"semibold"}>
+                    {capitalizeWords(l.uploaded_file)}
+                  </P>
+                </HStack>
+
+                <CContainer
+                  gap={2}
+                  p={4}
+                  rounded={themeConfig.radii.container}
+                  // border={"1px solid"}
+                  borderColor={"border.muted"}
+                  bg={"d0"}
+                >
+                  {uploadedDocuments?.map((doc) => {
+                    return (
+                      <HStack
+                        key={doc.documentRequirement.id}
+                        align={"start"}
+                        gap={4}
+                      >
+                        <HStack flexShrink={0} w={"200px"}>
+                          <ClampText color={"fg.muted"}>
+                            {doc.documentRequirement.name}
+                          </ClampText>
+
+                          {!doc.documentRequirement.isMandatory && (
+                            <Badge bg={"d1"}>{l.optional}</Badge>
+                          )}
+                        </HStack>
+
+                        {doc.metaData.fileName ? (
+                          <ClampText fontWeight={"medium"}>
+                            {doc.metaData.fileName}
+                          </ClampText>
+                        ) : (
+                          <P>-</P>
                         )}
                       </HStack>
-
-                      {doc.metaData.fileName ? (
-                        <ClampText fontWeight={"medium"}>
-                          {doc.metaData.fileName}
-                        </ClampText>
-                      ) : (
-                        <P>-</P>
-                      )}
-                    </HStack>
-                  );
-                })}
+                    );
+                  })}
+                </CContainer>
               </CContainer>
-            </CContainer>
-          </>
-        </ContainerLayout>
+            </>
+          </ContainerLayout>
+        </CContainer>
 
         {/* Result */}
         <CContainer>
@@ -820,7 +832,7 @@ export default function Page() {
   };
 
   return (
-    <PageContainer ref={containerRef} px={4} py={8} pos={"relative"}>
+    <PageContainer ref={containerRef} py={8} pos={"relative"}>
       {/* <PdfViewer height={"800px"}>
         <SuratPermohonanPDF data={data?.rawData} />
       </PdfViewer> */}

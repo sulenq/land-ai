@@ -144,7 +144,7 @@ export default function Page() {
           ref={containerRef}
           pt={8}
           px={4}
-          bottom={"24px"}
+          maskingBottom={"24px"}
           overflowY={"auto"}
         >
           <ContainerLayout
