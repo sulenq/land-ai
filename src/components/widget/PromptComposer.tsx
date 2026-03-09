@@ -280,7 +280,7 @@ export const NewPrompt = (props: Props__NewChat) => {
           >{`${l.hi} ${user?.name}`}</P>
         </HStack>
 
-        <P fontSize={"3xl"} fontWeight={"medium"} color={"ibody"}>
+        <P fontSize={"3xl"} fontWeight={"semibold"} color={"ibody"}>
           {l.msg_welcome_context}
         </P>
       </CContainer>
