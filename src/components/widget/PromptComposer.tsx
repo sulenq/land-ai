@@ -271,9 +271,13 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   return (
     <CContainer gap={8} {...restProps}>
-      <CContainer px={themeConfig.radii.component}>
+      <CContainer
+        px={themeConfig.radii.component}
+        animation={"float-up 1s, fade-in 1s"}
+      >
         <HStack gap={4}>
-          <Logo />
+          <Logo size={20} animation={"rotate360 1.5s"} />
+
           <P
             fontSize={"2xl"}
             fontWeight={"medium"}
@@ -298,7 +302,10 @@ export const NewPrompt = (props: Props__NewChat) => {
           loading={loading}
         />
 
-        <PromptHelperText px={themeConfig.radii.component} />
+        <PromptHelperText
+          px={themeConfig.radii.component}
+          animation={"float-down 1s, fade-in 1s"}
+        />
       </CContainer>
     </CContainer>
   );
