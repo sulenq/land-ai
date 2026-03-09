@@ -2,6 +2,7 @@ import { P } from "@/components/ui/p";
 import { Props__ClockProps } from "@/constants/props";
 import useTimezone from "@/context/useTimezone";
 import { formatTime } from "@/utils/formatter";
+import { utcTimeString } from "@/utils/time";
 import { HStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -20,16 +21,6 @@ export const Clock = (props: Props__ClockProps) => {
       timezoneKey: tzKey,
     }),
   );
-
-  // Utils
-  function utcTimeString() {
-    const now = new Date();
-    const hh = String(now.getUTCHours()).padStart(2, "0");
-    const mm = String(now.getUTCMinutes()).padStart(2, "0");
-    const ss = String(now.getUTCSeconds()).padStart(2, "0");
-
-    return `${hh}:${mm}:${ss}`;
-  }
 
   // handle tick
   useEffect(() => {

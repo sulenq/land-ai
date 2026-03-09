@@ -25,8 +25,8 @@ import useTimezone from "@/context/useTimezone";
 import useDataState from "@/hooks/useDataState";
 import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
-import { formatDate } from "@/utils/formatter";
-import { makeUTCISODateTime } from "@/utils/time";
+import { formatDate, formatTime } from "@/utils/formatter";
+import { makeUTCISODateTime, utcTimeString } from "@/utils/time";
 import { fileValidation } from "@/utils/validationSchema";
 import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
@@ -105,9 +105,10 @@ const InputForm = (props: Props__InputForm) => {
           makeUTCISODateTime(iso, time),
           {
             variant: "numeric",
-            withTime: true,
           },
-        )} ${tz.formattedOffset}`,
+        )} ${formatTime(utcTimeString(), {
+          timezoneKey: tz.key,
+        })} ${tz.localAbbr}`,
       );
       payload.append("serviceId", `${daService?.id}`);
       Object.entries(values.files).forEach(([docId, files]) => {

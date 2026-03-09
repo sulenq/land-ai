@@ -112,19 +112,28 @@ const Services = (props: StackProps) => {
   };
 
   return (
-    <CContainer {...restProps}>
-      {initialLoading && render.loading}
-      {!initialLoading && (
-        <>
-          {error && render.error}
-          {!error && (
-            <>
-              {data && render.loaded}
-              {(!data || isEmptyArray(data)) && render.empty}
-            </>
-          )}
-        </>
-      )}
+    <CContainer position="relative" {...restProps}>
+      <CContainer
+        position={"absolute"}
+        inset={"0"}
+        pointerEvents={"none"}
+        zIndex={2}
+        animation={
+          !initialLoading ? "fade-out 200ms ease-in forwards" : undefined
+        }
+      >
+        {render.loading}
+      </CContainer>
+
+      <>
+        {error && render.error}
+        {!error && (
+          <>
+            {data && render.loaded}
+            {(!data || isEmptyArray(data)) && render.empty}
+          </>
+        )}
+      </>
     </CContainer>
   );
 };
