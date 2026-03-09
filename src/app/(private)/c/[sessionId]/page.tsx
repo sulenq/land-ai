@@ -48,7 +48,7 @@ export default function Page() {
   // States
   const activeChatSessionId = activeChat?.session?.id;
   const shouldFetchHistory = !activeChat.hasLoadedHistory;
-  // const initialLoading = false;
+  // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } = useDataState<any>({
     url: `${CHAT_API_SESSION_SHOW}/${sessionId}`,
     dataResource: false,
@@ -150,35 +150,41 @@ export default function Page() {
             overflowY={"auto"}
             scrollBehavior={"smooth"}
           >
-            <ContainerLayout
-              gap={8}
-              py={8}
-              // pb={messageContainerStyle?.pb}
-            >
-              {shouldFetchHistory && (
-                <>
-                  <FadingSkeletonContainer loading={initialLoading}>
-                    <ContainerLayout flex={1} mt={8}>
-                      {render.loading}
-                    </ContainerLayout>
-                  </FadingSkeletonContainer>
+            {shouldFetchHistory && (
+              <>
+                <FadingSkeletonContainer loading={initialLoading} mt={8}>
+                  <ContainerLayout flex={1}>{render.loading}</ContainerLayout>
+                </FadingSkeletonContainer>
 
-                  {!initialLoading && (
-                    <>
-                      {error && render.error}
-                      {!error && (
-                        <>
-                          {data && render.loaded}
-                          {(!data || isEmptyArray(data)) && render.empty}
-                        </>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
+                {!initialLoading && (
+                  <ContainerLayout
+                    flex={1}
+                    gap={8}
+                    py={8}
+                    // pb={messageContainerStyle?.pb}
+                  >
+                    {error && render.error}
+                    {!error && (
+                      <>
+                        {data && render.loaded}
+                        {(!data || isEmptyArray(data)) && render.empty}
+                      </>
+                    )}
+                  </ContainerLayout>
+                )}
+              </>
+            )}
 
-              {!shouldFetchHistory && <>{render.loaded}</>}
-            </ContainerLayout>
+            {!shouldFetchHistory && (
+              <ContainerLayout
+                flex={1}
+                gap={8}
+                py={8}
+                // pb={messageContainerStyle?.pb}
+              >
+                {render.loaded}
+              </ContainerLayout>
+            )}
           </MContainer>
         </CContainer>
 

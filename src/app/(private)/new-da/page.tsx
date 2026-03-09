@@ -35,6 +35,7 @@ const Services = (props: StackProps) => {
   const { themeConfig } = useThemeConfig();
 
   // States
+  // const initialLoading = true;
   const { initialLoading, error, data, onRetry } = useDataState<
     Interface__DAService[]
   >({
@@ -113,8 +114,8 @@ const Services = (props: StackProps) => {
   };
 
   return (
-    <CContainer overflow={"clip"} position="relative" {...restProps}>
-      <FadingSkeletonContainer loading={initialLoading}>
+    <CContainer position="relative" {...restProps}>
+      <FadingSkeletonContainer loading={initialLoading} useDummyElement>
         {render.loading}
       </FadingSkeletonContainer>
 

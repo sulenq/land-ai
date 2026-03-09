@@ -29,23 +29,33 @@ export const Skeleton = (props: Props) => {
 
 interface FadingSkeletonContainerProps extends StackProps {
   loading: boolean;
+  useDummyElement?: boolean;
 }
 export const FadingSkeletonContainer = (
   props: FadingSkeletonContainerProps,
 ) => {
   // Props
-  const { children, loading, ...restProps } = props;
+  const { children, useDummyElement = true, loading, ...restProps } = props;
 
   return (
-    <CContainer
-      position={"absolute"}
-      inset={"0"}
-      pointerEvents={"none"}
-      zIndex={2}
-      animation={!loading ? "fade-out 200ms ease-in forwards" : undefined}
-      {...restProps}
-    >
-      {children}
-    </CContainer>
+    <>
+      <CContainer
+        className={"fading-skeleton-container"}
+        position={"absolute"}
+        inset={"0"}
+        pointerEvents={"none"}
+        zIndex={2}
+        animation={!loading ? "fade-out 200ms ease-in forwards" : undefined}
+        {...restProps}
+      >
+        {children}
+      </CContainer>
+
+      {useDummyElement && loading && (
+        <CContainer flex={1} zIndex={-1} {...restProps}>
+          {children}
+        </CContainer>
+      )}
+    </>
   );
 };
