@@ -443,7 +443,7 @@ const DesktopLayout = (props: any) => {
         >
           {!isNavsExpanded && (
             <NavLink to="/">
-              <Center w={"36px"} h={"40px"} mr={"auto"}>
+              <Center w={"36px"} h={"40px"} ml={"-1px"} mr={"auto"}>
                 <Logo size={15} />
               </Center>
             </NavLink>
