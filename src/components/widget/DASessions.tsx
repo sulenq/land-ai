@@ -348,7 +348,8 @@ export const DASessions = (props: any) => {
                 key={session.serviceIcon}
                 src={imgUrl(session.serviceIcon)}
                 h={"20px"}
-                fluid
+                w={"20px"}
+                objectFit={"contain"}
                 flexShrink={0}
               />
 

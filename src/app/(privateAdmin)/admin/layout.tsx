@@ -556,7 +556,14 @@ const DesktopLayout = (props: any) => {
                                   gap={4}
                                   px={2}
                                   justifyContent={"start"}
-                                  variant={"ghost"}
+                                  variant={
+                                    isMainNavsActive ? "subtle" : "ghost"
+                                  }
+                                  colorPalette={
+                                    isMainNavsActive
+                                      ? themeConfig.colorPalette
+                                      : ""
+                                  }
                                   color={
                                     isMainNavsActive ? "" : DESKTOP_NAVS_COLOR
                                   }
@@ -615,8 +622,16 @@ const DesktopLayout = (props: any) => {
                                           clicky={false}
                                           px={2}
                                           justifyContent="start"
-                                          variant="ghost"
-                                          colorPalette={NAVS_COLOR_PALETTE}
+                                          variant={
+                                            isMainNavsActive
+                                              ? "subtle"
+                                              : "ghost"
+                                          }
+                                          colorPalette={
+                                            isMainNavsActive
+                                              ? themeConfig.colorPalette
+                                              : ""
+                                          }
                                           pos="relative"
                                           color={
                                             isMainNavsActive
@@ -721,7 +736,14 @@ const DesktopLayout = (props: any) => {
                                       <Btn
                                         as={AccordionItemTrigger}
                                         clicky={false}
-                                        variant="ghost"
+                                        variant={
+                                          isMainNavsActive ? "subtle" : "ghost"
+                                        }
+                                        colorPalette={
+                                          isMainNavsActive
+                                            ? themeConfig.colorPalette
+                                            : ""
+                                        }
                                         px={2}
                                         justifyContent="start"
                                         pr="10px"

@@ -123,28 +123,31 @@ const DesktopTabs = (props: TabsRootProps) => {
       {...restProps}
     >
       <Tabs.List>
-        {TABS.map((tab) => (
-          <Tabs.Trigger
-            key={tab.value}
-            value={tab.value}
-            rounded={themeConfig.radii.component}
-            onClick={() => {
-              setNavsTabs({
-                current: tab.value,
-              });
-            }}
-          >
-            <Tooltip content={pluckString(l, tab.labelKey)}>
-              <HStack w={"full"} justify={"center"}>
-                <AppIcon icon={tab.icon} />
+        {TABS.map((tab) => {
+          return (
+            <Tabs.Trigger
+              key={tab.value}
+              value={tab.value}
+              // color={isActive ? `${themeConfig.colorPalette}.fg` : ""}
+              rounded={themeConfig.radii.component}
+              onClick={() => {
+                setNavsTabs({
+                  current: tab.value,
+                });
+              }}
+            >
+              <Tooltip content={pluckString(l, tab.labelKey)}>
+                <HStack w={"full"} justify={"center"}>
+                  <AppIcon icon={tab.icon} />
 
-                <P lineClamp={1} textAlign={"left"}>
-                  {pluckString(l, tab.labelKey)}
-                </P>
-              </HStack>
-            </Tooltip>
-          </Tabs.Trigger>
-        ))}
+                  <P lineClamp={1} textAlign={"left"}>
+                    {pluckString(l, tab.labelKey)}
+                  </P>
+                </HStack>
+              </Tooltip>
+            </Tabs.Trigger>
+          );
+        })}
       </Tabs.List>
 
       <CContainer minH={"200px"} pos={"relative"} mt={-2}>
@@ -952,7 +955,14 @@ const DesktopLayout = (props: Props__Layout) => {
             <>
               <ChatSessionsDisclosureTrigger mr={"auto"}>
                 <DesktopNavTooltip content={l.navs.your_chats}>
-                  <Btn iconButton clicky={false} variant={"ghost"}>
+                  <Btn
+                    iconButton
+                    clicky={false}
+                    variant={pathname.includes("/c/") ? "subtle" : "ghost"}
+                    colorPalette={
+                      pathname.includes("/c/") ? themeConfig.colorPalette : ""
+                    }
+                  >
                     {pathname.includes("/c/") && <LeftIndicator />}
 
                     <AppIcon icon={MessageSquareIcon} />
@@ -962,7 +972,14 @@ const DesktopLayout = (props: Props__Layout) => {
 
               <DASessionssDisclosureTrigger mr={"auto"}>
                 <DesktopNavTooltip content={l.navs.your_da_analysis}>
-                  <Btn iconButton clicky={false} variant={"ghost"}>
+                  <Btn
+                    iconButton
+                    clicky={false}
+                    variant={pathname.includes("/da/") ? "subtle" : "ghost"}
+                    colorPalette={
+                      pathname.includes("/da/") ? themeConfig.colorPalette : ""
+                    }
+                  >
                     {pathname.includes("/da/") && <LeftIndicator />}
 
                     <AppIcon icon={FileTextIcon} />
