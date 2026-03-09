@@ -142,6 +142,7 @@ export default function Page() {
       <CContainer flex={1} overflowY={"auto"} scrollBehavior={"smooth"}>
         <MContainer
           ref={containerRef}
+          flex={1}
           pt={8}
           px={4}
           maskingBottom={"24px"}

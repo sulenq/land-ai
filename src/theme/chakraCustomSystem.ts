@@ -205,7 +205,7 @@ const customConfig = defineConfig({
           700: { value: "#5314B3" },
           800: { value: "#3F0F80" },
           900: { value: "#2A0A4D" },
-          950: { value: "#160626" },
+          950: { value: "#230643" },
         },
 
         powderLavender: {
@@ -219,7 +219,7 @@ const customConfig = defineConfig({
           700: { value: "#6361A3" },
           800: { value: "#4D4B84" },
           900: { value: "#2A2948" },
-          950: { value: "#161533" },
+          950: { value: "#1d1c36" },
         },
 
         flamingoPink: {
@@ -1517,7 +1517,7 @@ const customConfig = defineConfig({
           },
           fg: {
             value: {
-              base: "{colors.powderLavender.500}",
+              base: "{colors.powderLavender.600}",
               _dark: "{colors.powderLavender.400}",
             },
           },
