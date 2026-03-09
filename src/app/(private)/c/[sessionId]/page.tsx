@@ -139,14 +139,14 @@ export default function Page() {
 
   return (
     <PageContainer pos={"relative"}>
-      <CContainer
-        flex={1}
-        px={4}
-        py={8}
-        overflowY={"auto"}
-        scrollBehavior={"smooth"}
-      >
-        <MContainer ref={containerRef} bottom={"24px"} overflowY={"auto"}>
+      <CContainer flex={1} overflowY={"auto"} scrollBehavior={"smooth"}>
+        <MContainer
+          ref={containerRef}
+          pt={8}
+          px={4}
+          bottom={"24px"}
+          overflowY={"auto"}
+        >
           <ContainerLayout
             gap={8}
             pb={8}
@@ -168,7 +168,7 @@ export default function Page() {
           </ContainerLayout>
         </MContainer>
 
-        <CContainer align={"center"} px={4} gap={4} pos={"relative"}>
+        <CContainer align={"center"} gap={4} px={4} pb={4}>
           <ContainerLayout gap={4} align={"center"}>
             <Btn
               iconButton
