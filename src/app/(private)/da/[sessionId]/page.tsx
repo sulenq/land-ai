@@ -47,6 +47,7 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
+import { isEmptyArray } from "@/utils/array";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
@@ -126,26 +127,27 @@ const AccordionMode = (props: Props__AccordionMode) => {
 
                     <AccordionItemContent>
                       <CContainer gap={2}>
+                        {isEmptyArray(
+                          documentRequirement?.extractionSchema,
+                        ) && <FeedbackNoData />}
+
                         {documentRequirement?.extractionSchema?.map((field) => {
                           const value = getValueResult(field.label, index);
-                          const isNotFound = value === "NOT_FOUND";
 
                           return (
-                            value && (
-                              <HStack key={field.key}>
-                                <ClampText
-                                  flexShrink={0}
-                                  w={"240px"}
-                                  color={"fg.muted"}
-                                >
-                                  {field.label}
-                                </ClampText>
+                            <HStack key={field.key}>
+                              <ClampText
+                                flexShrink={0}
+                                w={"240px"}
+                                color={"fg.muted"}
+                              >
+                                {field.label}
+                              </ClampText>
 
-                                <ClampText color={isNotFound ? "fg.muted" : ""}>
-                                  {isNotFound ? l.not_found : value}
-                                </ClampText>
-                              </HStack>
-                            )
+                              <ClampText color={value ? "" : "fg.muted"}>
+                                {value || l.not_found}
+                              </ClampText>
+                            </HStack>
                           );
                         })}
                       </CContainer>
@@ -276,6 +278,7 @@ const TableMode = (props: Props__TableMode) => {
 
   // States
   const uploadedDocuments = daSession?.uploadedDocuments;
+  const documentRequirements = daSession?.documentService?.documentRequirements;
   const result = daSession?.result;
   const headers: Interface__FormattedTableHeader[] = [
     { th: "Item Validasi", sortable: true },
@@ -285,6 +288,7 @@ const TableMode = (props: Props__TableMode) => {
     })),
     { th: "Validasi", sortable: true },
   ];
+
   const rows: Interface__FormattedTableRow[] = (result ?? []).map((r, idx) => {
     const isMatch = r.validation.status;
 
@@ -294,16 +298,28 @@ const TableMode = (props: Props__TableMode) => {
       data: r,
       columns: [
         { td: r.label, value: r.label, dataType: "string" },
-        ...r.values.map((v) => ({
-          td: (
-            <ClampText maxW={"200px"}>
-              {v.value === "NOT_FOUND" ? l.not_found : v.value || "-"}
-            </ClampText>
-          ),
-          dim: v.value === "NOT_FOUND" || v.value === null,
-          value: v.value,
-          dataType: v.renderType,
-        })),
+        ...r.values.map((v) => {
+          const documentRequirement = documentRequirements?.find((dr) => {
+            return dr.id === v.documentId;
+          });
+          const isInSchema = documentRequirement?.extractionSchema?.find(
+            (es) => {
+              return es.label === r.label;
+            },
+          );
+          const isNotFound = !v.value && !isInSchema;
+
+          return {
+            td: (
+              <ClampText maxW={"200px"}>
+                {v.value || (isNotFound ? l.not_found : "-")}
+              </ClampText>
+            ),
+            dim: isNotFound || v.value === null,
+            value: v.value,
+            dataType: v.renderType,
+          };
+        }),
         {
           td: (
             <P color={isMatch ? "fg.success" : "fg.error"}>
@@ -496,9 +512,6 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
   // Props
   const { data, ...restProps } = props;
 
-  // Contexts
-  const { l } = useLang();
-
   // States
   const rawData = data?.rawData;
   const LETTERS = [
@@ -531,11 +544,10 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
                 fileName={`${letter.label}.pdf`}
               >
                 {({ loading }: any) => (
-                  <Btn variant={"outline"} size={"xs"}>
+                  <Btn variant={"outline"} size={"xs"} w={"200px"}>
                     <AppIcon icon={DownloadIcon} boxSize={4} />
-                    {loading
-                      ? "Loading PDF..."
-                      : `${l.download} ${letter.label} PDF`}
+
+                    {loading ? "Loading PDF..." : `${letter.label} PDF`}
                   </Btn>
                 )}
               </PDFDownloadLink>
