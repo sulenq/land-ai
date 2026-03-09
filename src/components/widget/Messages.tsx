@@ -139,7 +139,7 @@ export const Messages = (props: Props__Messages) => {
                     <HStack align={"start"} gap={4}>
                       <Logo size={15} />
 
-                      <CContainer>
+                      <CContainer gap={4}>
                         <MarkdownChat error={true}>
                           {message.content}
                         </MarkdownChat>
@@ -159,7 +159,14 @@ export const Messages = (props: Props__Messages) => {
                           </CContainer>
                         )}
 
-                        <HStack wrap={"wrap"} gap={1}>
+                        <HStack
+                          wrap={"wrap"}
+                          gap={1}
+                          w={"fit"}
+                          bg={"bg.muted"}
+                          p={1}
+                          rounded={themeConfig.radii.component}
+                        >
                           <Clipboard>{message.content}</Clipboard>
 
                           {canRegenerate && (
