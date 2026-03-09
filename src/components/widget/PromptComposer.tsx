@@ -141,7 +141,7 @@ export const PromptInput = (props: Props__PromptInput) => {
       ref={containerRef}
       p={3}
       bg={"bg.muted"}
-      rounded={themeConfig.radii.container}
+      rounded={themeConfig.radii.component}
       mx={"auto"}
       maxH={"300px"}
       {...restProps}
@@ -271,7 +271,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   return (
     <CContainer gap={8} {...restProps}>
-      <CContainer px={themeConfig.radii.container}>
+      <CContainer px={themeConfig.radii.component}>
         <HStack gap={4}>
           <Logo />
           <P
@@ -298,7 +298,7 @@ export const NewPrompt = (props: Props__NewChat) => {
           loading={loading}
         />
 
-        <PromptHelperText px={themeConfig.radii.container} />
+        <PromptHelperText px={themeConfig.radii.component} />
       </CContainer>
     </CContainer>
   );

@@ -132,6 +132,7 @@ const Services = (props: StackProps) => {
 export default function Page() {
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -140,7 +141,7 @@ export default function Page() {
     <PageContainer p={8}>
       <ContainerLayout ref={containerRef} flex={1}>
         <CContainer flex={1} gap={8} justify={"center"}>
-          <CContainer gap={1}>
+          <CContainer gap={1} px={themeConfig.radii.component}>
             <P fontSize={"3xl"} fontWeight={"semibold"}>
               {l.document_analysis_service}
             </P>
@@ -152,7 +153,9 @@ export default function Page() {
 
           <Services />
 
-          <HelperText>{l.msg_da_disclaimer}</HelperText>
+          <HelperText px={themeConfig.radii.component}>
+            {l.msg_da_disclaimer}
+          </HelperText>
         </CContainer>
       </ContainerLayout>
     </PageContainer>
