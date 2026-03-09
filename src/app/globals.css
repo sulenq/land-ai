@@ -1,4 +1,6 @@
 /* Global */
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap");
+
 nextjs-portal {
   display: none !important;
 }
@@ -19,6 +21,7 @@ nextjs-portal {
 * {
   font-optical-sizing: auto;
   box-sizing: border-box !important;
+  /* font-family: "Google Sans Flex", sans-serif; */
   font-family:
     "Figtree",
     system-ui,

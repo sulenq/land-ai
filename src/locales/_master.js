@@ -139,6 +139,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const hi = {
+  id: "Hai",
+  en: "Hi",
+};
+export const hello = {
+  id: "Halo",
+  en: "Hello",
+};
 export const change_view_mode = {
   id: "Ubah mode tampilan",
   en: "Change view mode",
@@ -1091,9 +1099,13 @@ export const msg_welcome_to_the_app = {
   id: "Selamat datang di ${appName}",
   en: "Welcome to ${appName}",
 };
+export const msg_based_on_official_documents = {
+  id: "Berdasarkan dokumen resmi",
+  en: "Based on official documents",
+};
 export const msg_welcome_context = {
-  id: "Konsultasi Hukum Pertanahan (Berbasis Dokumen Resmi)",
-  en: "Legal Consultation (Based on Official Documents)",
+  id: "Konsultasi Hukum Pertanahan",
+  en: "Legal Consultation",
 };
 export const msg_da_disclaimer = {
   id: "*Data yang diunggah hanya digunakan untuk proses analisis dan akan dihapus setelah analisis selesai demi menjaga privasi pengguna.",

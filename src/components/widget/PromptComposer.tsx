@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
+import { Logo } from "@/components/widget/Logo";
 import {
   Props__ContinueChat,
   Props__NewChat,
@@ -28,6 +29,7 @@ import useMessageContainer from "@/context/useMessageContainer";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
 import { startChatStream } from "@/service/chatStream";
+import { getUserData } from "@/utils/auth";
 import { disclosureId } from "@/utils/disclosure";
 import {
   Group,
@@ -226,7 +228,7 @@ export const PromptHelperText = (props: TextProps) => {
   const { l } = useLang();
 
   return (
-    <HelperText textAlign={"center"} mx={"auto"} {...props}>
+    <HelperText mx={"auto"} {...props}>
       {l.msg_chat_ai_disclaimer}
     </HelperText>
   );
@@ -268,42 +270,40 @@ export const NewPrompt = (props: Props__NewChat) => {
     },
   });
 
+  // Constants
+  const user = getUserData();
+
   return (
-    <CContainer {...restProps}>
-      {/* <P
-        fontSize={"lg"}
-        fontWeight={"medium"}
-        textAlign={"center"}
-        color={"fg.subtle"}
-      >
-        {interpolateString(pluckString(l, `msg_welcome_to_the_app`), {
-          appName: APP.name,
-        })}
-      </P> */}
+    <CContainer gap={8} {...restProps}>
+      <CContainer>
+        <HStack gap={4}>
+          <Logo />
+          <P
+            fontSize={"2xl"}
+            fontWeight={"medium"}
+          >{`${l.hi} ${user?.name}`}</P>
+        </HStack>
 
-      <P
-        fontSize={"xl"}
-        fontWeight={"semibold"}
-        color={"ibody"}
-        textAlign={"center"}
-        mb={4}
-      >
-        {l.msg_welcome_context}
-      </P>
+        <P fontSize={"3xl"} fontWeight={"medium"} color={"ibody"}>
+          {l.msg_welcome_context}
+        </P>
+      </CContainer>
 
-      <PromptInput
-        inputValue={formik.values.prompt}
-        onChange={(inputValue) => {
-          formik.setFieldValue("prompt", inputValue);
-        }}
-        onSubmit={() => {
-          formik.handleSubmit();
-        }}
-        disabled={disabled}
-        loading={loading}
-      />
+      <CContainer gap={8}>
+        <PromptInput
+          inputValue={formik.values.prompt}
+          onChange={(inputValue) => {
+            formik.setFieldValue("prompt", inputValue);
+          }}
+          onSubmit={() => {
+            formik.handleSubmit();
+          }}
+          disabled={disabled}
+          loading={loading}
+        />
 
-      <PromptHelperText mt={4} />
+        <PromptHelperText />
+      </CContainer>
     </CContainer>
   );
 };
