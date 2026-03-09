@@ -25,6 +25,7 @@ export const DA_API_SESSION_RENAME = `/api/da/session/rename`; // PATCH + /:daSe
 export const DA_API_SESSION_DELETE = `/api/da/session/delete`; // DELETE + /:daSessionIds
 export const DA_API_EXTRACT_SERTIPIKAT = `/api/da/extract-sertipikat`; // POST
 export const DA_API_STATUS = `/api/da/status`; // GET + /:jobId
+
 // Admin
 export const ADMIN_API_AI_KNOWLEDGE_BASE = "/api/admin/ai/knowledge";
 export const ADMIN_API_USER_BAsE = "/api/admin/user";

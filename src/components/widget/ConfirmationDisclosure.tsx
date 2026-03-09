@@ -10,16 +10,21 @@ import {
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { P } from "@/components/ui/p";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import { useCountdown } from "@/hooks/useCountdown";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { disclosureId } from "@/utils/disclosure";
 import { StackProps } from "@chakra-ui/react";
+import { useEffect } from "react";
 import BackButton from "./BackButton";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface Props__Disclosure {
   isOpen: boolean;
   title: string;
   description: string;
   confirmLabel: string;
+  confirmCountdown?: string;
+  isCountdownFinished?: boolean;
   onConfirm: () => void;
   confirmButtonProps?: Props__Btn;
   loading?: boolean;
@@ -32,6 +37,8 @@ export const ConfirmationDisclosure = (props: Props__Disclosure) => {
     title,
     description,
     confirmLabel,
+    confirmCountdown,
+    isCountdownFinished,
     onConfirm,
     confirmButtonProps,
     loading = false,
@@ -58,12 +65,21 @@ export const ConfirmationDisclosure = (props: Props__Disclosure) => {
           <BackButton disabled={loading} />
 
           <Btn
+            w={"120px"}
             onClick={onConfirm}
             loading={loading}
             colorPalette={themeConfig.colorPalette}
+            fontVariantNumeric={"tabular-nums"}
+            disabled={!isCountdownFinished}
             {...confirmButtonProps}
           >
-            {confirmLabel}
+            <Tooltip content={confirmLabel}>
+              <P lineClamp={1}>
+                {confirmCountdown && !isCountdownFinished
+                  ? confirmCountdown
+                  : confirmLabel}
+              </P>
+            </Tooltip>
           </Btn>
         </DisclosureFooter>
       </DisclosureContent>
@@ -77,12 +93,14 @@ interface Props__Trigger extends StackProps {
   title: string;
   description: string;
   confirmLabel: any;
-  onConfirm: () => void;
+  confirmCountdownDuration?: number;
   confirmButtonProps?: Props__Btn;
   loading?: boolean;
   disabled?: any;
   addonElement?: any;
-  onClick?: () => void;
+  onConfirm: () => void;
+  onOpen?: () => void;
+  onClose?: () => void;
 }
 export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
   // Props
@@ -92,17 +110,47 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
     title,
     description,
     confirmLabel,
-    onConfirm,
+    confirmCountdownDuration = 0,
     confirmButtonProps,
     loading,
     disabled,
     addonElement,
-    onClick,
+    onConfirm,
+    onOpen,
+    onClose,
     ...restProps
   } = props;
 
   // Hooks
-  const { isOpen, onOpen } = usePopDisclosure(disclosureId(`${id}`));
+  const { isOpen, onOpen: openDisclosure } = usePopDisclosure(
+    disclosureId(`${id}`),
+  );
+  const {
+    formattedCountdown,
+    startCountdown,
+    stopCountdown,
+    resetCountdown,
+    isCountdownFinished,
+  } = useCountdown({
+    duration: confirmCountdownDuration,
+  });
+
+  useEffect(() => {
+    if (isOpen) {
+      onOpen?.();
+
+      if (confirmCountdownDuration) {
+        startCountdown();
+      }
+    } else {
+      onClose?.();
+
+      if (confirmCountdownDuration) {
+        stopCountdown();
+        resetCountdown();
+      }
+    }
+  }, [isOpen, onClose]);
 
   return (
     <>
@@ -114,8 +162,8 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
 
           if (disabled) return;
 
-          onClick?.();
-          onOpen();
+          openDisclosure();
+          onOpen?.();
         }}
         cursor={disabled ? "disabled" : "pointer"}
         {...restProps}
@@ -128,6 +176,8 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
         title={title}
         description={description}
         confirmLabel={confirmLabel}
+        confirmCountdown={`${formattedCountdown}s`}
+        isCountdownFinished={isCountdownFinished}
         onConfirm={onConfirm}
         confirmButtonProps={confirmButtonProps}
         loading={loading}

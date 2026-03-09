@@ -1,3 +1,6 @@
+// Format
+export const NUMBER_LOCALE = "id-ID";
+
 // Colors
 export const NAVS_COLOR_PALETTE = "gray";
 export const MOBILE_CONTENT_CONTAINER_BG = "body";

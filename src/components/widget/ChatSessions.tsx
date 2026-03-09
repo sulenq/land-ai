@@ -38,6 +38,7 @@ import { Interface__ChatSession } from "@/constants/interfaces";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useChatSessions } from "@/context/useChatSessions";
 import useLang from "@/context/useLang";
+import useRenderTrigger from "@/context/useRenderTrigger";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
@@ -359,6 +360,58 @@ const Delete = (props: Props__Delete) => {
   );
 };
 
+const DeleteAllButton = () => {
+  // Contexts
+  const { l } = useLang();
+  const chatSessions = useChatSessions((s) => s.chatSessions);
+  const setRt = useRenderTrigger((s) => s.setRt);
+
+  // Hooks
+  const { req, loading } = useRequest({
+    id: "delete-all-da-sessions",
+  });
+
+  return (
+    <ConfirmationDisclosureTrigger
+      id={"delete-all-da-sessions"}
+      title={l.delete_all}
+      description={l.msg_perma_delete}
+      confirmLabel={l.delete_all}
+      confirmButtonProps={{
+        variant: "outline",
+        colorPalette: "gray",
+        color: "fg.error",
+      }}
+      confirmCountdownDuration={5}
+      onConfirm={() => {
+        back();
+
+        const config = {
+          url: CHAT_API_SESSION_DELETE,
+          method: "DELETE",
+          params: chatSessions?.map((s) => s.id),
+        };
+
+        req({
+          config,
+          onResolve: {
+            onSuccess: () => {
+              setRt((ps) => !ps);
+            },
+          },
+        });
+      }}
+      loading={loading}
+      w={"full"}
+      mt={1}
+    >
+      <Btn variant={"ghost"} color={"fg.error"}>
+        {l.delete_all}
+      </Btn>
+    </ConfirmationDisclosureTrigger>
+  );
+};
+
 export const ChatSessions = (props: any) => {
   // Props
   const { ...restProps } = props;
@@ -471,6 +524,13 @@ export const ChatSessions = (props: any) => {
       );
     });
   }
+
+  useEffect(() => {
+    if (data) {
+      setChatSessions(data);
+    }
+  }, [data]);
+
   const render = {
     loading: (
       <CContainer gap={4} mt={2}>
@@ -482,14 +542,14 @@ export const ChatSessions = (props: any) => {
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
-    loaded: loadedContent,
-  };
+    loaded: (
+      <>
+        {loadedContent}
 
-  useEffect(() => {
-    if (data) {
-      setChatSessions(data);
-    }
-  }, [data]);
+        <DeleteAllButton />
+      </>
+    ),
+  };
 
   return (
     <CContainer gap={2} {...restProps}>

@@ -139,6 +139,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const delete_all = {
+  id: "Hapus semua",
+  en: "Delete all",
+};
 export const hi = {
   id: "Hai",
   en: "Hi",

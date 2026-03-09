@@ -102,6 +102,7 @@ const translations = {
   "deactive": "Dinonaktifkan",
   "december": "Desember",
   "delete_": "Hapus",
+  "delete_all": "Hapus semua",
   "deleted": "Dihapus",
   "deleted_file": "File dihapus",
   "description": "Deskripsi",

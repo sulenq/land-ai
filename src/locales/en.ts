@@ -102,6 +102,7 @@ const translations = {
   "deactive": "Deactivated",
   "december": "December",
   "delete_": "Delete",
+  "delete_all": "Delete all",
   "deleted": "Deleted",
   "deleted_file": "Removed file",
   "description": "Description",
