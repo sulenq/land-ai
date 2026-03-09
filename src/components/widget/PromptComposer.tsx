@@ -223,8 +223,12 @@ export const PromptHelperText = (props: StackProps) => {
 
   return (
     <CContainer gap={1} {...props}>
-      <HelperText>{`*${l.msg_based_on_official_documents}`}</HelperText>
-      <HelperText>{l.msg_chat_ai_disclaimer}</HelperText>
+      <HelperText
+      // color={"fg.muted"}
+      >{`*${l.msg_based_on_official_documents}`}</HelperText>
+      <HelperText
+      // color={"fg.muted"}
+      >{`*${l.msg_chat_ai_disclaimer}`}</HelperText>
     </CContainer>
   );
 };
