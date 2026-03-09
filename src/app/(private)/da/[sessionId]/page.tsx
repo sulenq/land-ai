@@ -129,7 +129,12 @@ const AccordionMode = (props: Props__AccordionMode) => {
                       <CContainer gap={2}>
                         {isEmptyArray(
                           documentRequirement?.extractionSchema,
-                        ) && <FeedbackNoData />}
+                        ) && (
+                          <FeedbackNotFound
+                            title={l.alert_no_data.title}
+                            mb={7}
+                          />
+                        )}
 
                         {documentRequirement?.extractionSchema?.map((field) => {
                           const value = getValueResult(field.label, index);
@@ -178,6 +183,13 @@ const AccordionMode = (props: Props__AccordionMode) => {
                 <AccordionItemContent p={0}>
                   <CContainer gap={1}>
                     <AccordionRoot collapsible multiple>
+                      {isEmptyArray(result) && (
+                        <FeedbackNotFound
+                          title={l.alert_no_data.title}
+                          mb={7}
+                        />
+                      )}
+
                       {result?.map((r, index) => {
                         const isLastIndex = index === result.length - 1;
                         const fieldLabel = r.label;
