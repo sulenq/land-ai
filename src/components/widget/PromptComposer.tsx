@@ -227,11 +227,7 @@ export const PromptHelperText = (props: TextProps) => {
   // Contexts
   const { l } = useLang();
 
-  return (
-    <HelperText mx={"auto"} {...props}>
-      {l.msg_chat_ai_disclaimer}
-    </HelperText>
-  );
+  return <HelperText {...props}>{l.msg_chat_ai_disclaimer}</HelperText>;
 };
 
 export const NewPrompt = (props: Props__NewChat) => {
