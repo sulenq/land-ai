@@ -14,6 +14,7 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
+import { FeedbackButton } from "@/components/widget/FeedbackButton";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
@@ -21,6 +22,7 @@ import useMessageContainer from "@/context/useMessageContainer";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { startChatStream } from "@/service/chatStream";
+import { submitFeedback } from "@/service/chatFeedback";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
@@ -85,6 +87,7 @@ export const Messages = (props: Props__Messages) => {
   const activeChat = useActiveChat((s) => s.activeChat);
   const setMessageContainerRef = useMessageContainer((s) => s.setRef);
   const removeMessage = useActiveChat((s) => s.removeMessage);
+  const updateMessageFeedback = useActiveChat((s) => s.updateMessageFeedback);
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -92,6 +95,32 @@ export const Messages = (props: Props__Messages) => {
   useEffect(() => {
     setMessageContainerRef(containerRef);
   }, []);
+
+  // Handle feedback submission
+  const handleFeedbackSubmit = async (
+    message: Interface__ChatMessage,
+    feedbackData: { rating: 1 | -1; category?: string; userComment?: string }
+  ) => {
+    const userQuery = messages.find(
+      (m, idx) => idx === messages.indexOf(message) - 1
+    )?.content;
+
+    await submitFeedback({
+      message,
+      sessionId: activeChat.session?.id,
+      userQuery,
+      retrievedContexts: message.sources,
+      ...feedbackData,
+    });
+
+    // Update local message with feedback
+    updateMessageFeedback?.(message.id, {
+      rating: feedbackData.rating,
+      category: feedbackData.category as any,
+      userComment: feedbackData.userComment,
+      createdAt: new Date().toISOString(),
+    });
+  };
 
   return (
     <CContainer ref={containerRef} flex={1} gap={4} px={2} {...restProps}>
@@ -186,6 +215,14 @@ export const Messages = (props: Props__Messages) => {
                             </Btn>
                           </ReferenceDisclosureTrigger>
                         )}
+
+                        <FeedbackButton
+                          message={message}
+                          userQuery={messages[index - 1]?.content}
+                          onSubmitFeedback={(feedbackData) =>
+                            handleFeedbackSubmit(message, feedbackData)
+                          }
+                        />
                       </HStack>
                     </>
                   )}

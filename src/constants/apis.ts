@@ -14,6 +14,7 @@ export const CHAT_API_SESSION_SHOW = `/api/ai/chat/show`; // GET + /:sessionId
 export const CHAT_API_SESSION_RENAME = `/api/ai/chat/rename`; // PATCH + /:sessionId
 export const CHAT_API_SESSION_PROTECT = `/api/ai/chat/protect`; // PATCH + /:sessionId
 export const CHAT_API_SESSION_DELETE = `/api/ai/chat/delete`; // DELETE + /:sessionIds
+export const CHAT_API_FEEDBACK = `/api/ai/chat/feedback`; // POST - Submit feedback
 
 // Docs Analysis
 export const DA_API_SERVICE_GET_ALL = `/api/da/services/get`; // GET
