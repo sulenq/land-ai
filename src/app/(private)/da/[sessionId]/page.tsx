@@ -61,7 +61,184 @@ import {
   TableIcon,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+interface Props__AccordionItemsList {
+  daSession?: Interface__DASessionDetail;
+  l: any;
+  themeConfig: any;
+}
+const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
+  const { daSession, l, themeConfig } = props;
+
+  const documentRequirements = daSession?.documentService?.documentRequirements;
+  const result = daSession?.result;
+  const uploadedDocuments = daSession?.uploadedDocuments;
+
+  const resultByLabel = useMemo(() => {
+    const map = new Map<string, any>();
+    result?.forEach((item) => map.set(item.label, item));
+    return map;
+  }, [result]);
+
+  const getValueResult = useCallback(
+    (label: string, index: number) => {
+      const field = resultByLabel.get(label);
+      return field?.values?.[index]?.value ?? null;
+    },
+    [resultByLabel],
+  );
+
+  return (
+    <>
+      {uploadedDocuments?.map((doc, index) => {
+        const documentRequirement = documentRequirements?.find((dr) => {
+          return dr.id === doc.documentRequirement.id;
+        });
+
+        return (
+          <AccordionItem
+            key={doc.documentRequirement.id}
+            value={`${doc.documentRequirement.id}`}
+            px={4}
+            border={"1px solid"}
+            borderColor={"border.muted"}
+            rounded={themeConfig.radii.container}
+            _open={{
+              bg: "d0",
+            }}
+          >
+            <AccordionItemTrigger cursor={"pointer"}>
+              <P>{doc.documentRequirement.name}</P>
+            </AccordionItemTrigger>
+
+            <AccordionItemContent>
+              <CContainer gap={2}>
+                {isEmptyArray(documentRequirement?.extractionSchema) && (
+                  <FeedbackNotFound title={l.alert_no_data.title} mb={7} />
+                )}
+
+                {documentRequirement?.extractionSchema?.map((field) => {
+                  const value = getValueResult(field.label, index);
+                  const isNotFound = value === "NOT_FOUND";
+
+                  return (
+                    value && (
+                      <HStack key={field.key}>
+                        <ClampText
+                          flexShrink={0}
+                          w={"240px"}
+                          color={"fg.muted"}
+                        >
+                          {field.label}
+                        </ClampText>
+
+                        <ClampText color={value ? "" : "fg.muted"}>
+                          {isNotFound ? l.not_found : value}
+                        </ClampText>
+                      </HStack>
+                    )
+                  );
+                })}
+              </CContainer>
+            </AccordionItemContent>
+          </AccordionItem>
+        );
+      })}
+
+      <AccordionItem
+        value={`validation`}
+        borderBottom={"none"}
+        px={0}
+        border={"1px solid"}
+        borderColor={"border.muted"}
+        rounded={themeConfig.radii.container}
+        _open={{
+          bg: "d0",
+        }}
+      >
+        <AccordionItemTrigger cursor={"pointer"} px={4}>
+          <P>{l.validation}</P>
+          <DotIndicator />
+        </AccordionItemTrigger>
+
+        <AccordionItemContent p={0}>
+          <CContainer gap={1}>
+            <AccordionRoot collapsible multiple>
+              {isEmptyArray(result) && (
+                <FeedbackNotFound title={l.alert_no_data.title} mb={7} />
+              )}
+
+              {result?.map((r, index) => {
+                const isLastIndex = index === result.length - 1;
+                const fieldLabel = r.label;
+                const isMatch = r.validation.status;
+
+                return (
+                  <AccordionItem
+                    key={r.label}
+                    value={r.label}
+                    borderBottom={isLastIndex ? "none" : "1px solid"}
+                    borderColor={"d1"}
+                    px={4}
+                    _open={{
+                      bg: "d0",
+                    }}
+                  >
+                    <AccordionItemTrigger cursor={"pointer"}>
+                      <HStack>
+                        <Tooltip content={r.label}>
+                          <P
+                            flexShrink={0}
+                            lineClamp={1}
+                            w={"240px"}
+                            // color={"fg.muted"}
+                          >
+                            {r.label}
+                          </P>
+                        </Tooltip>
+
+                        <P color={isMatch ? "fg.success" : "fg.error"}>
+                          {isMatch ? l.match : l.mismatch}
+                        </P>
+                      </HStack>
+                    </AccordionItemTrigger>
+
+                    <AccordionItemContent px={0} py={2}>
+                      <CContainer rounded={"md"} gap={2}>
+                        {uploadedDocuments?.map((doc, docIndex) => {
+                          const val = getValueResult(fieldLabel, docIndex);
+                          const isNotFound = val === "NOT_FOUND";
+
+                          return (
+                            <HStack key={doc.documentRequirement.id}>
+                              <ClampText
+                                flexShrink={0}
+                                w={"240px"}
+                                color={"fg.muted"}
+                              >
+                                {doc.documentRequirement.name}
+                              </ClampText>
+
+                              <ClampText>
+                                {val ? (isNotFound ? l.not_found : val) : "-"}
+                              </ClampText>
+                            </HStack>
+                          );
+                        })}
+                      </CContainer>
+                    </AccordionItemContent>
+                  </AccordionItem>
+                );
+              })}
+            </AccordionRoot>
+          </CContainer>
+        </AccordionItemContent>
+      </AccordionItem>
+    </>
+  );
+});
+AccordionItemsList.displayName = "AccordionItemsList";
 
 interface Props__AccordionMode extends StackProps {
   daSession?: Interface__DASessionDetail;
@@ -75,17 +252,6 @@ const AccordionMode = (props: Props__AccordionMode) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-
-  // States
-  const documentRequirements = daSession?.documentService?.documentRequirements;
-  const result = daSession?.result;
-  const uploadedDocuments = daSession?.uploadedDocuments;
-
-  // Utils
-  const getValueResult = (label: string, index: number) => {
-    const field = result?.find((item) => item.label === label);
-    return field?.values?.[index]?.value ?? null;
-  };
 
   return (
     <CContainer px={4}>
@@ -104,165 +270,11 @@ const AccordionMode = (props: Props__AccordionMode) => {
             overflow={"clip"}
           >
             <CContainer gap={2}>
-              {uploadedDocuments?.map((doc, index) => {
-                const documentRequirement = documentRequirements?.find((dr) => {
-                  return dr.id === doc.documentRequirement.id;
-                });
-
-                return (
-                  <AccordionItem
-                    key={doc.documentRequirement.id}
-                    value={`${doc.documentRequirement.id}`}
-                    px={4}
-                    border={"1px solid"}
-                    borderColor={"border.muted"}
-                    rounded={themeConfig.radii.container}
-                    _open={{
-                      bg: "d0",
-                    }}
-                  >
-                    <AccordionItemTrigger cursor={"pointer"}>
-                      <P>{doc.documentRequirement.name}</P>
-                    </AccordionItemTrigger>
-
-                    <AccordionItemContent>
-                      <CContainer gap={2}>
-                        {isEmptyArray(
-                          documentRequirement?.extractionSchema,
-                        ) && (
-                          <FeedbackNotFound
-                            title={l.alert_no_data.title}
-                            mb={7}
-                          />
-                        )}
-
-                        {documentRequirement?.extractionSchema?.map((field) => {
-                          const value = getValueResult(field.label, index);
-                          const isNotFound = value === "NOT_FOUND";
-
-                          return (
-                            value && (
-                              <HStack key={field.key}>
-                                <ClampText
-                                  flexShrink={0}
-                                  w={"240px"}
-                                  color={"fg.muted"}
-                                >
-                                  {field.label}
-                                </ClampText>
-
-                                <ClampText color={value ? "" : "fg.muted"}>
-                                  {isNotFound ? l.not_found : value}
-                                </ClampText>
-                              </HStack>
-                            )
-                          );
-                        })}
-                      </CContainer>
-                    </AccordionItemContent>
-                  </AccordionItem>
-                );
-              })}
-
-              <AccordionItem
-                value={`validation`}
-                borderBottom={"none"}
-                px={0}
-                border={"1px solid"}
-                borderColor={"border.muted"}
-                rounded={themeConfig.radii.container}
-                _open={{
-                  bg: "d0",
-                }}
-              >
-                <AccordionItemTrigger cursor={"pointer"} px={4}>
-                  <P>{l.validation}</P>
-                  <DotIndicator />
-                </AccordionItemTrigger>
-
-                <AccordionItemContent p={0}>
-                  <CContainer gap={1}>
-                    <AccordionRoot collapsible multiple>
-                      {isEmptyArray(result) && (
-                        <FeedbackNotFound
-                          title={l.alert_no_data.title}
-                          mb={7}
-                        />
-                      )}
-
-                      {result?.map((r, index) => {
-                        const isLastIndex = index === result.length - 1;
-                        const fieldLabel = r.label;
-                        const isMatch = r.validation.status;
-
-                        return (
-                          <AccordionItem
-                            key={r.label}
-                            value={r.label}
-                            borderBottom={isLastIndex ? "none" : "1px solid"}
-                            borderColor={"d1"}
-                            px={4}
-                            _open={{
-                              bg: "d0",
-                            }}
-                          >
-                            <AccordionItemTrigger cursor={"pointer"}>
-                              <HStack>
-                                <Tooltip content={r.label}>
-                                  <P
-                                    flexShrink={0}
-                                    lineClamp={1}
-                                    w={"240px"}
-                                    // color={"fg.muted"}
-                                  >
-                                    {r.label}
-                                  </P>
-                                </Tooltip>
-
-                                <P color={isMatch ? "fg.success" : "fg.error"}>
-                                  {isMatch ? l.match : l.mismatch}
-                                </P>
-                              </HStack>
-                            </AccordionItemTrigger>
-
-                            <AccordionItemContent px={0} py={2}>
-                              <CContainer rounded={"md"} gap={2}>
-                                {uploadedDocuments?.map((doc, docIndex) => {
-                                  const val = getValueResult(
-                                    fieldLabel,
-                                    docIndex,
-                                  );
-                                  const isNotFound = val === "NOT_FOUND";
-
-                                  return (
-                                    <HStack key={doc.documentRequirement.id}>
-                                      <ClampText
-                                        flexShrink={0}
-                                        w={"240px"}
-                                        color={"fg.muted"}
-                                      >
-                                        {doc.documentRequirement.name}
-                                      </ClampText>
-
-                                      <ClampText>
-                                        {val
-                                          ? isNotFound
-                                            ? l.not_found
-                                            : val
-                                          : "-"}
-                                      </ClampText>
-                                    </HStack>
-                                  );
-                                })}
-                              </CContainer>
-                            </AccordionItemContent>
-                          </AccordionItem>
-                        );
-                      })}
-                    </AccordionRoot>
-                  </CContainer>
-                </AccordionItemContent>
-              </AccordionItem>
+              <AccordionItemsList
+                daSession={daSession}
+                l={l}
+                themeConfig={themeConfig}
+              />
             </CContainer>
           </AccordionRoot>
         </CContainer>
