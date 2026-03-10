@@ -124,11 +124,14 @@ const DesktopTabs = (props: TabsRootProps) => {
     >
       <Tabs.List>
         {TABS.map((tab) => {
+          const isActive = navsTabs.current === tab.value;
+
           return (
             <Tabs.Trigger
               key={tab.value}
               value={tab.value}
               // color={isActive ? `${themeConfig.colorPalette}.fg` : ""}
+              bg={isActive ? "d1" : ""}
               rounded={themeConfig.radii.component}
               onClick={() => {
                 setNavsTabs({

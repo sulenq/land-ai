@@ -188,7 +188,7 @@ export default function SettingsLayout(props: Props__Layout) {
               // borderRight={isSmContainer ? "" : "1px solid"}
               borderColor={"border.muted"}
             >
-              <CContainer px={4} mt={4} mb={1}>
+              <CContainer px={4} mt={3} mb={1}>
                 <ClampText fontSize={"xl"} fontWeight={"semibold"}>
                   {l.settings}
                 </ClampText>

@@ -1,11 +1,9 @@
 "use client";
 
-import { useColorMode, useColorModeValue } from "@/components/ui/color-mode";
 import { MAIN_BUTTON_SIZE } from "@/constants/styles";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import { hexWithOpacity } from "@/utils/color";
-import { Button, ButtonProps, IconButton, useToken } from "@chakra-ui/react";
-import { forwardRef, useMemo } from "react";
+import { Button, ButtonProps, IconButton } from "@chakra-ui/react";
+import { forwardRef } from "react";
 
 export interface Props__Btn extends ButtonProps {
   children?: React.ReactNode;
@@ -29,45 +27,45 @@ export const Btn = forwardRef<HTMLButtonElement, Props__Btn>((props, ref) => {
 
   // Contexts
   const { themeConfig } = useThemeConfig();
-  const { colorMode } = useColorMode();
-  const graySolidActiveBg = useColorModeValue("gray.600", "gray.300");
+  // const { colorMode } = useColorMode();
+  // const graySolidActiveBg = useColorModeValue("gray.600", "gray.300");
 
-  // States
+  // Derived Values
+  // const isSubtle = props?.variant === "subtle";
+  // const isColorPaletteGray = colorPalette === "gray";
   const resolvedClassName = `${clicky ? "clicky" : ""} ${className}`.trim();
-  const isSubtle = props?.variant === "subtle";
-  const isColorPaletteGray = colorPalette === "gray";
 
   // Memoized Active Style
-  // const resolvedMutedColor = useColorModeValue(
+  // const muteColor1 = useColorModeValue(
   //   `${colorPalette}.100 !important`,
   //   `${colorPalette}.900 !important`,
   // );
-  const [paletteHex] = useToken("colors", [`${colorPalette}.500`]);
-  const resolvedMutedColor = hexWithOpacity(paletteHex, 0.1);
-  const activeBg = useMemo(() => {
-    if (colorPalette) {
-      switch (props?.variant) {
-        default:
-          return isColorPaletteGray ? graySolidActiveBg : `${colorPalette}.600`;
-        case "ghost":
-        case "outline":
-          return resolvedMutedColor;
-        case "subtle":
-        case "surface":
-          return `${colorPalette}.muted`;
-        case "plain":
-          return "";
-      }
-    } else {
-      switch (props?.variant) {
-        default:
-          return "";
-        case "subtle":
-        case "surface":
-          return "gray.muted";
-      }
-    }
-  }, [props.variant, colorPalette, colorMode]);
+  // const [paletteHex] = useToken("colors", [`gray.500`]);
+  // const muteColor1 = hexWithOpacity(paletteHex, 0.1);
+  // const activeBg = useMemo(() => {
+  //   if (colorPalette) {
+  //     switch (props?.variant) {
+  //       default:
+  //         return isColorPaletteGray ? graySolidActiveBg : `${colorPalette}.600`;
+  //       case "ghost":
+  //       case "outline":
+  //         return `${colorPalette}.subtle`;
+  //       case "subtle":
+  //       case "surface":
+  //         return `${colorPalette}.muted`;
+  //       case "plain":
+  //         return "";
+  //     }
+  //   } else {
+  //     switch (props?.variant) {
+  //       default:
+  //         return "";
+  //       case "subtle":
+  //       case "surface":
+  //         return "gray.muted";
+  //     }
+  //   }
+  // }, [props.variant, colorPalette, colorMode]);
 
   return iconButton ? (
     <IconButton
@@ -77,8 +75,8 @@ export const Btn = forwardRef<HTMLButtonElement, Props__Btn>((props, ref) => {
       size={size || (MAIN_BUTTON_SIZE as any)}
       rounded={themeConfig.radii.component}
       fontSize={"md"}
-      _hover={{ bg: activeBg }}
-      _active={{ bg: activeBg }}
+      // _hover={{ bg: activeBg }}
+      // _active={{ bg: activeBg }}
       _focusVisible={
         focusStyle
           ? {
@@ -100,8 +98,8 @@ export const Btn = forwardRef<HTMLButtonElement, Props__Btn>((props, ref) => {
       fontSize={"md"}
       fontWeight="medium"
       rounded={themeConfig.radii.component}
-      _hover={{ bg: isSubtle && !colorPalette ? "d1" : activeBg }}
-      _active={{ bg: activeBg }}
+      // _hover={{ bg: activeBg }}
+      // _active={{ bg: activeBg }}
       _focusVisible={
         focusStyle
           ? {
