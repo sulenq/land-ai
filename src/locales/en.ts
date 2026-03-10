@@ -600,6 +600,7 @@ const translations = {
   "verify": "Verify",
   "view": "View",
   "view_more": "View more",
+  "wait": "Wait",
   "wednesday": "Wednesday",
   "week": "Week",
   "will_be_deleted": "Will be deleted",

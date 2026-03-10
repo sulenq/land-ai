@@ -323,9 +323,10 @@ const DeleteAllButton = (props: Props__Btn) => {
       }}
       loading={loading}
       w={"full"}
-      mt={1}
     >
-      <Btn variant={"ghost"} color={"fg.error"} {...props}>
+      <Btn variant={"outline"} color={"fg.error"} {...props}>
+        <AppIcon icon={TrashIcon} />
+
         {l.delete_all}
       </Btn>
     </ConfirmationDisclosureTrigger>
@@ -464,7 +465,7 @@ export const DASessions = (props: any) => {
       <>
         {loadedContent}
 
-        <DeleteAllButton mt={"auto"} />
+        <DeleteAllButton mt={2} />
       </>
     ),
   };

@@ -9,14 +9,14 @@ import {
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { P } from "@/components/ui/p";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useCountdown } from "@/hooks/useCountdown";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { disclosureId } from "@/utils/disclosure";
-import { StackProps } from "@chakra-ui/react";
+import { Box, StackProps } from "@chakra-ui/react";
 import { useEffect } from "react";
 import BackButton from "./BackButton";
-import { Tooltip } from "@/components/ui/tooltip";
 
 interface Props__Disclosure {
   isOpen: boolean;
@@ -64,23 +64,36 @@ export const ConfirmationDisclosure = (props: Props__Disclosure) => {
         <DisclosureFooter>
           <BackButton disabled={loading} />
 
-          <Btn
-            w={"120px"}
-            onClick={onConfirm}
-            loading={loading}
-            colorPalette={themeConfig.colorPalette}
-            fontVariantNumeric={"tabular-nums"}
-            disabled={!isCountdownFinished}
-            {...confirmButtonProps}
-          >
-            <Tooltip content={confirmLabel}>
-              <P lineClamp={1}>
-                {confirmCountdown && !isCountdownFinished
-                  ? confirmCountdown
-                  : confirmLabel}
-              </P>
-            </Tooltip>
-          </Btn>
+          <Box pos={"relative"}>
+            <Btn
+              w={"120px"}
+              onClick={onConfirm}
+              loading={loading}
+              colorPalette={themeConfig.colorPalette}
+              fontVariantNumeric={"tabular-nums"}
+              disabled={!isCountdownFinished}
+              {...confirmButtonProps}
+            >
+              <Tooltip content={confirmLabel}>
+                <P lineClamp={1} opacity={isCountdownFinished ? 1 : 0.25}>
+                  {confirmLabel}
+                </P>
+              </Tooltip>
+            </Btn>
+
+            <P
+              pos={"absolute"}
+              top={"50%"}
+              left={"50%"}
+              transform={"translate(-50%, -50%)"}
+              fontVariantNumeric={"tabular-nums"}
+              pointerEvents={"none"}
+              opacity={isCountdownFinished ? 0 : 1}
+              lineClamp={1}
+            >
+              {`${confirmCountdown}`}
+            </P>
+          </Box>
         </DisclosureFooter>
       </DisclosureContent>
     </DisclosureRoot>

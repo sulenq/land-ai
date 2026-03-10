@@ -600,6 +600,7 @@ const translations = {
   "verify": "Verifikasi",
   "view": "Lihat",
   "view_more": "Lihat lebih",
+  "wait": "Tunggu",
   "wednesday": "Rabu",
   "week": "Minggu",
   "will_be_deleted": "Akan dihapus",
