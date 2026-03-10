@@ -245,7 +245,7 @@ interface Props__AccordionMode extends StackProps {
   accordionValue: string[];
   setAccordionValue: React.Dispatch<React.SetStateAction<string[]>>;
 }
-const AccordionMode = (props: Props__AccordionMode) => {
+const AccordionMode = memo((props: Props__AccordionMode) => {
   // Props
   const { daSession, accordionValue, setAccordionValue } = props;
 
@@ -281,7 +281,8 @@ const AccordionMode = (props: Props__AccordionMode) => {
       </ContainerLayout>
     </CContainer>
   );
-};
+});
+AccordionMode.displayName = "AccordionMode";
 
 interface Props__TableMode extends StackProps {
   daSession?: Interface__DASessionDetail;
@@ -290,7 +291,7 @@ interface Props__TableMode extends StackProps {
     height: number;
   };
 }
-const TableMode = (props: Props__TableMode) => {
+const TableMode = memo((props: Props__TableMode) => {
   // Props
   const { daSession, containerDimension } = props;
 
@@ -307,58 +308,66 @@ const TableMode = (props: Props__TableMode) => {
   // const documentRequirements = daSession?.documentService?.documentRequirements;
   const uploadedDocuments = daSession?.uploadedDocuments;
   const result = daSession?.result;
-  const headers: Interface__FormattedTableHeader[] = [
-    { th: "Item Validasi", sortable: true },
-    ...(uploadedDocuments ?? []).map((doc) => ({
-      th: doc.documentRequirement.name,
-      sortable: true,
-    })),
-    { th: "Validasi", sortable: true },
-  ];
+  const headers = useMemo<Interface__FormattedTableHeader[]>(
+    () => [
+      { th: "Item Validasi", sortable: true },
+      ...(uploadedDocuments ?? []).map((doc) => ({
+        th: doc.documentRequirement.name,
+        sortable: true,
+      })),
+      { th: "Validasi", sortable: true },
+    ],
+    [uploadedDocuments],
+  );
 
-  const rows: Interface__FormattedTableRow[] = (result ?? []).map((r, idx) => {
-    const isMatch = r.validation.status;
+  const rows = useMemo<Interface__FormattedTableRow[]>(() => {
+    return (result ?? []).map((r, idx) => {
+      const isMatch = r.validation.status;
 
-    return {
-      id: `${idx}`,
-      idx: idx,
-      data: r,
-      columns: [
-        { td: r.label, value: r.label, dataType: "string" },
-        ...r.values.map((v) => {
-          // const documentRequirement = documentRequirements?.find((dr) => {
-          //   return dr.id === v.documentId;
-          // });
-          // const isInSchema = documentRequirement?.extractionSchema?.find(
-          //   (es) => {
-          //     return es.label === r.label;
-          //   },
-          // );
-          const isNotFound = v.value === "NOT_FOUND";
+      return {
+        id: `${idx}`,
+        idx: idx,
+        data: r,
+        columns: [
+          { td: r.label, value: r.label, dataType: "string" },
+          ...r.values.map((v) => {
+            // const documentRequirement = documentRequirements?.find((dr) => {
+            //   return dr.id === v.documentId;
+            // });
+            // const isInSchema = documentRequirement?.extractionSchema?.find(
+            //   (es) => {
+            //     return es.label === r.label;
+            //   },
+            // );
+            const isNotFound = v.value === "NOT_FOUND";
 
-          return {
+            return {
+              td: (
+                <ClampText
+                  color={isNotFound ? "fg.warning" : ""}
+                  maxW={"200px"}
+                >
+                  {v.value || (isNotFound ? l.not_found : "-")}
+                </ClampText>
+              ),
+              dim: isNotFound || v.value === null,
+              value: v.value,
+              dataType: v.renderType,
+            };
+          }),
+          {
             td: (
-              <ClampText color={isNotFound ? "fg.warning" : ""} maxW={"200px"}>
-                {v.value || (isNotFound ? l.not_found : "-")}
-              </ClampText>
+              <P color={isMatch ? "fg.success" : "fg.error"}>
+                {isMatch ? l.match : l.mismatch}
+              </P>
             ),
-            dim: isNotFound || v.value === null,
-            value: v.value,
-            dataType: v.renderType,
-          };
-        }),
-        {
-          td: (
-            <P color={isMatch ? "fg.success" : "fg.error"}>
-              {isMatch ? l.match : l.mismatch}
-            </P>
-          ),
-          value: r.validation.status,
-          dataType: "boolean",
-        },
-      ],
-    };
-  });
+            value: r.validation.status,
+            dataType: "boolean",
+          },
+        ],
+      };
+    });
+  }, [result, l]);
 
   // Utils
   function handleMouseDown(e: React.MouseEvent) {
@@ -415,7 +424,8 @@ const TableMode = (props: Props__TableMode) => {
       />
     </>
   );
-};
+});
+TableMode.displayName = "TableMode";
 
 interface Props__ResultSection extends StackProps {
   daSession?: Interface__DASessionDetail;
@@ -513,21 +523,21 @@ const ResultSection = (props: Props__ResultSection) => {
       </CContainer>
 
       {/* Accordion View */}
-      {viewMode === "accordion" && (
+      <Box display={viewMode === "accordion" ? "block" : "none"}>
         <AccordionMode
           daSession={daSession}
           accordionValue={accordionValue}
           setAccordionValue={setAccordionValue}
         />
-      )}
+      </Box>
 
       {/* Table View - cross-document comparison */}
-      {viewMode === "table" && (
+      <Box display={viewMode === "table" ? "block" : "none"}>
         <TableMode
           daSession={daSession}
           containerDimension={containerDimension}
         />
-      )}
+      </Box>
     </CContainer>
   );
 };
