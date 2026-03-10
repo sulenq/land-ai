@@ -427,8 +427,8 @@ const ResultSection = (props: Props__ResultSection) => {
 
   return (
     <CContainer pos={"relative"} {...restProps}>
-      <CContainer px={4}>
-        <ContainerLayout pos={"sticky"} top={"-32px"} zIndex={"sticky"}>
+      <CContainer px={4} pos={"sticky"} top={"-32px"} zIndex={"sticky"}>
+        <ContainerLayout>
           <HStack
             justify={"space-between"}
             pb={2}
@@ -866,7 +866,7 @@ export default function Page() {
 
       <CContainer flex={1} gap={4} justify={"space-between"}>
         <FadingSkeletonContainer loading={initialLoading}>
-          <ContainerLayout flex={1} mt={8} pb={8}>
+          <ContainerLayout flex={1} px={4} pb={8} mt={8}>
             {render.loading}
           </ContainerLayout>
         </FadingSkeletonContainer>
