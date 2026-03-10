@@ -294,7 +294,7 @@ const DeleteAllButton = (props: Props__Btn) => {
   return (
     <ConfirmationDisclosureTrigger
       id={"delete-all-da-sessions"}
-      title={l.delete_all}
+      title={capitalizeWords(l.delete_all)}
       description={l.msg_perma_delete}
       confirmLabel={l.delete_all}
       confirmButtonProps={{

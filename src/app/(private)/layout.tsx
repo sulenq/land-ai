@@ -158,8 +158,8 @@ const DesktopTabs = (props: TabsRootProps) => {
             position="absolute"
             inset="0"
             _open={{
-              animationName: "slide-from-left-full",
-              animationDuration: "200ms",
+              animationName: "fade-in",
+              animationDuration: "300ms",
             }}
             _closed={{
               animationName: "fade-out",

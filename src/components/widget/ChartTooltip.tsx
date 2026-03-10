@@ -28,7 +28,7 @@ export const ChartTooltip = (
       border={"1px solid"}
       borderColor={"border.subtle"}
       rounded={themeConfig.radii.component}
-      shadow={"smooth"}
+      shadow={"soft"}
     >
       <P fontWeight={"semibold"} mb={1}>
         {label}
