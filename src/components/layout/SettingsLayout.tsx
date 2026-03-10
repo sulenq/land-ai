@@ -73,7 +73,7 @@ const NavsList = (props: any) => {
   );
 
   return (
-    <MContainer className="scrollY" gap={4} {...restProps}>
+    <CContainer gap={4} {...restProps}>
       {isEmptyArray(resolvedList) && <FeedbackNotFound />}
 
       {!isEmptyArray(resolvedList) &&
@@ -135,7 +135,7 @@ const NavsList = (props: any) => {
             </CContainer>
           );
         })}
-    </MContainer>
+    </CContainer>
   );
 };
 
@@ -204,18 +204,25 @@ export default function SettingsLayout(props: Props__Layout) {
                 />
               </CContainer>
 
-              <NavsList isAdminRoutes={isAdminRoutes} search={search} p={3} />
+              <MContainer className={"scrollY"} flex={1}>
+                <NavsList
+                  isAdminRoutes={isAdminRoutes}
+                  search={search}
+                  flex={1}
+                  p={3}
+                />
 
-              <HStack justify={"space-between"} px={4} py={4} mt={"auto"}>
-                <HelperText>{`v${APP.version}`}</HelperText>
+                <CContainer justify={"space-between"} px={4} py={4} mt={"auto"}>
+                  <HelperText>{`v${APP.version}`}</HelperText>
 
-                <HelperText>
-                  {`Last updated: 
+                  <HelperText>
+                    {`Last updated: 
                 ${formatAbsDate(APP.lastUpdated, {
                   variant: "numeric",
                 })}`}
-                </HelperText>
-              </HStack>
+                  </HelperText>
+                </CContainer>
+              </MContainer>
             </CContainer>
           )}
 
