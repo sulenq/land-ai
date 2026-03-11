@@ -66,7 +66,6 @@ export const ConfirmationDisclosure = (props: Props__Disclosure) => {
 
           <Box pos={"relative"}>
             <Btn
-              w={"120px"}
               onClick={onConfirm}
               loading={loading}
               colorPalette={themeConfig.colorPalette}
@@ -176,7 +175,6 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
           if (disabled) return;
 
           openDisclosure();
-          onOpen?.();
         }}
         cursor={disabled ? "disabled" : "pointer"}
         {...restProps}
