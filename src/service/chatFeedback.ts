@@ -2,6 +2,7 @@ import { CHAT_API_FEEDBACK } from "@/constants/apis";
 import {
   Interface__ChatMessage,
   Interface__SubmitFeedbackRequest,
+  Type__FeedbackCategory,
 } from "@/constants/interfaces";
 import { request } from "@/utils/request";
 
@@ -11,7 +12,7 @@ export interface SubmitFeedbackParams {
   userQuery?: string;
   retrievedContexts?: string[];
   rating: 1 | -1;
-  category?: string;
+  category?: Type__FeedbackCategory;
   userComment?: string;
 }
 

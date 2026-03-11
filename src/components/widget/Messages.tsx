@@ -16,7 +16,10 @@ import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
 import { FeedbackButton } from "@/components/widget/FeedbackButton";
 import { Logo } from "@/components/widget/Logo";
-import { Interface__ChatMessage } from "@/constants/interfaces";
+import {
+  Interface__ChatMessage,
+  Type__FeedbackCategory,
+} from "@/constants/interfaces";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import useMessageContainer from "@/context/useMessageContainer";
@@ -100,10 +103,14 @@ export const Messages = (props: Props__Messages) => {
   // Handle feedback submission
   const handleFeedbackSubmit = async (
     message: Interface__ChatMessage,
-    feedbackData: { rating: 1 | -1; category?: string; userComment?: string }
+    feedbackData: {
+      rating: 1 | -1;
+      category?: Type__FeedbackCategory;
+      userComment?: string;
+    }
   ) => {
     const userQuery = messages.find(
-      (m, idx) => idx === messages.indexOf(message) - 1
+      (_m, idx) => idx === messages.indexOf(message) - 1
     )?.content;
 
     await submitFeedback({
@@ -231,7 +238,6 @@ export const Messages = (props: Props__Messages) => {
 
                           <FeedbackButton
                             message={message}
-                            userQuery={messages[index - 1]?.content}
                             onSubmitFeedback={(feedbackData) =>
                               handleFeedbackSubmit(message, feedbackData)
                             }

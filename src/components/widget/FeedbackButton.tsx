@@ -33,13 +33,12 @@ interface FeedbackData {
 
 interface Props extends StackProps {
   message: Interface__ChatMessage;
-  userQuery?: string;
   onSubmitFeedback?: (data: FeedbackData) => Promise<void>;
 }
 
 export const FeedbackButton = (props: Props) => {
   // Props
-  const { message, userQuery, onSubmitFeedback, ...restProps } = props;
+  const { message, onSubmitFeedback, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
