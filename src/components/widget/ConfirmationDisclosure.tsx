@@ -112,7 +112,6 @@ interface Props__Trigger extends StackProps {
   addonElement?: any;
   onConfirm: () => void;
   onOpen?: () => void;
-  onClose?: () => void;
 }
 export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
   // Props
@@ -129,7 +128,6 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
     addonElement,
     onConfirm,
     onOpen,
-    onClose,
     ...restProps
   } = props;
 
@@ -155,14 +153,12 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
         startCountdown();
       }
     } else {
-      onClose?.();
-
       if (confirmCountdownDuration) {
         stopCountdown();
         resetCountdown();
       }
     }
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   return (
     <>
