@@ -199,7 +199,6 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
             variant: "outline",
           }}
           w={"full"}
-          onClick={onClose}
         >
           <Btn
             clicky={false}
