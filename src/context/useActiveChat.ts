@@ -3,6 +3,7 @@ import {
   Interface__ActiveChatState,
   Interface__ChatMessage,
   Interface__ContextChatSession,
+  Interface__MessageFeedback,
 } from "@/constants/interfaces";
 
 interface State_Actions {
@@ -19,6 +20,7 @@ interface State_Actions {
 
   appendMessage: (message: Interface__ChatMessage) => void;
   removeMessage: (messageId: string) => void;
+  updateMessageFeedback: (messageId: string, feedback: Interface__MessageFeedback) => void;
 
   startAssistantStreaming: (messageId: string) => string;
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;
@@ -168,6 +170,16 @@ export const useActiveChat = create<State_Actions>((set) => ({
             : m,
         ),
         isStreaming: false,
+      },
+    })),
+
+  updateMessageFeedback: (messageId, feedback) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        messages: state.activeChat.messages.map((m) =>
+          m.id === messageId ? { ...m, feedback } : m,
+        ),
       },
     })),
 }));

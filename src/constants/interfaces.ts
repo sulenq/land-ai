@@ -193,6 +193,32 @@ export interface Interface__ChatMessage {
   sequenceNumber?: number;
   error?: boolean;
   createdAt?: string;
+  feedback?: Interface__MessageFeedback;
+}
+
+export interface Interface__MessageFeedback {
+  rating: 1 | -1;
+  category?: Type__FeedbackCategory;
+  userComment?: string;
+  createdAt?: string;
+}
+
+export type Type__FeedbackCategory =
+  | "NOT_RELEVANT"
+  | "WRONG_INFORMATION"
+  | "HALLUCINATION"
+  | "INCOMPLETE"
+  | "OTHER";
+
+export interface Interface__SubmitFeedbackRequest {
+  messageId: string;
+  sessionId: string;
+  userQuery: string;
+  aiResponse: string;
+  retrievedContexts?: string[];
+  rating: 1 | -1;
+  category?: Type__FeedbackCategory;
+  userComment?: string;
 }
 export interface Interface__ActiveChatState {
   session: Interface__ContextChatSessionDraft | null;
