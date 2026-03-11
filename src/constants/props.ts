@@ -41,7 +41,7 @@ export interface Props__NewChat extends StackProps {
   loading?: boolean;
 }
 
-export interface Props__UserBubbleChat {
+export interface Props__UserBubbleChat extends StackProps {
   children: string;
   error?: any;
 }

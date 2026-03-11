@@ -139,6 +139,26 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const wait = {
+  id: "Tunggu",
+  en: "Wait",
+};
+export const delete_all = {
+  id: "Hapus semua",
+  en: "Delete all",
+};
+export const hi = {
+  id: "Hai",
+  en: "Hi",
+};
+export const hello = {
+  id: "Halo",
+  en: "Hello",
+};
+export const change_view_mode = {
+  id: "Ubah mode tampilan",
+  en: "Change view mode",
+};
 export const open_all = {
   id: "Buka semua",
   en: "Open all",
@@ -1087,17 +1107,21 @@ export const msg_welcome_to_the_app = {
   id: "Selamat datang di ${appName}",
   en: "Welcome to ${appName}",
 };
+export const msg_based_on_official_documents = {
+  id: "Jawaban berdasarkan dokumen resmi",
+  en: "Answers based on official documents",
+};
 export const msg_welcome_context = {
-  id: "Konsultasi Hukum Pertanahan (Berbasis Dokumen Resmi)",
-  en: "Legal Consultation (Based on Official Documents)",
+  id: "Konsultasi Hukum Pertanahan",
+  en: "Legal Consultation",
 };
 export const msg_da_disclaimer = {
   id: "*Data yang diunggah hanya digunakan untuk proses analisis dan akan dihapus setelah analisis selesai demi menjaga privasi pengguna.",
   en: "*Uploaded data is used solely for analysis purposes and will be deleted after the analysis is completed to protect user privacy.",
 };
 export const msg_chat_ai_disclaimer = {
-  id: "*Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
-  en: "*Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
+  id: "Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.",
+  en: "Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
 };
 export const msg_welcome_1 = {
   id: "Semoga harimu berjalan lancar.",

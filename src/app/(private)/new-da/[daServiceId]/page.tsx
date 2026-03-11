@@ -22,13 +22,11 @@ import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useTimezone from "@/context/useTimezone";
-import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
-import { formatDate } from "@/utils/formatter";
-import { getGridColumns } from "@/utils/style";
-import { makeUTCISODateTime } from "@/utils/time";
+import { formatDate, formatTime } from "@/utils/formatter";
+import { makeUTCISODateTime, utcTimeString } from "@/utils/time";
 import { fileValidation } from "@/utils/validationSchema";
 import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
 import { useFormik } from "formik";
@@ -63,7 +61,6 @@ const InputForm = (props: Props__InputForm) => {
 
   // States
   const docReqs = daService?.documentRequirements;
-
   const buildFileSchema = (
     docs?: Interface__DAServiceDocumentRequirement[],
   ) => {
@@ -89,7 +86,6 @@ const InputForm = (props: Props__InputForm) => {
       files: yup.object().shape(shape),
     });
   };
-
   const formik = useFormik({
     validateOnChange: false,
     initialValues: {
@@ -109,9 +105,10 @@ const InputForm = (props: Props__InputForm) => {
           makeUTCISODateTime(iso, time),
           {
             variant: "numeric",
-            withTime: true,
           },
-        )} ${tz.localAbbr}`,
+        )} ${formatTime(utcTimeString(), {
+          timezoneKey: tz.key,
+        })} ${tz.localAbbr}`,
       );
       payload.append("serviceId", `${daService?.id}`);
       Object.entries(values.files).forEach(([docId, files]) => {
@@ -140,24 +137,20 @@ const InputForm = (props: Props__InputForm) => {
       });
     },
   });
-
   const totalFiles = docReqs?.length;
   const totalUploadedFiles = Object.keys(formik.values.files).length;
+  const minChildWidth = "240px";
 
   if (isEmptyArray(docReqs)) return <FeedbackNoData />;
 
   return (
-    <CContainer
-      gap={4}
-      // p={4}
-      // border={"1px solid"}
-      borderColor={"border.muted"}
-      rounded={themeConfig.radii.container}
-      {...restProps}
-    >
+    <CContainer gap={4} {...restProps}>
       <form id={ID} onSubmit={formik.handleSubmit}>
         <FieldsetRoot disabled={loading}>
-          <SimpleGrid columns={[1, null, 2]} gap={4}>
+          <SimpleGrid
+            templateColumns={`repeat(auto-fill, minmax(${minChildWidth}, 1fr))`}
+            gap={4}
+          >
             {docReqs?.map((doc) => {
               return (
                 <Field
@@ -184,16 +177,13 @@ const InputForm = (props: Props__InputForm) => {
         </FieldsetRoot>
       </form>
 
-      <CContainer align={"center"} gap={4}>
-        <P
-          color={"fg.subtle"}
-        >{`${totalUploadedFiles}/${totalFiles} file(s)`}</P>
-
+      <CContainer gap={4}>
         <Btn
           type="submit"
           form={ID}
-          w={"124px"}
-          size={"md"}
+          // w={"124px"}
+          w={"full"}
+          size={"xl"}
           colorPalette={themeConfig.colorPalette}
           loading={loading}
           disabled={docReqs
@@ -204,7 +194,7 @@ const InputForm = (props: Props__InputForm) => {
                 formik.values.files[doc.id].length === 0,
             )}
         >
-          {l.analysis}
+          {l.analysis} {`${totalUploadedFiles}/${totalFiles} file(s)`}
         </Btn>
       </CContainer>
     </CContainer>
@@ -212,12 +202,6 @@ const InputForm = (props: Props__InputForm) => {
 };
 
 export default function Page() {
-  const GRID_COLS_BREAKPOINTS = {
-    0: 1,
-    350: 2,
-    720: 4,
-  };
-
   // Contexts
   const { l, lang } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
@@ -226,7 +210,6 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Hooks
-  const containerDimension = useContainerDimension(containerRef);
   const { daServiceId } = useParams();
 
   // States
@@ -236,37 +219,6 @@ export default function Page() {
       url: `${DA_API_SERVICE_DETAIL}/${daServiceId}`,
       dataResource: false,
     });
-  const cols = getGridColumns(containerDimension.width, GRID_COLS_BREAKPOINTS);
-
-  const render = {
-    loading: (
-      <>
-        <VStack gap={1}>
-          <Skeleton maxW={"350px"} minH={"30px"} />
-          <Skeleton minH={"21px"} />
-        </VStack>
-
-        <Skeleton minH={"370px"} />
-      </>
-    ),
-    error: <FeedbackRetry onRetry={onRetry} />,
-    empty: <FeedbackNoData />,
-    notFound: <FeedbackNotFound />,
-    loaded: (
-      <>
-        <VStack gap={1}>
-          <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
-            {data?.title?.[lang]}
-          </P>
-          <P color={"fg.subtle"} textAlign={"center"}>
-            {data?.description?.[lang]}
-          </P>
-        </VStack>
-
-        {cols > 1 && <InputForm daService={data} cols={cols} />}
-      </>
-    ),
-  };
 
   useEffect(() => {
     // setActiveDA({
@@ -287,10 +239,40 @@ export default function Page() {
     });
   }, [data]);
 
+  const render = {
+    loading: (
+      <>
+        <VStack gap={1}>
+          <Skeleton maxW={"350px"} minH={"30px"} />
+          <Skeleton minH={"21px"} />
+        </VStack>
+
+        <Skeleton minH={"370px"} />
+      </>
+    ),
+    error: <FeedbackRetry onRetry={onRetry} />,
+    empty: <FeedbackNoData />,
+    notFound: <FeedbackNotFound />,
+    loaded: (
+      <CContainer gap={8}>
+        <CContainer gap={1}>
+          <P fontSize={"3xl"} fontWeight={"semibold"}>
+            {data?.title?.[lang]}
+          </P>
+          <P fontSize={"lg"} color={"fg.subtle"}>
+            {data?.description?.[lang]}
+          </P>
+        </CContainer>
+
+        <InputForm daService={data} />
+      </CContainer>
+    ),
+  };
+
   return (
     <PageContainer p={8}>
       <ContainerLayout ref={containerRef} flex={1}>
-        <CContainer flex={1} gap={8} justify={"space-between"}>
+        <CContainer flex={1} gap={8} justify={"center"}>
           {initialLoading && render.loading}
           {!initialLoading && (
             <>
@@ -304,7 +286,7 @@ export default function Page() {
             </>
           )}
 
-          <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+          <HelperText>{l.msg_da_disclaimer}</HelperText>
         </CContainer>
       </ContainerLayout>
     </PageContainer>

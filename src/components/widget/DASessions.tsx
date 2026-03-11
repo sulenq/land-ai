@@ -1,4 +1,4 @@
-import { Btn } from "@/components/ui/btn";
+import { Btn, Props__Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import {
   DisclosureBody,
@@ -38,6 +38,7 @@ import { Interface__DASession } from "@/constants/interfaces";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
+import useRenderTrigger from "@/context/useRenderTrigger";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
@@ -279,6 +280,59 @@ const Delete = (props: Props__Delete) => {
   );
 };
 
+const DeleteAllButton = (props: Props__Btn) => {
+  // Contexts
+  const { l } = useLang();
+  const DASessions = useDASessions((s) => s.DASessions);
+  const setRt = useRenderTrigger((s) => s.setRt);
+
+  // Hooks
+  const { req, loading } = useRequest({
+    id: "delete-all-da-sessions",
+  });
+
+  return (
+    <ConfirmationDisclosureTrigger
+      id={"delete-all-da-sessions"}
+      title={capitalizeWords(l.delete_all)}
+      description={l.msg_perma_delete}
+      confirmLabel={l.delete_all}
+      confirmButtonProps={{
+        variant: "outline",
+        colorPalette: "gray",
+        color: "fg.error",
+      }}
+      confirmCountdownDuration={5}
+      onConfirm={() => {
+        back();
+
+        const config = {
+          url: DA_API_SESSION_DELETE,
+          method: "DELETE",
+          params: DASessions?.map((s) => s.id),
+        };
+
+        req({
+          config,
+          onResolve: {
+            onSuccess: () => {
+              setRt((ps) => !ps);
+            },
+          },
+        });
+      }}
+      loading={loading}
+      w={"full"}
+    >
+      <Btn variant={"outline"} color={"fg.error"} {...props}>
+        <AppIcon icon={TrashIcon} />
+
+        {l.delete_all}
+      </Btn>
+    </ConfirmationDisclosureTrigger>
+  );
+};
+
 export const DASessions = (props: any) => {
   // Props
   const { ...restProps } = props;
@@ -326,13 +380,16 @@ export const DASessions = (props: any) => {
       const failed = session.status === "FAILED";
 
       return (
-        <HStack
+        <Btn
           key={session.id}
+          clicky={false}
+          variant={isActive ? "subtle" : "ghost"}
+          colorPalette={isActive ? themeConfig.colorPalette : ""}
           pl={"10px"}
+          pr={0}
           gap={0}
           justifyContent={"space-between"}
           rounded={themeConfig.radii.component}
-          _hover={{ bg: "bg.muted" }}
           transition={"200ms"}
           pos={"relative"}
         >
@@ -344,7 +401,8 @@ export const DASessions = (props: any) => {
                 key={session.serviceIcon}
                 src={imgUrl(session.serviceIcon)}
                 h={"20px"}
-                fluid
+                w={"20px"}
+                objectFit={"contain"}
                 flexShrink={0}
               />
 
@@ -381,10 +439,17 @@ export const DASessions = (props: any) => {
               <Delete value="delete" sessionId={session.id} />
             </MenuContent>
           </MenuRoot>
-        </HStack>
+        </Btn>
       );
     });
   }
+
+  useEffect(() => {
+    if (data) {
+      setDASessions(data);
+    }
+  }, [data]);
+
   const render = {
     loading: (
       <CContainer gap={4} mt={2}>
@@ -396,17 +461,17 @@ export const DASessions = (props: any) => {
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
-    loaded: loadedContent,
+    loaded: (
+      <>
+        {loadedContent}
+
+        <DeleteAllButton mt={2} />
+      </>
+    ),
   };
 
-  useEffect(() => {
-    if (data) {
-      setDASessions(data);
-    }
-  }, [data]);
-
   return (
-    <CContainer gap={2} {...restProps}>
+    <CContainer flex={1} gap={2} {...restProps}>
       <CContainer>
         <SearchInput
           queryKey={"q_sidebar_navs"}
@@ -418,7 +483,7 @@ export const DASessions = (props: any) => {
         />
       </CContainer>
 
-      <CContainer gap={1}>
+      <CContainer flex={1} gap={1}>
         <>
           {loading && render.loading}
 

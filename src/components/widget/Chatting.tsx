@@ -29,7 +29,6 @@ export const UserBubbleChat = (props: Props__UserBubbleChat) => {
       roundedBottomRight={themeConfig.radii.component}
       w={"fit"}
       maxW={"70%"}
-      ml={"auto"}
       {...restProps}
     >
       <P fontWeight={"medium"} color={`${themeConfig.colorPalette}.contrast`}>

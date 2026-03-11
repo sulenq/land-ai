@@ -12,7 +12,11 @@ import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
-import { PageContainer, PageTitle } from "@/components/widget/PageShell";
+import {
+  ContainerLayout,
+  PageContainer,
+  PageTitle,
+} from "@/components/widget/PageShell";
 import { APP } from "@/constants/_meta";
 import {
   OTHER_PRIVATE_NAV_GROUPS,
@@ -22,6 +26,7 @@ import { Props__Layout } from "@/constants/props";
 import { DESKTOP_NAVS_TOOLTIP_MAIN_AXIS } from "@/constants/styles";
 import useLang from "@/context/useLang";
 import { useSettingsPageContainer } from "@/context/useSettingsPageContainer";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import { isEmptyArray } from "@/utils/array";
 import { formatAbsDate } from "@/utils/formatter";
@@ -42,6 +47,7 @@ const NavsList = (props: any) => {
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // Hooks
   const pathname = usePathname();
@@ -67,7 +73,7 @@ const NavsList = (props: any) => {
   );
 
   return (
-    <MContainer className="scrollY" gap={4} {...restProps}>
+    <CContainer gap={4} {...restProps}>
       {isEmptyArray(resolvedList) && <FeedbackNotFound />}
 
       {!isEmptyArray(resolvedList) &&
@@ -110,7 +116,8 @@ const NavsList = (props: any) => {
                       <Btn
                         clicky={false}
                         justifyContent={"start"}
-                        variant={"ghost"}
+                        variant={isActive ? "subtle" : "ghost"}
+                        colorPalette={isActive ? themeConfig.colorPalette : ""}
                         px={2}
                         color={isActive ? "" : NAVS_COLOR}
                         pos={"relative"}
@@ -128,7 +135,7 @@ const NavsList = (props: any) => {
             </CContainer>
           );
         })}
-    </MContainer>
+    </CContainer>
   );
 };
 
@@ -181,7 +188,7 @@ export default function SettingsLayout(props: Props__Layout) {
               // borderRight={isSmContainer ? "" : "1px solid"}
               borderColor={"border.muted"}
             >
-              <CContainer px={4} mt={4} mb={1}>
+              <CContainer px={4} mt={3} mb={1}>
                 <ClampText fontSize={"xl"} fontWeight={"semibold"}>
                   {l.settings}
                 </ClampText>
@@ -197,27 +204,36 @@ export default function SettingsLayout(props: Props__Layout) {
                 />
               </CContainer>
 
-              <NavsList isAdminRoutes={isAdminRoutes} search={search} p={3} />
+              <MContainer className={"scrollY"} flex={1}>
+                <NavsList
+                  isAdminRoutes={isAdminRoutes}
+                  search={search}
+                  flex={1}
+                  p={3}
+                />
 
-              <HStack justify={"space-between"} px={4} py={4} mt={"auto"}>
-                <HelperText>{`v${APP.version}`}</HelperText>
+                <CContainer justify={"space-between"} px={4} py={4} mt={"auto"}>
+                  <HelperText>{`v${APP.version}`}</HelperText>
 
-                <HelperText>
-                  {`Last updated: 
+                  <HelperText>
+                    {`Last updated: 
                 ${formatAbsDate(APP.lastUpdated, {
                   variant: "numeric",
                 })}`}
-                </HelperText>
-              </HStack>
+                  </HelperText>
+                </CContainer>
+              </MContainer>
             </CContainer>
           )}
 
           {/* Content */}
           {showContent && (
             <MContainer className={"scrollY"} flex={1}>
-              {!isAtSettingsIndexRoute && <PageTitle mb={2} />}
+              <ContainerLayout flex={1}>
+                {!isAtSettingsIndexRoute && <PageTitle mb={2} />}
 
-              <CContainer flex={1}>{children}</CContainer>
+                <CContainer flex={1}>{children}</CContainer>
+              </ContainerLayout>
             </MContainer>
           )}
         </HStack>

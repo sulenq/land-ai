@@ -17,6 +17,7 @@ import useRequest from "@/hooks/useRequest";
 import {
   clearAccessToken,
   clearUserData,
+  getAccessToken,
   getUserData,
   setAccessToken,
   setUserData,
@@ -44,6 +45,7 @@ import { P } from "../ui/p";
 import { PasswordInput } from "../ui/password-input";
 import { StringInput } from "../ui/string-input";
 import ResetPasswordDisclosureTrigger from "./ResetPasswordDisclosure";
+import useRenderTrigger from "@/context/useRenderTrigger";
 
 const AUTH_PROVIDER_CONFIG = {
   "1": {
@@ -59,6 +61,7 @@ const AUTH_PROVIDER_CONFIG = {
 
 const SignoutButton = () => {
   // Contexts
+  const setRt = useRenderTrigger((s) => s.setRt);
   const { l } = useLang();
   const removeAuth = useAuthMiddleware((s) => s.removeAuth);
 
@@ -84,6 +87,7 @@ const SignoutButton = () => {
           clearAccessToken();
           clearUserData();
           removeAuth();
+          setRt((ps) => !ps);
         },
         onError: () => {
           removeAuth();
@@ -286,10 +290,12 @@ export const SigninForm = (props: StackProps) => {
   const { ...restProps } = props;
 
   // Contexts
+  useRenderTrigger((s) => s.rt);
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+  const accessToken = getAccessToken();
   const verifiedAuthToken = useAuthMiddleware((s) => s.verifiedAuthToken);
-  const resolvedAuthToken = verifiedAuthToken;
+  const resolvedAuthToken = verifiedAuthToken || accessToken;
   const clearChatSessions = useChatSessions((s) => s.clearChatSessions);
   const clearDASessions = useDASessions((s) => s.clearDASessions);
 

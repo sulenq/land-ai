@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
+import { Logo } from "@/components/widget/Logo";
 import {
   Props__ContinueChat,
   Props__NewChat,
@@ -28,14 +29,9 @@ import useMessageContainer from "@/context/useMessageContainer";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useBackOnClose from "@/hooks/useBackOnClose";
 import { startChatStream } from "@/service/chatStream";
+import { getUserData } from "@/utils/auth";
 import { disclosureId } from "@/utils/disclosure";
-import {
-  Group,
-  HStack,
-  StackProps,
-  TextProps,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Group, HStack, StackProps, useDisclosure } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ArrowUpIcon, SquareIcon } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -145,7 +141,7 @@ export const PromptInput = (props: Props__PromptInput) => {
       ref={containerRef}
       p={3}
       bg={"bg.muted"}
-      rounded={themeConfig.radii.container}
+      rounded={themeConfig.radii.component}
       mx={"auto"}
       maxH={"300px"}
       {...restProps}
@@ -221,14 +217,19 @@ export const PromptInput = (props: Props__PromptInput) => {
   );
 };
 
-export const PromptHelperText = (props: TextProps) => {
+export const PromptHelperText = (props: StackProps) => {
   // Contexts
   const { l } = useLang();
 
   return (
-    <HelperText textAlign={"center"} mx={"auto"} {...props}>
-      {l.msg_chat_ai_disclaimer}
-    </HelperText>
+    <CContainer gap={1} {...props}>
+      <HelperText
+      // color={"fg.muted"}
+      >{`*${l.msg_based_on_official_documents}`}</HelperText>
+      <HelperText
+      // color={"fg.muted"}
+      >{`*${l.msg_chat_ai_disclaimer}`}</HelperText>
+    </CContainer>
   );
 };
 
@@ -238,6 +239,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
   const clearActiveChat = useActiveChat((s) => s.clearActiveChat);
   const initSession = useActiveChat((s) => s.initSession);
   const appendMessage = useActiveChat((s) => s.appendMessage);
@@ -268,42 +270,47 @@ export const NewPrompt = (props: Props__NewChat) => {
     },
   });
 
+  // Constants
+  const user = getUserData();
+
   return (
-    <CContainer {...restProps}>
-      {/* <P
-        fontSize={"lg"}
-        fontWeight={"medium"}
-        textAlign={"center"}
-        color={"fg.subtle"}
+    <CContainer gap={8} {...restProps}>
+      <CContainer
+        px={themeConfig.radii.component}
+        animation={"float-up 1s, fade-in 1s"}
       >
-        {interpolateString(pluckString(l, `msg_welcome_to_the_app`), {
-          appName: APP.name,
-        })}
-      </P> */}
+        <HStack gap={4}>
+          <Logo size={20} animation={"rotate360 1.5s"} />
 
-      <P
-        fontSize={"xl"}
-        fontWeight={"semibold"}
-        color={"ibody"}
-        textAlign={"center"}
-        mb={4}
-      >
-        {l.msg_welcome_context}
-      </P>
+          <P
+            fontSize={"2xl"}
+            fontWeight={"medium"}
+          >{`${l.hi} ${user?.name}`}</P>
+        </HStack>
 
-      <PromptInput
-        inputValue={formik.values.prompt}
-        onChange={(inputValue) => {
-          formik.setFieldValue("prompt", inputValue);
-        }}
-        onSubmit={() => {
-          formik.handleSubmit();
-        }}
-        disabled={disabled}
-        loading={loading}
-      />
+        <P fontSize={"3xl"} fontWeight={"semibold"} color={"ibody"}>
+          {l.msg_welcome_context}
+        </P>
+      </CContainer>
 
-      <PromptHelperText mt={4} />
+      <CContainer gap={8}>
+        <PromptInput
+          inputValue={formik.values.prompt}
+          onChange={(inputValue) => {
+            formik.setFieldValue("prompt", inputValue);
+          }}
+          onSubmit={() => {
+            formik.handleSubmit();
+          }}
+          disabled={disabled}
+          loading={loading}
+        />
+
+        <PromptHelperText
+          px={themeConfig.radii.component}
+          animation={"float-down 1s, fade-in 1s"}
+        />
+      </CContainer>
     </CContainer>
   );
 };

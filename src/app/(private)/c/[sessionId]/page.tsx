@@ -3,10 +3,12 @@
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { ChatSessionPageSkeleton } from "@/components/ui/c-loader";
+import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
+import { MContainer } from "@/components/widget/MContainer";
 import { Messages } from "@/components/widget/Messages";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
@@ -14,7 +16,6 @@ import { CHAT_API_SESSION_SHOW } from "@/constants/apis";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useChatSessions } from "@/context/useChatSessions";
-import useMessageContainer from "@/context/useMessageContainer";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
@@ -25,7 +26,7 @@ import { useEffect, useRef } from "react";
 export default function Page() {
   // Contexts
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
-  const messageContainerStyle = useMessageContainer((s) => s.style);
+  // const messageContainerStyle = useMessageContainer((s) => s.style);
   const activeChat = useActiveChat((s) => s.activeChat);
   const setMessages = useActiveChat((s) => s.setMessages);
   const setSession = useActiveChat((s) => s.setSession);
@@ -138,42 +139,61 @@ export default function Page() {
   };
 
   return (
-    <PageContainer pos={"relative"}>
-      <CContainer
-        ref={containerRef}
-        flex={1}
-        px={4}
-        py={8}
-        overflowY={"auto"}
-        scrollBehavior={"smooth"}
-      >
-        <ContainerLayout gap={8} pb={messageContainerStyle?.pb}>
-          {shouldFetchHistory && (
-            <>
-              {initialLoading && render.loading}
-              {!initialLoading && (
-                <>
-                  {error && render.error}
-                  {!error && <>{!isEmptyArray(messages) && render.loaded}</>}
-                </>
-              )}
-            </>
-          )}
+    <PageContainer flex={1} overflowY={"clip"} pos={"relative"}>
+      <CContainer flex={1} overflowY={"auto"}>
+        <CContainer flex={1} overflowY={"auto"}>
+          <MContainer
+            ref={containerRef}
+            flex={1}
+            px={4}
+            maskingBottom={"24px"}
+            overflowY={"auto"}
+            scrollBehavior={"smooth"}
+          >
+            {shouldFetchHistory && (
+              <>
+                <FadingSkeletonContainer loading={initialLoading} mt={8}>
+                  <ContainerLayout flex={1}>{render.loading}</ContainerLayout>
+                </FadingSkeletonContainer>
 
-          {!shouldFetchHistory && <>{render.loaded}</>}
-        </ContainerLayout>
+                {!initialLoading && (
+                  <ContainerLayout
+                    flex={1}
+                    gap={8}
+                    py={8}
+                    // pb={messageContainerStyle?.pb}
+                  >
+                    {error && render.error}
+                    {!error && (
+                      <>
+                        {data && render.loaded}
+                        {(!data || isEmptyArray(data)) && render.empty}
+                      </>
+                    )}
+                  </ContainerLayout>
+                )}
+              </>
+            )}
 
-        <CContainer
-          align={"center"}
-          px={4}
-          gap={4}
-          position={"absolute"}
-          left={0}
-          bottom={0}
-        >
+            {!shouldFetchHistory && (
+              <ContainerLayout
+                flex={1}
+                gap={8}
+                py={8}
+                // pb={messageContainerStyle?.pb}
+              >
+                {render.loaded}
+              </ContainerLayout>
+            )}
+          </MContainer>
+        </CContainer>
+
+        {/* Prompt Input */}
+        <CContainer align={"center"} gap={4} px={4} pb={4}>
           <ContainerLayout gap={4} align={"center"}>
             <Btn
               iconButton
+              flexShrink={0}
               clicky={false}
               w={"fit"}
               variant={"surface"}
@@ -183,12 +203,13 @@ export default function Page() {
               visibility={scrollBottom > 1 ? "visible" : "hidden"}
               transition={"200ms"}
               onClick={scrollToBottom}
+              mt={"-48px"}
             >
               <AppIcon icon={ArrowDownIcon} />
             </Btn>
 
             <CContainer bg={"body"}>
-              <ContinuePrompt mb={8} />
+              <ContinuePrompt />
             </CContainer>
           </ContainerLayout>
         </CContainer>

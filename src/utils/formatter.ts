@@ -19,6 +19,7 @@ import { getTimezoneOffsetMs, getUserTimezone } from "./time";
 import useLang from "@/context/useLang";
 import useUOMFormat from "@/context/useUOMFormat";
 import { UOM_FORMATS } from "@/constants/uomFormats";
+import { NUMBER_LOCALE } from "@/constants/styles";
 
 export const formatDate = (
   date?: Date | string | null | undefined,
@@ -239,7 +240,7 @@ export const formatAbsDate = (
 
 export const formatNumber = (
   numParam: number | string | undefined | null,
-  locale = "id-ID",
+  locale = NUMBER_LOCALE,
   maxFractionDigits = 4,
 ): string => {
   if (numParam === null || numParam === undefined || numParam === "")

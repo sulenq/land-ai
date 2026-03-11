@@ -1,12 +1,15 @@
 "use client";
 
+import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { DAServiceSkeleton } from "@/components/ui/c-loader";
 import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
+import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { Tooltip } from "@/components/ui/tooltip";
+import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
@@ -17,16 +20,18 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
 import { isEmptyArray } from "@/utils/array";
+import { getStorage, setStorage } from "@/utils/client";
 import { imgUrl } from "@/utils/url";
-import { SimpleGrid, StackProps, VStack } from "@chakra-ui/react";
-import { useRef } from "react";
+import { SimpleGrid, StackProps } from "@chakra-ui/react";
+import { ArrowRightIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 const Services = (props: StackProps) => {
   // Props
   const { ...restProps } = props;
 
   // Contexts
-  const { lang } = useLang();
+  const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
 
   // States
@@ -38,9 +43,18 @@ const Services = (props: StackProps) => {
     url: DA_API_SERVICE_GET_ALL,
     dataResource: false,
   });
+  // Constants
+  const DA_SERVICES_LENGTH_STORAGE_KEY = "da-services-length";
+  const daServicesLength = getStorage(DA_SERVICES_LENGTH_STORAGE_KEY) || "7";
+
+  useEffect(() => {
+    if (data) {
+      setStorage(DA_SERVICES_LENGTH_STORAGE_KEY, String(data.length));
+    }
+  }, [data]);
 
   const render = {
-    loading: <DAServiceSkeleton />,
+    loading: <DAServiceSkeleton length={parseInt(daServicesLength)} />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
@@ -82,11 +96,16 @@ const Services = (props: StackProps) => {
                 </P>
 
                 <Tooltip content={service?.description?.[lang]}>
-                  <P color={"fg.subtle"} lineClamp={2}>
+                  <P color={"fg.muted"} lineClamp={2}>
                     {service?.description?.[lang]}
                   </P>
                 </Tooltip>
               </CContainer>
+
+              <Btn variant={"subtle"}>
+                {l.select}
+                <AppIcon icon={ArrowRightIcon} />
+              </Btn>
             </NavLink>
           );
         })}
@@ -95,19 +114,24 @@ const Services = (props: StackProps) => {
   };
 
   return (
-    <CContainer {...restProps}>
-      {initialLoading && render.loading}
-      {!initialLoading && (
-        <>
-          {error && render.error}
-          {!error && (
-            <>
-              {data && render.loaded}
-              {(!data || isEmptyArray(data)) && render.empty}
-            </>
-          )}
-        </>
-      )}
+    <CContainer position="relative" {...restProps}>
+      <FadingSkeletonContainer loading={initialLoading} useDummyElement>
+        {render.loading}
+      </FadingSkeletonContainer>
+
+      <CContainer overflowY={"auto"}>
+        {!initialLoading && (
+          <>
+            {error && render.error}
+            {!error && (
+              <>
+                {data && render.loaded}
+                {(!data || isEmptyArray(data)) && render.empty}
+              </>
+            )}
+          </>
+        )}
+      </CContainer>
     </CContainer>
   );
 };
@@ -115,6 +139,7 @@ const Services = (props: StackProps) => {
 export default function Page() {
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -122,20 +147,22 @@ export default function Page() {
   return (
     <PageContainer p={8}>
       <ContainerLayout ref={containerRef} flex={1}>
-        <CContainer flex={1} gap={8} justify={"space-between"}>
-          <VStack gap={1}>
-            <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
+        <CContainer flex={1} gap={8} justify={"center"}>
+          <CContainer gap={1} px={themeConfig.radii.component}>
+            <P fontSize={"3xl"} fontWeight={"semibold"}>
               {l.document_analysis_service}
             </P>
 
-            <P color={"fg.subtle"} textAlign={"center"}>
+            <P fontSize={"lg"} color={"fg.subtle"}>
               {l.msg_da_select_service_helper}
             </P>
-          </VStack>
+          </CContainer>
 
           <Services />
 
-          <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+          <HelperText px={themeConfig.radii.component}>
+            {l.msg_da_disclaimer}
+          </HelperText>
         </CContainer>
       </ContainerLayout>
     </PageContainer>

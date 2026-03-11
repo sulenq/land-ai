@@ -15,6 +15,7 @@ import BackButton from "@/components/widget/BackButton";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import { Clipboard } from "@/components/widget/Clipboard";
 import { FeedbackButton } from "@/components/widget/FeedbackButton";
+import { Logo } from "@/components/widget/Logo";
 import { Interface__ChatMessage } from "@/constants/interfaces";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
@@ -125,11 +126,13 @@ export const Messages = (props: Props__Messages) => {
   return (
     <CContainer ref={containerRef} flex={1} gap={4} px={2} {...restProps}>
       <CContainer gap={1} mb={4}>
-        <P fontSize={"xl"} fontWeight={"semibold"}>
+        <P fontSize={"3xl"} fontWeight={"semibold"}>
           {activeChat.session?.title}
         </P>
 
-        <P color={"fg.subtle"}>{formatDate(activeChat.session?.createdAt)}</P>
+        <P fontSize={"lg"} color={"fg.subtle"}>
+          {formatDate(activeChat.session?.createdAt) || "-"}
+        </P>
       </CContainer>
 
       <CContainer gap={4}>
@@ -146,9 +149,9 @@ export const Messages = (props: Props__Messages) => {
             if (message.role === "user") {
               return (
                 <CContainer key={message.id} gap={2}>
-                  <UserBubbleChat>{message.content}</UserBubbleChat>
+                  <UserBubbleChat ml={"auto"}>{message.content}</UserBubbleChat>
 
-                  <HStack wrap={"wrap"} justify={"end"}>
+                  <HStack wrap={"wrap"} ml={"auto"}>
                     <Clipboard>{message.content}</Clipboard>
                   </HStack>
                 </CContainer>
@@ -162,69 +165,80 @@ export const Messages = (props: Props__Messages) => {
                   {isStreaming && emptyMessage ? (
                     <Spinner size={"sm"} ml={2} mb={22} />
                   ) : (
-                    <>
-                      <MarkdownChat error={true}>
-                        {message.content}
-                      </MarkdownChat>
+                    <HStack align={"start"} gap={4}>
+                      <Logo size={15} />
 
-                      {message.error && (
-                        <CContainer key={message.id} gap={2}>
-                          <Alert.Root
-                            status="error"
-                            maxW={"70%"}
-                            rounded={themeConfig.radii.component}
-                          >
-                            <Alert.Indicator />
-                            <Alert.Title>
-                              {l.msg_assistant_response_error}
-                            </Alert.Title>
-                          </Alert.Root>
-                        </CContainer>
-                      )}
+                      <CContainer gap={2}>
+                        <MarkdownChat error={true}>
+                          {message.content}
+                        </MarkdownChat>
 
-                      <HStack wrap={"wrap"} gap={1}>
-                        <Clipboard>{message.content}</Clipboard>
-
-                        {canRegenerate && (
-                          <Btn
-                            iconButton
-                            size={"xs"}
-                            variant={"ghost"}
-                            onClick={() => {
-                              removeMessage(message.id);
-                              startChatStream({
-                                prompt: messages[index - 1].content,
-                                sessionId: activeChat?.session?.id,
-                                isRegenerate: true,
-                              });
-                            }}
-                          >
-                            <AppIcon icon={RefreshCwIcon} />
-                          </Btn>
+                        {message.error && (
+                          <CContainer key={message.id} gap={2}>
+                            <Alert.Root
+                              status="error"
+                              maxW={"70%"}
+                              rounded={themeConfig.radii.component}
+                            >
+                              <Alert.Indicator />
+                              <Alert.Title>
+                                {l.msg_assistant_response_error}
+                              </Alert.Title>
+                            </Alert.Root>
+                          </CContainer>
                         )}
 
-                        {!isEmptyArray(message.sources) && (
-                          <ReferenceDisclosureTrigger message={message}>
+                        <HStack
+                          wrap={"wrap"}
+                          gap={1}
+                          w={"fit"}
+                          // bg={"bg.muted"}
+                          // p={1}
+                          rounded={themeConfig.radii.component}
+                        >
+                          <Clipboard>{message.content}</Clipboard>
+
+                          {canRegenerate && (
                             <Btn
+                              iconButton
                               size={"xs"}
                               variant={"ghost"}
-                              w={"fit"}
-                              pr={"6px"}
+                              onClick={() => {
+                                removeMessage(message.id);
+                                startChatStream({
+                                  prompt: messages[index - 1].content,
+                                  sessionId: activeChat?.session?.id,
+                                  isRegenerate: true,
+                                });
+                              }}
                             >
-                              {l.reference} <AppIcon icon={ChevronDownIcon} />
+                              <AppIcon icon={RefreshCwIcon} />
                             </Btn>
-                          </ReferenceDisclosureTrigger>
-                        )}
+                          )}
 
-                        <FeedbackButton
-                          message={message}
-                          userQuery={messages[index - 1]?.content}
-                          onSubmitFeedback={(feedbackData) =>
-                            handleFeedbackSubmit(message, feedbackData)
-                          }
-                        />
-                      </HStack>
-                    </>
+                          {!isEmptyArray(message.sources) && (
+                            <ReferenceDisclosureTrigger message={message}>
+                              <Btn
+                                size={"xs"}
+                                variant={"ghost"}
+                                w={"fit"}
+                                pr={"6px"}
+                              >
+                                {l.reference} <AppIcon icon={ChevronDownIcon} />
+                              </Btn>
+                            </ReferenceDisclosureTrigger>
+                          )}
+
+                          <FeedbackButton
+                            message={message}
+                            userQuery={messages[index - 1]?.content}
+                            onSubmitFeedback={(feedbackData) =>
+                              handleFeedbackSubmit(message, feedbackData)
+                            }
+                          />
+                        </HStack>
+                      </CContainer>
+                    </HStack>
                   )}
                 </CContainer>
               );

@@ -1,7 +1,12 @@
 import { CContainer } from "@/components/ui/c-container";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import { SimpleGrid, SpinnerProps, StackProps } from "@chakra-ui/react";
+import {
+  SimpleGrid,
+  SimpleGridProps,
+  SpinnerProps,
+  StackProps,
+} from "@chakra-ui/react";
 
 interface Props extends StackProps {
   spinnerProps?: SpinnerProps;
@@ -27,13 +32,17 @@ export const ChatSessionPageSkeleton = () => {
   return (
     <CContainer flex={1} gap={4}>
       <CContainer gap={4}>
-        <Skeleton w={"full"} maxW={"400px"} h={"24px"} />
-        <Skeleton w={"full"} maxW={"300px"} h={"21px"} />
+        <Skeleton w={"full"} maxW={"400px"} h={"40px"} />
+        <Skeleton w={"full"} maxW={"300px"} h={"24px"} />
       </CContainer>
 
-      <CContainer my={"auto"} gap={4}>
-        <Skeleton w={"70%"} h={"100px"} ml={"auto"} />
+      <CContainer flex={1} my={"auto"} gap={4}>
+        <Skeleton w={"full"} flex={1} />
+        {/* <Skeleton w={"70%"} h={"85px"} ml={"auto"} />
         <Skeleton w={"full"} h={"200px"} mr={"auto"} />
+
+        <Skeleton w={"70%"} h={"85px"} ml={"auto"} />
+        <Skeleton w={"full"} h={"200px"} mr={"auto"} /> */}
       </CContainer>
     </CContainer>
   );
@@ -43,8 +52,8 @@ export const DASessonPageSkeleton = () => {
   return (
     <CContainer flex={1} gap={8}>
       <CContainer gap={4}>
-        <Skeleton w={"full"} maxW={"400px"} h={"24px"} />
-        <Skeleton w={"full"} maxW={"300px"} h={"21px"} />
+        <Skeleton w={"full"} maxW={"400px"} h={"40px"} />
+        <Skeleton w={"full"} maxW={"300px"} h={"24px"} />
       </CContainer>
 
       <Skeleton flex={1} />
@@ -52,12 +61,18 @@ export const DASessonPageSkeleton = () => {
   );
 };
 
-export const DAServiceSkeleton = () => {
+interface DAServiceSletonProps extends SimpleGridProps {
+  length?: number;
+}
+export const DAServiceSkeleton = (props: DAServiceSletonProps) => {
+  // Props
+  const { length = 7, ...restProps } = props;
+
   return (
-    <SimpleGrid minChildWidth={"200px"} gap={4}>
-      {[...Array(7)].map((_, i) => (
-        <Skeleton key={i} minH={"200px"} />
-      ))}
+    <SimpleGrid minChildWidth={"200px"} gap={4} {...restProps}>
+      {Array.from({ length: length }, (_, i) => {
+        return <Skeleton key={i} minH={"248px"} />;
+      })}
     </SimpleGrid>
   );
 };

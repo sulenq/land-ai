@@ -4,7 +4,7 @@ import { useThemeConfig } from "@/context/useThemeConfig";
 import { SegmentGroup, SegmentGroupRootProps } from "@chakra-ui/react";
 
 interface Props extends Omit<SegmentGroupRootProps, "onChange"> {
-  items?: string[];
+  items?: any[];
   inputValue?: string;
   onChange?: (inputValue: string) => void;
 }
@@ -18,12 +18,12 @@ export const Segmented = (props: Props) => {
 
   // States
   const hBySize: Record<any, any> = {
-    xs: "32px",
-    sm: "36px",
-    md: "40px",
-    lg: "44px",
-    xl: "46px",
-    "2xl": "50px",
+    xs: "30px",
+    sm: "34px",
+    md: "38px",
+    lg: "42px",
+    xl: "44px",
+    "2xl": "48px",
   };
 
   return (

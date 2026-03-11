@@ -1,4 +1,6 @@
 /* Global */
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap");
+
 nextjs-portal {
   display: none !important;
 }
@@ -6,7 +8,7 @@ nextjs-portal {
   display: none !important;
 }
 .debug {
-  border: 2px solid red !important;
+  border: 10px solid red !important;
 }
 
 :root {
@@ -19,6 +21,7 @@ nextjs-portal {
 * {
   font-optical-sizing: auto;
   box-sizing: border-box !important;
+  /* font-family: "Google Sans Flex", sans-serif; */
   font-family:
     "Figtree",
     system-ui,
@@ -386,10 +389,18 @@ tspan {
 }
 @keyframes float-up {
   0% {
-    transform: translateY(0);
+    transform: translateY(8px);
   }
   100% {
-    transform: translateY("5px");
+    transform: translateY(0);
+  }
+}
+@keyframes float-down {
+  0% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 @keyframes flashing {

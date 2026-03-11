@@ -86,6 +86,7 @@ const ManualDarkModeSetting = () => {
     </ToggleSettingContainer>
   );
 };
+
 const ADMSetting = () => {
   // Contexts
   const { themeConfig } = useThemeConfig();
@@ -189,6 +190,7 @@ const DarkMode = () => {
     </ItemContainer>
   );
 };
+
 const AccentColor = () => {
   // Contexts
   const { l } = useLang();
@@ -244,15 +246,16 @@ const AccentColor = () => {
                     }}
                     pos={"relative"}
                   >
-                    {/* <P
-                    fontSize={"sm"}
-                    fontWeight={"medium"}
-                    color={`${color.palette}.contrast`}
-                    textAlign={"center"}
-                    lineClamp={1}
-                  >
-                    {color.label}
-                  </P> */}
+                    <P
+                      fontSize={"sm"}
+                      fontWeight={"medium"}
+                      color={`${color.palette}.contrast`}
+                      textAlign={"center"}
+                      lineClamp={1}
+                      opacity={0.25}
+                    >
+                      {color.label}
+                    </P>
 
                     {isActive && (
                       <DotIndicator
@@ -272,6 +275,7 @@ const AccentColor = () => {
     </ItemContainer>
   );
 };
+
 const Rounded = () => {
   // Contexts
   const { l } = useLang();
@@ -388,6 +392,7 @@ const Rounded = () => {
     </ItemContainer>
   );
 };
+
 const ExampleUI = () => {
   // Contexts
   const { l } = useLang();
@@ -436,6 +441,14 @@ const ExampleUI = () => {
             variant={"subtle"}
           >
             Subtle
+          </Btn>
+
+          <Btn
+            flex={"1 1 100px"}
+            colorPalette={themeConfig.colorPalette}
+            variant={"surface"}
+          >
+            Surface
           </Btn>
 
           <StringInput flex={"1 1 200px"} placeholder="example@email.com" />
