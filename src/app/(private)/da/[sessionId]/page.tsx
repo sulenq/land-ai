@@ -389,7 +389,28 @@ const TableMode = memo((props: Props__TableMode) => {
   }, [result, l]);
 
   // Utils
+  useEffect(() => {
+    const handleMouseUpGlobal = () => {
+      isDragging.current = false;
+    };
+    window.addEventListener("mouseup", handleMouseUpGlobal);
+    window.addEventListener("mouseleave", handleMouseUpGlobal);
+    return () => {
+      window.removeEventListener("mouseup", handleMouseUpGlobal);
+      window.removeEventListener("mouseleave", handleMouseUpGlobal);
+    };
+  }, []);
+
   function handleMouseDown(e: React.MouseEvent) {
+    const target = e.target as HTMLElement;
+    // Do not drag if clicking inside a popover/dialog
+    if (
+      target.closest(
+        '[data-part="content"], [role="dialog"], [data-scope="popover"]',
+      )
+    )
+      return;
+
     isDragging.current = true;
     dragStartX.current = e.clientX;
     scrollStartLeft.current = containerRef.current?.scrollLeft ?? 0;
@@ -405,55 +426,37 @@ const TableMode = memo((props: Props__TableMode) => {
   }
 
   return (
-    <CContainer gap={4}>
-      {/* Table Section */}
-      <CContainer
-        p={4}
-        border={"1px solid"}
-        borderColor={"border.muted"}
-        rounded={themeConfig.radii.container}
-        bg={"d0"}
+    <>
+      <MContainer
+        ref={containerRef}
+        className={"noScroll"}
+        maskingTop={0}
+        maskingBottom={0}
+        maskingLeft={"100px"}
+        maskingRight={"100px"}
+        overflowX={"auto"}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={stopDrag}
+        onMouseLeave={stopDrag}
+        cursor={isDragging.current ? "grabbing" : "grab"}
       >
-        <HStack justify={"space-between"} mb={4}>
-          <P fontWeight={"semibold"} fontSize={"lg"}>Tabel Perbandingan Dokumen</P>
-          <Badge fontSize={"xs"} colorScheme={"blue"}>
-            {result?.length || 0} Item Validasi
-          </Badge>
-        </HStack>
-
-        <MContainer
-          ref={containerRef}
-          className={"noScroll"}
-          maskingTop={0}
-          maskingBottom={0}
-          maskingLeft={"50px"}
-          maskingRight={"50px"}
-          overflowX={"auto"}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={stopDrag}
-          onMouseLeave={stopDrag}
-          cursor={isDragging.current ? "grabbing" : "grab"}
+        <CContainer
+          w={"max"}
+          px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
         >
-          <CContainer
-            w={"full"}
-            minW={"max-content"}
-            pointerEvents={"none"}
-          >
-            <DataTable
-              headers={headers}
-              rows={rows}
-              minH={"300px"}
-              borderColor={"border.muted"}
-              w={"full"}
-            />
-          </CContainer>
-        </MContainer>
-      </CContainer>
+          <DataTable
+            headers={headers}
+            rows={rows}
+            minH={0}
+            borderColor={"border.muted"}
+          />
+        </CContainer>
+      </MContainer>
 
       {/* Fraud Detection Section */}
       <FraudAlertsPanel daSession={daSession} />
-    </CContainer>
+    </>
   );
 });
 TableMode.displayName = "TableMode";

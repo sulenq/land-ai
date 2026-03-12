@@ -12,6 +12,7 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
+import { AUTH_API_SIGNOUT } from "@/constants/apis";
 import { SVGS_PATH } from "@/constants/paths";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useADM from "@/context/useADM";
@@ -35,7 +36,6 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
-const SIGNOUT_EP = "/api/rski/dashboard/logout";
 const MENUS = [
   {
     labelKey: "my_profile",
@@ -81,10 +81,10 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
   function onSignout() {
     back();
 
-    const url = SIGNOUT_EP;
+    const url = AUTH_API_SIGNOUT;
     const config = {
       url,
-      method: "GET",
+      method: "POST",
     };
 
     req({
@@ -199,6 +199,7 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
             variant: "outline",
           }}
           w={"full"}
+          onOpen={onClose}
         >
           <Btn
             clicky={false}

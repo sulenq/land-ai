@@ -66,7 +66,6 @@ export const ConfirmationDisclosure = (props: Props__Disclosure) => {
 
           <Box pos={"relative"}>
             <Btn
-              w={"120px"}
               onClick={onConfirm}
               loading={loading}
               colorPalette={themeConfig.colorPalette}
@@ -113,7 +112,6 @@ interface Props__Trigger extends StackProps {
   addonElement?: any;
   onConfirm: () => void;
   onOpen?: () => void;
-  onClose?: () => void;
 }
 export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
   // Props
@@ -130,7 +128,6 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
     addonElement,
     onConfirm,
     onOpen,
-    onClose,
     ...restProps
   } = props;
 
@@ -156,14 +153,12 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
         startCountdown();
       }
     } else {
-      onClose?.();
-
       if (confirmCountdownDuration) {
         stopCountdown();
         resetCountdown();
       }
     }
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   return (
     <>
@@ -176,7 +171,6 @@ export const ConfirmationDisclosureTrigger = (props: Props__Trigger) => {
           if (disabled) return;
 
           openDisclosure();
-          onOpen?.();
         }}
         cursor={disabled ? "disabled" : "pointer"}
         {...restProps}
