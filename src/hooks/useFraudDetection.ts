@@ -12,7 +12,7 @@ export const useFraudDetection = (options?: UseFraudDetectionOptions) => {
 
   const [alerts, setAlerts] = useState<FraudAlert[]>([]);
   const [fraudCheck, setFraudCheck] = useState<FraudCheckResult | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, _setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load alerts from session response

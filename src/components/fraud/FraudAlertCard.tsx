@@ -5,8 +5,6 @@ import { FraudAlert } from '@/service/fraudService';
 import { CContainer } from "@/components/ui/c-container";
 import { HStack, Box, Badge } from "@chakra-ui/react";
 import { P } from "@/components/ui/p";
-import { Btn } from "@/components/ui/btn";
-import { AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot } from "@/components/ui/accordion";
 
 interface FraudAlertCardProps {
   alert: FraudAlert;
@@ -26,7 +24,7 @@ const statusColors = {
   CLOSED: 'gray',
 };
 
-export const FraudAlertCard: React.FC<FraudAlertCardProps> = ({ alert, onResolve }) => {
+export const FraudAlertCard: React.FC<FraudAlertCardProps> = ({ alert, onResolve: _onResolve }) => {
   const sevConfig = severityConfig[alert.severity as keyof typeof severityConfig] || severityConfig.LOW;
   const statusColor = statusColors[alert.status as keyof typeof statusColors] || 'gray';
 

@@ -53,7 +53,7 @@ export const fraudApi = {
     const fraudAlerts = daSessionResponse?.fraudAlerts || [];
 
     // Transform backend format to frontend format
-    let parsedAlerts = fraudAlerts.map((alert: any) => ({
+    const parsedAlerts = fraudAlerts.map((alert: any) => ({
       id: alert.id,
       job_id: alert.jobId || alert.job_id,
       alert_type: alert.alertType || alert.alert_type,
