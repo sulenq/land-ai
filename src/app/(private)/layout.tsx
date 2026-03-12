@@ -539,7 +539,7 @@ const DesktopLayout = (props: Props__Layout) => {
           gap={1}
           p={3}
           pr={`calc(12px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
-          mt={isNavsExpanded ? "12px" : 0}
+          pt={isNavsExpanded ? 6 : 3}
         >
           {/* Private Navs */}
           <CContainer gap={1}>

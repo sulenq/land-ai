@@ -1,29 +1,41 @@
 "use client";
 
-import { Btn } from "@/components/ui/btn";
+import { Btn, Props__Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
-import { StackProps, HStack } from "@chakra-ui/react";
 import {
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DisclosureBody,
+  DisclosureContent,
+  DisclosureFooter,
+  DisclosureHeader,
+  DisclosureRoot,
+} from "@/components/ui/disclosure";
+import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { Field } from "@/components/ui/field";
 import { P } from "@/components/ui/p";
+import { SelectInput } from "@/components/ui/select-input";
 import { Textarea } from "@/components/ui/textarea";
 import { AppIcon } from "@/components/widget/AppIcon";
+import BackButton from "@/components/widget/BackButton";
+import { CHAT_API_FEEDBACK } from "@/constants/apis";
 import {
   Interface__ChatMessage,
+  Interface__ChatSession,
+  Interface__SelectOption,
   Type__FeedbackCategory,
 } from "@/constants/interfaces";
-import { useThemeConfig } from "@/context/useThemeConfig";
+import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
+import { useThemeConfig } from "@/context/useThemeConfig";
+import usePopDisclosure from "@/hooks/usePopDisclosure";
+import useRequest from "@/hooks/useRequest";
+import { back } from "@/utils/client";
+import { disclosureId } from "@/utils/disclosure";
+import { capitalizeWords } from "@/utils/string";
+import { FieldsetRoot, HStack, StackProps } from "@chakra-ui/react";
+import { useFormik } from "formik";
 import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import * as yup from "yup";
 
 interface FeedbackData {
   rating: 1 | -1;
@@ -31,235 +43,324 @@ interface FeedbackData {
   userComment?: string;
 }
 
-interface Props extends StackProps {
-  message: Interface__ChatMessage;
-  onSubmitFeedback?: (data: FeedbackData) => Promise<void>;
+interface FeedbackReasonTriggerProps extends StackProps {
+  session: Interface__ChatSession;
+  messageId: string;
+  onConfirmFeedback: (data: FeedbackData) => void;
 }
-
-export const FeedbackButton = (props: Props) => {
+const FeedbackReasonTrigger = (props: FeedbackReasonTriggerProps) => {
   // Props
-  const { message, onSubmitFeedback, ...restProps } = props;
+  const { children, session, messageId, onConfirmFeedback, ...restProps } =
+    props;
+  const ID = `feedback-${messageId}`;
 
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
 
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId(`feedback-reason-${ID}`),
+  );
+
   // States
-  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
-  const [selectedRating, setSelectedRating] = useState<1 | -1 | null>(null);
-  const [category, setCategory] = useState<Type__FeedbackCategory | undefined>();
-  const [comment, setComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formik = useFormik({
+    validateOnChange: false,
+    initialValues: {
+      category: null as Interface__SelectOption[] | null,
+      userComment: "",
+    },
+    validationSchema: yup.object().shape({
+      category: yup
+        .array()
+        .min(1, l.msg_required_form)
+        .required(l.msg_required_form),
+      userComment: yup.string(),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      back();
+
+      const payload: FeedbackData = {
+        rating: -1,
+        category: values.category?.[0].id,
+        userComment: values.userComment,
+      };
+
+      onConfirmFeedback(payload);
+
+      resetForm();
+    },
+  });
+
+  // Constants
+  const FEEDBACK_CATEGORIES: Interface__SelectOption[] = [
+    { id: "NOT_RELEVANT", label: l.feedback.categories.NOT_RELEVANT },
+    {
+      id: "WRONG_INFORMATION",
+      label: l.feedback.categories.WRONG_INFORMATION,
+    },
+    { id: "HALLUCINATION", label: l.feedback.categories.HALLUCINATION },
+    { id: "INCOMPLETE", label: l.feedback.categories.INCOMPLETE },
+    { id: "OTHER", label: l.feedback.categories.OTHER },
+  ];
+
+  return (
+    <>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps}>
+        {children}
+      </CContainer>
+
+      <DisclosureRoot open={isOpen} lazyLoad size={"xs"}>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent
+              title={capitalizeWords(l.feedback.dialog_title)}
+            />
+          </DisclosureHeader>
+
+          <DisclosureBody>
+            <form id="feedback" onSubmit={formik.handleSubmit}>
+              <FieldsetRoot>
+                <Field label={l.category}>
+                  <SelectInput
+                    id={`select-category-feedback-${ID}`}
+                    title={l.category}
+                    selectOptions={FEEDBACK_CATEGORIES}
+                    inputValue={formik.values.category}
+                    onChange={(inputValue) => {
+                      formik.setFieldValue("category", inputValue);
+                    }}
+                  />
+                </Field>
+
+                <Field
+                  label={l.feedback.comment_placeholder}
+                  invalid={!!formik.errors.userComment}
+                  errorText={formik.errors.userComment as string}
+                  optional
+                >
+                  <Textarea
+                    inputValue={formik.values.userComment}
+                    onChange={(inputValue) => {
+                      formik.setFieldValue("userComment", inputValue);
+                    }}
+                  />
+                </Field>
+              </FieldsetRoot>
+            </form>
+          </DisclosureBody>
+
+          <DisclosureFooter>
+            <BackButton />
+
+            <Btn
+              type={"submit"}
+              form={"feedback"}
+              colorPalette={themeConfig.colorPalette}
+              disabled={!formik.values.category}
+            >
+              {l.submit}
+            </Btn>
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
+  );
+};
+
+interface Props__ThumsbUpButton extends Props__Btn {
+  onConfirmFeedback: (data: FeedbackData) => void;
+  isThumbsUp: boolean;
+  hasFeedbackRating: boolean;
+}
+const ThumbsUpButton = (props: Props__ThumsbUpButton) => {
+  // Props
+  const { onConfirmFeedback, isThumbsUp, hasFeedbackRating, ...restProps } =
+    props;
+
+  // Contexts
+  const { l } = useLang();
+
+  return (
+    <Btn
+      iconButton
+      size={"xs"}
+      variant={"ghost"}
+      aria-label={l.feedback.thumbs_up}
+      onClick={() => {
+        onConfirmFeedback({
+          rating: 1,
+        });
+      }}
+      disabled={hasFeedbackRating}
+      {...restProps}
+    >
+      <AppIcon
+        icon={ThumbsUpIcon}
+        boxSize={isThumbsUp ? 5 : ""}
+        color={isThumbsUp ? "body" : "fg"}
+        fill={isThumbsUp ? "fg" : undefined}
+      />
+    </Btn>
+  );
+};
+
+interface Props__ThumbsDownButton extends Props__Btn {
+  onConfirmFeedback: (data: FeedbackData) => void;
+  isThumbsDown: boolean;
+  hasFeedbackRating: boolean;
+  message: Interface__ChatMessage;
+}
+const ThumbsDownButton = (props: Props__ThumbsDownButton) => {
+  // Props
+  const {
+    onConfirmFeedback,
+    isThumbsDown,
+    hasFeedbackRating,
+    message,
+    ...restProps
+  } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const activeChat = useActiveChat((s) => s.activeChat);
+
+  // Constants
+  const activeChatSession = activeChat.session as Interface__ChatSession;
+
+  return (
+    activeChatSession && (
+      <FeedbackReasonTrigger
+        session={activeChatSession}
+        messageId={message.id}
+        onConfirmFeedback={onConfirmFeedback}
+      >
+        <Btn
+          iconButton
+          size={"xs"}
+          variant={"ghost"}
+          aria-label={l.feedback.thumbs_down}
+          disabled={hasFeedbackRating}
+          {...restProps}
+        >
+          <AppIcon
+            icon={ThumbsDownIcon}
+            boxSize={isThumbsDown ? 5 : ""}
+            color={isThumbsDown ? "body" : "fg"}
+            fill={isThumbsDown ? "fg" : undefined}
+          />
+        </Btn>
+      </FeedbackReasonTrigger>
+    )
+  );
+};
+
+interface Props__FeedbackButtons extends StackProps {
+  message: Interface__ChatMessage;
+  index: number;
+}
+export const FeedbackButtons = (props: Props__FeedbackButtons) => {
+  // Props
+  const { message, index, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const activeChat = useActiveChat((s) => s.activeChat);
+  const updateMessageFeedback = useActiveChat((s) => s.updateMessageFeedback);
+
+  // Hooks
+  const { req } = useRequest({
+    id: `confirm-feedback-${message.id}`,
+    showLoadingToast: false,
+    showSuccessToast: false,
+  });
+
+  // States
   const [showThankYou, setShowThankYou] = useState(false);
 
-  // Sync with message feedback
-  useEffect(() => {
-    if (message.feedback) {
-      setSelectedRating(message.feedback.rating);
-      setCategory(message.feedback.category);
-      setComment(message.feedback.userComment ?? "");
-    } else {
-      setSelectedRating(null);
-      setCategory(undefined);
-      setComment("");
-    }
-  }, [message.feedback]);
+  // Derived Values
+  const hasFeedbackRating = message.feedback !== undefined;
+  const isThumbsUp = message.feedback?.rating === 1;
+  const isThumbsDown = message.feedback?.rating === -1;
 
-  const feedbackCategories: { value: Type__FeedbackCategory; label: string }[] =
-    [
-      { value: "NOT_RELEVANT", label: l.feedback.categories.NOT_RELEVANT },
-      { value: "WRONG_INFORMATION", label: l.feedback.categories.WRONG_INFORMATION },
-      { value: "HALLUCINATION", label: l.feedback.categories.HALLUCINATION },
-      { value: "INCOMPLETE", label: l.feedback.categories.INCOMPLETE },
-      { value: "OTHER", label: l.feedback.categories.OTHER },
-    ];
+  // Utils
+  function handleConfirmFeedback({
+    rating,
+    category,
+    userComment,
+  }: FeedbackData) {
+    if (hasFeedbackRating) return;
 
-  const handleRatingClick = async (rating: 1 | -1) => {
-    // If already rated, don't allow change
-    if (message.feedback) return;
+    const config = {
+      url: CHAT_API_FEEDBACK,
+      method: "POST",
+      data: {
+        sessionId: activeChat?.session?.id,
+        messageId: message.id,
+        userQuery: activeChat.messages[index - 1].content,
+        aiResponse: message.content,
+        rating: rating,
+        category: category,
+        userComment: userComment,
+      },
+    };
 
-    if (selectedRating === rating) {
-      // Toggle off if clicking the same rating
-      setSelectedRating(null);
-      return;
-    }
+    req({
+      config,
+      onResolve: {
+        onError: () => {
+          // Rollback state if error
+          updateMessageFeedback?.(message.id, undefined);
+        },
+      },
+    });
 
-    setSelectedRating(rating);
+    updateMessageFeedback?.(message.id, {
+      rating: rating,
+      category: category,
+      userComment: userComment,
+      createdAt: new Date().toISOString(),
+    });
 
-    if (rating === 1) {
-      // For thumbs up, submit immediately without dialog
-      setIsSubmitting(true);
-      try {
-        await onSubmitFeedback?.({ rating: 1 });
-        setShowThankYou(true);
-        setTimeout(() => setShowThankYou(false), 3000);
-      } catch (error) {
-        console.error("Failed to submit feedback:", error);
-        setSelectedRating(null); // Reset on error
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
-      // For thumbs down, open dialog
-      setFeedbackDialogOpen(true);
-    }
-  };
-
-  const handleSubmitFeedback = async () => {
-    setIsSubmitting(true);
-    try {
-      await onSubmitFeedback?.({
-        rating: -1,
-        category,
-        userComment: comment,
-      });
-      setFeedbackDialogOpen(false);
-      setShowThankYou(true);
-      setTimeout(() => setShowThankYou(false), 3000);
-    } catch (error) {
-      console.error("Failed to submit feedback:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const hasFeedback = message.feedback !== undefined;
-  const isThumbsUp = selectedRating === 1;
-  const isThumbsDown = selectedRating === -1;
+    setShowThankYou(true);
+    setTimeout(() => {
+      setShowThankYou(false);
+    }, 3000);
+  }
 
   return (
     <HStack gap={2} alignItems="center" {...(restProps as any)}>
       <HStack gap={1}>
-        <Btn
-          iconButton
-          size="xs"
-          variant={isThumbsUp ? "solid" : "ghost"}
-          aria-label={l.feedback.thumbs_up}
-          bg={isThumbsUp ? `${themeConfig.colorPalette}.solid` : undefined}
-          color={isThumbsUp ? `${themeConfig.colorPalette}.contrast` : undefined}
-          onClick={() => handleRatingClick(1)}
-          disabled={isSubmitting || hasFeedback}
-        >
-          <AppIcon
-            icon={ThumbsUpIcon}
-            fill={isThumbsUp ? "currentColor" : undefined}
+        {(!hasFeedbackRating || isThumbsUp) && (
+          <ThumbsUpButton
+            onConfirmFeedback={handleConfirmFeedback}
+            isThumbsUp={isThumbsUp}
+            hasFeedbackRating={hasFeedbackRating}
           />
-        </Btn>
+        )}
 
-        <Btn
-          iconButton
-          size="xs"
-          variant={isThumbsDown ? "solid" : "ghost"}
-          aria-label={l.feedback.thumbs_down}
-          bg={isThumbsDown ? "danger.solid" : undefined}
-          color={isThumbsDown ? "danger.contrast" : undefined}
-          onClick={() => handleRatingClick(-1)}
-          disabled={isSubmitting || hasFeedback}
-        >
-          <AppIcon
-            icon={ThumbsDownIcon}
-            fill={isThumbsDown ? "currentColor" : undefined}
+        {(!hasFeedbackRating || isThumbsDown) && (
+          <ThumbsDownButton
+            onConfirmFeedback={handleConfirmFeedback}
+            isThumbsDown={isThumbsDown}
+            hasFeedbackRating={hasFeedbackRating}
+            message={message}
           />
-        </Btn>
+        )}
       </HStack>
 
       {showThankYou && (
         <CContainer
           px={3}
           py={1.5}
-          bg="success.subtle"
-          color="success.fg"
-          rounded="md"
-          fontSize="xs"
-          fontWeight="medium"
-          whiteSpace="nowrap"
-          animation="fade-in 0.2s ease-out"
+          bg={"success.subtle"}
+          color={"success.fg"}
+          rounded={"md"}
+          animation={"fade-in 0.2s ease-out"}
         >
-          {l.feedback.thank_you}
+          <P color={"fg.muted"}>{l.feedback.thank_you}</P>
         </CContainer>
       )}
-
-      <DialogRoot
-        open={feedbackDialogOpen}
-        onOpenChange={({ open }) => {
-          setFeedbackDialogOpen(open);
-          if (!open && !isSubmitting) {
-            // Reset form when dialog closes without submitting
-            setSelectedRating(null);
-            setCategory(undefined);
-            setComment("");
-          }
-        }}
-        size="sm"
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{l.feedback.dialog_title}</DialogTitle>
-          </DialogHeader>
-
-          <DialogBody>
-            <P color="fg.subtle" mb={4}>
-              {l.feedback.dialog_description}
-            </P>
-
-            <CContainer gap={3}>
-              <Field label={l.category}>
-                <select
-                  style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", borderWidth: "1px", borderColor: "var(--chakra-colors-border)", backgroundColor: "var(--chakra-colors-bg)", color: "var(--chakra-colors-fg)" }}
-                  value={category ?? ""}
-                  onChange={(e) =>
-                    setCategory(
-                      (e.target.value as Type__FeedbackCategory) || undefined
-                    )
-                  }
-                >
-                  <option value="" disabled>
-                    {l.select || "Select"}
-                  </option>
-                  {feedbackCategories.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-
-              <Field label={l.feedback.comment_placeholder}>
-                <Textarea
-                  value={comment}
-                  onChange={(e) => setComment((e as any).target ? (e as any).target.value : e)}
-                  placeholder={l.feedback.comment_placeholder}
-                  rows={3}
-                />
-              </Field>
-            </CContainer>
-          </DialogBody>
-
-          <DialogFooter>
-            <HStack gap={2} w="full">
-              <Btn
-                variant="ghost"
-                flex={1}
-                onClick={() => setFeedbackDialogOpen(false)}
-                disabled={isSubmitting}
-              >
-                {l.feedback.cancel}
-              </Btn>
-              <Btn
-                bg="danger.solid"
-                color="danger.contrast"
-                flex={1}
-                onClick={handleSubmitFeedback}
-                disabled={isSubmitting || !category}
-              >
-                {isSubmitting ? l.feedback.submit : l.feedback.submit}
-              </Btn>
-            </HStack>
-          </DialogFooter>
-
-          <DialogCloseTrigger />
-        </DialogContent>
-      </DialogRoot>
     </HStack>
   );
 };

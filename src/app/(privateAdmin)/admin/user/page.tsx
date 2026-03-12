@@ -34,7 +34,7 @@ import {
 } from "@/components/widget/PageShell";
 import { RowOptionMenuTooltip } from "@/components/widget/RowOptions";
 import { TableSkeleton } from "@/components/widget/TableSkeleton";
-import { ADMIN_API_USER_BAsE } from "@/constants/apis";
+import { ADMIN_API_USER_BASE } from "@/constants/apis";
 import { DUMMY_USERS } from "@/constants/dummyData";
 import {
   Interface__BatchOptionsTableOptionGenerator,
@@ -66,7 +66,7 @@ import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import * as yup from "yup";
 
-const BASE_ENDPOINT = ADMIN_API_USER_BAsE;
+const BASE_ENDPOINT = ADMIN_API_USER_BASE;
 const PREFIX_ID = "user";
 type Interface__Data = Interface__User;
 
@@ -267,8 +267,7 @@ const Suspend = (props: any) => {
   const ID = `${PREFIX_ID}_suspend`;
 
   // Props
-  const { suspendedAccountIds, clearSelectedRows, disabled, routeTitle } =
-    props;
+  const { suspendAccountIds, clearSelectedRows, disabled, routeTitle } = props;
 
   // Contexts
   const { l } = useLang();
@@ -293,7 +292,7 @@ const Suspend = (props: any) => {
         url: `${BASE_ENDPOINT}/suspend`,
         method: "PATCH",
         data: {
-          suspendedAccountIds: suspendedAccountIds,
+          suspendAccountIds: suspendAccountIds,
         },
       },
       onResolve: {
@@ -308,7 +307,7 @@ const Suspend = (props: any) => {
   return (
     <ConfirmationDisclosureTrigger
       w={"full"}
-      id={`${ID}-${suspendedAccountIds}`}
+      id={`${ID}-${suspendAccountIds}`}
       title={`${l.suspend} ${routeTitle}`}
       description={l.msg_suspend}
       confirmLabel={`${l.suspend}`}
@@ -450,7 +449,7 @@ const Data = (props: any) => {
       (row) => ({
         override: (
           <Suspend
-            suspendedAccountIds={[row.data.id]}
+            suspendAccountIds={[row.data.id]}
             disabled={row.data.accountStatus != `ACTIVE`}
             routeTitle={routeTitle}
           />
@@ -476,7 +475,7 @@ const Data = (props: any) => {
       (ids, { clearSelectedRows }) => ({
         override: (
           <Suspend
-            suspendedAccountIds={ids}
+            suspendAccountIds={ids}
             clearSelectedRows={clearSelectedRows}
             disabled={
               isEmptyArray(ids) ||
