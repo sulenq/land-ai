@@ -370,7 +370,28 @@ const TableMode = memo((props: Props__TableMode) => {
   }, [result, l]);
 
   // Utils
+  useEffect(() => {
+    const handleMouseUpGlobal = () => {
+      isDragging.current = false;
+    };
+    window.addEventListener("mouseup", handleMouseUpGlobal);
+    window.addEventListener("mouseleave", handleMouseUpGlobal);
+    return () => {
+      window.removeEventListener("mouseup", handleMouseUpGlobal);
+      window.removeEventListener("mouseleave", handleMouseUpGlobal);
+    };
+  }, []);
+
   function handleMouseDown(e: React.MouseEvent) {
+    const target = e.target as HTMLElement;
+    // Do not drag if clicking inside a popover/dialog
+    if (
+      target.closest(
+        '[data-part="content"], [role="dialog"], [data-scope="popover"]',
+      )
+    )
+      return;
+
     isDragging.current = true;
     dragStartX.current = e.clientX;
     scrollStartLeft.current = containerRef.current?.scrollLeft ?? 0;
@@ -395,6 +416,7 @@ const TableMode = memo((props: Props__TableMode) => {
         maskingLeft={"100px"}
         maskingRight={"100px"}
         overflowX={"auto"}
+        // userSelect={"none"}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={stopDrag}
