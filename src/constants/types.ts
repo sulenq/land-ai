@@ -42,6 +42,24 @@ export type Type__ChatStreamEvent =
       type: "chunk";
       content: string;
       sources?: string[];
+    }
+  | {
+      type: "sources_update";
+      sources: string[];
+    }
+  | {
+      type: "message_saved";
+      messageId: string;
+      createdAt: string;
+    }
+  | {
+      type: "error";
+      case: string;
+      message: {
+        title: string;
+        description: string;
+        error?: string;
+      };
     };
 
 export type Type__ChartData = Record<string, number | string>;
