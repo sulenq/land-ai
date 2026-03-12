@@ -404,7 +404,7 @@ const TableMode = memo((props: Props__TableMode) => {
         <CContainer
           w={"max"}
           px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
-          pointerEvents={"none"}
+          // pointerEvents={"none"}
         >
           <DataTable
             headers={headers}
