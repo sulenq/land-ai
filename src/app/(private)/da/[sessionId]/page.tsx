@@ -29,7 +29,6 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
-import { HorizontalScrollbar } from "@/components/widget/HorizontalScrollbar";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
@@ -58,10 +57,12 @@ import {
   ArrowUpRightIcon,
   DownloadIcon,
   LayoutListIcon,
+  ShieldAlertIcon,
   TableIcon,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
 
 interface Props__AccordionItemsList {
   daSession?: Interface__DASessionDetail;
@@ -235,6 +236,31 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
           </CContainer>
         </AccordionItemContent>
       </AccordionItem>
+
+      {/* Fraud Detection Panel */}
+      <AccordionItem
+        value={`fraud-detection`}
+        borderBottom={"none"}
+        px={0}
+        border={"1px solid"}
+        borderColor={"border.muted"}
+        rounded={themeConfig.radii.container}
+        _open={{
+          bg: "d0",
+        }}
+      >
+        <AccordionItemTrigger cursor={"pointer"} px={4}>
+          <HStack>
+            <ShieldAlertIcon className="w-4 h-4 mr-2" />
+            <P>Deteksi Fraud</P>
+          </HStack>
+        </AccordionItemTrigger>
+
+        <AccordionItemContent p={0}>
+          <FraudAlertsPanel daSession={daSession} />
+        </AccordionItemContent>
+      </AccordionItem>
+
     </>
   );
 });
@@ -254,31 +280,23 @@ const AccordionMode = memo((props: Props__AccordionMode) => {
   const { themeConfig } = useThemeConfig();
 
   return (
-    <CContainer px={4}>
-      <ContainerLayout>
-        <CContainer
-          // border={"1px solid"}
-          borderColor={"border.muted"}
-          rounded={themeConfig.radii.container}
-        >
-          <AccordionRoot
-            collapsible
-            multiple
-            value={accordionValue}
-            onValueChange={(e) => setAccordionValue(e.value)}
-            rounded={themeConfig.radii.container}
-            overflow={"clip"}
-          >
-            <CContainer gap={2}>
-              <AccordionItemsList
-                daSession={daSession}
-                l={l}
-                themeConfig={themeConfig}
-              />
-            </CContainer>
-          </AccordionRoot>
+    <CContainer gap={4}>
+      <AccordionRoot
+        collapsible
+        multiple
+        value={accordionValue}
+        onValueChange={(e) => setAccordionValue(e.value)}
+        rounded={themeConfig.radii.container}
+        overflow={"clip"}
+      >
+        <CContainer gap={2}>
+          <AccordionItemsList
+            daSession={daSession}
+            l={l}
+            themeConfig={themeConfig}
+          />
         </CContainer>
-      </ContainerLayout>
+      </AccordionRoot>
     </CContainer>
   );
 });
@@ -288,8 +306,7 @@ interface Props__TableMode extends StackProps {
   daSession?: Interface__DASessionDetail;
   containerDimension?: {
     width: number;
-    height: number;
-  };
+    height: number  };
 }
 const TableMode = memo((props: Props__TableMode) => {
   // Props
@@ -416,7 +433,6 @@ const TableMode = memo((props: Props__TableMode) => {
         maskingLeft={"100px"}
         maskingRight={"100px"}
         overflowX={"auto"}
-        // userSelect={"none"}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={stopDrag}
@@ -426,24 +442,18 @@ const TableMode = memo((props: Props__TableMode) => {
         <CContainer
           w={"max"}
           px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
-          // pointerEvents={"none"}
         >
           <DataTable
             headers={headers}
             rows={rows}
             minH={0}
-            // border={"1px solid"}
             borderColor={"border.muted"}
           />
         </CContainer>
       </MContainer>
 
-      <HorizontalScrollbar
-        containerRef={containerRef}
-        maxW={"200px"}
-        mx={"auto"}
-        my={4}
-      />
+      {/* Fraud Detection Section */}
+      <FraudAlertsPanel daSession={daSession} />
     </>
   );
 });
@@ -546,19 +556,27 @@ const ResultSection = (props: Props__ResultSection) => {
 
       {/* Accordion View */}
       <Box display={viewMode === "accordion" ? "block" : "none"}>
-        <AccordionMode
-          daSession={daSession}
-          accordionValue={accordionValue}
-          setAccordionValue={setAccordionValue}
-        />
+        <CContainer px={4}>
+          <ContainerLayout>
+            <AccordionMode
+              daSession={daSession}
+              accordionValue={accordionValue}
+              setAccordionValue={setAccordionValue}
+            />
+          </ContainerLayout>
+        </CContainer>
       </Box>
 
       {/* Table View - cross-document comparison */}
       <Box display={viewMode === "table" ? "block" : "none"}>
-        <TableMode
-          daSession={daSession}
-          containerDimension={containerDimension}
-        />
+        <CContainer px={4}>
+          <ContainerLayout>
+            <TableMode
+              daSession={daSession}
+              containerDimension={containerDimension}
+            />
+          </ContainerLayout>
+        </CContainer>
       </Box>
     </CContainer>
   );

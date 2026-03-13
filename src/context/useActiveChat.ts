@@ -20,7 +20,10 @@ interface State_Actions {
 
   appendMessage: (message: Interface__ChatMessage) => void;
   removeMessage: (messageId: string) => void;
-  updateMessageFeedback: (messageId: string, feedback: Interface__MessageFeedback | undefined) => void;
+  updateMessageFeedback: (
+    messageId: string,
+    feedback: Interface__MessageFeedback | undefined,
+  ) => void;
 
   startAssistantStreaming: (messageId: string) => string;
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;

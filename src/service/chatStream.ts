@@ -21,6 +21,7 @@ export async function startChatStream({
     finishStreaming,
     setSession,
     startAssistantStreaming,
+    updateMessageSources,
   } = useActiveChat.getState();
   const { prependToChatSessions } = useChatSessions.getState();
 
@@ -100,6 +101,11 @@ export async function startChatStream({
             messageId,
             chunk: payload.content,
           });
+        }
+
+        // Update sources with filtered results from AI
+        if (payload.type === "sources_update") {
+          updateMessageSources(messageId, payload.sources);
         }
       }
     }

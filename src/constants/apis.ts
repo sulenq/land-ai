@@ -27,6 +27,13 @@ export const DA_API_SESSION_DELETE = `/api/da/session/delete`; // DELETE + /:daS
 export const DA_API_EXTRACT_SERTIPIKAT = `/api/da/extract-sertipikat`; // POST
 export const DA_API_STATUS = `/api/da/status`; // GET + /:jobId
 
+// Fraud Detection
+export const FRAUD_API_ALERTS_GET = `/api/fraud/alerts`; // GET + /:jobId
+export const FRAUD_API_DASHBOARD = `/api/fraud/dashboard`; // GET
+export const FRAUD_API_ALERT_DETAIL = `/api/fraud/alert`; // GET + /:alertId
+export const FRAUD_API_ALERT_RESOLVE = `/api/fraud/alerts`; // PATCH + /:alertId/resolve
+export const FRAUD_API_JOB_CHECK = `/api/fraud/job`; // GET + /:jobId/check
+
 // Admin
 export const ADMIN_API_AI_KNOWLEDGE_BASE = "/api/admin/ai/knowledge";
 export const ADMIN_API_USER_BASE = "/api/admin/user";
