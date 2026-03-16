@@ -1,5 +1,6 @@
 "use client";
 
+import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
 import {
   AccordionItem,
   AccordionItemContent,
@@ -30,7 +31,6 @@ import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
-import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
@@ -55,6 +55,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
   ArrowUpRightIcon,
+  CheckCheckIcon,
   DownloadIcon,
   LayoutListIcon,
   ShieldAlertIcon,
@@ -62,7 +63,6 @@ import {
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
 
 interface Props__AccordionItemsList {
   daSession?: Interface__DASessionDetail;
@@ -147,6 +147,7 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
         );
       })}
 
+      {/* Validation Panel */}
       <AccordionItem
         value={`validation`}
         borderBottom={"none"}
@@ -159,8 +160,11 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
         }}
       >
         <AccordionItemTrigger cursor={"pointer"} px={4}>
-          <P>{l.validation}</P>
-          <DotIndicator />
+          <HStack>
+            <AppIcon icon={CheckCheckIcon} />
+
+            <P>{l.validation}</P>
+          </HStack>
         </AccordionItemTrigger>
 
         <AccordionItemContent p={0}>
@@ -251,8 +255,9 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
       >
         <AccordionItemTrigger cursor={"pointer"} px={4}>
           <HStack>
-            <ShieldAlertIcon className="w-4 h-4 mr-2" />
-            <P>Deteksi Fraud</P>
+            <AppIcon icon={ShieldAlertIcon} />
+
+            <P>{l.fraud_detector}</P>
           </HStack>
         </AccordionItemTrigger>
 
@@ -260,7 +265,6 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
           <FraudAlertsPanel daSession={daSession} />
         </AccordionItemContent>
       </AccordionItem>
-
     </>
   );
 });
@@ -306,7 +310,8 @@ interface Props__TableMode extends StackProps {
   daSession?: Interface__DASessionDetail;
   containerDimension?: {
     width: number;
-    height: number  };
+    height: number;
+  };
 }
 const TableMode = memo((props: Props__TableMode) => {
   // Props

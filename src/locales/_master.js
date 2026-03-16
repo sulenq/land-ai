@@ -139,6 +139,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const fraud_detector = {
+  id: "Deteksi Fraud",
+  en: "Fraud Detector",
+};
 export const wait = {
   id: "Tunggu",
   en: "Wait",
