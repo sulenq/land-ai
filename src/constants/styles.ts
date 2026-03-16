@@ -11,6 +11,8 @@ export const DESKTOP_NAVS_BG = "body";
 export const DESKTOP_CONTENT_CONTAINER_BG = "body";
 
 // Sizes
+export const R_TITLE = ["xl", null, "3xl"];
+export const R_SUBTITLE = ["md", null, "lg"];
 export const TOPBAR_H = "52px";
 export const DRAWER_BODY_MAXH = `calc(100dvh - 176px)`;
 export const MAIN_BUTTON_SIZE = ["md", null, "sm"] as any;

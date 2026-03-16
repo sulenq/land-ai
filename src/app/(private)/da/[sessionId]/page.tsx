@@ -48,6 +48,7 @@ import {
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
 } from "@/constants/interfaces";
+import { R_SUBTITLE, R_TITLE } from "@/constants/styles";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
@@ -1066,11 +1067,11 @@ export default function Page() {
           <ContainerLayout gap={8}>
             {/* Header */}
             <CContainer gap={1}>
-              <ClampText fontSize={"3xl"} fontWeight={"semibold"}>
+              <ClampText fontSize={R_TITLE} fontWeight={"semibold"}>
                 {activeDASession?.title}
               </ClampText>
 
-              <P fontSize={"lg"} color={"fg.subtle"}>
+              <P fontSize={R_SUBTITLE} color={"fg.subtle"}>
                 {formatDate(activeDASession?.createdAt, {
                   withTime: true,
                 })}
