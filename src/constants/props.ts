@@ -34,6 +34,7 @@ import {
 export interface Props__ContinueChat extends StackProps {
   disabled?: boolean;
   loading?: boolean;
+  promptInputProps?: Props__PromptInput;
 }
 
 export interface Props__NewChat extends StackProps {

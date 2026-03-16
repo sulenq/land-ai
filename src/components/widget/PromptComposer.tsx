@@ -288,7 +288,12 @@ export const NewPrompt = (props: Props__NewChat) => {
           >{`${l.hi} ${user?.name}`}</P>
         </HStack>
 
-        <P fontSize={"3xl"} fontWeight={"semibold"} color={"ibody"}>
+        <P
+          fontSize={"3xl"}
+          fontWeight={"semibold"}
+          color={"ibody"}
+          lineHeight={1.3}
+        >
           {l.msg_welcome_context}
         </P>
       </CContainer>
@@ -317,7 +322,7 @@ export const NewPrompt = (props: Props__NewChat) => {
 
 export const ContinuePrompt = (props: Props__ContinueChat) => {
   // Props
-  const { disabled, loading, ...restProps } = props;
+  const { disabled, loading, promptInputProps, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -363,6 +368,7 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
         disabled={disabled || activeChat.isStreaming}
         abortMode={activeChat.isStreaming}
         loading={loading}
+        {...promptInputProps}
       />
     </CContainer>
   );
