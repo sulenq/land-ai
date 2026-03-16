@@ -119,7 +119,7 @@ const Services = (props: StackProps) => {
         {render.loading}
       </FadingSkeletonContainer>
 
-      <CContainer overflowY={"auto"}>
+      <CContainer>
         {!initialLoading && (
           <>
             {error && render.error}
