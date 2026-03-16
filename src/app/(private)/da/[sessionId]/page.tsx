@@ -109,12 +109,14 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
             <DisclosureHeaderContent title={capitalizeWords(l.uploaded_file)} />
           </DisclosureHeader>
 
-          <DisclosureBody
-            p={0}
-            rounded={themeConfig.radii.container}
-            overflow={"clip"}
-          >
-            <HStack align={"stretch"} gap={0} h={"full"}>
+          <DisclosureBody p={0} bg={"transparent"}>
+            <HStack
+              align={"stretch"}
+              gap={0}
+              h={"full"}
+              roundedBottom={themeConfig.radii.container}
+              overflow={"clip"}
+            >
               <CContainer
                 flex={1}
                 gap={4}
@@ -180,9 +182,10 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 gap={4}
                 w={"300px"}
                 h={"full"}
+                bg={"bg.muted"}
                 overflowY={"auto"}
               >
-                <CContainer gap={1} flex={1} p={4} overflowY={"auto"}>
+                <CContainer gap={1} flex={1} p={2} overflowY={"auto"}>
                   {uploadedDocuments?.map((doc) => {
                     const isActive = activeDocs.some(
                       (d) =>
@@ -190,28 +193,48 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                     );
 
                     return (
-                      <Tooltip
+                      <HStack
                         key={doc.documentRequirement.id}
-                        content={doc.metaData.fileName}
+                        align={"start"}
+                        px={3}
+                        py={2}
+                        rounded={themeConfig.radii.component}
+                        cursor={"pointer"}
+                        _hover={{
+                          bg: "d1",
+                        }}
+                        onClick={() => {
+                          setActiveDocs((ps) => (ps[0] ? [ps[0], doc] : [doc]));
+                        }}
                       >
-                        <Btn
-                          clicky={false}
-                          justifyContent={"start"}
-                          variant={"ghost"}
-                          size={"xs"}
-                          onClick={() => {
-                            setActiveDocs((ps) =>
-                              ps[0] ? [ps[0], doc] : [doc],
-                            );
-                          }}
-                        >
-                          <P lineClamp={1} textAlign={"left"} mr={4}>
-                            {doc.metaData.fileName}
-                          </P>
+                        <CContainer gap={1}>
+                          <Tooltip content={doc.documentRequirement.name}>
+                            <P
+                              lineClamp={1}
+                              fontSize={"sm"}
+                              textAlign={"left"}
+                              color={"fg.subtle"}
+                              mr={4}
+                            >
+                              {doc.documentRequirement.name}
+                            </P>
+                          </Tooltip>
 
-                          {isActive && <DotIndicator ml={"auto"} />}
-                        </Btn>
-                      </Tooltip>
+                          <Tooltip content={doc.metaData.fileName}>
+                            <P
+                              lineClamp={1}
+                              fontSize={"sm"}
+                              fontWeight={"medium"}
+                              textAlign={"left"}
+                              mr={4}
+                            >
+                              {doc.metaData.fileName}
+                            </P>
+                          </Tooltip>
+                        </CContainer>
+
+                        {isActive && <DotIndicator ml={"auto"} mt={2} />}
+                      </HStack>
                     );
                   })}
                 </CContainer>
