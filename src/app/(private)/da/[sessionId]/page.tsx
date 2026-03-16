@@ -329,7 +329,7 @@ const MetaData = () => {
         </HStack>
 
         <CContainer
-          gap={2}
+          gap={[4, null, 2]}
           p={4}
           rounded={themeConfig.radii.container}
           // border={"1px solid"}
@@ -338,8 +338,13 @@ const MetaData = () => {
         >
           {uploadedDocuments?.map((doc) => {
             return (
-              <HStack key={doc.documentRequirement.id} align={"start"} gap={4}>
-                <HStack flexShrink={0} w={"200px"}>
+              <HStack
+                flexDir={["column", null, "row"]}
+                key={doc.documentRequirement.id}
+                align={"start"}
+                gapX={4}
+              >
+                <HStack flexShrink={0} w={["full", null, "240px"]}>
                   <ClampText color={"fg.muted"}>
                     {doc.documentRequirement.name}
                   </ClampText>
@@ -790,9 +795,16 @@ const ResultSection = (props: Props__ResultSection) => {
 
   return (
     <CContainer pos={"relative"} {...restProps}>
-      <CContainer px={4} pos={"sticky"} top={"-32px"} zIndex={"sticky"}>
+      <CContainer
+        px={4}
+        pos={"sticky"}
+        top={"-32px"}
+        mb={[2, null, 0]}
+        zIndex={"sticky"}
+      >
         <ContainerLayout>
           <HStack
+            wrap={"wrap"}
             justify={"space-between"}
             pb={2}
             bg="linear-gradient(
@@ -803,11 +815,12 @@ const ResultSection = (props: Props__ResultSection) => {
           >
             <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
 
-            <HStack gap={2}>
+            <HStack flex={[1, null, 0]} gap={2}>
               {/* Accordion controls - only in accordion mode */}
               {viewMode === "accordion" && (
-                <HStack rounded={themeConfig.radii.component}>
+                <HStack flex={1} rounded={themeConfig.radii.component}>
                   <Btn
+                    flex={1}
                     variant="outline"
                     size="xs"
                     onClick={() => {
@@ -825,6 +838,7 @@ const ResultSection = (props: Props__ResultSection) => {
                   </Btn>
 
                   <Btn
+                    flex={1}
                     variant="outline"
                     size="xs"
                     onClick={() => {
