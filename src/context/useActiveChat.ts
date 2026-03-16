@@ -24,7 +24,7 @@ interface State_Actions {
     messageId: string,
     feedback: Interface__MessageFeedback | undefined,
   ) => void;
-
+  updateMessageSources: (messageId: string, sources: string[]) => void;
   startAssistantStreaming: (messageId: string) => string;
   appendStreamingChunk: (payload: { messageId: string; chunk: string }) => void;
   finishStreaming: () => void;
@@ -190,6 +190,16 @@ export const useActiveChat = create<State_Actions>((set) => ({
           }
           return m;
         }),
+      },
+    })),
+
+  updateMessageSources: (messageId, sources) =>
+    set((state) => ({
+      activeChat: {
+        ...state.activeChat,
+        messages: state.activeChat.messages.map((m) =>
+          m.id === messageId ? { ...m, sources } : m,
+        ),
       },
     })),
 }));
