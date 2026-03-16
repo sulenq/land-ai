@@ -350,16 +350,9 @@ export const FeedbackButtons = (props: Props__FeedbackButtons) => {
       </HStack>
 
       {showThankYou && (
-        <CContainer
-          px={3}
-          py={1.5}
-          bg={"success.subtle"}
-          color={"success.fg"}
-          rounded={"md"}
-          animation={"fade-in 0.2s ease-out"}
-        >
-          <P color={"fg.muted"}>{l.feedback.thank_you}</P>
-        </CContainer>
+        <P color={"fg.muted"} animation={"fade-in 0.2s ease-out"}>
+          {l.feedback.thank_you}
+        </P>
       )}
     </HStack>
   );

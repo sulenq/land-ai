@@ -2,10 +2,10 @@ import { Provider } from "@/components/ui/provider";
 import { Toaster } from "@/components/ui/toaster";
 import ClientRoot from "@/components/widget/ClientRoot";
 import { APP } from "@/constants/_meta";
-import { Metadata, Viewport } from "next";
-import { Figtree } from "next/font/google";
-import "./globals.css";
 import { disclosurePrefixId } from "@/utils/disclosure";
+import { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import "./globals.css";
 
 interface Props {
   children: React.ReactNode;
@@ -56,7 +56,7 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-const figtree = Figtree({
+const font = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
 });
@@ -66,7 +66,7 @@ const RootLayout = (props: Props) => {
   const { children } = props;
 
   return (
-    <html suppressHydrationWarning className={figtree.className}>
+    <html suppressHydrationWarning className={font.className}>
       <head>
         <link rel="manifest" href="/manifest.json" />
       </head>
