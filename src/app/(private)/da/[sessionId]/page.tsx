@@ -930,7 +930,7 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
                 fileName={`${letter.label}.pdf`}
               >
                 {({ loading }: any) => (
-                  <Btn variant={"outline"} size={"xs"} w={"200px"}>
+                  <Btn variant={"outline"} size={"sm"}>
                     <AppIcon icon={DownloadIcon} boxSize={4} />
 
                     {loading ? "Loading PDF..." : `${letter.label} PDF`}
