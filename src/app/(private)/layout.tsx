@@ -38,7 +38,7 @@ import { BottomIndicator, LeftIndicator } from "@/components/widget/Indicator";
 import { Logo } from "@/components/widget/Logo";
 import { MContainer } from "@/components/widget/MContainer";
 import { DesktopNavTooltip, MobileNavLink } from "@/components/widget/Navs";
-import { NavBreadcrumb, TopBar } from "@/components/widget/PageShell";
+import { TopBar } from "@/components/widget/PageShell";
 import { ProfileMenuTrigger } from "@/components/widget/ProfileMenu";
 import { Today } from "@/components/widget/Today";
 import { APP } from "@/constants/_meta";
@@ -64,10 +64,9 @@ import { useNavsTabs } from "@/context/useNavsTabs";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import useScreen from "@/hooks/useScreen";
-import { last } from "@/utils/array";
 import { getUserData } from "@/utils/auth";
 import { pluckString } from "@/utils/string";
-import { getActiveNavs, imgUrl } from "@/utils/url";
+import { imgUrl } from "@/utils/url";
 import {
   Box,
   Center,
@@ -190,10 +189,10 @@ const MobileLayout = (props: Props__Layout) => {
 
   // States
   const user = getUserData();
-  const activeNavs = getActiveNavs(pathname);
-  const resolvedActiveNavs =
-    sw < 360 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
-  const backPath = last(activeNavs)?.backPath;
+  // const activeNavs = getActiveNavs(pathname);
+  // const resolvedActiveNavs =
+  //   sw < 360 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
+  // const backPath = last(activeNavs)?.backPath;
   const isInProfileRoute = pathname.includes(`/profile`);
 
   return (
@@ -202,7 +201,7 @@ const MobileLayout = (props: Props__Layout) => {
       <CContainer flex={1} bg={MOBILE_CONTENT_CONTAINER_BG} overflowY={"auto"}>
         {/* Content header */}
         <CContainer gap={2}>
-          <HStack w={"full"} justify={"space-between"} pt={2} px={4}>
+          <HStack w={"full"} justify={"space-between"} py={2} px={4}>
             <HStack>
               <Logo size={15} ml={"-4px"} />
             </HStack>
@@ -214,7 +213,7 @@ const MobileLayout = (props: Props__Layout) => {
             </HStack>
           </HStack>
 
-          <HStack
+          {/* <HStack
             gap={4}
             px={4}
             pb={2}
@@ -227,7 +226,7 @@ const MobileLayout = (props: Props__Layout) => {
               resolvedActiveNavs={resolvedActiveNavs}
               ml={backPath ? -2 : -1}
             />
-          </HStack>
+          </HStack> */}
         </CContainer>
 
         {children}
@@ -376,7 +375,7 @@ const MobileLayout = (props: Props__Layout) => {
 
           <DASessionssDisclosureTrigger flex={1} align={"center"}>
             <MobileNavLink
-              color={pathname.includes("/c/") ? "" : MOBILE_NAVS_COLOR}
+              color={pathname.includes("/da/") ? "" : MOBILE_NAVS_COLOR}
             >
               <AppIcon icon={FileScanIcon} boxSize={5} />
 

@@ -155,7 +155,7 @@ export const PromptInput = (props: Props__PromptInput) => {
         px={"1 !important"}
         border={"none"}
         placeholder={l.ask_land_ai}
-        mb={4}
+        mb={1}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
@@ -364,8 +364,6 @@ export const ContinuePrompt = (props: Props__ContinueChat) => {
         abortMode={activeChat.isStreaming}
         loading={loading}
       />
-
-      <PromptHelperText />
     </CContainer>
   );
 };
