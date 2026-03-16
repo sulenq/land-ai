@@ -114,7 +114,7 @@ const FeedbackReasonTrigger = (props: FeedbackReasonTriggerProps) => {
         <DisclosureContent>
           <DisclosureHeader>
             <DisclosureHeaderContent
-              title={capitalizeWords(l.feedback.dialog_title)}
+              title={capitalizeWords(l.feedback.disclosure_title)}
             />
           </DisclosureHeader>
 
@@ -178,15 +178,11 @@ const ThumbsUpButton = (props: Props__ThumsbUpButton) => {
   const { onConfirmFeedback, isThumbsUp, hasFeedbackRating, ...restProps } =
     props;
 
-  // Contexts
-  const { l } = useLang();
-
   return (
     <Btn
       iconButton
       size={"xs"}
       variant={"ghost"}
-      aria-label={l.feedback.thumbs_up}
       onClick={() => {
         onConfirmFeedback({
           rating: 1,
@@ -222,7 +218,6 @@ const ThumbsDownButton = (props: Props__ThumbsDownButton) => {
   } = props;
 
   // Contexts
-  const { l } = useLang();
   const activeChat = useActiveChat((s) => s.activeChat);
 
   // Constants
@@ -239,7 +234,6 @@ const ThumbsDownButton = (props: Props__ThumbsDownButton) => {
           iconButton
           size={"xs"}
           variant={"ghost"}
-          aria-label={l.feedback.thumbs_down}
           disabled={hasFeedbackRating}
           {...restProps}
         >
@@ -351,7 +345,7 @@ export const FeedbackButtons = (props: Props__FeedbackButtons) => {
 
       {showThankYou && (
         <P color={"fg.muted"} animation={"fade-in 0.2s ease-out"}>
-          {l.feedback.thank_you}
+          {l.thankyou}
         </P>
       )}
     </HStack>

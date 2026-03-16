@@ -309,6 +309,7 @@ export interface Interface__DAUploadedDocument {
   documentRequirement: Interface__DAServiceDocumentRequirement;
   metaData: {
     fileName: string;
+    filePath: string;
   };
 }
 export interface Interface__DASessionDetail extends Interface__DASession {

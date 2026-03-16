@@ -139,6 +139,46 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const thankyou = {
+  id: "Terima kasih",
+  en: "Thank you",
+};
+export const feedback = {
+  disclosure_title: {
+    id: "Bantu kami menjadi lebih baik",
+    en: "Help us be better",
+  },
+  comment_placeholder: {
+    id: "Jelaskan lebih lanjut",
+    en: "Explain further",
+  },
+  categories: {
+    NOT_RELEVANT: {
+      en: "Not relevant",
+      id: "Tidak relevan",
+    },
+    WRONG_INFORMATION: {
+      en: "Wrong information",
+      id: "Informasi salah",
+    },
+    HALLUCINATION: {
+      en: "Hallucination",
+      id: "Halusinasi",
+    },
+    INCOMPLETE: {
+      en: "Incomplete",
+      id: "Tidak lengkap",
+    },
+    OTHER: {
+      en: "Other",
+      id: "Lainnya",
+    },
+  },
+};
+export const your_files = {
+  id: "File anda",
+  en: "Your files",
+};
 export const fraud_detector = {
   id: "Deteksi Fraud",
   en: "Fraud Detector",

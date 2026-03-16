@@ -31,6 +31,7 @@ export const TOP_TITLE_H = "36px";
 export const TOP_DISTANCE = "78px";
 export const BASE_ICON_BOX_SIZE = 4.5;
 export const MENU_ICON_BOX_SIZE = 4.5;
+export const R_SPACING_MD = ["16px", null, "32px"];
 
 // Positioning
 export const MOBILE_POPOVER_MAIN_AXIS = 22;

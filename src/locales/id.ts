@@ -206,6 +206,17 @@ const translations = {
   "exceed_char_limit": "Melebihi batas karakter",
   "explanation": "Penjelasan",
   "february": "Februari",
+  "feedback": {
+    "disclosure_title": "Bantu kami menjadi lebih baik",
+    "comment_placeholder": "Jelaskan lebih lanjut",
+    "categories": {
+      "NOT_RELEVANT": "Tidak relevan",
+      "WRONG_INFORMATION": "Informasi salah",
+      "HALLUCINATION": "Halusinasi",
+      "INCOMPLETE": "Tidak lengkap",
+      "OTHER": "Lainnya"
+    }
+  },
   "file_extension": "Ekstensi file",
   "file_name": "Nama file",
   "file_size": "Ukuran file",
@@ -556,6 +567,7 @@ const translations = {
   "super_admin": "Super Admin",
   "suspend": "Tangguhkan",
   "suspended": "Ditangguhkan",
+  "thankyou": "Terima kasih",
   "theme": "Tema",
   "thursday": "Kamis",
   "time_format": "Format waktu",
@@ -610,6 +622,7 @@ const translations = {
   "yes": "Ya",
   "your_chats": "Obrolan anda",
   "your_da_analysis": "Analisis dokumen anda",
+  "your_files": "File anda",
   "zoom_in": "Perbesar",
   "zoom_out": "Perkecil",
   "zoom_reset": "Reset zoom"

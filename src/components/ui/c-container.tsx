@@ -1,18 +1,17 @@
 "use client";
 
 import { forwardRef } from "react";
-import { StackProps, VStack } from "@chakra-ui/react";
+import { StackProps, VStack as ChakraVStack } from "@chakra-ui/react";
 
 interface Props extends StackProps {
   children?: React.ReactNode;
 }
-
 export const CContainer = forwardRef<HTMLDivElement, Props>((props, ref) => {
   // Props
   const { children, ...restProps } = props;
 
   return (
-    <VStack
+    <ChakraVStack
       ref={ref}
       className={"CContainer"}
       gap={0}
@@ -21,8 +20,27 @@ export const CContainer = forwardRef<HTMLDivElement, Props>((props, ref) => {
       {...restProps}
     >
       {children}
-    </VStack>
+    </ChakraVStack>
+  );
+});
+
+export const StackV = forwardRef<HTMLDivElement, Props>((props, ref) => {
+  // Props
+  const { children, ...restProps } = props;
+
+  return (
+    <ChakraVStack
+      ref={ref}
+      className={"StackV"}
+      align={"stretch"}
+      gap={0}
+      w={"full"}
+      {...restProps}
+    >
+      {children}
+    </ChakraVStack>
   );
 });
 
 CContainer.displayName = "CContainer";
+StackV.displayName = "StackV";
