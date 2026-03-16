@@ -109,7 +109,11 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
             <DisclosureHeaderContent title={capitalizeWords(l.uploaded_file)} />
           </DisclosureHeader>
 
-          <DisclosureBody p={0}>
+          <DisclosureBody
+            p={0}
+            rounded={themeConfig.radii.container}
+            overflow={"clip"}
+          >
             <HStack align={"stretch"} gap={0} h={"full"}>
               <CContainer
                 flex={1}
