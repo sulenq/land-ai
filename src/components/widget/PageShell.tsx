@@ -9,6 +9,7 @@ import { Clock } from "@/components/widget/Clock";
 
 import { DotIndicator } from "@/components/widget/Indicator";
 import SimplePopover from "@/components/widget/SimplePopover";
+import { SessionShareButton } from "@/components/widget/SessionShareButton";
 import { Today } from "@/components/widget/Today";
 import { Interface__Nav } from "@/constants/interfaces";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
@@ -20,7 +21,7 @@ import { capitalizeWords, pluckString } from "@/utils/string";
 import { getActiveNavs } from "@/utils/url";
 import { HStack, Icon, StackProps } from "@chakra-ui/react";
 import { IconSlash } from "@tabler/icons-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import {
   createContext,
   forwardRef,
@@ -196,12 +197,16 @@ export const TopBar = () => {
   // Hooks
   const { sw } = useScreen();
   const pathname = usePathname();
+  const params = useParams();
 
   // States
   const activeNavs = getActiveNavs(pathname);
   const resolvedActiveNavs =
     sw < 960 ? [activeNavs[activeNavs.length - 1]] : activeNavs;
   const backPath = last(activeNavs)?.backPath;
+
+  // Check if we're on a chat session page
+  const isChatPage = pathname?.startsWith("/c/") && !!params?.sessionId;
 
   useEffect(() => {}, [activeNavs]);
 
@@ -223,6 +228,12 @@ export const TopBar = () => {
 
       <HStack flexShrink={0} gap={1}>
         <HStack mx={1}>
+          {isChatPage && (
+            <SessionShareButton
+              sessionId={params.sessionId as string}
+              sessionTitle={last(activeNavs)?.label}
+            />
+          )}
           <CalendarDisclosureTrigger>
             <Today fontSize={FONT_SIZE} />
           </CalendarDisclosureTrigger>

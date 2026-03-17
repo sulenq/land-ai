@@ -16,6 +16,13 @@ export const CHAT_API_SESSION_PROTECT = `/api/ai/chat/protect`; // PATCH + /:ses
 export const CHAT_API_SESSION_DELETE = `/api/ai/chat/delete`; // DELETE + /:sessionIds
 export const CHAT_API_FEEDBACK = `/api/ai/chat/feedback`; // POST - Submit feedback
 
+// RAG Share
+export const RAG_SHARE_CREATE = `/api/ai/share`; // POST
+export const RAG_SHARE_PUBLIC = `/api/ai/share`; // GET + /:shareId (PUBLIC)
+export const RAG_SHARE_GET_USER = `/api/ai/shares`; // GET
+export const RAG_SHARE_TOGGLE = `/api/ai/share`; // PATCH + /:shareId/toggle
+export const RAG_SHARE_DELETE = `/api/ai/share`; // DELETE + /:shareId
+
 // Docs Analysis
 export const DA_API_SERVICE_GET_ALL = `/api/da/services/get`; // GET
 export const DA_API_SERVICE_DETAIL = `/api/da/services/get-detail`; // GET + /:daServiceId

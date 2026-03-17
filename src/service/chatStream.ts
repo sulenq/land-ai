@@ -22,10 +22,11 @@ export async function startChatStream({
     setSession,
     startAssistantStreaming,
     updateMessageSources,
+    updateMessageId, // Tambah ini untuk update message ID dari backend
   } = useActiveChat.getState();
   const { prependToChatSessions } = useChatSessions.getState();
 
-  const messageId = crypto.randomUUID();
+  let messageId = crypto.randomUUID(); // Gunakan let agar bisa di-update nanti
 
   // appendMessage({
   //   id: messageId,
@@ -106,6 +107,14 @@ export async function startChatStream({
         // Update sources with filtered results from AI
         if (payload.type === "sources_update") {
           updateMessageSources(messageId, payload.sources);
+        }
+
+        // Update message ID dengan ID asli dari database backend
+        if (payload.type === "message_saved" && payload.messageId) {
+          // Update messageId untuk digunakan ke depannya
+          const oldMessageId = messageId;
+          messageId = payload.messageId;
+          updateMessageId?.(oldMessageId, payload.messageId);
         }
       }
     }
