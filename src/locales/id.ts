@@ -430,6 +430,7 @@ const translations = {
   "rejected": "Ditolak",
   "related_apps": "Aplikasi Terkait",
   "rename": "Ganti nama",
+  "requirements": "Persyaratan",
   "reset": "Reset",
   "restore": "Pulihkan",
   "result": "Hasil",

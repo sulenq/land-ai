@@ -430,6 +430,7 @@ const translations = {
   "rejected": "Rejected",
   "related_apps": "Related App",
   "rename": "Rename",
+  "requirements": "Requirements",
   "reset": "Reset",
   "restore": "Restore",
   "result": "Result",

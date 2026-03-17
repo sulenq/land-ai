@@ -21,6 +21,7 @@ import React from "react";
 interface Props extends StackProps {
   item: {
     id: string;
+    topElement?: React.ReactNode;
     img?: string;
     showImg?: boolean;
     imgFallbackSrc?: string;
@@ -87,6 +88,8 @@ export const DataGridItem = (props: Props) => {
         />
       </Box>
 
+      {item.topElement}
+
       {item.showImg && (
         <ImgViewer
           id={`img-${row?.idx}-${item?.id}`}
@@ -113,7 +116,7 @@ export const DataGridItem = (props: Props) => {
         opacity={dim || row.dim ? 0.4 : 1}
         my={3}
       >
-        <HStack maxW={"calc(100% - 32px)"}>
+        <HStack>
           {typeof item.title === "string" ? (
             <ClampText fontWeight={"semibold"}>{item.title}</ClampText>
           ) : (

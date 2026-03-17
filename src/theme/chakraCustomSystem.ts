@@ -456,7 +456,7 @@ const customConfig = defineConfig({
       fontSizes: {
         xs: { value: "0.75rem" }, // 12px
         sm: { value: "0.875rem" }, // 14px
-        md: { value: "1rem" }, // 16px
+        md: { value: "0.9375rem" }, // 15px
         lg: { value: "1.125rem" }, // 18px
       },
     },
@@ -1883,9 +1883,9 @@ const customConfig = defineConfig({
       shadows: {
         soft: {
           value: {
-            base: "0 4px 12px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04) !important",
+            base: "0 4px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02) !important",
             _dark:
-              "0 4px 12px rgba(0,0,0,0.24), 0 1px 4px rgba(0,0,0,0.18) !important",
+              "0 4px 8px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.16) !important",
           },
         },
       },

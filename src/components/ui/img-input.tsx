@@ -155,17 +155,6 @@ export const ImgInput = (props: Props__FileInput) => {
       >
         {shouldRenderPreview && (
           <>
-            {/* <P
-              fontWeight={"medium"}
-              mt={3}
-              mb={-8}
-              ml={4}
-              mr={"auto"}
-              color={"fg.subtle"}
-            >
-              Preview
-            </P> */}
-
             <HScroll
               className="scrollX"
               maxW={restProps?.maxW || ""}
@@ -196,7 +185,13 @@ export const ImgInput = (props: Props__FileInput) => {
                           <P fontWeight={"medium"}>{`${idx + 1}`}</P>
                         </Circle>
 
-                        <Img key={idx} src={url} fluid h={"200px"} />
+                        <Img
+                          key={idx}
+                          src={url}
+                          fluid
+                          h={"200px"}
+                          objectFit={"contain"}
+                        />
                       </Center>
                     </ImgViewer>
                   );

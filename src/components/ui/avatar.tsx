@@ -1,5 +1,6 @@
 "use client";
 
+import { P } from "@/components/ui/p";
 import type { GroupProps, SlotRecipeProps } from "@chakra-ui/react";
 import { Avatar as ChakraAvatar, Group } from "@chakra-ui/react";
 import { forwardRef } from "react";
@@ -16,36 +17,36 @@ export interface AvatarProps extends ChakraAvatar.RootProps {
   iconBoxSize?: string | number;
 }
 
-export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(function Avatar(
-  props,
-  ref
-) {
-  const {
-    name,
-    src,
-    srcSet,
-    loading,
-    icon,
-    fallback,
-    children,
-    iconBoxSize,
-    ...rest
-  } = props;
-  return (
-    <ChakraAvatar.Root ref={ref} {...rest}>
-      <AvatarFallback
-        name={name}
-        icon={icon}
-        boxSize={iconBoxSize}
-        color={"fg.subtle"}
-      >
-        {fallback}
-      </AvatarFallback>
-      <ChakraAvatar.Image src={src} srcSet={srcSet} loading={loading} />
-      {children}
-    </ChakraAvatar.Root>
-  );
-});
+export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
+  function Avatar(props, ref) {
+    const {
+      name,
+      src,
+      srcSet,
+      loading,
+      icon,
+      fallback,
+      children,
+      iconBoxSize,
+      ...rest
+    } = props;
+    return (
+      <ChakraAvatar.Root ref={ref} {...rest}>
+        <AvatarFallback
+          name={name}
+          icon={icon}
+          boxSize={iconBoxSize}
+          color={"fg.subtle"}
+          fontSize={rest.fontSize}
+        >
+          {fallback}
+        </AvatarFallback>
+        <ChakraAvatar.Image src={src} srcSet={srcSet} loading={loading} />
+        {children}
+      </ChakraAvatar.Root>
+    );
+  },
+);
 
 interface AvatarFallbackProps extends ChakraAvatar.FallbackProps {
   name?: string;
@@ -58,7 +59,9 @@ const AvatarFallback = forwardRef<HTMLDivElement, AvatarFallbackProps>(
     return (
       <ChakraAvatar.Fallback ref={ref} {...rest}>
         {children}
-        {name != null && children == null && <>{getInitials(name)}</>}
+        {name != null && children == null && (
+          <P fontSize={rest.fontSize}>{getInitials(name)}</P>
+        )}
         {name == null && children == null && (
           <ChakraAvatar.Icon asChild={!!icon} boxSize={rest?.boxSize}>
             {icon}
@@ -66,7 +69,7 @@ const AvatarFallback = forwardRef<HTMLDivElement, AvatarFallbackProps>(
         )}
       </ChakraAvatar.Fallback>
     );
-  }
+  },
 );
 
 function getInitials(name: string) {
@@ -88,5 +91,5 @@ export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
         <Group gap="0" spaceX="-3" ref={ref} {...rest} />
       </ChakraAvatar.PropsProvider>
     );
-  }
+  },
 );

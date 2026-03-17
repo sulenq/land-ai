@@ -30,7 +30,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const { themeConfig } = useThemeConfig();
 
     // States
-    const isRoundedZero = themeConfig.radii.component === "0px";
+    // const isRoundedZero = themeConfig.radii.component === "0px";
     const isColorPaletteGray = themeConfig.colorPalette === "gray";
     const graySolidBg = useColorModeValue("dark", "light");
 
@@ -50,10 +50,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 ? graySolidBg
                 : themeConfig.primaryColor
               : subtle
-              ? "bg.muted"
-              : "transparent"
+                ? "bg.muted"
+                : "transparent"
           }
-          rounded={props?.rounded || isRoundedZero ? "0px" : "sm"}
+          rounded={
+            props?.rounded || `calc(${themeConfig.radii.component} - 4px)`
+          }
           borderColor={
             restProps.borderColor ||
             (checked ? "transparent" : subtle ? "border.muted" : "d3")
@@ -72,5 +74,5 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         )}
       </ChakraCheckbox.Root>
     );
-  }
+  },
 );

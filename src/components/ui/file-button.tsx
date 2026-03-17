@@ -71,8 +71,8 @@ export const FileUploadDropzone = forwardRef<
       overflow={"auto"}
       p={imgInput ? 0 : 4}
       minH={"150px !important"}
-      h={"150px !important"}
-      maxH={"150px !important"}
+      h={"full"}
+      maxH={"full"}
       {...rest}
       _hover={{ bg: "gray.subtle" }}
     >

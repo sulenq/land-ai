@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useContainerDimension(
   ref: React.RefObject<HTMLDivElement | null> | null,
@@ -8,7 +8,8 @@ export function useContainerDimension(
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!ref?.current) return;
+    const node = ref?.current;
+    if (!node) return;
 
     const observer = new ResizeObserver(([entry]) => {
       if (!entry) return;
@@ -23,7 +24,10 @@ export function useContainerDimension(
       }, debounce);
     });
 
-    observer.observe(ref.current);
+    observer.observe(node);
+
+    const rect = node.getBoundingClientRect();
+    setDimension({ width: rect.width, height: rect.height });
 
     return () => {
       observer.disconnect();
@@ -31,7 +35,7 @@ export function useContainerDimension(
         clearTimeout(timerRef.current);
       }
     };
-  }, [ref, debounce]);
+  }, [ref?.current, debounce]);
 
   return dimension;
 }

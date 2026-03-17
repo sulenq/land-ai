@@ -6,7 +6,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import { useDataDisplay } from "@/context/useDataDisplay";
 import { Icon } from "@chakra-ui/react";
-import { LayoutGridIcon, Table2Icon } from "lucide-react";
+import { LayoutGridIcon, TableIcon } from "lucide-react";
 
 interface Props__DataDisplayToggle extends Props__Btn {
   navKey: string;
@@ -32,7 +32,7 @@ export function DataDisplayToggle(props: Props__DataDisplayToggle) {
       >
         <Icon boxSize={BASE_ICON_BOX_SIZE}>
           {displayTable ? (
-            <LucideIcon icon={Table2Icon} />
+            <LucideIcon icon={TableIcon} />
           ) : (
             <LucideIcon icon={LayoutGridIcon} />
           )}

@@ -20,7 +20,7 @@ const FeedbackState = (props: Props) => {
   const descriptionString = typeof description === "string";
 
   return (
-    <VStack gap={1} p={4} {...restProps}>
+    <VStack gap={1} p={4} mb={8} {...restProps}>
       <Icon mb={2} color={"fg.subtle"} boxSize={9}>
         {icon || <LucideIcon icon={ServerOffIcon} />}
       </Icon>

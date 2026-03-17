@@ -17,6 +17,10 @@ import {
   UsersIcon,
 } from "lucide-react";
 
+// 1 super admin
+// 2 admin
+// 3 public
+
 export const PREFIX_ADMIN_ROUTES = "/admin";
 
 export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
@@ -71,6 +75,13 @@ export const ADMIN_PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
         labelKey: "admin_navs.ai_knowledge",
         path: `/admin/ai-knowledge`,
         allowedRoles: [],
+        allowedPermissions: [],
+      },
+      {
+        icon: ScanTextIcon,
+        labelKey: "admin_navs.da_service",
+        path: `/admin/da-service`,
+        allowedRoles: [1],
         allowedPermissions: [],
       },
     ],

@@ -190,6 +190,7 @@ const Create = (props: any) => {
     </>
   );
 };
+
 const DataUtils = (props: any) => {
   // Props
   const { filter, setFilter, ...restProps } = props;
@@ -197,7 +198,7 @@ const DataUtils = (props: any) => {
   return (
     <HStack {...restProps}>
       <SearchInput
-        queryKey="ai_knowledge"
+        queryKey={`${PREFIX_ID}_search`}
         inputValue={filter.search}
         onChange={(inputValue) => {
           setFilter({ ...filter, search: inputValue });
@@ -420,7 +421,6 @@ const Data = (props: any) => {
         page={page}
         setPage={setPage}
         totalPage={pagination?.lastPage}
-        minChildWidth="150px"
         gridItem={({
           item,
           row,

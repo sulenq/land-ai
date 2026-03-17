@@ -37,3 +37,4 @@ export const FRAUD_API_JOB_CHECK = `/api/fraud/job`; // GET + /:jobId/check
 // Admin
 export const ADMIN_API_AI_KNOWLEDGE_BASE = "/api/admin/ai/knowledge";
 export const ADMIN_API_USER_BASE = "/api/admin/user";
+export const ADMIN_API_DA_SERVICE_BASE = "/api/admin/da/services";

@@ -34,7 +34,7 @@ export const Field = forwardRef<HTMLDivElement, Props__Field>(
     return (
       <ChakraField.Root ref={ref} gap={2} {...rest}>
         {label && (
-          <ChakraField.Label fontSize={"md"} {...labelProps}>
+          <ChakraField.Label fontSize={"md"} color={"fg.muted"} {...labelProps}>
             {label}
 
             {optional && (

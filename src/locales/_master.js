@@ -139,6 +139,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const requirements = {
+  id: "Persyaratan",
+  en: "Requirements",
+};
 export const thankyou = {
   id: "Terima kasih",
   en: "Thank you",

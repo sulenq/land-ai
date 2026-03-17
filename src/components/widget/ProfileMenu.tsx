@@ -1,10 +1,10 @@
 "use client";
 
+import { Avatar } from "@/components/ui/avatar";
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { useColorMode } from "@/components/ui/color-mode";
 import { Divider } from "@/components/ui/divider";
-import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import { Popover } from "@/components/ui/popover";
@@ -13,7 +13,6 @@ import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationD
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { AUTH_API_SIGNOUT } from "@/constants/apis";
-import { SVGS_PATH } from "@/constants/paths";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useADM from "@/context/useADM";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
@@ -112,16 +111,17 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
       {...restProps}
     >
       <CContainer>
-        <Img
-          src={
-            imgUrl(user?.avatar?.[0]?.filePath) || `${SVGS_PATH}/no-avatar.svg`
-          }
-          alt="avatar"
+        <Avatar
+          src={imgUrl(user?.avatar?.[0]?.filePath)}
+          name={user?.name}
+          w={"full"}
+          h={"full"}
           aspectRatio={1}
           rounded={themeConfig.radii.component}
+          fontSize={"4rem"}
         />
 
-        <CContainer bg={"body"} p={4} borderColor={"border.muted"}>
+        <CContainer gap={1} p={4} borderColor={"border.muted"}>
           <P fontWeight={"semibold"}>{user?.name || "Signed out"}</P>
           <P color={"fg.subtle"}>{user?.email || "-"}</P>
         </CContainer>
@@ -249,7 +249,7 @@ export const ProfileMenuTrigger = (props: Props__ProfileMenuTrigger) => {
         <CContainer w={"fit"} onClick={onOpen} {...restProps} />
       </Popover.Trigger>
 
-      <Popover.Content ref={containerRef} w={"225px"} zIndex={10}>
+      <Popover.Content ref={containerRef} w={"250px"} zIndex={10}>
         <ProfileMenu onClose={onClose} />
       </Popover.Content>
     </Popover.Root>
