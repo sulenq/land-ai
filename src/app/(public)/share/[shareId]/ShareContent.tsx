@@ -189,6 +189,19 @@ function ShareContentInner({ title, messages, viewCount, createdAt }: Props) {
         )}
       </CContainer>
 
+      {/* Disclaimer */}
+      <CContainer maxW={"760px"} w={"full"} mx={"auto"} px={4} pb={4}>
+        <CContainer gap={1}>
+          <P fontSize={"xs"} color={"fg.subtle"}>
+            *Jawaban berdasarkan dokumen resmi
+          </P>
+          <P fontSize={"xs"} color={"fg.subtle"}>
+            *Jawaban akan menyertakan dasar hukum (pasal / peraturan) jika
+            tersedia. Pertanyaan tanpa referensi relevan dapat ditolak.
+          </P>
+        </CContainer>
+      </CContainer>
+
       {/* Footer */}
       <HStack
         as="footer"
