@@ -10,13 +10,15 @@ import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-conte
 import { P } from "@/components/ui/p";
 import { AppIcon } from "@/components/widget/AppIcon";
 import { createShare } from "@/service/share";
+import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
-import { HStack, VStack, Link } from "@chakra-ui/react";
+import { HStack, VStack } from "@chakra-ui/react";
 import {
   CheckIcon,
   CopyIcon,
   GlobeIcon,
   Link2Icon,
+  MessageCircleIcon,
   Share2Icon,
   XIcon,
 } from "lucide-react";
@@ -30,6 +32,7 @@ interface Props {
 export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
   // Contexts
   const { l } = useLang();
+  const messages = useActiveChat((s) => s.activeChat.messages);
 
   // States
   const [isOpen, setIsOpen] = useState(false);
@@ -83,6 +86,14 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
     setIsOpen(false);
     setShareUrl("");
     setError("");
+  };
+
+  const handleShareWhatsApp = () => {
+    const firstUserMsg = messages?.find((m) => m.role === "user");
+    const question = firstUserMsg?.content || sessionTitle || "Percakapan Land AI";
+    const text = `${question}\n\nBaca selengkapnya di\n${shareUrl}`;
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, "_blank");
   };
 
   return (
@@ -170,27 +181,30 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
                   </HStack>
 
                   <HStack w={"full"} gap={2}>
-                    <Link
-                      href={shareUrl}
-                      target="_blank"
-                      textDecoration={"none"}
-                      w={"full"}
+                    <Btn
+                      flex={1}
+                      size={"sm"}
+                      variant={"outline"}
+                      onClick={() => window.open(shareUrl, "_blank")}
                     >
-                      <Btn
-                        w={"full"}
-                        size={"sm"}
-                        variant={"outline"}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.open(shareUrl, "_blank");
-                        }}
-                      >
-                        <HStack gap={2} justify={"center"}>
-                          <AppIcon icon={GlobeIcon} />
-                          <span>Buka Link</span>
-                        </HStack>
-                      </Btn>
-                    </Link>
+                      <HStack gap={2} justify={"center"}>
+                        <AppIcon icon={GlobeIcon} />
+                        <span>Buka Link</span>
+                      </HStack>
+                    </Btn>
+
+                    <Btn
+                      flex={1}
+                      size={"sm"}
+                      variant={"solid"}
+                      colorPalette={"green"}
+                      onClick={handleShareWhatsApp}
+                    >
+                      <HStack gap={2} justify={"center"}>
+                        <AppIcon icon={MessageCircleIcon} />
+                        <span>WhatsApp</span>
+                      </HStack>
+                    </Btn>
                   </HStack>
                 </>
               )}
