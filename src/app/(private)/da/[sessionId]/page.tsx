@@ -85,21 +85,26 @@ import { useParams, useRouter } from "next/navigation";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface Props__PdfViewerDisclosure {
-  open?: boolean;
+  open: boolean;
   uploadedDocuments?: Interface__DASessionDetail["uploadedDocuments"];
+  activeDocs: Interface__DAUploadedDocument[];
+  setActiveDocs: React.Dispatch<
+    React.SetStateAction<Interface__DAUploadedDocument[]>
+  >;
 }
 const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
   // Props
-  const { open, uploadedDocuments } = props;
+  const { open, uploadedDocuments, activeDocs, setActiveDocs } = props;
 
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
 
-  // States
-  const [activeDocs, setActiveDocs] = useState<Interface__DAUploadedDocument[]>(
-    uploadedDocuments?.[0] ? [uploadedDocuments[0]] : [],
-  );
+  useEffect(() => {
+    if (!open) {
+      setActiveDocs([]);
+    }
+  }, [open]);
 
   return (
     <>
@@ -304,6 +309,11 @@ const MetaData = () => {
     disclosureId(`pdf-viewer-uploaded-files-da-session`),
   );
 
+  // States
+  const [activeDocs, setActiveDocs] = useState<Interface__DAUploadedDocument[]>(
+    uploadedDocuments?.[0] ? [uploadedDocuments[0]] : [],
+  );
+
   return (
     <>
       {/* Service */}
@@ -382,7 +392,14 @@ const MetaData = () => {
                 </HStack>
 
                 {doc.metaData.fileName ? (
-                  <FileName onClick={onOpen}>{doc.metaData.fileName}</FileName>
+                  <FileName
+                    onClick={() => {
+                      setActiveDocs([doc]);
+                      onOpen();
+                    }}
+                  >
+                    {doc.metaData.fileName}
+                  </FileName>
                 ) : (
                   <P>-</P>
                 )}
@@ -394,6 +411,8 @@ const MetaData = () => {
         <PdfViewerDisclosure
           open={isOpen}
           uploadedDocuments={uploadedDocuments}
+          activeDocs={activeDocs}
+          setActiveDocs={setActiveDocs}
         />
       </CContainer>
     </>
