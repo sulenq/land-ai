@@ -13,9 +13,11 @@ import { Messages } from "@/components/widget/Messages";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SESSION_SHOW } from "@/constants/apis";
+import { R_SPACING_MD } from "@/constants/styles";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useChatSessions } from "@/context/useChatSessions";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
 import { useScrollBottom } from "@/hooks/useScrollBottom";
 import { isEmptyArray } from "@/utils/array";
@@ -25,6 +27,7 @@ import { useEffect, useRef } from "react";
 
 export default function Page() {
   // Contexts
+  const { themeConfig } = useThemeConfig();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   // const messageContainerStyle = useMessageContainer((s) => s.style);
   const activeChat = useActiveChat((s) => s.activeChat);
@@ -152,7 +155,7 @@ export default function Page() {
           >
             {shouldFetchHistory && (
               <>
-                <FadingSkeletonContainer loading={initialLoading} mt={8}>
+                <FadingSkeletonContainer px={4} loading={initialLoading} mt={8}>
                   <ContainerLayout flex={1}>{render.loading}</ContainerLayout>
                 </FadingSkeletonContainer>
 
@@ -160,7 +163,7 @@ export default function Page() {
                   <ContainerLayout
                     flex={1}
                     gap={8}
-                    py={8}
+                    py={R_SPACING_MD}
                     // pb={messageContainerStyle?.pb}
                   >
                     {error && render.error}
@@ -189,7 +192,12 @@ export default function Page() {
         </CContainer>
 
         {/* Prompt Input */}
-        <CContainer align={"center"} gap={4} px={4} pb={4}>
+        <CContainer
+          align={"center"}
+          gap={4}
+          px={[0, null, 4]}
+          pb={[0, null, 4]}
+        >
           <ContainerLayout gap={4} align={"center"}>
             <Btn
               iconButton
@@ -209,7 +217,11 @@ export default function Page() {
             </Btn>
 
             <CContainer bg={"body"}>
-              <ContinuePrompt />
+              <ContinuePrompt
+                promptInputProps={{
+                  roundedBottom: [0, null, themeConfig.radii.component],
+                }}
+              />
             </CContainer>
           </ContainerLayout>
         </CContainer>

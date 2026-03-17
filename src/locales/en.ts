@@ -206,12 +206,24 @@ const translations = {
   "exceed_char_limit": "Exceed character limit",
   "explanation": "Explanation",
   "february": "February",
+  "feedback": {
+    "disclosure_title": "Help us be better",
+    "comment_placeholder": "Explain further",
+    "categories": {
+      "NOT_RELEVANT": "Not relevant",
+      "WRONG_INFORMATION": "Wrong information",
+      "HALLUCINATION": "Hallucination",
+      "INCOMPLETE": "Incomplete",
+      "OTHER": "Other"
+    }
+  },
   "file_extension": "File extension",
   "file_name": "File name",
   "file_size": "File size",
   "finished": "Finished",
   "fit_to_page": "Fit to page",
   "fit_to_width": "Fit to width",
+  "fraud_detector": "Fraud Detector",
   "friday": "Friday",
   "from": "From",
   "get": "Get",
@@ -309,24 +321,6 @@ const translations = {
   "msg_activate": "The account will be activated again and can be used.",
   "msg_app_desc": "Land.ai is an AI-powered application for land and land-use consultation and document analysis. It provides two main features: Chat for interactive consultations on land regulations and procedures, and Analysis for structured, regulation-based review of land-related documents.",
   "msg_assistant_response_error": "An error occurred while processing the response. Please try again.",
-  "feedback": {
-    "thumbs_up": "Helpful",
-    "thumbs_down": "Not helpful",
-    "dialog_title": "Help us improve",
-    "dialog_description": "What's wrong with this answer?",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "categories": {
-      "NOT_RELEVANT": "Not relevant",
-      "WRONG_INFORMATION": "Wrong information",
-      "HALLUCINATION": "Hallucination / Made up",
-      "INCOMPLETE": "Incomplete answer",
-      "OTHER": "Other"
-    },
-    "comment_placeholder": "Explain further (optional)",
-    "thank_you": "Thank you for your feedback!",
-    "error_submit": "Failed to submit feedback. Please try again."
-  },
   "msg_based_on_official_documents": "Answers based on official documents",
   "msg_cannot_be_undone": "This action cannot be undone, please be careful.",
   "msg_chat_ai_disclaimer": "Answers will include legal basis (clause / regulations) if available. Questions without relevant references may be rejected.",
@@ -574,6 +568,7 @@ const translations = {
   "super_admin": "Super Admin",
   "suspend": "Suspend",
   "suspended": "Suspended",
+  "thankyou": "Thank you",
   "theme": "Theme",
   "thursday": "Thursday",
   "time_format": "Time format",
@@ -628,6 +623,7 @@ const translations = {
   "yes": "Yes",
   "your_chats": "Your chats",
   "your_da_analysis": "Your document analysis",
+  "your_files": "Your files",
   "zoom_in": "Zoom in",
   "zoom_out": "Zoom out",
   "zoom_reset": "Reset zoom"

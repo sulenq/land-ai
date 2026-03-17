@@ -18,6 +18,7 @@ import { Clipboard } from "@/components/widget/Clipboard";
 import { FeedbackButtons } from "@/components/widget/FeedbackButton";
 import { Logo } from "@/components/widget/Logo";
 import { Interface__ChatMessage } from "@/constants/interfaces";
+import { R_SUBTITLE, R_TITLE } from "@/constants/styles";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import useMessageContainer from "@/context/useMessageContainer";
@@ -99,11 +100,11 @@ export const Messages = (props: Props__Messages) => {
   return (
     <CContainer ref={containerRef} flex={1} gap={4} px={2} {...restProps}>
       <CContainer gap={1} mb={4}>
-        <ClampText fontSize={"3xl"} fontWeight={"semibold"}>
+        <ClampText fontSize={R_TITLE} fontWeight={"semibold"}>
           {activeChat.session?.title}
         </ClampText>
 
-        <P fontSize={"lg"} color={"fg.subtle"}>
+        <P fontSize={R_SUBTITLE} color={"fg.subtle"}>
           {formatDate(activeChat.session?.createdAt) || "-"}
         </P>
       </CContainer>

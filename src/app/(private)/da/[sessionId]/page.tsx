@@ -1,5 +1,6 @@
 "use client";
 
+import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
 import {
   AccordionItem,
   AccordionItemContent,
@@ -9,6 +10,14 @@ import {
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { DASessonPageSkeleton } from "@/components/ui/c-loader";
+import {
+  DisclosureBody,
+  DisclosureContent,
+  DisclosureFooter,
+  DisclosureHeader,
+  DisclosureRoot,
+} from "@/components/ui/disclosure";
+import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
@@ -18,6 +27,7 @@ import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
+import BackButton from "@/components/widget/BackButton";
 import { ClampText } from "@/components/widget/ClampText";
 import {
   SuratKuasaPDF,
@@ -33,12 +43,14 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
-import { DA_API_SESSION_DETAIL } from "@/constants/apis";
+import { DUMMY_ACTIVE_DA_SESSION, DUMMY_PDF_URL } from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
+  Interface__DAUploadedDocument,
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
 } from "@/constants/interfaces";
+import { R_SPACING_MD, R_SUBTITLE, R_TITLE } from "@/constants/styles";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
@@ -46,23 +58,496 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
+import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
+import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { isEmptyArray } from "@/utils/array";
+import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
-import { imgUrl } from "@/utils/url";
-import { Badge, Box, HStack, StackProps } from "@chakra-ui/react";
+import { fileUrl, imgUrl } from "@/utils/url";
+import {
+  Badge,
+  Box,
+  HStack,
+  SimpleGrid,
+  Stack,
+  StackProps,
+  TextProps,
+} from "@chakra-ui/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
   ArrowUpRightIcon,
+  CheckCheckIcon,
   DownloadIcon,
   LayoutListIcon,
+  ListIcon,
   ShieldAlertIcon,
   TableIcon,
+  XIcon,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
+interface Props__PdfViewerUploadedDocuments extends StackProps {
+  uploadedDocuments?: Interface__DAUploadedDocument[];
+  activeDocs: Interface__DAUploadedDocument[];
+  setActiveDocs: React.Dispatch<
+    React.SetStateAction<Interface__DAUploadedDocument[]>
+  >;
+}
+const PdfViewerUploadedDocuments = (
+  props: Props__PdfViewerUploadedDocuments,
+) => {
+  // Props
+  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+
+  // Hooks
+  const iss = useIsSmScreenWidth();
+
+  return (
+    <CContainer
+      flexShrink={0}
+      gap={1}
+      w={["full", null, "300px"]}
+      h={"full"}
+      p={2}
+      overflowY={"auto"}
+      {...restProps}
+    >
+      {uploadedDocuments?.map((doc) => {
+        const isActive = activeDocs.some(
+          (d) => d.documentRequirement.id === doc.documentRequirement.id,
+        );
+
+        return (
+          <HStack
+            key={doc.documentRequirement.id}
+            align={"start"}
+            px={3}
+            py={2}
+            rounded={themeConfig.radii.component}
+            cursor={"pointer"}
+            _hover={{
+              bg: "d1",
+            }}
+            onClick={() => {
+              setActiveDocs((ps) =>
+                iss ? [doc] : ps[0] ? [ps[0], doc] : [doc],
+              );
+            }}
+          >
+            <CContainer gap={1}>
+              <Tooltip content={doc.documentRequirement.name}>
+                <P
+                  lineClamp={1}
+                  fontSize={"sm"}
+                  textAlign={"left"}
+                  color={"fg.subtle"}
+                  mr={4}
+                >
+                  {doc.documentRequirement.name}
+                </P>
+              </Tooltip>
+
+              <Tooltip content={doc.metaData.fileName}>
+                <P
+                  lineClamp={1}
+                  fontSize={"sm"}
+                  fontWeight={"medium"}
+                  textAlign={"left"}
+                  mr={4}
+                >
+                  {doc.metaData.fileName}
+                </P>
+              </Tooltip>
+            </CContainer>
+
+            {isActive && <DotIndicator ml={"auto"} mt={2} />}
+          </HStack>
+        );
+      })}
+    </CContainer>
+  );
+};
+
+const PdfViewerUploadedDocumentsTrigger = (
+  props: Props__PdfViewerUploadedDocuments,
+) => {
+  // Props
+  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+  // Contexts
+  const { l } = useLang();
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId(`pdf-viewer-uploaded-documents-list`),
+  );
+
+  return (
+    <>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps} />
+
+      <DisclosureRoot open={isOpen} lazyLoad>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={l.your_files} />
+          </DisclosureHeader>
+
+          <DisclosureBody>
+            <PdfViewerUploadedDocuments
+              uploadedDocuments={uploadedDocuments}
+              activeDocs={activeDocs}
+              setActiveDocs={setActiveDocs}
+              p={0}
+            />
+          </DisclosureBody>
+
+          <DisclosureFooter>
+            <BackButton />
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
+  );
+};
+
+interface Props__PdfViewerDisclosure {
+  open: boolean;
+  uploadedDocuments?: Interface__DASessionDetail["uploadedDocuments"];
+  activeDocs: Interface__DAUploadedDocument[];
+  setActiveDocs: React.Dispatch<
+    React.SetStateAction<Interface__DAUploadedDocument[]>
+  >;
+}
+const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
+  // Props
+  const { open, uploadedDocuments, activeDocs, setActiveDocs } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+
+  // Hooks
+  const iss = useIsSmScreenWidth();
+
+  useEffect(() => {
+    if (!open) {
+      setActiveDocs([]);
+    }
+  }, [open]);
+
+  return (
+    <>
+      <DisclosureRoot open={open} lazyLoad size={"cover"}>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={capitalizeWords(l.uploaded_file)} />
+          </DisclosureHeader>
+
+          <DisclosureBody p={0} bg={["body", null, "transparent"]}>
+            <Stack
+              flexDir={["column", null, "row"]}
+              align={"stretch"}
+              gap={0}
+              h={"full"}
+              // roundedBottom={[0, null, themeConfig.radii.container]}
+              overflow={"clip"}
+            >
+              {iss && (
+                <CContainer px={R_SPACING_MD}>
+                  <PdfViewerUploadedDocumentsTrigger
+                    uploadedDocuments={uploadedDocuments}
+                    activeDocs={activeDocs}
+                    setActiveDocs={setActiveDocs}
+                    w={"full"}
+                  >
+                    <Btn variant={"outline"} size={"sm"}>
+                      <AppIcon icon={ListIcon} />
+
+                      {l.your_files}
+                    </Btn>
+                  </PdfViewerUploadedDocumentsTrigger>
+                </CContainer>
+              )}
+
+              <CContainer
+                flex={1}
+                gap={4}
+                h={"full"}
+                p={4}
+                borderRight={"1px solid"}
+                borderColor={"border.muted"}
+                overflowY={"auto"}
+              >
+                {isEmptyArray(activeDocs) && (
+                  <FeedbackNotFound title={`${l.select} file`} />
+                )}
+
+                {!isEmptyArray(activeDocs) && (
+                  <SimpleGrid
+                    flex={1}
+                    gap={4}
+                    h={"full"}
+                    columns={activeDocs?.length || 1}
+                  >
+                    {activeDocs?.map((doc, index) => {
+                      return (
+                        <CContainer
+                          key={doc.documentRequirement.id}
+                          gap={4}
+                          p={2}
+                          bg={"bg.muted"}
+                          border={"1px solid"}
+                          borderColor={"border.muted"}
+                          rounded={themeConfig.radii.component}
+                        >
+                          <HStack justify={"space-between"}>
+                            <P fontWeight={"medium"} ml={2}>
+                              {doc.metaData.fileName}
+                            </P>
+
+                            <Btn
+                              iconButton
+                              variant={"subtle"}
+                              rounded={"full"}
+                              size={"2xs"}
+                              onClick={() => {
+                                setActiveDocs((ps) =>
+                                  ps.filter((_, i) => i !== index),
+                                );
+                              }}
+                            >
+                              <AppIcon icon={XIcon} boxSize={4} />
+                            </Btn>
+                          </HStack>
+
+                          <iframe
+                            src={
+                              fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
+                            }
+                            style={{
+                              flex: 1,
+                              width: "100%",
+                              minHeight: "400px",
+                              height: "100%",
+                              border: "none",
+                            }}
+                          />
+
+                          {/* <PdfViewer
+                          fileUrl={
+                            fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
+                          }
+                          border={"1px solid"}
+                          borderColor={"border.muted"}
+                          rounded={themeConfig.radii.component}
+                        /> */}
+                        </CContainer>
+                      );
+                    })}
+                  </SimpleGrid>
+                )}
+              </CContainer>
+
+              {!iss && (
+                <PdfViewerUploadedDocuments
+                  uploadedDocuments={uploadedDocuments}
+                  activeDocs={activeDocs}
+                  setActiveDocs={setActiveDocs}
+                  bg={"bg.muted"}
+                />
+              )}
+            </Stack>
+          </DisclosureBody>
+
+          {iss && (
+            <DisclosureFooter>
+              <BackButton />
+            </DisclosureFooter>
+          )}
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
+  );
+};
+
+const FileName = (props: TextProps) => {
+  // Props
+  const { children, ...restProps } = props;
+
+  // States
+  const [hover, setHover] = useState<boolean>(false);
+
+  return (
+    <Tooltip
+      content={children}
+      positioning={{
+        placement: "right",
+      }}
+    >
+      <HStack cursor={"pointer"}>
+        <P
+          lineClamp={1}
+          fontWeight={"medium"}
+          borderBottom={"1px solid"}
+          borderColor={hover ? "fg" : "transparent"}
+          transition={"200ms"}
+          onMouseEnter={() => {
+            setHover(true);
+          }}
+          onMouseLeave={() => {
+            setHover(false);
+          }}
+          {...restProps}
+        >
+          {children}
+        </P>
+
+        <AppIcon
+          icon={ArrowUpRightIcon}
+          opacity={hover ? 1 : 0}
+          transition={"200ms"}
+        />
+      </HStack>
+    </Tooltip>
+  );
+};
+
+const MetaData = () => {
+  // Contexts
+  const { l, lang } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const activeDASession = useActiveDA((s) => s.activeDA.session);
+
+  // Constants
+  const documentService = activeDASession?.documentService;
+  const uploadedDocuments = activeDASession?.uploadedDocuments;
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId(`pdf-viewer-uploaded-files-da-session`),
+  );
+
+  // States
+  const [activeDocs, setActiveDocs] = useState<Interface__DAUploadedDocument[]>(
+    uploadedDocuments?.[0] ? [uploadedDocuments[0]] : [],
+  );
+
+  return (
+    <>
+      {/* Service */}
+      <CContainer gap={2}>
+        <HStack h={"32px"}>
+          <P fontWeight={"semibold"}>{capitalizeWords(l.service)}</P>
+        </HStack>
+
+        <CContainer
+          gap={2}
+          p={4}
+          rounded={themeConfig.radii.container}
+          // border={"1px solid"}
+          borderColor={"border.muted"}
+          bg={"d0"}
+        >
+          <HStack gap={4} align={"start"}>
+            <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+              {l.name}
+            </P>
+
+            <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
+              <Img
+                key={activeDASession?.documentService?.icon}
+                src={imgUrl(activeDASession?.documentService?.icon)}
+                flexShrink={0}
+                w={"20px"}
+                h={"20px"}
+                objectFit={"contain"}
+              />
+
+              <P>{documentService?.title[lang]}</P>
+            </HStack>
+          </HStack>
+
+          <HStack gap={4} align={"start"}>
+            <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+              {l.description}
+            </P>
+
+            <P>{documentService?.description[lang]}</P>
+          </HStack>
+        </CContainer>
+      </CContainer>
+
+      {/* Uploaded files */}
+      <CContainer gap={2}>
+        <HStack h={"32px"}>
+          <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
+        </HStack>
+
+        <CContainer
+          gap={[4, null, 2]}
+          p={4}
+          rounded={themeConfig.radii.container}
+          // border={"1px solid"}
+          borderColor={"border.muted"}
+          bg={"d0"}
+        >
+          {uploadedDocuments?.map((doc) => {
+            return (
+              <HStack
+                flexDir={["column", null, "row"]}
+                key={doc.documentRequirement.id}
+                align={"start"}
+                gapX={4}
+              >
+                <HStack flexShrink={0} w={["full", null, "240px"]}>
+                  <ClampText color={"fg.muted"}>
+                    {doc.documentRequirement.name}
+                  </ClampText>
+
+                  {!doc.documentRequirement.isMandatory && (
+                    <Badge bg={"d1"}>{l.optional}</Badge>
+                  )}
+                </HStack>
+
+                {doc.metaData.fileName ? (
+                  <FileName
+                    onClick={() => {
+                      setActiveDocs([doc]);
+                      onOpen();
+                    }}
+                  >
+                    {doc.metaData.fileName}
+                  </FileName>
+                ) : (
+                  <P>-</P>
+                )}
+              </HStack>
+            );
+          })}
+        </CContainer>
+
+        <PdfViewerDisclosure
+          open={isOpen}
+          uploadedDocuments={uploadedDocuments}
+          activeDocs={activeDocs}
+          setActiveDocs={setActiveDocs}
+        />
+      </CContainer>
+    </>
+  );
+};
 
 interface Props__AccordionItemsList {
   daSession?: Interface__DASessionDetail;
@@ -147,6 +632,7 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
         );
       })}
 
+      {/* Validation Panel */}
       <AccordionItem
         value={`validation`}
         borderBottom={"none"}
@@ -159,8 +645,11 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
         }}
       >
         <AccordionItemTrigger cursor={"pointer"} px={4}>
-          <P>{l.validation}</P>
-          <DotIndicator />
+          <HStack>
+            <AppIcon icon={CheckCheckIcon} />
+
+            <P>{l.validation}</P>
+          </HStack>
         </AccordionItemTrigger>
 
         <AccordionItemContent p={0}>
@@ -251,8 +740,9 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
       >
         <AccordionItemTrigger cursor={"pointer"} px={4}>
           <HStack>
-            <ShieldAlertIcon className="w-4 h-4 mr-2" />
-            <P>Deteksi Fraud</P>
+            <AppIcon icon={ShieldAlertIcon} />
+
+            <P>{l.fraud_detector}</P>
           </HStack>
         </AccordionItemTrigger>
 
@@ -260,7 +750,6 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
           <FraudAlertsPanel daSession={daSession} />
         </AccordionItemContent>
       </AccordionItem>
-
     </>
   );
 });
@@ -306,7 +795,8 @@ interface Props__TableMode extends StackProps {
   daSession?: Interface__DASessionDetail;
   containerDimension?: {
     width: number;
-    height: number  };
+    height: number;
+  };
 }
 const TableMode = memo((props: Props__TableMode) => {
   // Props
@@ -481,9 +971,16 @@ const ResultSection = (props: Props__ResultSection) => {
 
   return (
     <CContainer pos={"relative"} {...restProps}>
-      <CContainer px={4} pos={"sticky"} top={"-32px"} zIndex={"sticky"}>
+      <CContainer
+        px={4}
+        pos={"sticky"}
+        top={"-32px"}
+        mb={[2, null, 0]}
+        zIndex={"sticky"}
+      >
         <ContainerLayout>
           <HStack
+            wrap={"wrap"}
             justify={"space-between"}
             pb={2}
             bg="linear-gradient(
@@ -494,11 +991,12 @@ const ResultSection = (props: Props__ResultSection) => {
           >
             <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
 
-            <HStack gap={2}>
+            <HStack flex={[1, null, 0]} gap={2}>
               {/* Accordion controls - only in accordion mode */}
               {viewMode === "accordion" && (
-                <HStack rounded={themeConfig.radii.component}>
+                <HStack flex={1} rounded={themeConfig.radii.component}>
                   <Btn
+                    flex={1}
                     variant="outline"
                     size="xs"
                     onClick={() => {
@@ -516,6 +1014,7 @@ const ResultSection = (props: Props__ResultSection) => {
                   </Btn>
 
                   <Btn
+                    flex={1}
                     variant="outline"
                     size="xs"
                     onClick={() => {
@@ -621,7 +1120,7 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
                 fileName={`${letter.label}.pdf`}
               >
                 {({ loading }: any) => (
-                  <Btn variant={"outline"} size={"xs"} w={"200px"}>
+                  <Btn variant={"outline"} size={"sm"}>
                     <AppIcon icon={DownloadIcon} boxSize={4} />
 
                     {loading ? "Loading PDF..." : `${letter.label} PDF`}
@@ -643,7 +1142,7 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
 
 export default function Page() {
   // Contexts
-  const { l, lang } = useLang();
+  const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
@@ -668,13 +1167,12 @@ export default function Page() {
   // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      // initialData: DUMMY_ACTIVE_DA_SESSION,
-      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      initialData: DUMMY_ACTIVE_DA_SESSION as any,
+      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId, pollingTick],
       loadingBarInitialOnly: true,
     });
-  const uploadedDocuments = data?.uploadedDocuments;
 
   const processing = data?.status === "PROCESSING";
   const failed = data?.status === "FAILED";
@@ -759,11 +1257,11 @@ export default function Page() {
           <ContainerLayout gap={8}>
             {/* Header */}
             <CContainer gap={1}>
-              <ClampText fontSize={"3xl"} fontWeight={"semibold"}>
+              <ClampText fontSize={R_TITLE} fontWeight={"semibold"}>
                 {activeDASession?.title}
               </ClampText>
 
-              <P fontSize={"lg"} color={"fg.subtle"}>
+              <P fontSize={R_SUBTITLE} color={"fg.subtle"}>
                 {formatDate(activeDASession?.createdAt, {
                   withTime: true,
                 })}
@@ -771,98 +1269,7 @@ export default function Page() {
             </CContainer>
 
             {/* Meta */}
-            <>
-              <CContainer gap={2}>
-                <HStack h={"32px"}>
-                  <P fontWeight={"semibold"}>{capitalizeWords(l.service)}</P>
-                </HStack>
-
-                <CContainer
-                  gap={2}
-                  p={4}
-                  rounded={themeConfig.radii.container}
-                  // border={"1px solid"}
-                  borderColor={"border.muted"}
-                  bg={"d0"}
-                >
-                  <HStack gap={4} align={"start"}>
-                    <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-                      {l.name}
-                    </P>
-
-                    <HStack
-                      flexDir={["column", null, "row"]}
-                      align={"start"}
-                      gapY={1}
-                    >
-                      <Img
-                        key={activeDASession?.documentService?.icon}
-                        src={imgUrl(activeDASession?.documentService?.icon)}
-                        flexShrink={0}
-                        w={"20px"}
-                        h={"20px"}
-                        objectFit={"contain"}
-                      />
-
-                      <P>{data?.documentService.title[lang]}</P>
-                    </HStack>
-                  </HStack>
-
-                  <HStack gap={4} align={"start"}>
-                    <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-                      {l.description}
-                    </P>
-
-                    <P>{data?.documentService.description[lang]}</P>
-                  </HStack>
-                </CContainer>
-              </CContainer>
-
-              <CContainer gap={2}>
-                <HStack h={"32px"}>
-                  <P fontWeight={"semibold"}>
-                    {capitalizeWords(l.uploaded_file)}
-                  </P>
-                </HStack>
-
-                <CContainer
-                  gap={2}
-                  p={4}
-                  rounded={themeConfig.radii.container}
-                  // border={"1px solid"}
-                  borderColor={"border.muted"}
-                  bg={"d0"}
-                >
-                  {uploadedDocuments?.map((doc) => {
-                    return (
-                      <HStack
-                        key={doc.documentRequirement.id}
-                        align={"start"}
-                        gap={4}
-                      >
-                        <HStack flexShrink={0} w={"200px"}>
-                          <ClampText color={"fg.muted"}>
-                            {doc.documentRequirement.name}
-                          </ClampText>
-
-                          {!doc.documentRequirement.isMandatory && (
-                            <Badge bg={"d1"}>{l.optional}</Badge>
-                          )}
-                        </HStack>
-
-                        {doc.metaData.fileName ? (
-                          <ClampText fontWeight={"medium"}>
-                            {doc.metaData.fileName}
-                          </ClampText>
-                        ) : (
-                          <P>-</P>
-                        )}
-                      </HStack>
-                    );
-                  })}
-                </CContainer>
-              </CContainer>
-            </>
+            <MetaData />
           </ContainerLayout>
         </CContainer>
 

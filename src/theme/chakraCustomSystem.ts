@@ -454,10 +454,10 @@ const customConfig = defineConfig({
         },
       },
       fontSizes: {
-        xs: { value: "0.625rem" }, // 10px
-        sm: { value: "0.75rem" }, // 12px
-        md: { value: "0.875rem" }, // 14px
-        lg: { value: "1rem" }, // 16px
+        xs: { value: "0.75rem" }, // 12px
+        sm: { value: "0.875rem" }, // 14px
+        md: { value: "1rem" }, // 16px
+        lg: { value: "1.125rem" }, // 18px
       },
     },
     semanticTokens: {

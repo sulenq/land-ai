@@ -50,15 +50,19 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
   // Props
   const { children, ...restProps } = props;
 
-  // States
+  // Constants
   const components: Components = {
     p({ children }) {
-      return <Text>{children}</Text>;
+      return (
+        <Text fontSize={"md"} mb={4}>
+          {children}
+        </Text>
+      );
     },
 
     h1({ children }) {
       return (
-        <Text fontSize="2xl" fontWeight="bold">
+        <Text fontSize="2xl" fontWeight="bold" mb={4} mt={6}>
           {children}
         </Text>
       );
@@ -66,7 +70,7 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
 
     h2({ children }) {
       return (
-        <Text fontSize="xl" fontWeight="bold">
+        <Text fontSize="xl" fontWeight="bold" mb={3} mt={5}>
           {children}
         </Text>
       );
@@ -74,7 +78,7 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
 
     h3({ children }) {
       return (
-        <Text fontSize="lg" fontWeight="semibold">
+        <Text fontSize="lg" fontWeight="semibold" mb={3} mt={4}>
           {children}
         </Text>
       );
@@ -82,7 +86,7 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
 
     ul({ children }) {
       return (
-        <List.Root listStyleType="disc" pl={6}>
+        <List.Root listStyleType="disc" pl={6} mb={4}>
           {children}
         </List.Root>
       );
@@ -90,20 +94,22 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
 
     ol({ children }) {
       return (
-        <List.Root as="ol" listStyleType="decimal" pl={6}>
+        <List.Root as="ol" listStyleType="decimal" pl={6} mb={4}>
           {children}
         </List.Root>
       );
     },
 
     li({ children }) {
-      return <ListItem>{children}</ListItem>;
+      return <ListItem mb={1}>{children}</ListItem>;
     },
 
     blockquote({ children }) {
       return (
         <Box
           pl={3}
+          py={1}
+          mb={4}
           borderLeftWidth="2px"
           borderColor="border.muted"
           color="fg.subtle"
@@ -115,16 +121,10 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
 
     code({ children }) {
       return (
-        <Code px={1} rounded="sm">
+        <Code px={1.5} py={0.5} rounded="sm">
           {children}
         </Code>
       );
-
-      // return (
-      //   <Box as="pre" p={3} rounded="md" overflowX="auto" bg="bg.subtle">
-      //     <code className={className}>{children}</code>
-      //   </Box>
-      // );
     },
 
     a({ href, children }) {
@@ -152,8 +152,13 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
     <Box
       className="markdown"
       fontSize="sm"
-      lineHeight={1.7}
+      lineHeight={1.8}
       color="fg.default"
+      // css={{
+      //   "& p:last-of-type": { marginBottom: 0 },
+      //   "& ul:last-of-type": { marginBottom: 0 },
+      //   "& ol:last-of-type": { marginBottom: 0 },
+      // }}
       {...restProps}
     >
       <ReactMarkdown

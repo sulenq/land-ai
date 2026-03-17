@@ -46,10 +46,12 @@ export const Segmented = (props: Props) => {
         bg={"bg.muted"}
         h={hBySize[size as any]}
       />
+
       <SegmentGroup.Items
         items={items}
         cursor={"pointer"}
         h={hBySize[size as any]}
+        transform={"translateY(-1.5px)"}
       />
     </SegmentGroup.Root>
   );

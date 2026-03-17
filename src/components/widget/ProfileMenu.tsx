@@ -249,7 +249,7 @@ export const ProfileMenuTrigger = (props: Props__ProfileMenuTrigger) => {
         <CContainer w={"fit"} onClick={onOpen} {...restProps} />
       </Popover.Trigger>
 
-      <Popover.Content ref={containerRef} w={"225px"} zIndex={10}>
+      <Popover.Content ref={containerRef} w={"250px"} zIndex={10}>
         <ProfileMenu onClose={onClose} />
       </Popover.Content>
     </Popover.Root>

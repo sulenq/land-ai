@@ -11,10 +11,12 @@ export const DESKTOP_NAVS_BG = "body";
 export const DESKTOP_CONTENT_CONTAINER_BG = "body";
 
 // Sizes
+export const R_TITLE = ["xl", null, "3xl"];
+export const R_SUBTITLE = ["md", null, "lg"];
 export const TOPBAR_H = "52px";
 export const DRAWER_BODY_MAXH = `calc(100dvh - 176px)`;
-export const MAIN_BUTTON_SIZE = ["md", null, "sm"] as any;
-export const MAIN_INPUT_SIZE = ["md", null, "sm"] as any;
+export const MAIN_BUTTON_SIZE = ["lg", null, "md"] as any;
+export const MAIN_INPUT_SIZE = ["lg", null, "md"] as any;
 export const MOBILE_NAVS_HEIGHT = "74px";
 export const R_GAP = ["10px", null, 4];
 export const R_ITEM_MAX_W = ["", null, "400px"];
@@ -31,6 +33,7 @@ export const TOP_TITLE_H = "36px";
 export const TOP_DISTANCE = "78px";
 export const BASE_ICON_BOX_SIZE = 4.5;
 export const MENU_ICON_BOX_SIZE = 4.5;
+export const R_SPACING_MD = ["16px", null, "32px"];
 
 // Positioning
 export const MOBILE_POPOVER_MAIN_AXIS = 22;
