@@ -441,6 +441,7 @@ const translations = {
   "saved": "Saved",
   "saving": "Saving",
   "search": "Search",
+  "share": "Share",
   "second": "Second",
   "select": "Select",
   "select_all": "Select all",

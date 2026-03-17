@@ -441,6 +441,7 @@ const translations = {
   "saved": "Disimpan",
   "saving": "Menyimpan",
   "search": "Cari",
+  "share": "Share",
   "second": "Detik",
   "select": "Pilih",
   "select_all": "Pilih semua",
