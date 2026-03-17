@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useFraudDetection } from '@/hooks/useFraudDetection';
-import { FraudAlertCard } from './FraudAlertCard';
+import React, { useState, useEffect } from "react";
+import { useFraudDetection } from "@/hooks/useFraudDetection";
+import { FraudAlertCard } from "./FraudAlertCard";
 import { CContainer } from "@/components/ui/c-container";
-import { HStack, Box, Badge } from "@chakra-ui/react";
+import { HStack, Box, Badge, Alert } from "@chakra-ui/react";
 import { P } from "@/components/ui/p";
 import { Btn } from "@/components/ui/btn";
 import { FadingSkeletonContainer } from "@/components/ui/skeleton";
+import { useThemeConfig } from "@/context/useThemeConfig";
 
 interface FraudAlertsPanelProps {
   daSession?: any;
@@ -15,33 +16,44 @@ interface FraudAlertsPanelProps {
 
 const riskLevelConfig = {
   HIGH: {
-    borderColor: 'fg.error',
-    colorScheme: 'red',
-    icon: '🔴',
-    label: 'Risiko Tinggi',
+    borderColor: "fg.error",
+    colorPalette: "red",
+    status: "error",
+    icon: "🔴",
+    label: "Risiko Tinggi",
   },
   MEDIUM: {
-    borderColor: 'fg.warning',
-    colorScheme: 'orange',
-    icon: '🟡',
-    label: 'Risiko Sedang',
+    borderColor: "fg.warning",
+    colorPalette: "orange",
+    status: "warning",
+    icon: "🟡",
+    label: "Risiko Sedang",
   },
   LOW: {
-    borderColor: 'blue.500',
-    colorScheme: 'blue',
-    icon: '🔵',
-    label: 'Risiko Rendah',
+    borderColor: "blue.500",
+    colorPalette: "blue",
+    status: "info",
+    icon: "🔵",
+    label: "Risiko Rendah",
   },
   NONE: {
-    borderColor: 'fg.success',
-    colorScheme: 'green',
-    icon: '✅',
-    label: 'Tidak Ada Masalah',
+    borderColor: "fg.success",
+    colorPalette: "green",
+    status: "success",
+    icon: "✅",
+    label: "Tidak Ada Masalah",
   },
 };
 
-export const FraudAlertsPanel: React.FC<FraudAlertsPanelProps> = ({ daSession }) => {
-  const { alerts, riskLevel, loading, resolveAlert } = useFraudDetection({ daSessionResponse: daSession });
+export const FraudAlertsPanel: React.FC<FraudAlertsPanelProps> = ({
+  daSession,
+}) => {
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+
+  const { alerts, riskLevel, loading, resolveAlert } = useFraudDetection({
+    daSessionResponse: daSession,
+  });
   const [showAll, setShowAll] = useState(false);
 
   // Load alerts when daSession changes
@@ -49,13 +61,21 @@ export const FraudAlertsPanel: React.FC<FraudAlertsPanelProps> = ({ daSession })
     // Alerts will be loaded via hook
   }, [daSession]);
 
-  const config = riskLevelConfig[riskLevel as keyof typeof riskLevelConfig] || riskLevelConfig.NONE;
-  const openAlerts = alerts.filter((a) => a.status === 'OPEN');
+  const config =
+    riskLevelConfig[riskLevel as keyof typeof riskLevelConfig] ||
+    riskLevelConfig.NONE;
+  const openAlerts = alerts.filter((a) => a.status === "OPEN");
   const displayAlerts = showAll ? alerts : openAlerts.slice(0, 3);
 
   if (loading) {
     return (
-      <CContainer p={4} bg="d0" rounded="md" border="1px solid" borderColor="border.muted">
+      <CContainer
+        p={4}
+        bg="d0"
+        rounded="md"
+        border="1px solid"
+        borderColor="border.muted"
+      >
         <FadingSkeletonContainer loading={true} h="40px" />
       </CContainer>
     );
@@ -64,23 +84,69 @@ export const FraudAlertsPanel: React.FC<FraudAlertsPanelProps> = ({ daSession })
   return (
     <CContainer overflow="hidden">
       {/* Header */}
-      <CContainer p={4} borderBottom="1px solid" borderColor="border.muted" bg="d1">
-        <HStack justify="space-between">
-          <HStack gap={3}>
-            <P fontSize="2xl">{config.icon}</P>
-            <Box>
-              <P fontWeight="semibold" fontSize="lg">{config.label}</P>
-              <P fontSize="sm" color="fg.muted">
-                {openAlerts.length} alert terbuka dari {alerts.length} total
-              </P>
-            </Box>
+      <CContainer px={4} mt={4}>
+        <Alert.Root
+          status={config.status as any}
+          alignItems={"center"}
+          rounded={themeConfig.radii.component}
+        >
+          <P fontSize="2xl">{config.icon}</P>
+
+          <Alert.Content>
+            <HStack>
+              <Alert.Title fontWeight={"semibold"} w={"full"}>
+                {config.label}
+              </Alert.Title>
+
+              {riskLevel !== "NONE" && (
+                <Badge
+                  colorPalette={config.colorPalette}
+                  rounded="full"
+                  ml={"auto"}
+                >
+                  {riskLevel}
+                </Badge>
+              )}
+            </HStack>
+
+            <Alert.Description>
+              {openAlerts.length} alert terbuka dari {alerts.length} total
+            </Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+
+        {/* <CContainer
+          p={4}
+          borderBottom="1px solid"
+          borderColor="border.muted"
+          bg="d0"
+          rounded={themeConfig.radii.component}
+        >
+          <HStack justify="space-between">
+            <HStack gap={3}>
+              <P fontSize="2xl">{config.icon}</P>
+              <Box>
+                <P fontWeight="semibold" fontSize="md">
+                  {config.label}
+                </P>
+                <P fontSize="sm" color="fg.muted">
+                  {openAlerts.length} alert terbuka dari {alerts.length} total
+                </P>
+              </Box>
+            </HStack>
+
+            {riskLevel !== "NONE" && (
+              <Badge
+                colorPalette={config.colorPalette}
+                px={3}
+                py={1}
+                rounded="full"
+              >
+                {riskLevel}
+              </Badge>
+            )}
           </HStack>
-          {riskLevel !== 'NONE' && (
-            <Badge colorScheme={config.colorScheme} px={3} py={1} rounded="full">
-              {riskLevel}
-            </Badge>
-          )}
-        </HStack>
+        </CContainer> */}
       </CContainer>
 
       {/* Alerts List */}
@@ -95,7 +161,7 @@ export const FraudAlertsPanel: React.FC<FraudAlertsPanelProps> = ({ daSession })
               <FraudAlertCard
                 key={alert.id}
                 alert={alert}
-                onResolve={alert.status === 'OPEN' ? resolveAlert : undefined}
+                onResolve={alert.status === "OPEN" ? resolveAlert : undefined}
               />
             ))}
 
@@ -107,7 +173,9 @@ export const FraudAlertsPanel: React.FC<FraudAlertsPanelProps> = ({ daSession })
                 w="full"
                 onClick={() => setShowAll(!showAll)}
               >
-                {showAll ? 'Tampilkan Lebih Sedikit' : `Tampilkan Semua (${alerts.length})`}
+                {showAll
+                  ? "Tampilkan Lebih Sedikit"
+                  : `Tampilkan Semua (${alerts.length})`}
               </Btn>
             )}
           </>
@@ -117,12 +185,21 @@ export const FraudAlertsPanel: React.FC<FraudAlertsPanelProps> = ({ daSession })
       {/* Fraud Score (if available) */}
       {alerts.length > 0 && (
         <Box px={4} pb={4}>
-          <HStack justify="space-between" bg="d1" rounded="md" p={3} border="1px solid" borderColor="border.muted">
-            <P fontSize="sm" color="fg.muted">Fraud Score</P>
-            <P fontSize="lg" fontWeight="bold">
-              {alerts.filter((a) => a.severity === 'HIGH').length * 30 +
-               alerts.filter((a) => a.severity === 'MEDIUM').length * 10 +
-               alerts.filter((a) => a.severity === 'LOW').length * 5}
+          <HStack
+            justify="space-between"
+            p={3}
+            // bg="d1"
+            // border="1px solid"
+            borderColor="border.muted"
+            rounded="md"
+          >
+            <P fontSize="sm" color="fg.muted">
+              Fraud Score
+            </P>
+            <P fontSize="md" fontWeight="bold">
+              {alerts.filter((a) => a.severity === "HIGH").length * 30 +
+                alerts.filter((a) => a.severity === "MEDIUM").length * 10 +
+                alerts.filter((a) => a.severity === "LOW").length * 5}
               /100
             </P>
           </HStack>

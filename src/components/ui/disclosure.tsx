@@ -173,10 +173,10 @@ const DisclosureBody = ({ children, ...props }: DisclosureBodyProps) => {
     </DrawerBody>
   ) : (
     <DialogBody
-      pl={4}
-      pr={`calc(16px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
+      px={4}
+      // pr={`calc(16px - ${FIREFOX_SCROLL_Y_CLASS_PR_PREFIX})`}
       py={4}
-      className={props.className || "scrollY"}
+      // className={props.className || "scrollY"}
       bg={"body"}
       {...(props as DialogBodyProps)}
     >

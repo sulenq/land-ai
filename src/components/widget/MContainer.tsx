@@ -14,8 +14,8 @@ export const MContainer = forwardRef<HTMLDivElement, MContainerProps>(
     const {
       maskingTop = "8px",
       maskingBottom = "8px",
-      maskingLeft = "8px",
-      maskingRight = "8px",
+      maskingLeft = "0",
+      maskingRight = "0",
       style,
       children,
       ...restProps

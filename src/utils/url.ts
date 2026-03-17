@@ -58,8 +58,8 @@ export const videoUrl = (url?: string | null): string | undefined => {
   }${url}`;
 };
 
-export const fileUrl = (url?: string | null): string | undefined => {
-  if (!url) return undefined;
+export const fileUrl = (url?: string | null): string => {
+  if (!url) return "";
 
   return `${process.env.NEXT_PUBLIC_FILE_STORAGE_BASE_URL}${
     url.startsWith("/") ? "" : "/"

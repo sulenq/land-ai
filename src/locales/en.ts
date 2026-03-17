@@ -206,6 +206,17 @@ const translations = {
   "exceed_char_limit": "Exceed character limit",
   "explanation": "Explanation",
   "february": "February",
+  "feedback": {
+    "disclosure_title": "Help us be better",
+    "comment_placeholder": "Explain further",
+    "categories": {
+      "NOT_RELEVANT": "Not relevant",
+      "WRONG_INFORMATION": "Wrong information",
+      "HALLUCINATION": "Hallucination",
+      "INCOMPLETE": "Incomplete",
+      "OTHER": "Other"
+    }
+  },
   "file_extension": "File extension",
   "file_name": "File name",
   "file_size": "File size",
@@ -556,6 +567,7 @@ const translations = {
   "super_admin": "Super Admin",
   "suspend": "Suspend",
   "suspended": "Suspended",
+  "thankyou": "Thank you",
   "theme": "Theme",
   "thursday": "Thursday",
   "time_format": "Time format",
@@ -610,6 +622,7 @@ const translations = {
   "yes": "Yes",
   "your_chats": "Your chats",
   "your_da_analysis": "Your document analysis",
+  "your_files": "Your files",
   "zoom_in": "Zoom in",
   "zoom_out": "Zoom out",
   "zoom_reset": "Reset zoom"

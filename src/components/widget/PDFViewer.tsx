@@ -258,10 +258,11 @@ const Toolbar = (props: Props__PDFToolbar) => {
 export interface Props__PdfViewer extends StackProps {
   fileUrl: string;
   fileName?: string;
+  toolBarProps?: Props__PDFToolbar;
 }
 export const PdfViewer = (props: Props__PdfViewer) => {
   // Props
-  const { fileUrl, fileName, ...restProps } = props;
+  const { fileUrl, fileName, toolBarProps, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -353,9 +354,9 @@ export const PdfViewer = (props: Props__PdfViewer) => {
   }, []);
 
   return (
-    <CContainer flex={1} w={"full"} h={"full"} {...restProps}>
+    <CContainer flex={1} w={"full"} h={"full"} overflow={"clip"} {...restProps}>
       {/* Toolbar */}
-      <Toolbar utils={utils} viewer={viewer} flexShrink={0} />
+      <Toolbar utils={utils} viewer={viewer} flexShrink={0} {...toolBarProps} />
 
       {/* Document Area */}
       <CContainer
