@@ -54,7 +54,7 @@ import { formatDate } from "@/utils/formatter";
 import { capitalize, pluckString } from "@/utils/string";
 import { isDimensionValid } from "@/utils/style";
 import { getActiveNavs, imgUrl } from "@/utils/url";
-import { fileValidation } from "@/utils/validationSchema";
+import { fileValidation, min1File } from "@/utils/validationSchema";
 import { Center, HStack, InputGroup, SimpleGrid } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
@@ -327,7 +327,15 @@ const Edit = (props: any) => {
       icon: fileValidation({
         maxFileSizeMB: 50,
         allowedExtensions: ["png", "jpg", "jpeg", "webp"],
-      }).required(l.msg_required_form),
+      }).concat(
+        min1File({
+          resolvedData: data,
+          existingKey: "icon",
+          deletedKey: "deleteIconIds",
+          newKey: "icon",
+          message: l.msg_required_form,
+        }),
+      ),
       titleId: yup.string().required(l.msg_required_form),
       titleEn: yup.string().required(l.msg_required_form),
       descriptionId: yup.string().required(l.msg_required_form),
@@ -347,9 +355,11 @@ const Edit = (props: any) => {
 
       const config = {
         url: `${BASE_ENDPOINT}/update/${data.id}`,
-        method: "POST",
+        method: "PATCH",
         data: payload,
       };
+
+      console.debug("hit");
 
       req({
         config,
@@ -362,12 +372,6 @@ const Edit = (props: any) => {
       });
     },
   });
-
-  if (index === 0) {
-    console.debug(index);
-    console.debug(bodyRef?.current?.offsetWidth);
-    console.debug(bodyDimension);
-  }
 
   return (
     <>
@@ -528,7 +532,7 @@ const Edit = (props: any) => {
               colorPalette={themeConfig.colorPalette}
               loading={loading}
             >
-              {l.add}
+              {l.save}
             </Btn>
           </>
         }
