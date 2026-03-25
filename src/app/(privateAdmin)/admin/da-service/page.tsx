@@ -118,8 +118,8 @@ const Create = (props: any) => {
 
       const payload = new FormData();
       payload.append("icon", values.icon[0]);
-      payload.append("title_id", values.titleId);
-      payload.append("title_en", values.titleEn);
+      payload.append("name_id", values.titleId);
+      payload.append("name_en", values.titleEn);
       payload.append("description_id", values.descriptionId);
       payload.append("description_en", values.descriptionEn);
       payload.append("requirements", values.requirements);
@@ -349,8 +349,8 @@ const Edit = (props: any) => {
       values.deleteIconIds.forEach((id) => {
         payload.append("delete_icon_ids[]", id);
       });
-      payload.append("title_id", values.titleId);
-      payload.append("title_en", values.titleEn);
+      payload.append("name_id", values.titleId);
+      payload.append("name_en", values.titleEn);
       payload.append("description_id", values.descriptionId);
       payload.append("description_en", values.descriptionEn);
       payload.append("requirements", values.requirements);
