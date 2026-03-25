@@ -2,26 +2,17 @@
 
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
-import {
-  DisclosureBody,
-  DisclosureContent,
-  DisclosureFooter,
-  DisclosureHeader,
-  DisclosureRoot,
-} from "@/components/ui/disclosure";
-import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { P } from "@/components/ui/p";
 import { AppIcon } from "@/components/widget/AppIcon";
-import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
 import { ClampText } from "@/components/widget/ClampText";
 import { Logo } from "@/components/widget/Logo";
+import { Messages } from "@/components/widget/Messages";
 import { APP } from "@/constants/_meta";
 import useLang from "@/context/useLang";
 
-import { HStack, List } from "@chakra-ui/react";
-import { ArrowRight, ChevronDownIcon } from "lucide-react";
+import { HStack } from "@chakra-ui/react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 interface ChatMessage {
   id: string;
@@ -36,55 +27,6 @@ interface Props {
   messages: ChatMessage[];
   viewCount?: number;
   createdAt?: string;
-}
-
-// Replicate the same reference disclosure trigger as Messages.tsx
-function ReferenceButton({ sources }: { sources: string[] }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <>
-      <Btn
-        size={"xs"}
-        variant={"ghost"}
-        w={"fit"}
-        pr={"6px"}
-        onClick={() => setIsOpen(true)}
-      >
-        Referensi <AppIcon icon={ChevronDownIcon} />
-      </Btn>
-
-      <DisclosureRoot
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        size={"xs"}
-      >
-        <DisclosureContent>
-          <DisclosureHeader>
-            <DisclosureHeaderContent title={"Referensi"} />
-          </DisclosureHeader>
-
-          <DisclosureBody>
-            <List.Root gap={2} pl={4}>
-              {sources.map((source, index) => (
-                <List.Item key={index}>{source}</List.Item>
-              ))}
-            </List.Root>
-          </DisclosureBody>
-
-          <DisclosureFooter>
-            <Btn
-              variant={"outline"}
-              size={"sm"}
-              onClick={() => setIsOpen(false)}
-            >
-              Close
-            </Btn>
-          </DisclosureFooter>
-        </DisclosureContent>
-      </DisclosureRoot>
-    </>
-  );
 }
 
 export function ShareContent(props: Props) {
@@ -166,40 +108,7 @@ export function ShareContent(props: Props) {
 
         {/* Messages */}
         <CContainer gap={4}>
-          {messages.map((message, index) => {
-            if (message.role === "user") {
-              return (
-                <CContainer key={message.id || index} gap={2}>
-                  <UserBubbleChat ml={"auto"}>{message.content}</UserBubbleChat>
-                </CContainer>
-              );
-            }
-
-            if (message.role === "assistant") {
-              const hasSources = message.sources && message.sources.length > 0;
-
-              return (
-                <CContainer key={message.id || index} gap={2}>
-                  <HStack align={"start"} gap={4}>
-                    <Logo size={15} />
-
-                    <CContainer gap={2}>
-                      <MarkdownChat>{message.content}</MarkdownChat>
-
-                      {/* Action row - same layout as Messages.tsx */}
-                      <HStack wrap={"wrap"} gap={1} w={"fit"}>
-                        {hasSources && (
-                          <ReferenceButton sources={message.sources!} />
-                        )}
-                      </HStack>
-                    </CContainer>
-                  </HStack>
-                </CContainer>
-              );
-            }
-
-            return null;
-          })}
+          <Messages messages={messages} sharedContent />
         </CContainer>
 
         {messages.length === 0 && (
