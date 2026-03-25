@@ -317,6 +317,7 @@ const Edit = (props: any) => {
     validateOnChange: false,
     initialValues: {
       icon: null as any,
+      deleteIconIds: [] as string[],
       titleId: data.title.id,
       titleEn: data.title.en,
       descriptionId: data.description.id,
@@ -343,10 +344,11 @@ const Edit = (props: any) => {
       requirements: yup.string().required(l.msg_required_form),
     }),
     onSubmit: (values, { resetForm }) => {
-      back();
-
       const payload = new FormData();
-      if (values.icon[0]) payload.append("icon", values.icon[0]);
+      if (values.icon?.[0]) payload.append("icon", values.icon[0]);
+      values.deleteIconIds.forEach((id) => {
+        payload.append("delete_icon_ids[]", id);
+      });
       payload.append("title_id", values.titleId);
       payload.append("title_en", values.titleEn);
       payload.append("description_id", values.descriptionId);
@@ -359,8 +361,6 @@ const Edit = (props: any) => {
         data: payload,
       };
 
-      console.debug("hit");
-
       req({
         config,
         onResolve: {
@@ -370,6 +370,8 @@ const Edit = (props: any) => {
           },
         },
       });
+
+      back();
     },
   });
 
@@ -417,16 +419,19 @@ const Edit = (props: any) => {
                     ]}
                     onDeleteFile={(fileData) => {
                       formik.setFieldValue(
-                        "icon",
+                        "deleteIconIds",
                         Array.from(
-                          new Set([...formik.values.icon, fileData.id]),
+                          new Set([
+                            ...formik.values.deleteIconIds,
+                            fileData.id,
+                          ]),
                         ),
                       );
                     }}
                     onUndoDeleteFile={(fileData) => {
                       formik.setFieldValue(
-                        "icon",
-                        formik.values.icon.filter(
+                        "deleteIconIds",
+                        formik.values.deleteIconIds.filter(
                           (id: string) => id !== fileData.id,
                         ),
                       );
