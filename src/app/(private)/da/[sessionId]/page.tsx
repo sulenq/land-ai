@@ -832,16 +832,13 @@ interface Props__TableMode extends StackProps {
 }
 const TableMode = memo((props: Props__TableMode) => {
   // Props
-  const { daSession, containerDimension } = props;
+  const { daSession } = props;
 
   // Contexts
   const { l } = useLang();
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isDragging = useRef(false);
-  const dragStartX = useRef(0);
-  const scrollStartLeft = useRef(0);
 
   // States
   // const documentRequirements = daSession?.documentService?.documentRequirements;
@@ -908,43 +905,6 @@ const TableMode = memo((props: Props__TableMode) => {
     });
   }, [result, l]);
 
-  // Utils
-  useEffect(() => {
-    const handleMouseUpGlobal = () => {
-      isDragging.current = false;
-    };
-    window.addEventListener("mouseup", handleMouseUpGlobal);
-    window.addEventListener("mouseleave", handleMouseUpGlobal);
-    return () => {
-      window.removeEventListener("mouseup", handleMouseUpGlobal);
-      window.removeEventListener("mouseleave", handleMouseUpGlobal);
-    };
-  }, []);
-
-  function handleMouseDown(e: React.MouseEvent) {
-    const target = e.target as HTMLElement;
-    // Do not drag if clicking inside a popover/dialog
-    if (
-      target.closest(
-        '[data-part="content"], [role="dialog"], [data-scope="popover"]',
-      )
-    )
-      return;
-
-    isDragging.current = true;
-    dragStartX.current = e.clientX;
-    scrollStartLeft.current = containerRef.current?.scrollLeft ?? 0;
-  }
-  function handleMouseMove(e: React.MouseEvent) {
-    if (!isDragging.current || !containerRef.current) return;
-    e.preventDefault();
-    const dx = e.clientX - dragStartX.current;
-    containerRef.current.scrollLeft = scrollStartLeft.current - dx;
-  }
-  function stopDrag() {
-    isDragging.current = false;
-  }
-
   return (
     <>
       <MContainer
@@ -955,15 +915,41 @@ const TableMode = memo((props: Props__TableMode) => {
         maskingLeft={"100px"}
         maskingRight={"100px"}
         overflowX={"auto"}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={stopDrag}
-        onMouseLeave={stopDrag}
-        cursor={isDragging.current ? "grabbing" : "grab"}
+        cursor={"grab"}
+        css={{
+          "&:active": { cursor: "grabbing" },
+          userSelect: "none",
+        }}
+        onMouseDown={(e) => {
+          const target = e.target as HTMLElement;
+          if (
+            target.closest(
+              '[data-part="content"], [role="dialog"], [data-scope="popover"], button, a, input',
+            )
+          )
+            return;
+
+          e.preventDefault();
+          const container = containerRef.current;
+          if (!container) return;
+
+          const startX = e.clientX;
+          const scrollLeft = container.scrollLeft;
+
+          const onMouseMove = (ev: MouseEvent) => {
+            ev.preventDefault();
+            container.scrollLeft = scrollLeft - (ev.clientX - startX);
+          };
+          const onMouseUp = () => {
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+          };
+          window.addEventListener("mousemove", onMouseMove);
+          window.addEventListener("mouseup", onMouseUp);
+        }}
       >
         <CContainer
           w={"max"}
-          px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
         >
           <DataTable
             headers={headers}
@@ -1098,15 +1084,12 @@ const ResultSection = (props: Props__ResultSection) => {
         </CContainer>
       </Box>
 
-      {/* Table View - cross-document comparison */}
       <Box display={viewMode === "table" ? "block" : "none"}>
         <CContainer px={4}>
-          <ContainerLayout>
-            <TableMode
-              daSession={daSession}
-              containerDimension={containerDimension}
-            />
-          </ContainerLayout>
+          <TableMode
+            daSession={daSession}
+            containerDimension={containerDimension}
+          />
         </CContainer>
       </Box>
     </CContainer>
