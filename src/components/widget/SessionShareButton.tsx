@@ -82,6 +82,14 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
     setError("");
   };
 
+  const handleShareWhatsApp = () => {
+    const firstUserMsg = messages?.find((m) => m.role === "user");
+    const question = firstUserMsg?.content || sessionTitle || "Percakapan Land AI";
+    const text = `${question}\n\nBaca selengkapnya di\n${shareUrl}`;
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, "_blank");
+  };
+
   return (
     <>
       <Btn iconButton size={"xs"} variant={"ghost"} w={"fit"} onClick={onOpen}>

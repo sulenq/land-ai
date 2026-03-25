@@ -43,7 +43,9 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
-import { DUMMY_ACTIVE_DA_SESSION, DUMMY_PDF_URL } from "@/constants/dummyData";
+import { PdfViewer } from "@/components/widget/PDFViewer";
+import { DA_API_SESSION_DETAIL } from "@/constants/apis";
+import { DUMMY_PDF_URL } from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__DAUploadedDocument,
@@ -69,7 +71,6 @@ import {
   Badge,
   Box,
   HStack,
-  SimpleGrid,
   Stack,
   StackProps,
   TextProps,
@@ -288,31 +289,71 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 p={4}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
-                overflowY={"auto"}
+                overflow={"hidden"}
               >
                 {isEmptyArray(activeDocs) && (
                   <FeedbackNotFound title={`${l.select} file`} />
                 )}
 
                 {!isEmptyArray(activeDocs) && (
-                  <SimpleGrid
+                  <HStack
                     flex={1}
                     gap={4}
                     h={"full"}
-                    columns={activeDocs?.length || 1}
+                    overflowX={"auto"}
+                    overflowY={"hidden"}
+                    css={{
+                      scrollSnapType: "x mandatory",
+                      WebkitOverflowScrolling: "touch",
+                      scrollbarWidth: "thin",
+                      "&::-webkit-scrollbar": {
+                        height: "6px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        background: "var(--chakra-colors-border-muted)",
+                        borderRadius: "3px",
+                      },
+                    }}
+                    onMouseDown={(e) => {
+                      const container = e.currentTarget;
+                      const startX = e.clientX;
+                      const scrollLeft = container.scrollLeft;
+
+                      const onMouseMove = (ev: MouseEvent) => {
+                        const dx = ev.clientX - startX;
+                        container.scrollLeft = scrollLeft - dx;
+                      };
+                      const onMouseUp = () => {
+                        window.removeEventListener("mousemove", onMouseMove);
+                        window.removeEventListener("mouseup", onMouseUp);
+                      };
+                      window.addEventListener("mousemove", onMouseMove);
+                      window.addEventListener("mouseup", onMouseUp);
+                    }}
                   >
                     {activeDocs?.map((doc, index) => {
                       return (
                         <CContainer
                           key={doc.documentRequirement.id}
-                          gap={4}
+                          gap={2}
                           p={2}
                           bg={"bg.muted"}
                           border={"1px solid"}
                           borderColor={"border.muted"}
                           rounded={themeConfig.radii.component}
+                          h={"full"}
+                          overflow={"hidden"}
+                          flexShrink={0}
+                          w={
+                            activeDocs.length === 1
+                              ? "full"
+                              : ["85%", null, "calc(50% - 8px)"]
+                          }
+                          css={{
+                            scrollSnapAlign: "start",
+                          }}
                         >
-                          <HStack justify={"space-between"}>
+                          <HStack justify={"space-between"} flexShrink={0}>
                             <P fontWeight={"medium"} ml={2}>
                               {doc.metaData.fileName}
                             </P>
@@ -332,31 +373,22 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                             </Btn>
                           </HStack>
 
-                          <iframe
-                            src={
+                          <PdfViewer
+                            fileUrl={
                               fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
                             }
-                            style={{
-                              flex: 1,
-                              width: "100%",
-                              minHeight: "400px",
-                              height: "100%",
-                              border: "none",
-                            }}
+                            fileName={doc.metaData.fileName}
+                            defaultMode="continuous"
+                            border={"1px solid"}
+                            borderColor={"border.muted"}
+                            rounded={themeConfig.radii.component}
+                            flex={1}
+                            minH={0}
                           />
-
-                          {/* <PdfViewer
-                          fileUrl={
-                            fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
-                          }
-                          border={"1px solid"}
-                          borderColor={"border.muted"}
-                          rounded={themeConfig.radii.component}
-                        /> */}
                         </CContainer>
                       );
                     })}
-                  </SimpleGrid>
+                  </HStack>
                 )}
               </CContainer>
 
@@ -800,16 +832,13 @@ interface Props__TableMode extends StackProps {
 }
 const TableMode = memo((props: Props__TableMode) => {
   // Props
-  const { daSession, containerDimension } = props;
+  const { daSession } = props;
 
   // Contexts
   const { l } = useLang();
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isDragging = useRef(false);
-  const dragStartX = useRef(0);
-  const scrollStartLeft = useRef(0);
 
   // States
   // const documentRequirements = daSession?.documentService?.documentRequirements;
@@ -854,7 +883,7 @@ const TableMode = memo((props: Props__TableMode) => {
                   color={isNotFound ? "fg.warning" : ""}
                   maxW={"200px"}
                 >
-                  {v.value || (isNotFound ? l.not_found : "-")}
+                  {isNotFound ? l.not_found : v.value || "-"}
                 </ClampText>
               ),
               dim: isNotFound || v.value === null,
@@ -876,43 +905,6 @@ const TableMode = memo((props: Props__TableMode) => {
     });
   }, [result, l]);
 
-  // Utils
-  useEffect(() => {
-    const handleMouseUpGlobal = () => {
-      isDragging.current = false;
-    };
-    window.addEventListener("mouseup", handleMouseUpGlobal);
-    window.addEventListener("mouseleave", handleMouseUpGlobal);
-    return () => {
-      window.removeEventListener("mouseup", handleMouseUpGlobal);
-      window.removeEventListener("mouseleave", handleMouseUpGlobal);
-    };
-  }, []);
-
-  function handleMouseDown(e: React.MouseEvent) {
-    const target = e.target as HTMLElement;
-    // Do not drag if clicking inside a popover/dialog
-    if (
-      target.closest(
-        '[data-part="content"], [role="dialog"], [data-scope="popover"]',
-      )
-    )
-      return;
-
-    isDragging.current = true;
-    dragStartX.current = e.clientX;
-    scrollStartLeft.current = containerRef.current?.scrollLeft ?? 0;
-  }
-  function handleMouseMove(e: React.MouseEvent) {
-    if (!isDragging.current || !containerRef.current) return;
-    e.preventDefault();
-    const dx = e.clientX - dragStartX.current;
-    containerRef.current.scrollLeft = scrollStartLeft.current - dx;
-  }
-  function stopDrag() {
-    isDragging.current = false;
-  }
-
   return (
     <>
       <MContainer
@@ -923,15 +915,41 @@ const TableMode = memo((props: Props__TableMode) => {
         maskingLeft={"100px"}
         maskingRight={"100px"}
         overflowX={"auto"}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={stopDrag}
-        onMouseLeave={stopDrag}
-        cursor={isDragging.current ? "grabbing" : "grab"}
+        cursor={"grab"}
+        css={{
+          "&:active": { cursor: "grabbing" },
+          userSelect: "none",
+        }}
+        onMouseDown={(e) => {
+          const target = e.target as HTMLElement;
+          if (
+            target.closest(
+              '[data-part="content"], [role="dialog"], [data-scope="popover"], button, a, input',
+            )
+          )
+            return;
+
+          e.preventDefault();
+          const container = containerRef.current;
+          if (!container) return;
+
+          const startX = e.clientX;
+          const scrollLeft = container.scrollLeft;
+
+          const onMouseMove = (ev: MouseEvent) => {
+            ev.preventDefault();
+            container.scrollLeft = scrollLeft - (ev.clientX - startX);
+          };
+          const onMouseUp = () => {
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+          };
+          window.addEventListener("mousemove", onMouseMove);
+          window.addEventListener("mouseup", onMouseUp);
+        }}
       >
         <CContainer
           w={"max"}
-          px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
         >
           <DataTable
             headers={headers}
@@ -1066,15 +1084,12 @@ const ResultSection = (props: Props__ResultSection) => {
         </CContainer>
       </Box>
 
-      {/* Table View - cross-document comparison */}
       <Box display={viewMode === "table" ? "block" : "none"}>
         <CContainer px={4}>
-          <ContainerLayout>
-            <TableMode
-              daSession={daSession}
-              containerDimension={containerDimension}
-            />
-          </ContainerLayout>
+          <TableMode
+            daSession={daSession}
+            containerDimension={containerDimension}
+          />
         </CContainer>
       </Box>
     </CContainer>
@@ -1167,8 +1182,7 @@ export default function Page() {
   // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      initialData: DUMMY_ACTIVE_DA_SESSION as any,
-      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId, pollingTick],
       loadingBarInitialOnly: true,
@@ -1189,10 +1203,10 @@ export default function Page() {
 
   // Set active DA on data load
   useEffect(() => {
-    if (!activeDA.session && data) {
+    if (data && data.id === sessionId) {
       setSession(data);
     }
-  }, [data, activeDA.session]);
+  }, [data, sessionId, setSession]);
 
   // Handle 404 - redirect and remove session
   useEffect(() => {

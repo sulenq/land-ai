@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { CContainer } from "@/components/ui/c-container";
 import { P } from "@/components/ui/p";
 import { Skeleton } from "@/components/ui/skeleton";
