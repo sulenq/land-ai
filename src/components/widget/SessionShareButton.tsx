@@ -11,13 +11,15 @@ import { P } from "@/components/ui/p";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { Clipboard } from "@/components/widget/Clipboard";
+import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { createShare } from "@/service/share";
 import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
-import { HStack, Link, VStack } from "@chakra-ui/react";
+import { HStack, Icon, Link, VStack } from "@chakra-ui/react";
+import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { GlobeIcon, Link2Icon, Share2Icon } from "lucide-react";
 import { useState } from "react";
 
@@ -30,6 +32,7 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+  const messages = useActiveChat((s) => s.activeChat.messages);
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(disclosureId(`share_chat`));
@@ -84,7 +87,8 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
 
   const handleShareWhatsApp = () => {
     const firstUserMsg = messages?.find((m) => m.role === "user");
-    const question = firstUserMsg?.content || sessionTitle || "Percakapan Land AI";
+    const question =
+      firstUserMsg?.content || sessionTitle || "Percakapan Land AI";
     const text = `${question}\n\nBaca selengkapnya di\n${shareUrl}`;
     const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(waUrl, "_blank");
@@ -163,11 +167,9 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
                       href={shareUrl}
                       target="_blank"
                       textDecoration={"none"}
-                      w={"full"}
                     >
                       <Btn
-                        w={"full"}
-                        variant={"outline"}
+                        variant={"ghost"}
                         onClick={(e) => {
                           e.preventDefault();
                           window.open(shareUrl, "_blank");
@@ -180,6 +182,16 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
                         </HStack>
                       </Btn>
                     </Link>
+
+                    <Btn variant={"ghost"} onClick={handleShareWhatsApp}>
+                      <HStack gap={2} justify={"center"} color={"fg.success"}>
+                        <Icon boxSize={5}>
+                          <IconBrandWhatsapp stroke={1.5} />
+                        </Icon>
+
+                        {l.share_chat.share_to_whatsapp}
+                      </HStack>
+                    </Btn>
                   </HStack>
                 </>
               )}

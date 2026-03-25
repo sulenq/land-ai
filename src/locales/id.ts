@@ -510,7 +510,8 @@ const translations = {
   "share": "Bagikan",
   "share_chat": {
     "description": "Buat link publik untuk membagikan percakapan ini ke orang lain. Orang lain bisa melihat seluruh percakapan tanpa perlu sign in.",
-    "disclaimer": "Share link berhasil dibuat! Link ini bersifat publik dan bisa diakses oleh siapa saja."
+    "disclaimer": "Share link berhasil dibuat! Link ini bersifat publik dan bisa diakses oleh siapa saja.",
+    "share_to_whatsapp": "Bagikan ke WhatsApp"
   },
   "show": "Tampilkan",
   "show_more": "Tampilkan lebih",

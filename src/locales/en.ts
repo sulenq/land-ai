@@ -510,7 +510,8 @@ const translations = {
   "share": "Share",
   "share_chat": {
     "description": "Create a public link to share this conversation with others. Others can view the entire conversation without needing to sign in.",
-    "disclaimer": "Share link successfully created! This link is public and can be accessed by anyone."
+    "disclaimer": "Share link successfully created! This link is public and can be accessed by anyone.",
+    "share_to_whatsapp": "Share to WhatsApp"
   },
   "show": "Show",
   "show_more": "Show more",

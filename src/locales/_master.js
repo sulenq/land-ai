@@ -156,6 +156,10 @@ export const share_chat = {
     id: "Share link berhasil dibuat! Link ini bersifat publik dan bisa diakses oleh siapa saja.",
     en: "Share link successfully created! This link is public and can be accessed by anyone.",
   },
+  share_to_whatsapp: {
+    id: "Bagikan ke WhatsApp",
+    en: "Share to WhatsApp",
+  },
 };
 export const copy = {
   id: "Salin",
