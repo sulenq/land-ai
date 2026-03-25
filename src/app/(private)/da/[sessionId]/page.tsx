@@ -1203,10 +1203,10 @@ export default function Page() {
 
   // Set active DA on data load
   useEffect(() => {
-    if (!activeDA.session && data) {
+    if (data && data.id === sessionId) {
       setSession(data);
     }
-  }, [data, activeDA.session]);
+  }, [data, sessionId, setSession]);
 
   // Handle 404 - redirect and remove session
   useEffect(() => {
