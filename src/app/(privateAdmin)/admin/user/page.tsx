@@ -602,7 +602,7 @@ export default function Page() {
 
   return (
     <PageContainer ref={containerRef}>
-      <PageTitle w={"full"} justify={"space-between"} pr={3}>
+      <PageTitle w={"full"} justify={"space-between"} pr={4}>
         <HStack>
           {!isSmContainer && (
             <DataUtils

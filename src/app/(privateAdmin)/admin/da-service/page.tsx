@@ -646,7 +646,7 @@ const Data = (props: any) => {
     pagination,
   } = useDataState<Interface__Data[]>({
     // initialData: DUMMY_CHAT_AI_KNOWLEDGE,
-    url: `${BASE_ENDPOINT}/get`,
+    url: `${BASE_ENDPOINT}/index`,
     params: filter,
     dependencies: [filter],
   });
@@ -841,7 +841,7 @@ export default function Page() {
 
   return (
     <PageContainer ref={containerRef}>
-      <PageTitle w={"full"} justify={"space-between"} pr={3}>
+      <PageTitle w={"full"} justify={"space-between"} pr={4}>
         <HStack>
           {!isSmContainer && (
             <DataUtils
