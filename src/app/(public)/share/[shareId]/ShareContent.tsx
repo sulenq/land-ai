@@ -210,7 +210,7 @@ export function ShareContent(props: Props) {
       </CContainer>
 
       {/* Disclaimer */}
-      <CContainer maxW={"760px"} w={"full"} mx={"auto"} px={4} pb={4}>
+      <CContainer maxW={"760px"} w={"full"} mx={"auto"} px={4} pb={8}>
         <CContainer gap={1}>
           <P fontSize={"xs"} color={"fg.subtle"}>
             *Jawaban berdasarkan dokumen resmi
