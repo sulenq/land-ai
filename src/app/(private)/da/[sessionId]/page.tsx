@@ -43,6 +43,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import { PdfViewer } from "@/components/widget/PDFViewer";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { DUMMY_PDF_URL } from "@/constants/dummyData";
 import {
@@ -333,27 +334,17 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                             </Btn>
                           </HStack>
 
-                          <iframe
-                            src={
+                          <PdfViewer
+                            fileUrl={
                               fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
                             }
-                            style={{
-                              flex: 1,
-                              width: "100%",
-                              minHeight: "400px",
-                              height: "100%",
-                              border: "none",
-                            }}
+                            fileName={doc.metaData.fileName}
+                            border={"1px solid"}
+                            borderColor={"border.muted"}
+                            rounded={themeConfig.radii.component}
+                            h={"400px"}
+                            minH={"400px"}
                           />
-
-                          {/* <PdfViewer
-                          fileUrl={
-                            fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
-                          }
-                          border={"1px solid"}
-                          borderColor={"border.muted"}
-                          rounded={themeConfig.radii.component}
-                        /> */}
                         </CContainer>
                       );
                     })}
@@ -855,7 +846,7 @@ const TableMode = memo((props: Props__TableMode) => {
                   color={isNotFound ? "fg.warning" : ""}
                   maxW={"200px"}
                 >
-                  {v.value || (isNotFound ? l.not_found : "-")}
+                  {isNotFound ? l.not_found : v.value || "-"}
                 </ClampText>
               ),
               dim: isNotFound || v.value === null,
