@@ -587,7 +587,7 @@ const Delete = (props: any) => {
   });
 
   // Utils
-  function onDeactivate() {
+  function onDelete() {
     back();
     req({
       config: {
@@ -613,7 +613,7 @@ const Delete = (props: any) => {
       title={`${l.delete_} ${routeTitle}`}
       description={l.msg_perma_delete}
       confirmLabel={`${l.delete_}`}
-      onConfirm={onDeactivate}
+      onConfirm={onDelete}
       confirmButtonProps={{
         color: "fg.error",
         colorPalette: "gray",
