@@ -124,7 +124,7 @@ export function ShareContent(props: Props) {
           <P fontWeight={"semibold"}>{APP.name}</P>
         </HStack>
 
-        <Link href="/">
+        <Link href="/new-chat">
           <Btn size={"sm"} variant={"ghost"} pr={2.5}>
             {l.new_chat}
             <AppIcon icon={ArrowRight} />
