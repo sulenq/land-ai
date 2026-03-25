@@ -1,13 +1,7 @@
 "use client";
 
-import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
-import { Logo } from "@/components/widget/Logo";
-import { Provider } from "@/components/ui/provider";
-import { CContainer } from "@/components/ui/c-container";
-import { P } from "@/components/ui/p";
-import { ClampText } from "@/components/widget/ClampText";
-import { AppIcon } from "@/components/widget/AppIcon";
 import { Btn } from "@/components/ui/btn";
+import { CContainer } from "@/components/ui/c-container";
 import {
   DisclosureBody,
   DisclosureContent,
@@ -16,9 +10,16 @@ import {
   DisclosureRoot,
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
+import { P } from "@/components/ui/p";
+import { AppIcon } from "@/components/widget/AppIcon";
+import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
+import { ClampText } from "@/components/widget/ClampText";
+import { Logo } from "@/components/widget/Logo";
+import { APP } from "@/constants/_meta";
+import useLang from "@/context/useLang";
 
 import { HStack, List } from "@chakra-ui/react";
-import { ChevronDownIcon } from "lucide-react";
+import { ArrowRight, ChevronDownIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -53,7 +54,11 @@ function ReferenceButton({ sources }: { sources: string[] }) {
         Referensi <AppIcon icon={ChevronDownIcon} />
       </Btn>
 
-      <DisclosureRoot open={isOpen} onClose={() => setIsOpen(false)} size={"xs"}>
+      <DisclosureRoot
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        size={"xs"}
+      >
         <DisclosureContent>
           <DisclosureHeader>
             <DisclosureHeaderContent title={"Referensi"} />
@@ -68,7 +73,11 @@ function ReferenceButton({ sources }: { sources: string[] }) {
           </DisclosureBody>
 
           <DisclosureFooter>
-            <Btn variant={"outline"} size={"sm"} onClick={() => setIsOpen(false)}>
+            <Btn
+              variant={"outline"}
+              size={"sm"}
+              onClick={() => setIsOpen(false)}
+            >
               Close
             </Btn>
           </DisclosureFooter>
@@ -78,7 +87,14 @@ function ReferenceButton({ sources }: { sources: string[] }) {
   );
 }
 
-function ShareContentInner({ title, messages, viewCount, createdAt }: Props) {
+export function ShareContent(props: Props) {
+  // Props
+  const { title, messages, viewCount, createdAt } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // Derived Values
   const createdDate = createdAt
     ? new Date(createdAt).toLocaleDateString("id-ID", {
         day: "numeric",
@@ -105,23 +121,27 @@ function ShareContentInner({ title, messages, viewCount, createdAt }: Props) {
       >
         <HStack gap={2}>
           <Logo size={15} />
-          <P fontWeight={"semibold"}>Land AI</P>
+          <P fontWeight={"semibold"}>{APP.name}</P>
         </HStack>
 
         <Link href="/">
-          <P
-            fontSize={"sm"}
-            color={"fg.accent"}
-            cursor={"pointer"}
-            _hover={{ textDecoration: "underline" }}
-          >
-            Mulai Chat Baru →
-          </P>
+          <Btn size={"sm"} variant={"ghost"} pr={2.5}>
+            {l.new_chat}
+            <AppIcon icon={ArrowRight} />
+          </Btn>
         </Link>
       </HStack>
 
       {/* Content */}
-      <CContainer flex={1} maxW={"760px"} w={"full"} mx={"auto"} px={4} py={8} gap={6}>
+      <CContainer
+        flex={1}
+        maxW={"760px"}
+        w={"full"}
+        mx={"auto"}
+        px={4}
+        py={8}
+        gap={6}
+      >
         {/* Title & Meta */}
         <CContainer gap={1} mb={2}>
           {title && (
@@ -211,20 +231,9 @@ function ShareContentInner({ title, messages, viewCount, createdAt }: Props) {
         borderColor={"border.muted"}
       >
         <P fontSize={"xs"} color={"fg.subtle"}>
-          © {new Date().getFullYear()} Land AI · Asisten Agraria Indonesia ·{" "}
-          <Link href="/" style={{ color: "inherit" }}>
-            Mulai Percakapan Baru
-          </Link>
+          © {new Date().getFullYear()} Land AI · Asisten Agraria Indonesia
         </P>
       </HStack>
     </CContainer>
-  );
-}
-
-export function ShareContent(props: Props) {
-  return (
-    <Provider>
-      <ShareContentInner {...props} />
-    </Provider>
   );
 }

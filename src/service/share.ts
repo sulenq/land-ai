@@ -73,7 +73,7 @@ export async function createShare({
         Authorization: `Bearer ${getAccessToken()}`,
       },
       body: JSON.stringify({ sessionId, title }),
-    }
+    },
   );
 
   if (!res.ok) {
@@ -99,10 +99,10 @@ export async function createShare({
 
 // Get Shared Content (PUBLIC - no auth required)
 export async function getSharedContent(
-  shareId: string
+  shareId: string,
 ): Promise<RagShareContent> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}${RAG_SHARE_PUBLIC}/${shareId}`
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}${RAG_SHARE_PUBLIC}/${shareId}`,
   );
 
   if (!res.ok) {
@@ -129,7 +129,7 @@ export async function getUserShares({
       headers: {
         Authorization: `Bearer ${getAccessToken()}`,
       },
-    }
+    },
   );
 
   if (!res.ok) {
@@ -149,7 +149,7 @@ export async function toggleShareActive(shareId: string): Promise<RagShare> {
       headers: {
         Authorization: `Bearer ${getAccessToken()}`,
       },
-    }
+    },
   );
 
   if (!res.ok) {
@@ -169,7 +169,7 @@ export async function deleteShare(shareId: string): Promise<void> {
       headers: {
         Authorization: `Bearer ${getAccessToken()}`,
       },
-    }
+    },
   );
 
   if (!res.ok) {

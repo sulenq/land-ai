@@ -33,7 +33,9 @@ export async function generateMetadata({
     return { title: "Share Tidak Ditemukan" };
   }
 
-  const firstUserMessage = content.messages?.find((m: any) => m.role === "user");
+  const firstUserMessage = content.messages?.find(
+    (m: any) => m.role === "user",
+  );
   const description =
     firstUserMessage?.content?.slice(0, 160) || "Percakapan dengan Land AI";
 
