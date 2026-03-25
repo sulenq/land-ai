@@ -9,17 +9,16 @@ import {
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { P } from "@/components/ui/p";
 import { AppIcon } from "@/components/widget/AppIcon";
-import { createShare } from "@/service/share";
+import BackButton from "@/components/widget/BackButton";
+import { Clipboard } from "@/components/widget/Clipboard";
 import useLang from "@/context/useLang";
-import { HStack, VStack, Link } from "@chakra-ui/react";
-import {
-  CheckIcon,
-  CopyIcon,
-  GlobeIcon,
-  Link2Icon,
-  Share2Icon,
-  XIcon,
-} from "lucide-react";
+import { useThemeConfig } from "@/context/useThemeConfig";
+import usePopDisclosure from "@/hooks/usePopDisclosure";
+import { createShare } from "@/service/share";
+import { back } from "@/utils/client";
+import { disclosureId } from "@/utils/disclosure";
+import { HStack, Link, VStack } from "@chakra-ui/react";
+import { GlobeIcon, Link2Icon, Share2Icon } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
@@ -30,18 +29,22 @@ interface Props {
 export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(disclosureId(`share_chat`));
 
   // States
-  const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [shareUrl, setShareUrl] = useState<string>("");
-  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string>("");
 
   // Functions
   const handleCreateShare = async () => {
     if (!sessionId) {
-      setError("Session ID tidak ditemukan. Silakan refresh halaman dan coba lagi.");
+      setError(
+        "Session ID tidak ditemukan. Silakan refresh halaman dan coba lagi.",
+      );
       return;
     }
 
@@ -73,27 +76,15 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
     }
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(shareUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const handleClose = () => {
-    setIsOpen(false);
+    back();
     setShareUrl("");
     setError("");
   };
 
   return (
     <>
-      <Btn
-        iconButton
-        size={"xs"}
-        variant={"ghost"}
-        w={"fit"}
-        onClick={() => setIsOpen(true)}
-      >
+      <Btn iconButton size={"xs"} variant={"ghost"} w={"fit"} onClick={onOpen}>
         <AppIcon icon={Share2Icon} />
       </Btn>
 
@@ -108,8 +99,7 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
               {!shareUrl ? (
                 <>
                   <P fontSize={"sm"} color={"fg.subtle"}>
-                    Buat link publik untuk membagikan percakapan ini ke orang lain.
-                    Orang lain bisa melihat seluruh percakapan tanpa perlu login.
+                    {l.share_chat.description}
                   </P>
 
                   {error && (
@@ -118,38 +108,35 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
                     </P>
                   )}
 
-                  <HStack w={"full"} gap={2}>
-                    <Btn
-                      flex={1}
-                      size={"sm"}
-                      variant={"solid"}
-                      onClick={handleCreateShare}
-                      loading={isLoading}
-                    >
-                      <HStack gap={2} justify={"center"}>
-                        <AppIcon icon={Share2Icon} />
-                        <span>Buat Share Link</span>
-                      </HStack>
-                    </Btn>
-                  </HStack>
+                  <Btn
+                    w={"full"}
+                    onClick={handleCreateShare}
+                    loading={isLoading}
+                    colorPalette={themeConfig.colorPalette}
+                  >
+                    <AppIcon icon={Share2Icon} />
+
+                    {l.create_share_link}
+                  </Btn>
                 </>
               ) : (
                 <>
                   <P fontSize={"sm"} color={"fg.muted"}>
-                    Share link berhasil dibuat! Link ini bersifat publik dan bisa
-                    diakses oleh siapa saja.
+                    {l.share_chat.disclaimer}
                   </P>
 
                   <HStack
                     w={"full"}
                     gap={2}
-                    p={3}
+                    px={3}
+                    py={2}
                     bg={"bg.muted"}
-                    rounded={"md"}
+                    rounded={themeConfig.radii.component}
                     border={"1px solid"}
                     borderColor={"border.subtle"}
                   >
                     <AppIcon icon={Link2Icon} />
+
                     <P
                       fontSize={"sm"}
                       flex={1}
@@ -159,14 +146,8 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
                     >
                       {shareUrl}
                     </P>
-                    <Btn
-                      iconButton
-                      size={"xs"}
-                      variant={"ghost"}
-                      onClick={handleCopy}
-                    >
-                      <AppIcon icon={copied ? CheckIcon : CopyIcon} />
-                    </Btn>
+
+                    <Clipboard>{shareUrl}</Clipboard>
                   </HStack>
 
                   <HStack w={"full"} gap={2}>
@@ -178,7 +159,6 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
                     >
                       <Btn
                         w={"full"}
-                        size={"sm"}
                         variant={"outline"}
                         onClick={(e) => {
                           e.preventDefault();
@@ -187,7 +167,8 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
                       >
                         <HStack gap={2} justify={"center"}>
                           <AppIcon icon={GlobeIcon} />
-                          <span>Buka Link</span>
+
+                          {l.open_link}
                         </HStack>
                       </Btn>
                     </Link>
@@ -198,24 +179,7 @@ export const SessionShareButton = ({ sessionId, sessionTitle }: Props) => {
           </DisclosureBody>
 
           <DisclosureFooter>
-            <HStack justify={"space-between"} w={"full"}>
-              <Btn
-                size={"xs"}
-                variant={"ghost"}
-                onClick={handleClose}
-              >
-                <HStack gap={2}>
-                  <AppIcon icon={XIcon} />
-                  <span>Tutup</span>
-                </HStack>
-              </Btn>
-              {shareUrl && <Btn size={"xs"} variant={"ghost"} onClick={handleCopy}>
-                <HStack gap={2}>
-                  <AppIcon icon={copied ? CheckIcon : CopyIcon} />
-                  <span>Salin</span>
-                </HStack>
-              </Btn>}
-            </HStack>
+            <BackButton onClick={handleClose} />
           </DisclosureFooter>
         </DisclosureContent>
       </DisclosureRoot>

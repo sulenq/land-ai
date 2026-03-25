@@ -234,6 +234,7 @@ export const TopBar = () => {
               sessionTitle={last(activeNavs)?.label}
             />
           )}
+
           <CalendarDisclosureTrigger>
             <Today fontSize={FONT_SIZE} />
           </CalendarDisclosureTrigger>

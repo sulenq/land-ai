@@ -91,8 +91,10 @@ const translations = {
   "close_all": "Tutup semua",
   "component": "Komponen",
   "confirm": "Konfirmasi",
+  "copy": "Salin",
   "count": "Jumlah",
   "cover_letter": "Surat pengantar",
+  "create_share_link": "Buat link share",
   "created": "Dibuat",
   "current_data": "Data saat ini",
   "dark_mode": "Mode gelap",
@@ -405,6 +407,7 @@ const translations = {
   "on_progress": "Dalam proses",
   "open": "Buka",
   "open_all": "Buka semua",
+  "open_link": "Buka link",
   "option": "Opsi",
   "optional": "Opsional",
   "others": "Lainnya",
@@ -441,7 +444,6 @@ const translations = {
   "saved": "Disimpan",
   "saving": "Menyimpan",
   "search": "Cari",
-  "share": "Share",
   "second": "Detik",
   "select": "Pilih",
   "select_all": "Pilih semua",
@@ -504,6 +506,11 @@ const translations = {
     "others": {
       "index": "Lainnya"
     }
+  },
+  "share": "Bagikan",
+  "share_chat": {
+    "description": "Buat link publik untuk membagikan percakapan ini ke orang lain. Orang lain bisa melihat seluruh percakapan tanpa perlu sign in.",
+    "disclaimer": "Share link berhasil dibuat! Link ini bersifat publik dan bisa diakses oleh siapa saja."
   },
   "show": "Tampilkan",
   "show_more": "Tampilkan lebih",
