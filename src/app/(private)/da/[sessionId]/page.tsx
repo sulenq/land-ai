@@ -71,7 +71,6 @@ import {
   Badge,
   Box,
   HStack,
-  SimpleGrid,
   Stack,
   StackProps,
   TextProps,
@@ -290,31 +289,71 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 p={4}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
-                overflowY={"auto"}
+                overflow={"hidden"}
               >
                 {isEmptyArray(activeDocs) && (
                   <FeedbackNotFound title={`${l.select} file`} />
                 )}
 
                 {!isEmptyArray(activeDocs) && (
-                  <SimpleGrid
+                  <HStack
                     flex={1}
                     gap={4}
                     h={"full"}
-                    columns={activeDocs?.length || 1}
+                    overflowX={"auto"}
+                    overflowY={"hidden"}
+                    css={{
+                      scrollSnapType: "x mandatory",
+                      WebkitOverflowScrolling: "touch",
+                      scrollbarWidth: "thin",
+                      "&::-webkit-scrollbar": {
+                        height: "6px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        background: "var(--chakra-colors-border-muted)",
+                        borderRadius: "3px",
+                      },
+                    }}
+                    onMouseDown={(e) => {
+                      const container = e.currentTarget;
+                      const startX = e.clientX;
+                      const scrollLeft = container.scrollLeft;
+
+                      const onMouseMove = (ev: MouseEvent) => {
+                        const dx = ev.clientX - startX;
+                        container.scrollLeft = scrollLeft - dx;
+                      };
+                      const onMouseUp = () => {
+                        window.removeEventListener("mousemove", onMouseMove);
+                        window.removeEventListener("mouseup", onMouseUp);
+                      };
+                      window.addEventListener("mousemove", onMouseMove);
+                      window.addEventListener("mouseup", onMouseUp);
+                    }}
                   >
                     {activeDocs?.map((doc, index) => {
                       return (
                         <CContainer
                           key={doc.documentRequirement.id}
-                          gap={4}
+                          gap={2}
                           p={2}
                           bg={"bg.muted"}
                           border={"1px solid"}
                           borderColor={"border.muted"}
                           rounded={themeConfig.radii.component}
+                          h={"full"}
+                          overflow={"hidden"}
+                          flexShrink={0}
+                          w={
+                            activeDocs.length === 1
+                              ? "full"
+                              : ["85%", null, "calc(50% - 8px)"]
+                          }
+                          css={{
+                            scrollSnapAlign: "start",
+                          }}
                         >
-                          <HStack justify={"space-between"}>
+                          <HStack justify={"space-between"} flexShrink={0}>
                             <P fontWeight={"medium"} ml={2}>
                               {doc.metaData.fileName}
                             </P>
@@ -339,16 +378,17 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                               fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
                             }
                             fileName={doc.metaData.fileName}
+                            defaultMode="continuous"
                             border={"1px solid"}
                             borderColor={"border.muted"}
                             rounded={themeConfig.radii.component}
-                            h={"400px"}
-                            minH={"400px"}
+                            flex={1}
+                            minH={0}
                           />
                         </CContainer>
                       );
                     })}
-                  </SimpleGrid>
+                  </HStack>
                 )}
               </CContainer>
 

@@ -14,6 +14,7 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { Box, HStack, Icon, StackProps, VStack } from "@chakra-ui/react";
 import {
+  IconArrowAutofitHeight,
   IconArrowAutofitWidth,
   IconDownload,
   IconFile,
@@ -23,7 +24,7 @@ import {
   IconZoomOut,
 } from "@tabler/icons-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -33,8 +34,9 @@ export interface Interface__PdfViewer {
   numPages: number | null;
   page: number;
   scale: number;
-  mode: "single" | "scroll";
+  mode: "single" | "continuous";
 }
+
 export interface Interface__PdfViewerUtils {
   setPageWidth: (width: number) => void;
   setPage: (p: number) => void;
@@ -44,7 +46,7 @@ export interface Interface__PdfViewerUtils {
   zoomOut: () => void;
   resetZoom: () => void;
   fitToWidth: () => void;
-  fitToPage: () => void;
+  fitToHeight: () => void;
   handleDownload: () => void;
   toggleMode: () => void;
 }
@@ -176,7 +178,7 @@ const ZoomControl = (props: Props__ZoomControl) => {
         </Icon>
       </UtilBtn>
 
-      <Box minW={"35px"} textAlign={"center"}>
+      <Box minW={"45px"} textAlign={"center"}>
         {Math.round(scale * 100)}%
       </Box>
 
@@ -192,12 +194,11 @@ const ZoomControl = (props: Props__ZoomControl) => {
         </Icon>
       </UtilBtn>
 
-      {/* 
-      <UtilBtn onClick={utils.fitToPage} tooltipContent={l.fit_to_page}>
+      <UtilBtn onClick={utils.fitToHeight} tooltipContent={"Fit to Page"}>
         <Icon boxSize={5}>
-          <IconArrowAutofitContent stroke={1.5} />
+          <IconArrowAutofitHeight stroke={1.5} />
         </Icon>
-      </UtilBtn> */}
+      </UtilBtn>
     </HStack>
   );
 };
@@ -248,7 +249,7 @@ const Toolbar = (props: Props__PDFToolbar) => {
           </Icon>
 
           {viewer.mode === "single" && "Single"}
-          {viewer.mode === "scroll" && "Scroll"}
+          {viewer.mode === "continuous" && "Continuous"}
         </UtilBtn>
       </HStack>
     </HScroll>
@@ -259,16 +260,72 @@ export interface Props__PdfViewer extends StackProps {
   fileUrl: string;
   fileName?: string;
   toolBarProps?: Props__PDFToolbar;
+  defaultMode?: "single" | "continuous";
 }
+
+// Komponen PDF Page dengan lazy loading untuk continuous mode
+interface PdfPageProps {
+  pageNumber: number;
+  pageWidth: number;
+  scale: number;
+}
+const PdfPage = ({ pageNumber, pageWidth, scale }: PdfPageProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const pageRef = useRef<HTMLDivElement>(null);
+
+  // Intersection Observer untuk lazy loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { rootMargin: "200px" } // Load 200px sebelum visible
+    );
+
+    if (pageRef.current) {
+      observer.observe(pageRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <Box ref={pageRef} mb={4}>
+      {isVisible ? (
+        <Page
+          pageNumber={pageNumber}
+          renderTextLayer={true}
+          renderAnnotationLayer={true}
+          width={pageWidth}
+          scale={scale}
+        />
+      ) : (
+        // Placeholder untuk page yang belum di-load
+        <Box
+          width={pageWidth}
+          height={(pageWidth * 1.414) / scale} // A4 ratio approximate
+          bg={"bg.muted"}
+          borderRadius={"md"}
+        />
+      )}
+    </Box>
+  );
+};
+
 export const PdfViewer = (props: Props__PdfViewer) => {
   // Props
-  const { fileUrl, fileName, toolBarProps, ...restProps } = props;
+  const { fileUrl, fileName, toolBarProps, defaultMode = "continuous", ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
+  const documentRef = useRef<HTMLDivElement>(null);
 
   // States
   const [viewer, setViewer] = useState<Interface__PdfViewer>({
@@ -276,13 +333,30 @@ export const PdfViewer = (props: Props__PdfViewer) => {
     numPages: null as number | null,
     page: 1,
     scale: 1,
-    mode: "single" as "single" | "scroll",
+    mode: defaultMode,
   });
+
+  const [pdfInfo, setPdfInfo] = useState<{
+    originalWidth: number;
+    originalHeight: number;
+  } | null>(null);
+
   const utils: Interface__PdfViewerUtils = {
     setPageWidth: (width: number) =>
       setViewer((ps) => ({ ...ps, pageWidth: width })),
 
-    setPage: (p: number) => setViewer((ps) => ({ ...ps, page: p })),
+    setPage: (p: number) => {
+      setViewer((ps) => ({ ...ps, page: p }));
+      // Scroll ke halaman yang dipilih di continuous mode
+      if (viewer.mode === "continuous") {
+        setTimeout(() => {
+          const pageElement = documentRef.current?.querySelector(
+            `[data-page-number="${p}"]`
+          );
+          pageElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    },
 
     prevPage: () =>
       setViewer((ps) => ({ ...ps, page: Math.max(ps.page - 1, 1) })),
@@ -294,16 +368,26 @@ export const PdfViewer = (props: Props__PdfViewer) => {
       })),
 
     zoomIn: () =>
-      setViewer((ps) => ({ ...ps, scale: Math.min(ps.scale + 0.1, 3) })),
+      setViewer((ps) => ({ ...ps, scale: Math.min(ps.scale + 0.25, 3) })),
 
     zoomOut: () =>
-      setViewer((ps) => ({ ...ps, scale: Math.max(ps.scale - 0.1, 0.5) })),
+      setViewer((ps) => ({ ...ps, scale: Math.max(ps.scale - 0.25, 0.25) })),
 
     resetZoom: () => setViewer((ps) => ({ ...ps, scale: 1 })),
 
-    fitToWidth: () => setViewer((ps) => ({ ...ps, scale: 1 })),
+    fitToWidth: () => {
+      // Reset scale ke 1, width mengikuti container
+      setViewer((ps) => ({ ...ps, scale: 1 }));
+    },
 
-    fitToPage: () => setViewer((ps) => ({ ...ps, scale: 0.6 })),
+    fitToHeight: () => {
+      // Scale agar satu halaman muat di viewport
+      if (containerRef.current && pdfInfo) {
+        const containerHeight = containerRef.current.clientHeight - 80; // minus toolbar
+        const scale = containerHeight / pdfInfo.originalHeight;
+        setViewer((ps) => ({ ...ps, scale: Math.max(0.5, Math.min(scale, 2)) }));
+      }
+    },
 
     handleDownload: async () => {
       const response = await fetch(fileUrl, {
@@ -333,13 +417,12 @@ export const PdfViewer = (props: Props__PdfViewer) => {
     toggleMode: () =>
       setViewer((v) => ({
         ...v,
-        mode: v.mode === "single" ? "scroll" : "single",
+        mode: v.mode === "single" ? "continuous" : "single",
       })),
   };
 
-  // Resize Observer
+  // Resize Observer - update pageWidth sesuai container
   useEffect(() => {
-    // Logic auto-width 100% container
     const observer = new ResizeObserver((entries) => {
       if (entries[0]) {
         utils.setPageWidth(entries[0].contentRect.width);
@@ -353,12 +436,63 @@ export const PdfViewer = (props: Props__PdfViewer) => {
     return () => observer.disconnect();
   }, []);
 
+  // Simpan info PDF untuk fitToHeight
+  const handleLoadSuccess = useCallback((pdf: any) => {
+    setViewer((v) => ({ ...v, numPages: pdf.numPages }));
+    // Ambil ukuran halaman pertama
+    pdf.getPage(1).then((page: any) => {
+      const viewport = page.getViewport({ scale: 1 });
+      setPdfInfo({
+        originalWidth: viewport.width,
+        originalHeight: viewport.height,
+      });
+    });
+  }, []);
+
+  // Update current page saat scroll di continuous mode
+  useEffect(() => {
+    if (viewer.mode !== "continuous" || !documentRef.current) return;
+
+    const handleScroll = () => {
+      if (!documentRef.current) return;
+
+      const pages = documentRef.current.querySelectorAll("[data-page-number]");
+      const containerRect = documentRef.current.getBoundingClientRect();
+      const containerMiddle = containerRect.top + containerRect.height / 2;
+
+      let closestPage = 1;
+      let closestDistance = Infinity;
+
+      pages.forEach((page) => {
+        const pageRect = page.getBoundingClientRect();
+        const pageMiddle = pageRect.top + pageRect.height / 2;
+        const distance = Math.abs(containerMiddle - pageMiddle);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestPage = parseInt(page.getAttribute("data-page-number") || "1");
+        }
+      });
+
+      setViewer((ps) => {
+        if (ps.page !== closestPage) {
+          return { ...ps, page: closestPage };
+        }
+        return ps;
+      });
+    };
+
+    const container = documentRef.current;
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [viewer.mode]);
+
   return (
     <CContainer flex={1} w={"full"} h={"full"} overflow={"clip"} {...restProps}>
       {/* Toolbar */}
       <Toolbar utils={utils} viewer={viewer} flexShrink={0} {...toolBarProps} />
 
-      {/* Document Area */}
+      {/* Document Area - Horizontal & Vertical Scroll + Grab to Pan */}
       <CContainer
         ref={containerRef}
         className={"scrollX scrollY"}
@@ -366,14 +500,51 @@ export const PdfViewer = (props: Props__PdfViewer) => {
         minH={"200px"}
         bg={"bg.muted"}
         p={2}
-        m={"auto"}
         position={"relative"}
+        overflow={"auto"}
+        cursor={"grab"}
+        css={{
+          "&:active": {
+            cursor: "grabbing",
+          },
+          userSelect: "none",
+        }}
+        onMouseDown={(e) => {
+          // Don't intercept clicks on toolbar buttons or interactive elements
+          const target = e.target as HTMLElement;
+          if (
+            target.closest("button") ||
+            target.closest("a") ||
+            target.closest("input") ||
+            target.closest("[role='menu']") ||
+            target.closest("[data-scope='popover']")
+          )
+            return;
+
+          const container = e.currentTarget;
+          const startX = e.clientX;
+          const startY = e.clientY;
+          const scrollLeft = container.scrollLeft;
+          const scrollTop = container.scrollTop;
+
+          const onMouseMove = (ev: MouseEvent) => {
+            ev.preventDefault();
+            const dx = ev.clientX - startX;
+            const dy = ev.clientY - startY;
+            container.scrollLeft = scrollLeft - dx;
+            container.scrollTop = scrollTop - dy;
+          };
+          const onMouseUp = () => {
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+          };
+          window.addEventListener("mousemove", onMouseMove);
+          window.addEventListener("mouseup", onMouseUp);
+        }}
       >
         <Document
           file={fileUrl}
-          onLoadSuccess={({ numPages }) => {
-            setViewer((v) => ({ ...v, numPages }));
-          }}
+          onLoadSuccess={handleLoadSuccess}
           loading={<Spinner />}
           error={
             <FeedbackState
@@ -383,45 +554,56 @@ export const PdfViewer = (props: Props__PdfViewer) => {
             />
           }
         >
-          {viewer.pageWidth > 0 && (
-            <>
-              {viewer.mode === "single" && (
-                // Single Mode
-                <VStack minW={"full"} w={"max"}>
-                  <Page
-                    pageNumber={viewer.page}
-                    renderTextLayer={true}
-                    renderAnnotationLayer={true}
-                    width={viewer.pageWidth}
-                    scale={viewer.scale}
-                  />
-                </VStack>
-              )}
+          <Box ref={documentRef}>
+            {viewer.pageWidth > 0 && (
+              <>
+                {viewer.mode === "single" && (
+                  // Single Mode - dengan horizontal scroll saat zoom
+                  <Box
+                    minW={"max-content"}
+                    mx={"auto"}
+                  >
+                    <Page
+                      pageNumber={viewer.page}
+                      renderTextLayer={true}
+                      renderAnnotationLayer={true}
+                      width={viewer.pageWidth * viewer.scale}
+                      scale={1}
+                    />
+                  </Box>
+                )}
 
-              {viewer.mode === "scroll" && (
-                // Scroll Mode
-                <VStack
-                  display={"flex"}
-                  flexDirection={"column"}
-                  minW={"full"}
-                  w={"max"}
-                  gap={4}
-                >
-                  {Array.from(new Array(viewer.numPages), (_, index) => (
-                    <Box key={`page_${index + 1}`}>
-                      <Page
-                        pageNumber={index + 1}
-                        renderTextLayer={true}
-                        renderAnnotationLayer={true}
-                        width={viewer.pageWidth}
-                        scale={viewer.scale}
-                      />
-                    </Box>
-                  ))}
-                </VStack>
-              )}
-            </>
-          )}
+                {viewer.mode === "continuous" && (
+                  // Continuous Mode - scroll vertical dengan horizontal scroll saat zoom
+                  <Box
+                    display={"flex"}
+                    flexDirection={"column"}
+                    alignItems={"center"}
+                    gap={4}
+                    minW={"full"}
+                  >
+                    {Array.from(
+                      { length: viewer.numPages || 0 },
+                      (_, index) => index + 1
+                    ).map((pageNumber) => (
+                      <Box
+                        key={`page_${pageNumber}`}
+                        data-page-number={pageNumber}
+                      >
+                        <Page
+                          pageNumber={pageNumber}
+                          renderTextLayer={true}
+                          renderAnnotationLayer={true}
+                          width={viewer.pageWidth * viewer.scale}
+                          scale={1}
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </>
+            )}
+          </Box>
         </Document>
       </CContainer>
     </CContainer>
