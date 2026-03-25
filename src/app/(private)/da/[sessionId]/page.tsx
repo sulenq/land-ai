@@ -43,7 +43,8 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
-import { DUMMY_ACTIVE_DA_SESSION, DUMMY_PDF_URL } from "@/constants/dummyData";
+import { DA_API_SESSION_DETAIL } from "@/constants/apis";
+import { DUMMY_PDF_URL } from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__DAUploadedDocument,
@@ -1167,8 +1168,7 @@ export default function Page() {
   // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      initialData: DUMMY_ACTIVE_DA_SESSION as any,
-      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId, pollingTick],
       loadingBarInitialOnly: true,
