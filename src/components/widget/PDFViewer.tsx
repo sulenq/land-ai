@@ -12,7 +12,7 @@ import FeedbackState from "@/components/widget/FeedbackState";
 import { HScroll } from "@/components/widget/HScroll";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
-import { Box, HStack, Icon, StackProps, VStack } from "@chakra-ui/react";
+import { Box, HStack, Icon, StackProps } from "@chakra-ui/react";
 import {
   IconArrowAutofitHeight,
   IconArrowAutofitWidth,
@@ -262,59 +262,6 @@ export interface Props__PdfViewer extends StackProps {
   toolBarProps?: Props__PDFToolbar;
   defaultMode?: "single" | "continuous";
 }
-
-// Komponen PDF Page dengan lazy loading untuk continuous mode
-interface PdfPageProps {
-  pageNumber: number;
-  pageWidth: number;
-  scale: number;
-}
-const PdfPage = ({ pageNumber, pageWidth, scale }: PdfPageProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const pageRef = useRef<HTMLDivElement>(null);
-
-  // Intersection Observer untuk lazy loading
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
-      },
-      { rootMargin: "200px" } // Load 200px sebelum visible
-    );
-
-    if (pageRef.current) {
-      observer.observe(pageRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <Box ref={pageRef} mb={4}>
-      {isVisible ? (
-        <Page
-          pageNumber={pageNumber}
-          renderTextLayer={true}
-          renderAnnotationLayer={true}
-          width={pageWidth}
-          scale={scale}
-        />
-      ) : (
-        // Placeholder untuk page yang belum di-load
-        <Box
-          width={pageWidth}
-          height={(pageWidth * 1.414) / scale} // A4 ratio approximate
-          bg={"bg.muted"}
-          borderRadius={"md"}
-        />
-      )}
-    </Box>
-  );
-};
 
 export const PdfViewer = (props: Props__PdfViewer) => {
   // Props
