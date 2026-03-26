@@ -981,7 +981,9 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
       </MContainer>
 
       {/* Fraud Detection Section */}
-      <FraudAlertsPanel daSession={daSession} />
+      <ContainerLayout>
+        <FraudAlertsPanel daSession={daSession} />
+      </ContainerLayout>
     </>
   );
 });
