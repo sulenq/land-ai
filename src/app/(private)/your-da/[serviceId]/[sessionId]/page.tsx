@@ -87,7 +87,7 @@ import {
   TableIcon,
   XIcon,
 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, {
   memo,
   useCallback,
@@ -1168,9 +1168,11 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Hooks
-  const { sessionId } = useParams();
+  const { serviceId, sessionId } = useParams();
   const router = useRouter();
   const containerDimension = useContainerDimension(containerRef);
+  const searchParams = useSearchParams();
+  const daServiceParam = searchParams.get("service");
 
   // States
   const activeDASession = activeDA.session;
@@ -1185,6 +1187,7 @@ export default function Page() {
       loadingBarInitialOnly: true,
     });
 
+  // Derived Values
   const processing = data?.status === "PROCESSING";
   const failed = data?.status === "FAILED";
   const completed = data?.status === "COMPLETED";
@@ -1217,6 +1220,7 @@ export default function Page() {
   useEffect(() => {
     if (activeDA.session) {
       setBreadcrumbs({
+        backPath: `/your-da/${serviceId}?service=${daServiceParam}`,
         activeNavs: [
           {
             labelKey: `navs.your_da`,
@@ -1230,6 +1234,7 @@ export default function Page() {
       });
     } else {
       setBreadcrumbs({
+        backPath: `/your-da/${serviceId}`,
         activeNavs: [
           {
             labelKey: `navs.your_da`,

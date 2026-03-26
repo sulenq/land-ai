@@ -1,6 +1,6 @@
 "use client";
 
-import { Btn, Props__Btn } from "@/components/ui/btn";
+import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import {
   DisclosureBody,
@@ -43,7 +43,6 @@ import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
-import useRenderTrigger from "@/context/useRenderTrigger";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import useDataState from "@/hooks/useDataState";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
@@ -298,58 +297,58 @@ const Delete = (props: Props__Delete) => {
 
 // -----------------------------------------------------------------
 
-const DeleteAllButton = (props: Props__Btn) => {
-  // Contexts
-  const { l } = useLang();
-  const DASessions = useDASessions((s) => s.DASessions);
-  const setRt = useRenderTrigger((s) => s.setRt);
+// const DeleteAllButton = (props: Props__Btn) => {
+//   // Contexts
+//   const { l } = useLang();
+//   const DASessions = useDASessions((s) => s.DASessions);
+//   const setRt = useRenderTrigger((s) => s.setRt);
 
-  // Hooks
-  const { req, loading } = useRequest({
-    id: "delete-all-da-sessions",
-  });
+//   // Hooks
+//   const { req, loading } = useRequest({
+//     id: "delete-all-da-sessions",
+//   });
 
-  return (
-    <ConfirmationDisclosureTrigger
-      id={"delete-all-da-sessions"}
-      title={capitalizeWords(l.delete_all)}
-      description={l.msg_perma_delete}
-      confirmLabel={l.delete_all}
-      confirmButtonProps={{
-        variant: "outline",
-        colorPalette: "gray",
-        color: "fg.error",
-      }}
-      confirmCountdownDuration={5}
-      onConfirm={() => {
-        back();
+//   return (
+//     <ConfirmationDisclosureTrigger
+//       id={"delete-all-da-sessions"}
+//       title={capitalizeWords(l.delete_all)}
+//       description={l.msg_perma_delete}
+//       confirmLabel={l.delete_all}
+//       confirmButtonProps={{
+//         variant: "outline",
+//         colorPalette: "gray",
+//         color: "fg.error",
+//       }}
+//       confirmCountdownDuration={5}
+//       onConfirm={() => {
+//         back();
 
-        const config = {
-          url: DA_API_SESSION_DELETE,
-          method: "DELETE",
-          params: DASessions?.map((s) => s.id),
-        };
+//         const config = {
+//           url: DA_API_SESSION_DELETE,
+//           method: "DELETE",
+//           params: DASessions?.map((s) => s.id),
+//         };
 
-        req({
-          config,
-          onResolve: {
-            onSuccess: () => {
-              setRt((ps) => !ps);
-            },
-          },
-        });
-      }}
-      loading={loading}
-      w={"full"}
-    >
-      <Btn variant={"outline"} color={"fg.error"} {...props}>
-        <AppIcon icon={TrashIcon} />
+//         req({
+//           config,
+//           onResolve: {
+//             onSuccess: () => {
+//               setRt((ps) => !ps);
+//             },
+//           },
+//         });
+//       }}
+//       loading={loading}
+//       w={"full"}
+//     >
+//       <Btn variant={"outline"} color={"fg.error"} {...props}>
+//         <AppIcon icon={TrashIcon} />
 
-        {l.delete_all}
-      </Btn>
-    </ConfirmationDisclosureTrigger>
-  );
-};
+//         {l.delete_all}
+//       </Btn>
+//     </ConfirmationDisclosureTrigger>
+//   );
+// };
 
 // -----------------------------------------------------------------
 
@@ -408,7 +407,10 @@ const DAList = (props: Interface__DAList) => {
               }}
               transition={"200ms"}
             >
-              <NavLink to={`/your-da/${daService?.id}/${session.id}`} flex={1}>
+              <NavLink
+                to={`/your-da/${daService?.id}/${session.id}?service=${JSON.stringify(daService)}`}
+                flex={1}
+              >
                 <HStack flex={1} justify={"space-between"} pl={4} py={2}>
                   <CContainer gap={1}>
                     <ClampText>{session.id}</ClampText>
@@ -504,23 +506,24 @@ export default function Page() {
   // Hooks
   const { serviceId } = useParams();
   const searchParams = useSearchParams();
-  const serviceParam = searchParams.get("service");
+  const daServiceParam = searchParams.get("service");
 
   // Derived Values
-  const service: Interface__DAService | null = serviceParam
-    ? JSON.parse(serviceParam)
+  const daService: Interface__DAService | null = daServiceParam
+    ? JSON.parse(daServiceParam)
     : null;
 
+  // Set breadcrumbs
   useEffect(() => {
     setBreadcrumbs({
-      backPath: "/your-da-analysis",
+      backPath: "/your-da",
       activeNavs: [
         {
           labelKey: "navs.your_da",
           path: "/your-da",
         },
         {
-          label: service?.title?.[lang],
+          label: daService?.title?.[lang],
           path: `/your-da-analysis/${serviceId}`,
         },
       ],
@@ -529,7 +532,7 @@ export default function Page() {
 
   return (
     <PageContainer p={8}>
-      <DAList daService={service} />
+      <DAList daService={daService} />
     </PageContainer>
   );
 }
