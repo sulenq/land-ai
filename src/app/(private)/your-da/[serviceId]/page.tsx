@@ -238,7 +238,7 @@ const Delete = (props: Props__Delete) => {
 
       const config = {
         method: "DELETE",
-        url: `${DA_API_SESSION_DELETE}/${sessionId}`,
+        url: `${DA_API_SESSION_DELETE}`,
         params: [sessionId],
       };
 
@@ -458,8 +458,6 @@ const DAList = (props: Interface__DAList) => {
       </CContainer>
     ),
   };
-
-  // console.debug(daService);
 
   return (
     <ContainerLayout flex={1} gap={8} {...restProps}>

@@ -97,6 +97,8 @@ import React, {
   useState,
 } from "react";
 
+// -----------------------------------------------------------------
+
 interface Props__PdfViewerUploadedDocuments extends StackProps {
   uploadedDocuments?: Interface__DAUploadedDocument[];
   activeDocs: Interface__DAUploadedDocument[];
@@ -104,6 +106,7 @@ interface Props__PdfViewerUploadedDocuments extends StackProps {
     React.SetStateAction<Interface__DAUploadedDocument[]>
   >;
 }
+
 const PdfViewerUploadedDocuments = (
   props: Props__PdfViewerUploadedDocuments,
 ) => {
@@ -223,6 +226,8 @@ const PdfViewerUploadedDocumentsTrigger = (
   );
 };
 
+// -----------------------------------------------------------------
+
 interface Props__PdfViewerDisclosure {
   open: boolean;
   uploadedDocuments?: Interface__DASessionDetail["uploadedDocuments"];
@@ -231,6 +236,7 @@ interface Props__PdfViewerDisclosure {
     React.SetStateAction<Interface__DAUploadedDocument[]>
   >;
 }
+
 const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
   // Props
   const { open, uploadedDocuments, activeDocs, setActiveDocs } = props;
@@ -414,6 +420,8 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
   );
 };
 
+// -----------------------------------------------------------------
+
 const FileName = (props: TextProps) => {
   // Props
   const { children, ...restProps } = props;
@@ -455,6 +463,8 @@ const FileName = (props: TextProps) => {
     </Tooltip>
   );
 };
+
+// -----------------------------------------------------------------
 
 const MetaData = () => {
   // Contexts
@@ -581,12 +591,17 @@ const MetaData = () => {
   );
 };
 
+// -----------------------------------------------------------------
+
 interface Props__AccordionItemsList {
   daSession?: Interface__DASessionDetail;
   l: any;
   themeConfig: any;
 }
-const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
+
+const AccordionItemsList = memo(function AccordionItemsList(
+  props: Props__AccordionItemsList,
+) {
   const { daSession, l, themeConfig } = props;
 
   const documentRequirements = daSession?.documentService?.documentRequirements;
@@ -785,14 +800,16 @@ const AccordionItemsList = memo((props: Props__AccordionItemsList) => {
     </>
   );
 });
-AccordionItemsList.displayName = "AccordionItemsList";
+
+// -----------------------------------------------------------------
 
 interface Props__AccordionMode extends StackProps {
   daSession?: Interface__DASessionDetail;
   accordionValue: string[];
   setAccordionValue: React.Dispatch<React.SetStateAction<string[]>>;
 }
-const AccordionMode = memo((props: Props__AccordionMode) => {
+
+const AccordionMode = memo(function AccordionMode(props: Props__AccordionMode) {
   // Props
   const { daSession, accordionValue, setAccordionValue } = props;
 
@@ -820,7 +837,8 @@ const AccordionMode = memo((props: Props__AccordionMode) => {
     </CContainer>
   );
 });
-AccordionMode.displayName = "AccordionMode";
+
+// -----------------------------------------------------------------
 
 interface Props__TableMode extends StackProps {
   daSession?: Interface__DASessionDetail;
@@ -829,7 +847,8 @@ interface Props__TableMode extends StackProps {
     height: number;
   };
 }
-const TableMode = memo((props: Props__TableMode) => {
+
+const TableMode = memo(function TableMode(props: Props__TableMode) {
   // Props
   const { daSession } = props;
 
@@ -962,7 +981,8 @@ const TableMode = memo((props: Props__TableMode) => {
     </>
   );
 });
-TableMode.displayName = "TableMode";
+
+// -----------------------------------------------------------------
 
 interface Props__ResultSection extends StackProps {
   daSession?: Interface__DASessionDetail;
@@ -971,6 +991,7 @@ interface Props__ResultSection extends StackProps {
     height: number;
   };
 }
+
 const ResultSection = (props: Props__ResultSection) => {
   // Props
   const { daSession, containerDimension, ...restProps } = props;
@@ -1093,9 +1114,12 @@ const ResultSection = (props: Props__ResultSection) => {
   );
 };
 
+// -----------------------------------------------------------------
+
 interface Props__GenerateLetterButtons extends StackProps {
   data?: Interface__DASessionDetail;
 }
+
 const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
   // Props
   const { data, ...restProps } = props;
@@ -1132,10 +1156,9 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
                 fileName={`${letter.label}.pdf`}
               >
                 {({ loading }: any) => (
-                  <Btn variant={"outline"} size={"sm"}>
+                  <Btn variant={"outline"} size={"sm"} disabled={loading}>
                     <AppIcon icon={DownloadIcon} boxSize={4} />
-
-                    {loading ? "Loading PDF..." : `${letter.label} PDF`}
+                    {letter.label} PDF
                   </Btn>
                 )}
               </PDFDownloadLink>
@@ -1151,6 +1174,8 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
     </ContainerLayout>
   );
 };
+
+// -----------------------------------------------------------------
 
 export default function Page() {
   // Contexts
