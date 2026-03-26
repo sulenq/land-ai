@@ -443,7 +443,7 @@ const DesktopLayout = (props: Props__Layout) => {
 
   // States
   const user = getUserData();
-  const roleId = user?.role;
+  const roleId = parseInt(`${user?.role}`);
   const isAllowed = (allowedRoles?: number[] | undefined) =>
     !allowedRoles ||
     allowedRoles.length === 0 ||

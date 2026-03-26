@@ -335,7 +335,8 @@ const DesktopLayout = (props: any) => {
   // States
   const user = getUserData();
   const [search, setSearch] = useState<string>("");
-  const roleId = user?.role;
+  const roleId = parseInt(`${user?.role}`);
+
   const q = (search ?? "").toLowerCase();
   const isAllowed = (item: { allowedRoles?: number[] }) =>
     !item.allowedRoles ||
