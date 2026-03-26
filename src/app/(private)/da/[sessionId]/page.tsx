@@ -807,7 +807,6 @@ const AccordionMode = memo((props: Props__AccordionMode) => {
         multiple
         value={accordionValue}
         onValueChange={(e) => setAccordionValue(e.value)}
-        rounded={themeConfig.radii.container}
         overflow={"clip"}
       >
         <CContainer gap={2}>
