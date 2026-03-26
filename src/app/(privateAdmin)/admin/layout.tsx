@@ -443,7 +443,7 @@ const DesktopLayout = (props: any) => {
         >
           {!isNavsExpanded && (
             <NavLink to="/">
-              <Center w={"36px"} h={"40px"} mr={"auto"}>
+              <Center w={"36px"} h={"40px"} mr={"auto"} ml={"2px"}>
                 <Logo size={15} />
               </Center>
             </NavLink>
@@ -452,7 +452,7 @@ const DesktopLayout = (props: any) => {
           <HStack justify={"space-between"} h={"40px"}>
             {isNavsExpanded && (
               <NavLink to="/">
-                <HStack ml={"6px"} gap={3}>
+                <HStack ml={"8px"} gap={3}>
                   <Logo size={15} />
 
                   <P
