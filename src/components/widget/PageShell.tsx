@@ -138,7 +138,7 @@ export const NavBreadcrumb = (props: any) => {
       activeNavs: resolvedActiveNavs,
       backPath: resolvedBackPath,
     });
-  }, [pathname, sw]);
+  }, [pathname]);
 
   return (
     <HStack gap={1} ml={"-4px"} h={"36px"} cursor={"pointer"} {...restProps}>

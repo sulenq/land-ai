@@ -89,93 +89,6 @@ import {
 import { usePathname } from "next/navigation";
 import { Fragment } from "react";
 
-const DesktopTabs = (props: TabsRootProps) => {
-  const TABS = [
-    {
-      value: "your_chats",
-      labelKey: "navs.your_chats",
-      icon: MessageSquareIcon,
-      content: <ChatSessions />,
-    },
-    {
-      value: "your_da",
-      labelKey: "navs.your_da_analysis",
-      icon: FileTextIcon,
-      content: <DASessions />,
-    },
-  ];
-
-  // Props
-  const { ...restProps } = props;
-
-  // Contexts
-  const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
-  const navsTabs = useNavsTabs((s) => s.navsTabs);
-  const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
-
-  return (
-    <Tabs.Root
-      defaultValue={navsTabs.current}
-      fitted
-      variant={"subtle"}
-      {...restProps}
-    >
-      <Tabs.List>
-        {TABS.map((tab) => {
-          const isActive = navsTabs.current === tab.value;
-
-          return (
-            <Tabs.Trigger
-              key={tab.value}
-              value={tab.value}
-              // color={isActive ? `${themeConfig.colorPalette}.fg` : ""}
-              bg={isActive ? "d1" : ""}
-              rounded={themeConfig.radii.component}
-              onClick={() => {
-                setNavsTabs({
-                  current: tab.value,
-                });
-              }}
-            >
-              <Tooltip content={pluckString(l, tab.labelKey)}>
-                <HStack w={"full"} justify={"center"}>
-                  <AppIcon icon={tab.icon} />
-
-                  <P lineClamp={1} textAlign={"left"}>
-                    {pluckString(l, tab.labelKey)}
-                  </P>
-                </HStack>
-              </Tooltip>
-            </Tabs.Trigger>
-          );
-        })}
-      </Tabs.List>
-
-      <CContainer minH={"200px"} pos={"relative"} mt={-2}>
-        {TABS.map((tab, index) => (
-          <Tabs.Content
-            key={index}
-            value={tab.value}
-            position="absolute"
-            inset="0"
-            _open={{
-              animationName: "fade-in",
-              animationDuration: "300ms",
-            }}
-            _closed={{
-              animationName: "fade-out",
-              animationDuration: "200ms",
-            }}
-          >
-            <CContainer pb={3}>{tab.content}</CContainer>
-          </Tabs.Content>
-        ))}
-      </CContainer>
-    </Tabs.Root>
-  );
-};
-
 const MobileLayout = (props: Props__Layout) => {
   // Props
   const { children, ...restProps } = props;
@@ -421,6 +334,93 @@ const MobileLayout = (props: Props__Layout) => {
         </HStack>
       </HScroll>
     </CContainer>
+  );
+};
+
+const DesktopTabs = (props: TabsRootProps) => {
+  const TABS = [
+    {
+      value: "your_chats",
+      labelKey: "navs.your_chats",
+      icon: MessageSquareIcon,
+      content: <ChatSessions />,
+    },
+    {
+      value: "your_da",
+      labelKey: "navs.your_da_analysis",
+      icon: FileTextIcon,
+      content: <DASessions />,
+    },
+  ];
+
+  // Props
+  const { ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const navsTabs = useNavsTabs((s) => s.navsTabs);
+  const setNavsTabs = useNavsTabs((s) => s.setNavsTabs);
+
+  return (
+    <Tabs.Root
+      defaultValue={navsTabs.current}
+      fitted
+      variant={"subtle"}
+      {...restProps}
+    >
+      <Tabs.List>
+        {TABS.map((tab) => {
+          const isActive = navsTabs.current === tab.value;
+
+          return (
+            <Tabs.Trigger
+              key={tab.value}
+              value={tab.value}
+              // color={isActive ? `${themeConfig.colorPalette}.fg` : ""}
+              bg={isActive ? "d1" : ""}
+              rounded={themeConfig.radii.component}
+              onClick={() => {
+                setNavsTabs({
+                  current: tab.value,
+                });
+              }}
+            >
+              <Tooltip content={pluckString(l, tab.labelKey)}>
+                <HStack w={"full"} justify={"center"}>
+                  <AppIcon icon={tab.icon} />
+
+                  <P lineClamp={1} textAlign={"left"}>
+                    {pluckString(l, tab.labelKey)}
+                  </P>
+                </HStack>
+              </Tooltip>
+            </Tabs.Trigger>
+          );
+        })}
+      </Tabs.List>
+
+      <CContainer minH={"200px"} pos={"relative"} mt={-2}>
+        {TABS.map((tab, index) => (
+          <Tabs.Content
+            key={index}
+            value={tab.value}
+            position="absolute"
+            inset="0"
+            _open={{
+              animationName: "fade-in",
+              animationDuration: "300ms",
+            }}
+            _closed={{
+              animationName: "fade-out",
+              animationDuration: "200ms",
+            }}
+          >
+            <CContainer pb={3}>{tab.content}</CContainer>
+          </Tabs.Content>
+        ))}
+      </CContainer>
+    </Tabs.Root>
   );
 };
 

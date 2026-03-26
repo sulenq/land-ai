@@ -217,7 +217,8 @@ const translations = {
       "HALLUCINATION": "Hallucination",
       "INCOMPLETE": "Incomplete",
       "OTHER": "Other"
-    }
+    },
+    "success_message": "Thank you for your feedback! We will use it to improve our service."
   },
   "file_extension": "File extension",
   "file_name": "File name",
@@ -385,7 +386,7 @@ const translations = {
     "new_chat": "New Chat",
     "your_chats": "Chats",
     "new_document_analysis": "New Document Analysis",
-    "your_da_analysis": "Document Analysis",
+    "your_da_analysis": "Your Document Analysis",
     "settings": "Settings",
     "master_data": "Master Data",
     "profile": "Profile"

@@ -17,8 +17,8 @@ export const navs = {
     en: "New Document Analysis",
   },
   your_da_analysis: {
-    id: "Analisis Dokumen",
-    en: "Document Analysis",
+    id: "Analisis Dokumen Anda",
+    en: "Your Document Analysis",
   },
   settings: {
     id: "Pengaturan",
@@ -207,6 +207,10 @@ export const feedback = {
       en: "Other",
       id: "Lainnya",
     },
+  },
+  success_message: {
+    id: "Terima kasih atas feedback Anda! Kami akan menggunakannya untuk meningkatkan layanan kami.",
+    en: "Thank you for your feedback! We will use it to improve our service.",
   },
 };
 export const your_files = {

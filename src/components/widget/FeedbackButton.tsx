@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { Field } from "@/components/ui/field";
-import { P } from "@/components/ui/p";
 import { SelectInput } from "@/components/ui/select-input";
 import { Textarea } from "@/components/ui/textarea";
+import { toaster } from "@/components/ui/toaster";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { CHAT_API_FEEDBACK } from "@/constants/apis";
@@ -34,7 +34,6 @@ import { capitalizeWords } from "@/utils/string";
 import { FieldsetRoot, HStack, StackProps } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
-import { useState } from "react";
 import * as yup from "yup";
 
 interface FeedbackData {
@@ -269,9 +268,6 @@ export const FeedbackButtons = (props: Props__FeedbackButtons) => {
     showSuccessToast: false,
   });
 
-  // States
-  const [showThankYou, setShowThankYou] = useState(false);
-
   // Derived Values
   const hasFeedbackRating = message.feedback !== undefined;
   const isThumbsUp = message.feedback?.rating === 1;
@@ -316,10 +312,11 @@ export const FeedbackButtons = (props: Props__FeedbackButtons) => {
       createdAt: new Date().toISOString(),
     });
 
-    setShowThankYou(true);
-    setTimeout(() => {
-      setShowThankYou(false);
-    }, 3000);
+    toaster.create({
+      type: "success",
+      title: l.thankyou,
+      description: l.feedback.success_message,
+    });
   }
 
   return (
@@ -342,12 +339,6 @@ export const FeedbackButtons = (props: Props__FeedbackButtons) => {
           />
         )}
       </HStack>
-
-      {showThankYou && (
-        <P color={"fg.muted"} animation={"fade-in 0.2s ease-out"}>
-          {l.thankyou}
-        </P>
-      )}
     </HStack>
   );
 };

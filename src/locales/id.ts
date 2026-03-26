@@ -217,7 +217,8 @@ const translations = {
       "HALLUCINATION": "Halusinasi",
       "INCOMPLETE": "Tidak lengkap",
       "OTHER": "Lainnya"
-    }
+    },
+    "success_message": "Terima kasih atas feedback Anda! Kami akan menggunakannya untuk meningkatkan layanan kami."
   },
   "file_extension": "Ekstensi file",
   "file_name": "Nama file",
@@ -385,7 +386,7 @@ const translations = {
     "new_chat": "Obrolan Baru",
     "your_chats": "Obrolan",
     "new_document_analysis": "Analisa Dokumen Baru",
-    "your_da_analysis": "Analisis Dokumen",
+    "your_da_analysis": "Analisis Dokumen Anda",
     "settings": "Pengaturan",
     "master_data": "Master Data",
     "profile": "Profil"
