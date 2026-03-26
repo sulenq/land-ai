@@ -12,7 +12,10 @@ import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import { DA_API_SERVICE_GET_ALL } from "@/constants/apis";
-import { Interface__DAService } from "@/constants/interfaces";
+import {
+  Interface__DAService,
+  Interface__DAServiceDocumentRequirement,
+} from "@/constants/interfaces";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -43,6 +46,19 @@ import { DUMMY_SURAT_KUASA_DATA } from "@/constants/dummyData";
 import JSZip from "jszip";
 import { useEffect, useRef, useState } from "react";
 
+const isCertificateRequirement = (
+  requirement: Interface__DAServiceDocumentRequirement,
+) => {
+  const name = requirement.name.trim().toLowerCase();
+  const isCertificate = /sertipikat|sertifikat/.test(name);
+  const isDraft = /draft/.test(name);
+  return isCertificate && !isDraft;
+};
+
+const isKtpRequirement = (
+  requirement: Interface__DAServiceDocumentRequirement,
+) => /\bktp\b/i.test(requirement.name);
+
 export default function Page() {
   // Contexts
   const { themeConfig } = useThemeConfig();
@@ -51,7 +67,7 @@ export default function Page() {
 
   // Hooks
   const {
-    uploadSertipikat,
+    uploadDocuments,
     isLoading,
     extractedData,
     setExtractedData,
@@ -74,7 +90,10 @@ export default function Page() {
   const [selectedService, setSelectedService] =
     useState<Interface__DAService | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [activeRequirementId, setActiveRequirementId] = useState<string | null>(
+    null,
+  );
+  const [selectedFiles, setSelectedFiles] = useState<Record<string, File>>({});
 
   // Set breadcrumbs on mount
   useEffect(() => {
@@ -95,21 +114,29 @@ export default function Page() {
 
   const handleBackToServices = () => {
     setSelectedService(null);
-    setSelectedFile(null);
+    setActiveRequirementId(null);
+    setSelectedFiles({});
     reset();
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
+  const normalizedRequirements: Interface__DAServiceDocumentRequirement[] =
+    selectedService?.documentRequirements || [];
+  const visibleRequirements = normalizedRequirements.filter(
+    (requirement) =>
+      isCertificateRequirement(requirement) || isKtpRequirement(requirement),
+  );
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !activeRequirementId) return;
 
     if (file.type !== "application/pdf") {
       toaster.error({
         title: "Format tidak didukung",
-        description: "Harap unggah file PDF Sertipikat.",
+        description: "Harap unggah file PDF.",
       });
       return;
     }
@@ -122,25 +149,68 @@ export default function Page() {
       return;
     }
 
-    setSelectedFile(file);
+    setSelectedFiles((prev) => ({
+      ...prev,
+      [activeRequirementId]: file,
+    }));
     reset();
+    setActiveRequirementId(null);
+    e.target.value = "";
   };
 
-  const handleUploadClick = () => {
+  const handleUploadClick = (requirementId: string) => {
+    setActiveRequirementId(requirementId);
     fileInputRef.current?.click();
   };
 
   const handleSubmit = () => {
-    if (!selectedFile || !selectedService) return;
-    uploadSertipikat(selectedFile, selectedService.id);
+    if (!selectedService) return;
+
+    const missingMandatory = visibleRequirements.filter((requirement) => {
+      const requirementId = String(requirement.id);
+      const isMandatory = isCertificateRequirement(requirement);
+      return isMandatory && !selectedFiles[requirementId];
+    });
+
+    if (missingMandatory.length > 0) {
+      toaster.error({
+        title: "Dokumen belum lengkap",
+        description: `Harap unggah: ${missingMandatory.map((item) => item.name).join(", ")}`,
+      });
+      return;
+    }
+
+    if (Object.keys(selectedFiles).length === 0) {
+      toaster.error({
+        title: "Belum ada dokumen",
+        description: "Unggah minimal Sertipikat atau KTP sesuai kebutuhan.",
+      });
+      return;
+    }
+
+    uploadDocuments(
+      selectedFiles,
+      selectedService.id,
+      `Generate Surat - ${selectedService.title?.id || selectedService.id}`,
+    );
   };
 
   const handleClear = () => {
-    setSelectedFile(null);
+    setActiveRequirementId(null);
+    setSelectedFiles({});
     reset();
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handleClearFile = (requirementId: string) => {
+    setSelectedFiles((prev) => {
+      const next = { ...prev };
+      delete next[requirementId];
+      return next;
+    });
+    reset();
   };
 
   // Date
@@ -157,15 +227,21 @@ export default function Page() {
     grantorNik: extractedData?.grantorNik || extractedData?.nikPemberi || "",
     grantorBirthPlaceDate:
       extractedData?.grantorBirthPlaceDate || extractedData?.ttlPemberi || "",
-    grantorOccupation: extractedData?.grantorOccupation || "",
+    grantorOccupation:
+      extractedData?.grantorOccupation || extractedData?.pekerjaanPenjual || "",
     grantorAddress:
       extractedData?.grantorAddress || extractedData?.alamatPemberi || "",
     granteeName:
       extractedData?.granteeName || extractedData?.namaPenerima || "",
-    granteeNIK: extractedData?.granteeNIK || extractedData?.nikPenerima || "",
+    granteeNIK:
+      extractedData?.granteeNIK ||
+      extractedData?.granteeNik ||
+      extractedData?.nikPenerima ||
+      "",
     granteeBirthPlaceDate:
       extractedData?.granteeBirthPlaceDate || extractedData?.ttlPenerima || "",
-    granteeOccupation: extractedData?.granteeOccupation || "",
+    granteeOccupation:
+      extractedData?.granteeOccupation || extractedData?.pekerjaanPembeli || "",
     granteeAddress:
       extractedData?.granteeAddress || extractedData?.alamatPenerima || "",
     road: extractedData?.road || extractedData?.jalan || "",
@@ -234,10 +310,10 @@ export default function Page() {
           <ContainerLayout gap={6} flex={1}>
             <CContainer gap={1}>
               <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
-                Buat Surat dari Sertipikat
+                Buat Surat dari Dokumen Pendukung
               </P>
               <P color={"fg.subtle"} textAlign={"center"}>
-                Pilih layanan dokumen terlebih dahulu
+                Pilih layanan lalu unggah Sertipikat dan KTP agar isi PDF lebih lengkap
               </P>
             </CContainer>
 
@@ -314,7 +390,7 @@ export default function Page() {
 
                 <CContainer gap={0} flex={1}>
                   <P fontSize={"xl"} fontWeight={"semibold"}>
-                    Buat Surat dari Sertipikat
+                    Buat Surat dari Dokumen Pendukung
                   </P>
                   <P color={"fg.subtle"} fontSize={"sm"}>
                     Layanan: {selectedService.title?.[lang]}
@@ -333,65 +409,85 @@ export default function Page() {
 
               {/* File upload area */}
               <CContainer gap={4}>
-                {!selectedFile ? (
-                  <Box
-                    border={"2px dashed"}
-                    borderColor={"border.muted"}
-                    rounded={themeConfig.radii.container}
-                    p={10}
-                    textAlign="center"
-                    cursor="pointer"
-                    bg={"d0"}
-                    _hover={{ bg: "whiteAlpha.50" }}
-                    onClick={handleUploadClick}
-                  >
-                    <AppIcon
-                      icon={UploadCloudIcon}
-                      boxSize={8}
-                      color="fg.subtle"
-                      mb={4}
-                    />
-                    <P fontWeight={"medium"}>
-                      Klik untuk mengunggah PDF Sertipikat
-                    </P>
-                    <P color="fg.subtle" fontSize="sm">
-                      Format .pdf (Maks. 100MB)
-                    </P>
-                  </Box>
+                {visibleRequirements.length > 0 ? (
+                  <CContainer gap={3}>
+                    {visibleRequirements.map((requirement) => {
+                      const requirementId = String(requirement.id);
+                      const file = selectedFiles[requirementId];
+                      const isMandatory = isCertificateRequirement(requirement);
+
+                      return (
+                        <Box
+                          key={requirementId}
+                          p={4}
+                          border={"1px solid"}
+                          borderColor={"border.muted"}
+                          rounded={themeConfig.radii.container}
+                          bg={"d0"}
+                        >
+                          <HStack
+                            justify="space-between"
+                            align="start"
+                            gap={4}
+                            flexWrap="wrap"
+                          >
+                            <VStack align="start" gap={1}>
+                              <P fontWeight={"semibold"}>
+                                {requirement.name}
+                                {isMandatory ? " *" : ""}
+                              </P>
+                              <P color="fg.subtle" fontSize="sm">
+                                {file
+                                  ? `${file.name} - ${(file.size / 1024 / 1024).toFixed(2)} MB`
+                                  : "Belum ada file terunggah"}
+                              </P>
+                              {!file && (
+                                <P color="fg.subtle" fontSize="xs">
+                                  Format .pdf, maksimal 100MB
+                                </P>
+                              )}
+                            </VStack>
+
+                            <HStack gap={2}>
+                              <Btn
+                                variant={file ? "outline" : "solid"}
+                                colorPalette={themeConfig.colorPalette}
+                                size="sm"
+                                onClick={() => handleUploadClick(requirementId)}
+                                disabled={isLoading}
+                              >
+                                <AppIcon
+                                  icon={file ? FileIcon : UploadCloudIcon}
+                                />
+                                {file ? "Ganti File" : "Unggah PDF"}
+                              </Btn>
+                              {file && !isLoading && !extractedData && (
+                                <Btn
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleClearFile(requirementId)}
+                                  color={"fg.error"}
+                                >
+                                  Hapus
+                                </Btn>
+                              )}
+                            </HStack>
+                          </HStack>
+                        </Box>
+                      );
+                    })}
+                  </CContainer>
                 ) : (
-                  <HStack
-                    p={4}
+                  <Box
                     border={"1px solid"}
                     borderColor={"border.muted"}
                     rounded={themeConfig.radii.container}
-                    bg={"d0"}
-                    justify="space-between"
+                    p={4}
                   >
-                    <HStack gap={4}>
-                      <AppIcon
-                        icon={FileIcon}
-                        color={`${themeConfig.colorPalette}.fg`}
-                      />
-                      <VStack align="start" gap={0}>
-                        <P fontWeight="medium" lineClamp={1}>
-                          {selectedFile.name}
-                        </P>
-                        <P fontSize="sm" color="fg.subtle">
-                          {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                        </P>
-                      </VStack>
-                    </HStack>
-                    {!isLoading && !extractedData && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleClear}
-                        color={"fg.error"}
-                      >
-                        Batal
-                      </Btn>
-                    )}
-                  </HStack>
+                    <P color="fg.subtle">
+                      Requirement Sertipikat/KTP untuk layanan ini belum tersedia.
+                    </P>
+                  </Box>
                 )}
 
                 <Input
@@ -402,14 +498,14 @@ export default function Page() {
                   onChange={handleFileChange}
                 />
 
-                {selectedFile && !extractedData && (
+                {Object.keys(selectedFiles).length > 0 && !extractedData && (
                   <Btn
                     colorPalette={themeConfig.colorPalette}
                     onClick={handleSubmit}
                     loading={isLoading}
                     w={["full", null, "auto"]}
                   >
-                    {isLoading ? "Mengekstrak Data..." : "Mulai Ekstraksi"}
+                    {isLoading ? "Mengekstrak Data..." : "Mulai Ekstraksi Dokumen"}
                   </Btn>
                 )}
               </CContainer>
@@ -457,7 +553,7 @@ export default function Page() {
                     w="max"
                   >
                     <AppIcon icon={UploadCloudIcon} />
-                    Unggah Sertipikat Lainnya
+                    Unggah Dokumen Lainnya
                   </Btn>
                 </CContainer>
               </ContainerLayout>

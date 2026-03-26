@@ -263,14 +263,24 @@ export interface Interface__DAService {
   icon: string;
   title: Interface__LangContent;
   description: Interface__LangContent;
+  documentRequirements?: Interface__DAServiceDocumentRequirement[];
   createdAt: string;
 }
 export interface Interface__DAServiceDocumentRequirement {
   id: number;
   name: string;
-  description: string;
-  isMandatory: boolean;
-  extractionSchema: {
+  description?: string;
+  isMandatory?: boolean;
+  is_mandatory?: boolean;
+  compare?: boolean;
+  schema?: {
+    aggregation: string;
+    instruction: string;
+    key: string;
+    label: string;
+    type: string;
+  }[];
+  extractionSchema?: {
     aggregation: string;
     instruction: string;
     key: string;
