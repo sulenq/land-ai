@@ -68,7 +68,7 @@ const Services = (props: StackProps) => {
             <NavLink
               key={service.id}
               to={`/new-da/${service.id}`}
-              className={"clicky"}
+              className={"clicky group"}
               flex={"1 1 200px"}
               w={"full"}
               minH={"200px"}
@@ -102,7 +102,12 @@ const Services = (props: StackProps) => {
                 </Tooltip>
               </CContainer>
 
-              <Btn variant={"subtle"}>
+              <Btn
+                variant={"subtle"}
+                _groupHover={{
+                  bg: "bg.emphasized",
+                }}
+              >
                 {l.select}
                 <AppIcon icon={ArrowRightIcon} />
               </Btn>
