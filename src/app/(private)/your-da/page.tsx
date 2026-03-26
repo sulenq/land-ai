@@ -67,7 +67,12 @@ const Services = (props: StackProps) => {
           return (
             <NavLink
               key={service.id}
-              to={`/new-da/${service.id}`}
+              to={`/your-da/${service.id}?service=${JSON.stringify({
+                id: service.id,
+                icon: service.icon,
+                title: service.title,
+                description: service.description,
+              })}`}
               className={"clicky group"}
               flex={"1 1 200px"}
               w={"full"}
@@ -157,7 +162,7 @@ export default function Page() {
         <CContainer flex={1} gap={8} justify={"center"}>
           <CContainer gap={1} px={themeConfig.radii.component}>
             <P fontSize={"3xl"} fontWeight={"semibold"}>
-              {l.document_analysis_service}
+              {l.navs.your_da}
             </P>
 
             <P fontSize={"lg"} color={"fg.subtle"}>

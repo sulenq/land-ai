@@ -16,7 +16,7 @@ export const navs = {
     id: "Analisa Dokumen Baru",
     en: "New Document Analysis",
   },
-  your_da_analysis: {
+  your_da: {
     id: "Analisis Dokumen Anda",
     en: "Your Document Analysis",
   },
@@ -419,7 +419,7 @@ export const your_chats = {
   id: "Obrolan anda",
   en: "Your chats",
 };
-export const your_da_analysis = {
+export const your_da = {
   id: "Analisis dokumen anda",
   en: "Your document analysis",
 };

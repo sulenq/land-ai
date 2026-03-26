@@ -297,7 +297,7 @@ const MobileLayout = (props: Props__Layout) => {
                 lineClamp={1}
                 fontSize={MOBILE_NAV_LABEL_FONT_SIZE}
               >
-                {l.navs.your_da_analysis}
+                {l.navs.your_da}
               </P>
             </MobileNavLink>
           </DASessionssDisclosureTrigger>
@@ -347,7 +347,7 @@ const DesktopTabs = (props: TabsRootProps) => {
     },
     {
       value: "your_da",
-      labelKey: "navs.your_da_analysis",
+      labelKey: "navs.your_da",
       icon: FileTextIcon,
       content: <DASessions />,
     },
@@ -973,7 +973,7 @@ const DesktopLayout = (props: Props__Layout) => {
               </ChatSessionsDisclosureTrigger>
 
               <DASessionssDisclosureTrigger mr={"auto"}>
-                <DesktopNavTooltip content={l.navs.your_da_analysis}>
+                <DesktopNavTooltip content={l.navs.your_da}>
                   <Btn
                     iconButton
                     clicky={false}

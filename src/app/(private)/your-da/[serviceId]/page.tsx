@@ -1,3 +1,5 @@
+"use client";
+
 import { Btn, Props__Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import {
@@ -18,24 +20,27 @@ import {
 } from "@/components/ui/menu";
 import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
-import SearchInput from "@/components/ui/search-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StringInput } from "@/components/ui/string-input";
-import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
+import { ClampText } from "@/components/widget/ClampText";
 import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationDisclosure";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { DotIndicator, LeftIndicator } from "@/components/widget/Indicator";
+import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
 import {
   DA_API_SESSION_DELETE,
   DA_API_SESSION_GET_ALL,
   DA_API_SESSION_RENAME,
 } from "@/constants/apis";
-import { Interface__DASession } from "@/constants/interfaces";
+import {
+  Interface__DAService,
+  Interface__DASession,
+} from "@/constants/interfaces";
 import { useActiveDA } from "@/context/useActiveDA";
+import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import useRenderTrigger from "@/context/useRenderTrigger";
@@ -50,15 +55,23 @@ import { capitalizeWords } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
 import { HStack, MenuItemProps, StackProps } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { EllipsisIcon, PenIcon, TrashIcon } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowRight,
+  EllipsisVerticalIcon,
+  PenIcon,
+  TrashIcon,
+} from "lucide-react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import * as yup from "yup";
+
+// -----------------------------------------------------------------
 
 interface Props__Rename extends MenuItemProps {
   sessionId: string;
   title: string;
 }
+
 const Rename = (props: Props__Rename) => {
   const ID = `rename_${props.sessionId}`;
 
@@ -190,10 +203,13 @@ const Rename = (props: Props__Rename) => {
   );
 };
 
+// -----------------------------------------------------------------
+
 interface Props__Delete extends MenuItemProps {
   sessionId: string;
   disabled?: boolean;
 }
+
 const Delete = (props: Props__Delete) => {
   const ID = `delete_${props.sessionId}`;
 
@@ -280,6 +296,8 @@ const Delete = (props: Props__Delete) => {
   );
 };
 
+// -----------------------------------------------------------------
+
 const DeleteAllButton = (props: Props__Btn) => {
   // Contexts
   const { l } = useLang();
@@ -333,214 +351,185 @@ const DeleteAllButton = (props: Props__Btn) => {
   );
 };
 
-export const DASessions = (props: any) => {
+// -----------------------------------------------------------------
+
+interface Interface__DAList extends StackProps {
+  daService: Interface__DAService | null;
+}
+
+const DAList = (props: Interface__DAList) => {
   // Props
-  const { ...restProps } = props;
+  const { daService, ...restProps } = props;
 
   // Contexts
+  const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
-  const DASessions = useDASessions((s) => s.DASessions);
-  const setDASessions = useDASessions((s) => s.setDASessions);
-
-  // Refs
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const pathname = usePathname();
 
   // States
-  const { loading, error, data, onRetry } = useDataState<
-    Interface__DASession[]
-  >({
-    // initialData: DUMMY_DA_SESSIONS,
-    url: DA_API_SESSION_GET_ALL,
+  // const initialLoading = true;
+  const {
+    initialLoading,
+    error,
+    data,
+    onRetry,
+    // limit,
+    // setLimit,
+    // page,
+    // setPage,
+    // pagination,
+  } = useDataState<Interface__DASession[]>({
+    initialData: undefined,
+    url: `${DA_API_SESSION_GET_ALL}`,
     dataResource: false,
-    loadingBar: false,
-    conditions: !DASessions,
+    params: {
+      daServiceIds: [daService?.id],
+    },
   });
-  const [search, setSearch] = useState<string>("");
-  const q = (search ?? "").toLowerCase();
-  const qNormalized = q?.toLowerCase().trim();
-  const isReady = Array.isArray(DASessions);
-  const resolvedData = useMemo(() => {
-    if (!isReady) return null;
-    if (qNormalized === "") return DASessions;
 
-    return DASessions.filter((session) =>
-      session.title.toLowerCase().includes(qNormalized),
-    );
-  }, [isReady, DASessions, qNormalized]);
-
-  // Render
-  let loadedContent = null;
-  if (isEmptyArray(resolvedData)) {
-    loadedContent = <FeedbackNotFound />;
-  } else {
-    loadedContent = resolvedData?.map((session) => {
-      const isActive = pathname === `/da/${session.id}`;
-      // const processing = session.status === "PROCESSING";
-      const failed = session.status === "FAILED";
-
-      return (
-        <Btn
-          key={session.id}
-          clicky={false}
-          variant={isActive ? "subtle" : "ghost"}
-          colorPalette={isActive ? themeConfig.colorPalette : ""}
-          pl={"10px"}
-          pr={0}
-          gap={0}
-          justifyContent={"space-between"}
-          rounded={themeConfig.radii.component}
-          transition={"200ms"}
-          pos={"relative"}
-        >
-          <NavLink to={`/da/${session.id}`} w={"full"}>
-            <HStack h={["44px", null, "36px"]} pr={1}>
-              {isActive && <LeftIndicator />}
-
-              <Img
-                key={session.serviceIcon}
-                src={imgUrl(session.serviceIcon)}
-                h={"20px"}
-                w={"20px"}
-                objectFit={"contain"}
-                flexShrink={0}
-              />
-
-              <Tooltip content={session.title}>
-                <P lineClamp={1} textAlign={"left"}>
-                  {session.title}
-                </P>
-              </Tooltip>
-
-              {failed && <DotIndicator color={"fg.error"} />}
-            </HStack>
-          </NavLink>
-
-          {/* Options */}
-          <MenuRoot positioning={{ placement: "right-start" }}>
-            <MenuTrigger
-              asChild
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <Btn iconButton size={"xs"} variant={"plain"}>
-                <AppIcon icon={EllipsisIcon} />
-              </Btn>
-            </MenuTrigger>
-
-            <MenuContent>
-              <Rename
-                value="rename"
-                sessionId={session.id}
-                title={session.title}
-              />
-
-              <Delete value="delete" sessionId={session.id} />
-            </MenuContent>
-          </MenuRoot>
-        </Btn>
-      );
-    });
-  }
-
-  useEffect(() => {
-    if (data) {
-      setDASessions(data);
-    }
-  }, [data]);
-
+  // Render State Map
   const render = {
-    loading: (
-      <CContainer gap={4} mt={2}>
-        {Array.from({ length: 5 }).map((_, index) => {
-          return <Skeleton key={index} h={"24px"} />;
-        })}
-      </CContainer>
-    ),
+    loading: <Skeleton flex={1} />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
     loaded: (
-      <>
-        {loadedContent}
+      <CContainer gap={2}>
+        {data?.map((session) => {
+          return (
+            <HStack
+              key={session.id}
+              className={"group"}
+              justify={"space-between"}
+              bg={"bg.muted"}
+              rounded={themeConfig.radii.component}
+              cursor={"pointer"}
+              _hover={{
+                bg: "d2",
+              }}
+              transition={"200ms"}
+            >
+              <NavLink to={`/your-da/${daService?.id}/${session.id}`} flex={1}>
+                <HStack flex={1} justify={"space-between"} pl={4} py={2}>
+                  <CContainer gap={1}>
+                    <ClampText>{session.id}</ClampText>
+                    <ClampText color={"fg.subtle"}>{session.title}</ClampText>
+                  </CContainer>
 
-        <DeleteAllButton mt={2} />
-      </>
+                  <AppIcon
+                    icon={ArrowRight}
+                    opacity={0}
+                    color={`${themeConfig.colorPalette}.fg`}
+                    _groupHover={{
+                      opacity: 1,
+                    }}
+                    transition={"200ms"}
+                  />
+                </HStack>
+              </NavLink>
+
+              {/* Options */}
+              <MenuRoot positioning={{ placement: "right-start" }}>
+                <MenuTrigger
+                  asChild
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Btn iconButton size={"md"} variant={"plain"}>
+                    <AppIcon icon={EllipsisVerticalIcon} />
+                  </Btn>
+                </MenuTrigger>
+
+                <MenuContent>
+                  <Rename
+                    value="rename"
+                    sessionId={session.id}
+                    title={session.title}
+                  />
+
+                  <Delete value="delete" sessionId={session.id} />
+                </MenuContent>
+              </MenuRoot>
+            </HStack>
+          );
+        })}
+      </CContainer>
     ),
   };
 
+  // console.debug(daService);
+
   return (
-    <CContainer flex={1} gap={2} {...restProps}>
-      <CContainer>
-        <SearchInput
-          queryKey={"q_sidebar_navs"}
-          inputRef={searchInputRef}
-          inputValue={search}
-          onChange={(inputValue) => {
-            setSearch(inputValue || "");
-          }}
-        />
+    <ContainerLayout flex={1} gap={8} {...restProps}>
+      <CContainer gap={1} px={themeConfig.radii.component}>
+        <P fontSize={"3xl"} fontWeight={"semibold"}>
+          {l.navs.your_da}
+        </P>
+
+        <HStack>
+          <Img
+            src={imgUrl(daService?.icon)}
+            w={"20px"}
+            h={"20px"}
+            objectFit={"contain"}
+          />
+
+          <P fontSize={"lg"} color={"fg.subtle"}>
+            {daService?.title?.[lang]}
+          </P>
+        </HStack>
       </CContainer>
 
-      <CContainer flex={1} gap={1}>
+      {initialLoading && render.loading}
+      {!initialLoading && (
         <>
-          {loading && render.loading}
-
-          {!loading && (
+          {error && render.error}
+          {!error && (
             <>
-              {error && render.error}
-
-              {!error && (
-                <>
-                  {/* Empty */}
-                  {isEmptyArray(DASessions) && render.empty}
-
-                  {/* Not found */}
-                  {!isEmptyArray(DASessions) &&
-                    isEmptyArray(resolvedData) &&
-                    render.notFound}
-
-                  {/* Loaded */}
-                  {!isEmptyArray(resolvedData) && render.loaded}
-                </>
-              )}
+              {data && !isEmptyArray(data) && render.loaded}
+              {(!data || isEmptyArray(data)) && render.empty}
             </>
           )}
         </>
-      </CContainer>
-    </CContainer>
+      )}
+    </ContainerLayout>
   );
 };
 
-export const DASessionssDisclosureTrigger = (props: StackProps) => {
+export default function Page() {
   // Contexts
-  const { l } = useLang();
+  const { lang } = useLang();
+  const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
 
   // Hooks
-  const { isOpen, onOpen } = usePopDisclosure(
-    disclosureId("disclosure_da_sessions"),
-  );
+  const { serviceId } = useParams();
+  const searchParams = useSearchParams();
+  const serviceParam = searchParams.get("service");
+
+  // Derived Values
+  const service: Interface__DAService | null = serviceParam
+    ? JSON.parse(serviceParam)
+    : null;
+
+  useEffect(() => {
+    setBreadcrumbs({
+      backPath: "/your-da-analysis",
+      activeNavs: [
+        {
+          labelKey: "navs.your_da",
+          path: "/your-da",
+        },
+        {
+          label: service?.title?.[lang],
+          path: `/your-da-analysis/${serviceId}`,
+        },
+      ],
+    });
+  }, []);
 
   return (
-    <>
-      <CContainer w={"fit"} onClick={onOpen} {...props} />
-
-      <DisclosureRoot open={isOpen} lazyLoad size={"xs"}>
-        <DisclosureContent>
-          <DisclosureHeader>
-            <DisclosureHeaderContent title={`${capitalizeWords(l.your_da)}`} />
-          </DisclosureHeader>
-
-          <DisclosureBody>
-            <DASessions />
-          </DisclosureBody>
-
-          <DisclosureFooter>
-            <BackButton />
-          </DisclosureFooter>
-        </DisclosureContent>
-      </DisclosureRoot>
-    </>
+    <PageContainer p={8}>
+      <DAList daService={service} />
+    </PageContainer>
   );
-};
+}

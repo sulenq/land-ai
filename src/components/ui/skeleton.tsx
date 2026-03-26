@@ -52,7 +52,7 @@ export const FadingSkeletonContainer = (
       </CContainer>
 
       {useDummyElement && loading && (
-        <CContainer flex={1} zIndex={-1} {...restProps}>
+        <CContainer flex={1} zIndex={-1} opacity={0} {...restProps}>
           {children}
         </CContainer>
       )}

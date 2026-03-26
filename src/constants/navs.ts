@@ -44,8 +44,8 @@ export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
       },
       {
         icon: FileTextIcon,
-        labelKey: "navs.your_da_analysis",
-        path: "/your-da-analysis",
+        labelKey: "navs.your_da",
+        path: "/your-da",
         allowedRoles: [],
         allowedPermissions: [],
       },
