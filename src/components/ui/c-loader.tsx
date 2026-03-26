@@ -71,7 +71,7 @@ export const DAServiceSkeleton = (props: DAServiceSletonProps) => {
   return (
     <SimpleGrid minChildWidth={"200px"} gap={4} {...restProps}>
       {Array.from({ length: length }, (_, i) => {
-        return <Skeleton key={i} minH={"248px"} />;
+        return <Skeleton key={i} h={"282px"} />;
       })}
     </SimpleGrid>
   );

@@ -139,6 +139,36 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const share = {
+  id: "Bagikan",
+  en: "Share",
+};
+export const create_share_link = {
+  id: "Buat link share",
+  en: "Create share link",
+};
+export const share_chat = {
+  description: {
+    id: "Buat link publik untuk membagikan percakapan ini ke orang lain. Orang lain bisa melihat seluruh percakapan tanpa perlu sign in.",
+    en: "Create a public link to share this conversation with others. Others can view the entire conversation without needing to sign in.",
+  },
+  disclaimer: {
+    id: "Share link berhasil dibuat! Link ini bersifat publik dan bisa diakses oleh siapa saja.",
+    en: "Share link successfully created! This link is public and can be accessed by anyone.",
+  },
+  share_to_whatsapp: {
+    id: "Bagikan ke WhatsApp",
+    en: "Share to WhatsApp",
+  },
+};
+export const copy = {
+  id: "Salin",
+  en: "Copy",
+};
+export const open_link = {
+  id: "Buka link",
+  en: "Open link",
+};
 export const requirements = {
   id: "Persyaratan",
   en: "Requirements",

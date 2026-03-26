@@ -91,8 +91,10 @@ const translations = {
   "close_all": "Close all",
   "component": "Component",
   "confirm": "Confirm",
+  "copy": "Copy",
   "count": "Count",
   "cover_letter": "Cover letter",
+  "create_share_link": "Create share link",
   "created": "Created",
   "current_data": "Current data",
   "dark_mode": "Dark mode",
@@ -405,6 +407,7 @@ const translations = {
   "on_progress": "On progress",
   "open": "Open",
   "open_all": "Open all",
+  "open_link": "Open link",
   "option": "Option",
   "optional": "Optional",
   "others": "Others",
@@ -504,6 +507,12 @@ const translations = {
     "others": {
       "index": "Others"
     }
+  },
+  "share": "Share",
+  "share_chat": {
+    "description": "Create a public link to share this conversation with others. Others can view the entire conversation without needing to sign in.",
+    "disclaimer": "Share link successfully created! This link is public and can be accessed by anyone.",
+    "share_to_whatsapp": "Share to WhatsApp"
   },
   "show": "Show",
   "show_more": "Show more",

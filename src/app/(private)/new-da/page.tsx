@@ -68,10 +68,10 @@ const Services = (props: StackProps) => {
             <NavLink
               key={service.id}
               to={`/new-da/${service.id}`}
-              className={"clicky"}
+              className={"clicky group"}
               flex={"1 1 200px"}
               w={"full"}
-              minH={"200px"}
+              h={"282px"}
               gap={8}
               p={4}
               border={"1px solid"}
@@ -91,9 +91,11 @@ const Services = (props: StackProps) => {
               />
 
               <CContainer gap={2}>
-                <P fontSize={"lg"} fontWeight={"semibold"}>
-                  {service?.title?.[lang]}
-                </P>
+                <Tooltip content={service?.title?.[lang]}>
+                  <P fontSize={"lg"} fontWeight={"semibold"} lineClamp={2}>
+                    {service?.title?.[lang]}
+                  </P>
+                </Tooltip>
 
                 <Tooltip content={service?.description?.[lang]}>
                   <P color={"fg.muted"} lineClamp={2}>
@@ -102,7 +104,12 @@ const Services = (props: StackProps) => {
                 </Tooltip>
               </CContainer>
 
-              <Btn variant={"subtle"}>
+              <Btn
+                variant={"subtle"}
+                _groupHover={{
+                  bg: "bg.emphasized",
+                }}
+              >
                 {l.select}
                 <AppIcon icon={ArrowRightIcon} />
               </Btn>

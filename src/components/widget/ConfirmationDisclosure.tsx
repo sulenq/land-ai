@@ -64,8 +64,9 @@ export const ConfirmationDisclosure = (props: Props__Disclosure) => {
         <DisclosureFooter>
           <BackButton disabled={loading} />
 
-          <Box pos={"relative"}>
+          <Box w={["full", null, "fit"]} pos={"relative"}>
             <Btn
+              w={"full"}
               onClick={onConfirm}
               loading={loading}
               colorPalette={themeConfig.colorPalette}

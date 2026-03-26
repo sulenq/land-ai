@@ -13,6 +13,7 @@ import { DASessonPageSkeleton } from "@/components/ui/c-loader";
 import {
   DisclosureBody,
   DisclosureContent,
+  DisclosureFooter,
   DisclosureHeader,
   DisclosureRoot,
 } from "@/components/ui/disclosure";
@@ -26,6 +27,7 @@ import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
+import BackButton from "@/components/widget/BackButton";
 import { ClampText } from "@/components/widget/ClampText";
 import {
   SuratKuasaPDF,
@@ -41,14 +43,16 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
-import { DUMMY_ACTIVE_DA_SESSION, DUMMY_PDF_URL } from "@/constants/dummyData";
+import { PdfViewer } from "@/components/widget/PDFViewer";
+import { DA_API_SESSION_DETAIL } from "@/constants/apis";
+import { DUMMY_PDF_URL } from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__DAUploadedDocument,
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
 } from "@/constants/interfaces";
-import { R_SUBTITLE, R_TITLE } from "@/constants/styles";
+import { R_SPACING_MD, R_SUBTITLE, R_TITLE } from "@/constants/styles";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
@@ -56,6 +60,7 @@ import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
+import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
@@ -66,7 +71,7 @@ import {
   Badge,
   Box,
   HStack,
-  SimpleGrid,
+  Stack,
   StackProps,
   TextProps,
 } from "@chakra-ui/react";
@@ -77,12 +82,146 @@ import {
   CheckCheckIcon,
   DownloadIcon,
   LayoutListIcon,
+  ListIcon,
   ShieldAlertIcon,
   TableIcon,
   XIcon,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
+interface Props__PdfViewerUploadedDocuments extends StackProps {
+  uploadedDocuments?: Interface__DAUploadedDocument[];
+  activeDocs: Interface__DAUploadedDocument[];
+  setActiveDocs: React.Dispatch<
+    React.SetStateAction<Interface__DAUploadedDocument[]>
+  >;
+}
+const PdfViewerUploadedDocuments = (
+  props: Props__PdfViewerUploadedDocuments,
+) => {
+  // Props
+  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+
+  // Hooks
+  const iss = useIsSmScreenWidth();
+
+  return (
+    <CContainer
+      flexShrink={0}
+      gap={1}
+      w={["full", null, "300px"]}
+      h={"full"}
+      p={2}
+      overflowY={"auto"}
+      {...restProps}
+    >
+      {uploadedDocuments?.map((doc) => {
+        const isActive = activeDocs.some(
+          (d) => d.documentRequirement.id === doc.documentRequirement.id,
+        );
+
+        return (
+          <HStack
+            key={doc.documentRequirement.id}
+            align={"start"}
+            px={3}
+            py={2}
+            rounded={themeConfig.radii.component}
+            cursor={"pointer"}
+            _hover={{
+              bg: "d1",
+            }}
+            onClick={() => {
+              setActiveDocs((ps) =>
+                iss ? [doc] : ps[0] ? [ps[0], doc] : [doc],
+              );
+            }}
+          >
+            <CContainer gap={1}>
+              <Tooltip content={doc.documentRequirement.name}>
+                <P
+                  lineClamp={1}
+                  fontSize={"sm"}
+                  textAlign={"left"}
+                  color={"fg.subtle"}
+                  mr={4}
+                >
+                  {doc.documentRequirement.name}
+                </P>
+              </Tooltip>
+
+              <Tooltip content={doc.metaData.fileName}>
+                <P
+                  lineClamp={1}
+                  fontSize={"sm"}
+                  fontWeight={"medium"}
+                  textAlign={"left"}
+                  mr={4}
+                >
+                  {doc.metaData.fileName}
+                </P>
+              </Tooltip>
+            </CContainer>
+
+            {isActive && <DotIndicator ml={"auto"} mt={2} />}
+          </HStack>
+        );
+      })}
+    </CContainer>
+  );
+};
+
+const PdfViewerUploadedDocumentsTrigger = (
+  props: Props__PdfViewerUploadedDocuments,
+) => {
+  // Props
+  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+  // Contexts
+  const { l } = useLang();
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId(`pdf-viewer-uploaded-documents-list`),
+  );
+
+  return (
+    <>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps} />
+
+      <DisclosureRoot open={isOpen} lazyLoad>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={l.your_files} />
+          </DisclosureHeader>
+
+          <DisclosureBody>
+            <PdfViewerUploadedDocuments
+              uploadedDocuments={uploadedDocuments}
+              activeDocs={activeDocs}
+              setActiveDocs={setActiveDocs}
+              p={0}
+            />
+          </DisclosureBody>
+
+          <DisclosureFooter>
+            <BackButton />
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
+  );
+};
 
 interface Props__PdfViewerDisclosure {
   open: boolean;
@@ -100,6 +239,9 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
 
+  // Hooks
+  const iss = useIsSmScreenWidth();
+
   useEffect(() => {
     if (!open) {
       setActiveDocs([]);
@@ -114,14 +256,32 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
             <DisclosureHeaderContent title={capitalizeWords(l.uploaded_file)} />
           </DisclosureHeader>
 
-          <DisclosureBody p={0} bg={"transparent"}>
-            <HStack
+          <DisclosureBody p={0} bg={["body", null, "transparent"]}>
+            <Stack
+              flexDir={["column", null, "row"]}
               align={"stretch"}
               gap={0}
               h={"full"}
-              roundedBottom={themeConfig.radii.container}
+              // roundedBottom={[0, null, themeConfig.radii.container]}
               overflow={"clip"}
             >
+              {iss && (
+                <CContainer px={R_SPACING_MD}>
+                  <PdfViewerUploadedDocumentsTrigger
+                    uploadedDocuments={uploadedDocuments}
+                    activeDocs={activeDocs}
+                    setActiveDocs={setActiveDocs}
+                    w={"full"}
+                  >
+                    <Btn variant={"outline"} size={"sm"}>
+                      <AppIcon icon={ListIcon} />
+
+                      {l.your_files}
+                    </Btn>
+                  </PdfViewerUploadedDocumentsTrigger>
+                </CContainer>
+              )}
+
               <CContainer
                 flex={1}
                 gap={4}
@@ -129,123 +289,125 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 p={4}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
-                overflowY={"auto"}
+                overflow={"hidden"}
               >
-                <SimpleGrid flex={1} columns={activeDocs?.length || 1} gap={4}>
-                  {activeDocs?.map((doc, index) => {
-                    return (
-                      <CContainer
-                        key={doc.documentRequirement.id}
-                        gap={4}
-                        p={2}
-                        bg={"bg.muted"}
-                        border={"1px solid"}
-                        borderColor={"border.muted"}
-                        rounded={themeConfig.radii.component}
-                      >
-                        <HStack justify={"space-between"}>
-                          <P fontWeight={"medium"} ml={2}>
-                            {doc.metaData.fileName}
-                          </P>
+                {isEmptyArray(activeDocs) && (
+                  <FeedbackNotFound title={`${l.select} file`} />
+                )}
 
-                          <Btn
-                            iconButton
-                            variant={"subtle"}
-                            rounded={"full"}
-                            size={"2xs"}
-                            onClick={() => {
-                              setActiveDocs((ps) =>
-                                ps.filter((_, i) => i !== index),
-                              );
-                            }}
-                          >
-                            <AppIcon icon={XIcon} />
-                          </Btn>
-                        </HStack>
+                {!isEmptyArray(activeDocs) && (
+                  <HStack
+                    flex={1}
+                    gap={4}
+                    h={"full"}
+                    overflowX={"auto"}
+                    overflowY={"hidden"}
+                    css={{
+                      scrollSnapType: "x mandatory",
+                      WebkitOverflowScrolling: "touch",
+                      scrollbarWidth: "thin",
+                      "&::-webkit-scrollbar": {
+                        height: "6px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        background: "var(--chakra-colors-border-muted)",
+                        borderRadius: "3px",
+                      },
+                    }}
+                    onMouseDown={(e) => {
+                      const container = e.currentTarget;
+                      const startX = e.clientX;
+                      const scrollLeft = container.scrollLeft;
 
-                        <iframe
-                          src={fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL}
-                          style={{ flex: 1, width: "100%", border: "none" }}
-                        />
-
-                        {/* <PdfViewer
-                          fileUrl={
-                            fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
-                          }
+                      const onMouseMove = (ev: MouseEvent) => {
+                        const dx = ev.clientX - startX;
+                        container.scrollLeft = scrollLeft - dx;
+                      };
+                      const onMouseUp = () => {
+                        window.removeEventListener("mousemove", onMouseMove);
+                        window.removeEventListener("mouseup", onMouseUp);
+                      };
+                      window.addEventListener("mousemove", onMouseMove);
+                      window.addEventListener("mouseup", onMouseUp);
+                    }}
+                  >
+                    {activeDocs?.map((doc, index) => {
+                      return (
+                        <CContainer
+                          key={doc.documentRequirement.id}
+                          gap={2}
+                          p={2}
+                          bg={"bg.muted"}
                           border={"1px solid"}
                           borderColor={"border.muted"}
                           rounded={themeConfig.radii.component}
-                        /> */}
-                      </CContainer>
-                    );
-                  })}
-                </SimpleGrid>
-              </CContainer>
-
-              <CContainer
-                flexShrink={0}
-                gap={4}
-                w={"300px"}
-                h={"full"}
-                bg={"bg.muted"}
-                overflowY={"auto"}
-              >
-                <CContainer gap={1} flex={1} p={2} overflowY={"auto"}>
-                  {uploadedDocuments?.map((doc) => {
-                    const isActive = activeDocs.some(
-                      (d) =>
-                        d.documentRequirement.id === doc.documentRequirement.id,
-                    );
-
-                    return (
-                      <HStack
-                        key={doc.documentRequirement.id}
-                        align={"start"}
-                        px={3}
-                        py={2}
-                        rounded={themeConfig.radii.component}
-                        cursor={"pointer"}
-                        _hover={{
-                          bg: "d1",
-                        }}
-                        onClick={() => {
-                          setActiveDocs((ps) => (ps[0] ? [ps[0], doc] : [doc]));
-                        }}
-                      >
-                        <CContainer gap={1}>
-                          <Tooltip content={doc.documentRequirement.name}>
-                            <P
-                              lineClamp={1}
-                              fontSize={"sm"}
-                              textAlign={"left"}
-                              color={"fg.subtle"}
-                              mr={4}
-                            >
-                              {doc.documentRequirement.name}
-                            </P>
-                          </Tooltip>
-
-                          <Tooltip content={doc.metaData.fileName}>
-                            <P
-                              lineClamp={1}
-                              fontSize={"sm"}
-                              fontWeight={"medium"}
-                              textAlign={"left"}
-                              mr={4}
-                            >
+                          h={"full"}
+                          overflow={"hidden"}
+                          flexShrink={0}
+                          w={
+                            activeDocs.length === 1
+                              ? "full"
+                              : ["85%", null, "calc(50% - 8px)"]
+                          }
+                          css={{
+                            scrollSnapAlign: "start",
+                          }}
+                        >
+                          <HStack justify={"space-between"} flexShrink={0}>
+                            <P fontWeight={"medium"} ml={2}>
                               {doc.metaData.fileName}
                             </P>
-                          </Tooltip>
-                        </CContainer>
 
-                        {isActive && <DotIndicator ml={"auto"} mt={2} />}
-                      </HStack>
-                    );
-                  })}
-                </CContainer>
+                            <Btn
+                              iconButton
+                              variant={"subtle"}
+                              rounded={"full"}
+                              size={"2xs"}
+                              onClick={() => {
+                                setActiveDocs((ps) =>
+                                  ps.filter((_, i) => i !== index),
+                                );
+                              }}
+                            >
+                              <AppIcon icon={XIcon} boxSize={4} />
+                            </Btn>
+                          </HStack>
+
+                          <PdfViewer
+                            fileUrl={
+                              fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
+                            }
+                            fileName={doc.metaData.fileName}
+                            defaultMode="continuous"
+                            border={"1px solid"}
+                            borderColor={"border.muted"}
+                            rounded={themeConfig.radii.component}
+                            flex={1}
+                            minH={0}
+                          />
+                        </CContainer>
+                      );
+                    })}
+                  </HStack>
+                )}
               </CContainer>
-            </HStack>
+
+              {!iss && (
+                <PdfViewerUploadedDocuments
+                  uploadedDocuments={uploadedDocuments}
+                  activeDocs={activeDocs}
+                  setActiveDocs={setActiveDocs}
+                  bg={"bg.muted"}
+                />
+              )}
+            </Stack>
           </DisclosureBody>
+
+          {iss && (
+            <DisclosureFooter>
+              <BackButton />
+            </DisclosureFooter>
+          )}
         </DisclosureContent>
       </DisclosureRoot>
     </>
@@ -645,7 +807,6 @@ const AccordionMode = memo((props: Props__AccordionMode) => {
         multiple
         value={accordionValue}
         onValueChange={(e) => setAccordionValue(e.value)}
-        rounded={themeConfig.radii.container}
         overflow={"clip"}
       >
         <CContainer gap={2}>
@@ -670,16 +831,13 @@ interface Props__TableMode extends StackProps {
 }
 const TableMode = memo((props: Props__TableMode) => {
   // Props
-  const { daSession, containerDimension } = props;
+  const { daSession } = props;
 
   // Contexts
   const { l } = useLang();
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isDragging = useRef(false);
-  const dragStartX = useRef(0);
-  const scrollStartLeft = useRef(0);
 
   // States
   // const documentRequirements = daSession?.documentService?.documentRequirements;
@@ -724,7 +882,7 @@ const TableMode = memo((props: Props__TableMode) => {
                   color={isNotFound ? "fg.warning" : ""}
                   maxW={"200px"}
                 >
-                  {v.value || (isNotFound ? l.not_found : "-")}
+                  {isNotFound ? l.not_found : v.value || "-"}
                 </ClampText>
               ),
               dim: isNotFound || v.value === null,
@@ -746,43 +904,6 @@ const TableMode = memo((props: Props__TableMode) => {
     });
   }, [result, l]);
 
-  // Utils
-  useEffect(() => {
-    const handleMouseUpGlobal = () => {
-      isDragging.current = false;
-    };
-    window.addEventListener("mouseup", handleMouseUpGlobal);
-    window.addEventListener("mouseleave", handleMouseUpGlobal);
-    return () => {
-      window.removeEventListener("mouseup", handleMouseUpGlobal);
-      window.removeEventListener("mouseleave", handleMouseUpGlobal);
-    };
-  }, []);
-
-  function handleMouseDown(e: React.MouseEvent) {
-    const target = e.target as HTMLElement;
-    // Do not drag if clicking inside a popover/dialog
-    if (
-      target.closest(
-        '[data-part="content"], [role="dialog"], [data-scope="popover"]',
-      )
-    )
-      return;
-
-    isDragging.current = true;
-    dragStartX.current = e.clientX;
-    scrollStartLeft.current = containerRef.current?.scrollLeft ?? 0;
-  }
-  function handleMouseMove(e: React.MouseEvent) {
-    if (!isDragging.current || !containerRef.current) return;
-    e.preventDefault();
-    const dx = e.clientX - dragStartX.current;
-    containerRef.current.scrollLeft = scrollStartLeft.current - dx;
-  }
-  function stopDrag() {
-    isDragging.current = false;
-  }
-
   return (
     <>
       <MContainer
@@ -793,16 +914,40 @@ const TableMode = memo((props: Props__TableMode) => {
         maskingLeft={"100px"}
         maskingRight={"100px"}
         overflowX={"auto"}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={stopDrag}
-        onMouseLeave={stopDrag}
-        cursor={isDragging.current ? "grabbing" : "grab"}
+        cursor={"grab"}
+        css={{
+          "&:active": { cursor: "grabbing" },
+          userSelect: "none",
+        }}
+        onMouseDown={(e) => {
+          const target = e.target as HTMLElement;
+          if (
+            target.closest(
+              '[data-part="content"], [role="dialog"], [data-scope="popover"], button, a, input',
+            )
+          )
+            return;
+
+          e.preventDefault();
+          const container = containerRef.current;
+          if (!container) return;
+
+          const startX = e.clientX;
+          const scrollLeft = container.scrollLeft;
+
+          const onMouseMove = (ev: MouseEvent) => {
+            ev.preventDefault();
+            container.scrollLeft = scrollLeft - (ev.clientX - startX);
+          };
+          const onMouseUp = () => {
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+          };
+          window.addEventListener("mousemove", onMouseMove);
+          window.addEventListener("mouseup", onMouseUp);
+        }}
       >
-        <CContainer
-          w={"max"}
-          px={`calc((${containerDimension?.width || 0}px - 720px)/2)`}
-        >
+        <CContainer w={"max"}>
           <DataTable
             headers={headers}
             rows={rows}
@@ -936,15 +1081,12 @@ const ResultSection = (props: Props__ResultSection) => {
         </CContainer>
       </Box>
 
-      {/* Table View - cross-document comparison */}
       <Box display={viewMode === "table" ? "block" : "none"}>
         <CContainer px={4}>
-          <ContainerLayout>
-            <TableMode
-              daSession={daSession}
-              containerDimension={containerDimension}
-            />
-          </ContainerLayout>
+          <TableMode
+            daSession={daSession}
+            containerDimension={containerDimension}
+          />
         </CContainer>
       </Box>
     </CContainer>
@@ -1037,8 +1179,7 @@ export default function Page() {
   // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      initialData: DUMMY_ACTIVE_DA_SESSION as any,
-      // url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId, pollingTick],
       loadingBarInitialOnly: true,
@@ -1059,10 +1200,10 @@ export default function Page() {
 
   // Set active DA on data load
   useEffect(() => {
-    if (!activeDA.session && data) {
+    if (data && data.id === sessionId) {
       setSession(data);
     }
-  }, [data, activeDA.session]);
+  }, [data, sessionId, setSession]);
 
   // Handle 404 - redirect and remove session
   useEffect(() => {

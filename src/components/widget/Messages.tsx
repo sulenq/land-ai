@@ -8,17 +8,14 @@ import {
   DisclosureRoot,
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
-import { P } from "@/components/ui/p";
 import { Spinner } from "@/components/ui/spinner";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { MarkdownChat, UserBubbleChat } from "@/components/widget/Chatting";
-import { ClampText } from "@/components/widget/ClampText";
 import { Clipboard } from "@/components/widget/Clipboard";
 import { FeedbackButtons } from "@/components/widget/FeedbackButton";
 import { Logo } from "@/components/widget/Logo";
 import { Interface__ChatMessage } from "@/constants/interfaces";
-import { R_SUBTITLE, R_TITLE } from "@/constants/styles";
 import { useActiveChat } from "@/context/useActiveChat";
 import useLang from "@/context/useLang";
 import useMessageContainer from "@/context/useMessageContainer";
@@ -27,7 +24,6 @@ import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { startChatStream } from "@/service/chatStream";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
-import { formatDate } from "@/utils/formatter";
 import { Alert, HStack, List, StackProps } from "@chakra-ui/react";
 import { ChevronDownIcon, RefreshCwIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -78,10 +74,11 @@ const ReferenceDisclosureTrigger = (
 
 interface Props__Messages extends StackProps {
   messages: Interface__ChatMessage[];
+  sharedContent?: boolean;
 }
 export const Messages = (props: Props__Messages) => {
   // Props
-  const { messages, ...restProps } = props;
+  const { messages, sharedContent = false, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
@@ -99,121 +96,107 @@ export const Messages = (props: Props__Messages) => {
 
   return (
     <CContainer ref={containerRef} flex={1} gap={4} px={2} {...restProps}>
-      <CContainer gap={1} mb={4}>
-        <ClampText fontSize={R_TITLE} fontWeight={"semibold"}>
-          {activeChat.session?.title}
-        </ClampText>
+      {messages.map((message: Interface__ChatMessage, index: number) => {
+        const emptyMessage = !message.content;
+        const isStreaming = message.isStreaming;
+        const lastMessage = messages[messages.length - 1];
+        const isLastMessage = index === messages.length - 1;
+        const canRegenerate =
+          isLastMessage && lastMessage && lastMessage.role === "assistant";
 
-        <P fontSize={R_SUBTITLE} color={"fg.subtle"}>
-          {formatDate(activeChat.session?.createdAt) || "-"}
-        </P>
-      </CContainer>
+        // User Message
+        if (message.role === "user") {
+          return (
+            <CContainer key={message.id} gap={2}>
+              <UserBubbleChat ml={"auto"}>{message.content}</UserBubbleChat>
 
-      <CContainer gap={4}>
-        {activeChat.messages.map(
-          (message: Interface__ChatMessage, index: number) => {
-            const emptyMessage = !message.content;
-            const isStreaming = message.isStreaming;
-            const lastMessage = messages[messages.length - 1];
-            const isLastMessage = index === messages.length - 1;
-            const canRegenerate =
-              isLastMessage && lastMessage && lastMessage.role === "assistant";
+              <HStack wrap={"wrap"} ml={"auto"}>
+                <Clipboard>{message.content}</Clipboard>
+              </HStack>
+            </CContainer>
+          );
+        }
 
-            // User Message
-            if (message.role === "user") {
-              return (
-                <CContainer key={message.id} gap={2}>
-                  <UserBubbleChat ml={"auto"}>{message.content}</UserBubbleChat>
+        // Assistant Message
+        if (message.role === "assistant") {
+          return (
+            <CContainer key={message.id} gap={2}>
+              {isStreaming && emptyMessage ? (
+                <Spinner size={"sm"} ml={2} mb={22} />
+              ) : (
+                <HStack align={"start"} gap={4}>
+                  <Logo size={15} mt={"2px"} />
 
-                  <HStack wrap={"wrap"} ml={"auto"}>
-                    <Clipboard>{message.content}</Clipboard>
-                  </HStack>
-                </CContainer>
-              );
-            }
+                  <CContainer gap={2}>
+                    <MarkdownChat error={true}>{message.content}</MarkdownChat>
 
-            // Assistant Message
-            if (message.role === "assistant") {
-              return (
-                <CContainer key={message.id} gap={2}>
-                  {isStreaming && emptyMessage ? (
-                    <Spinner size={"sm"} ml={2} mb={22} />
-                  ) : (
-                    <HStack align={"start"} gap={4}>
-                      <Logo size={15} />
-
-                      <CContainer gap={2}>
-                        <MarkdownChat error={true}>
-                          {message.content}
-                        </MarkdownChat>
-
-                        {message.error && (
-                          <CContainer key={message.id} gap={2}>
-                            <Alert.Root
-                              status="error"
-                              maxW={"70%"}
-                              rounded={themeConfig.radii.component}
-                            >
-                              <Alert.Indicator />
-                              <Alert.Title>
-                                {l.msg_assistant_response_error}
-                              </Alert.Title>
-                            </Alert.Root>
-                          </CContainer>
-                        )}
-
-                        <HStack
-                          wrap={"wrap"}
-                          gap={1}
-                          w={"fit"}
-                          // bg={"bg.muted"}
-                          // p={1}
+                    {message.error && (
+                      <CContainer key={message.id} gap={2}>
+                        <Alert.Root
+                          status="error"
+                          maxW={"70%"}
                           rounded={themeConfig.radii.component}
                         >
-                          <Clipboard>{message.content}</Clipboard>
-
-                          {canRegenerate && (
-                            <Btn
-                              iconButton
-                              size={"xs"}
-                              variant={"ghost"}
-                              onClick={() => {
-                                removeMessage(message.id);
-                                startChatStream({
-                                  prompt: messages[index - 1].content,
-                                  sessionId: activeChat?.session?.id,
-                                  isRegenerate: true,
-                                });
-                              }}
-                            >
-                              <AppIcon icon={RefreshCwIcon} />
-                            </Btn>
-                          )}
-
-                          {!isEmptyArray(message.sources) && (
-                            <ReferenceDisclosureTrigger message={message}>
-                              <Btn
-                                size={"xs"}
-                                variant={"ghost"}
-                                w={"fit"}
-                                pr={"6px"}
-                              >
-                                {l.reference} <AppIcon icon={ChevronDownIcon} />
-                              </Btn>
-                            </ReferenceDisclosureTrigger>
-                          )}
-
-                          <FeedbackButtons message={message} index={index} />
-                        </HStack>
+                          <Alert.Indicator />
+                          <Alert.Title>
+                            {l.msg_assistant_response_error}
+                          </Alert.Title>
+                        </Alert.Root>
                       </CContainer>
+                    )}
+
+                    <HStack
+                      wrap={"wrap"}
+                      gap={1}
+                      w={"fit"}
+                      // bg={"bg.muted"}
+                      // p={1}
+                      rounded={themeConfig.radii.component}
+                    >
+                      <Clipboard>{message.content}</Clipboard>
+
+                      {!sharedContent && canRegenerate && (
+                        <Btn
+                          iconButton
+                          size={"xs"}
+                          variant={"ghost"}
+                          onClick={() => {
+                            removeMessage(message.id);
+                            startChatStream({
+                              prompt: messages[index - 1].content,
+                              sessionId: activeChat?.session?.id,
+                              isRegenerate: true,
+                            });
+                          }}
+                        >
+                          <AppIcon icon={RefreshCwIcon} />
+                        </Btn>
+                      )}
+
+                      {!isEmptyArray(message.sources) && (
+                        <ReferenceDisclosureTrigger message={message}>
+                          <Btn
+                            size={"xs"}
+                            variant={"ghost"}
+                            w={"fit"}
+                            pr={"6px"}
+                          >
+                            {l.reference} <AppIcon icon={ChevronDownIcon} />
+                          </Btn>
+                        </ReferenceDisclosureTrigger>
+                      )}
+
+                      {!sharedContent && (
+                        <FeedbackButtons message={message} index={index} />
+                      )}
                     </HStack>
-                  )}
-                </CContainer>
-              );
-            }
-          },
-        )}
-      </CContainer>
+                  </CContainer>
+                </HStack>
+              )}
+            </CContainer>
+          );
+        }
+      })}
     </CContainer>
   );
 };

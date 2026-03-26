@@ -53,7 +53,11 @@ export const MarkdownChat = (props: Props__MarkdownChat) => {
   // Constants
   const components: Components = {
     p({ children }) {
-      return <Text mb={4}>{children}</Text>;
+      return (
+        <Text fontSize={"md"} mb={4}>
+          {children}
+        </Text>
+      );
     },
 
     h1({ children }) {
