@@ -1351,7 +1351,7 @@ export default function Page() {
 
       <CContainer flex={1} gap={4} justify={"space-between"}>
         <FadingSkeletonContainer loading={initialLoading}>
-          <ContainerLayout flex={1} px={4} pb={8} mt={8}>
+          <ContainerLayout flex={1} pb={8} mt={8}>
             {render.loading}
           </ContainerLayout>
         </FadingSkeletonContainer>
