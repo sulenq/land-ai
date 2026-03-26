@@ -86,7 +86,7 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(
         <ChakraMenu.Positioner>
           <ChakraMenu.Content
             ref={ref}
-            w={"160px"}
+            w={"170px"}
             gap={1}
             px={0}
             py={1}
