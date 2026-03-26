@@ -185,6 +185,8 @@ const PdfViewerUploadedDocuments = (
   );
 };
 
+// -----------------------------------------------------------------
+
 const PdfViewerUploadedDocumentsTrigger = (
   props: Props__PdfViewerUploadedDocuments,
 ) => {
@@ -341,9 +343,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                       return (
                         <CContainer
                           key={doc.documentRequirement.id}
-                          gap={2}
-                          p={2}
-                          bg={"bg.muted"}
+                          // bg={"bg.muted"}
                           border={"1px solid"}
                           borderColor={"border.muted"}
                           rounded={themeConfig.radii.component}
@@ -359,7 +359,11 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                             scrollSnapAlign: "start",
                           }}
                         >
-                          <HStack justify={"space-between"} flexShrink={0}>
+                          <HStack
+                            justify={"space-between"}
+                            flexShrink={0}
+                            p={2}
+                          >
                             <P fontWeight={"medium"} ml={2}>
                               {doc.metaData.fileName}
                             </P>
@@ -385,7 +389,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                             }
                             fileName={doc.metaData.fileName}
                             defaultMode="continuous"
-                            border={"1px solid"}
+                            borderTop={"1px solid"}
                             borderColor={"border.muted"}
                             rounded={themeConfig.radii.component}
                             flex={1}

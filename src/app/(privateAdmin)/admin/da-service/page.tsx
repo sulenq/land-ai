@@ -589,6 +589,7 @@ const Delete = (props: any) => {
   // Utils
   function onDelete() {
     back();
+
     req({
       config: {
         url: `${BASE_ENDPOINT}/delete`,
