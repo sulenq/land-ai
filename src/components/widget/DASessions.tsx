@@ -429,7 +429,7 @@ export const DASessions = (props: any) => {
               </Btn>
             </MenuTrigger>
 
-            <MenuContent zIndex={"modal"}>
+            <MenuContent>
               <Rename
                 value="rename"
                 sessionId={session.id}

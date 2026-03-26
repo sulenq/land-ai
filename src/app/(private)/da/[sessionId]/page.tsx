@@ -948,9 +948,7 @@ const TableMode = memo((props: Props__TableMode) => {
           window.addEventListener("mouseup", onMouseUp);
         }}
       >
-        <CContainer
-          w={"max"}
-        >
+        <CContainer w={"max"}>
           <DataTable
             headers={headers}
             rows={rows}
