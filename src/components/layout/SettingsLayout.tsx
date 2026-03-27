@@ -13,7 +13,7 @@ import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import { LeftIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
 import {
-  ContainerLayout,
+  ConstrainedContainer,
   PageContainer,
   PageTitle,
 } from "@/components/widget/PageShell";
@@ -229,11 +229,11 @@ export default function SettingsLayout(props: Props__Layout) {
           {/* Content */}
           {showContent && (
             <MContainer className={"scrollY"} flex={1}>
-              <ContainerLayout flex={1}>
+              <ConstrainedContainer flex={1}>
                 {!isAtSettingsIndexRoute && <PageTitle mb={2} />}
 
                 <CContainer flex={1}>{children}</CContainer>
-              </ContainerLayout>
+              </ConstrainedContainer>
             </MContainer>
           )}
         </HStack>

@@ -29,7 +29,10 @@ import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationD
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import {
   DA_API_SESSION_DELETE,
   DA_API_SESSION_GET_ALL,
@@ -460,7 +463,7 @@ const DAList = (props: Interface__DAList) => {
   };
 
   return (
-    <ContainerLayout flex={1} gap={8} {...restProps}>
+    <ConstrainedContainer flex={1} gap={8} {...restProps}>
       <CContainer gap={1} px={themeConfig.radii.component}>
         <P fontSize={"3xl"} fontWeight={"semibold"}>
           {l.navs.your_da}
@@ -492,7 +495,7 @@ const DAList = (props: Interface__DAList) => {
           )}
         </>
       )}
-    </ContainerLayout>
+    </ConstrainedContainer>
   );
 };
 

@@ -10,7 +10,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { DA_API_SERVICE_DETAIL, DA_API_SESSON_CREATE } from "@/constants/apis";
 import {
   Interface__DAServiceDetail,
@@ -271,7 +274,7 @@ export default function Page() {
 
   return (
     <PageContainer p={8}>
-      <ContainerLayout ref={containerRef} flex={1}>
+      <ConstrainedContainer ref={containerRef} flex={1}>
         <CContainer flex={1} gap={8} justify={"center"}>
           {initialLoading && render.loading}
           {!initialLoading && (
@@ -288,7 +291,7 @@ export default function Page() {
 
           <HelperText>{l.msg_da_disclaimer}</HelperText>
         </CContainer>
-      </ContainerLayout>
+      </ConstrainedContainer>
     </PageContainer>
   );
 }

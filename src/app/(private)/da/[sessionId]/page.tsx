@@ -42,7 +42,10 @@ import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { MContainer } from "@/components/widget/MContainer";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { DUMMY_PDF_URL } from "@/constants/dummyData";
@@ -1014,7 +1017,7 @@ const ResultSection = (props: Props__ResultSection) => {
         mb={[2, null, 0]}
         zIndex={"sticky"}
       >
-        <ContainerLayout>
+        <ConstrainedContainer>
           <HStack
             wrap={"wrap"}
             justify={"space-between"}
@@ -1086,19 +1089,19 @@ const ResultSection = (props: Props__ResultSection) => {
               </Tooltip>
             </HStack>
           </HStack>
-        </ContainerLayout>
+        </ConstrainedContainer>
       </CContainer>
 
       {/* Accordion View */}
       <Box display={viewMode === "accordion" ? "block" : "none"}>
         <CContainer px={4}>
-          <ContainerLayout>
+          <ConstrainedContainer>
             <AccordionMode
               daSession={daSession}
               accordionValue={accordionValue}
               setAccordionValue={setAccordionValue}
             />
-          </ContainerLayout>
+          </ConstrainedContainer>
         </CContainer>
       </Box>
 
@@ -1145,7 +1148,7 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
   ];
 
   return (
-    <ContainerLayout {...restProps}>
+    <ConstrainedContainer {...restProps}>
       <CContainer gap={2} align={"center"}>
         <HStack wrap={"wrap"} justify={"center"}>
           {LETTERS.map((letter) => {
@@ -1171,7 +1174,7 @@ const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
           {l.download} {l.all}
         </Btn> */}
       </CContainer>
-    </ContainerLayout>
+    </ConstrainedContainer>
   );
 };
 
@@ -1291,7 +1294,7 @@ export default function Page() {
     loaded: (
       <CContainer flex={1} gap={8}>
         <CContainer px={4}>
-          <ContainerLayout gap={8}>
+          <ConstrainedContainer gap={8}>
             {/* Header */}
             <CContainer gap={1}>
               <ClampText fontSize={R_TITLE} fontWeight={"semibold"}>
@@ -1307,7 +1310,7 @@ export default function Page() {
 
             {/* Meta */}
             <MetaData />
-          </ContainerLayout>
+          </ConstrainedContainer>
         </CContainer>
 
         {/* Result */}
@@ -1372,9 +1375,9 @@ export default function Page() {
 
       <CContainer flex={1} gap={4} justify={"space-between"}>
         <FadingSkeletonContainer loading={initialLoading}>
-          <ContainerLayout flex={1} pb={8} mt={8}>
+          <ConstrainedContainer flex={1} pb={8} mt={8}>
             {render.loading}
-          </ContainerLayout>
+          </ConstrainedContainer>
         </FadingSkeletonContainer>
 
         {!initialLoading && (

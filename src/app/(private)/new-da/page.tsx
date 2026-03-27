@@ -13,7 +13,10 @@ import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { DA_API_SERVICE_GET_ALL } from "@/constants/apis";
 import { Interface__DAService } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
@@ -153,7 +156,7 @@ export default function Page() {
 
   return (
     <PageContainer p={8}>
-      <ContainerLayout ref={containerRef} flex={1}>
+      <ConstrainedContainer ref={containerRef} flex={1}>
         <CContainer flex={1} gap={8} justify={"center"}>
           <CContainer gap={1} px={themeConfig.radii.component}>
             <P fontSize={"3xl"} fontWeight={"semibold"}>
@@ -171,7 +174,7 @@ export default function Page() {
             {l.msg_da_disclaimer}
           </HelperText>
         </CContainer>
-      </ContainerLayout>
+      </ConstrainedContainer>
     </PageContainer>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 
-import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { NewPrompt } from "@/components/widget/PromptComposer";
 import { useActiveChat } from "@/context/useActiveChat";
 import { useRouter } from "next/navigation";
@@ -27,9 +30,9 @@ export default function Page() {
 
   return (
     <PageContainer px={4} py={8}>
-      <ContainerLayout flex={1}>
+      <ConstrainedContainer flex={1}>
         <NewPrompt loading={initialLoading} m={"auto"} />
-      </ContainerLayout>
+      </ConstrainedContainer>
     </PageContainer>
   );
 }
