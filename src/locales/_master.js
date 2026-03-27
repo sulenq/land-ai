@@ -13,11 +13,11 @@ export const navs = {
     en: "Chats",
   },
   new_document_analysis: {
-    id: "Analisa Dokumen Baru",
+    id: "Analisis Dokumen Baru",
     en: "New Document Analysis",
   },
   your_da: {
-    id: "Analisis Dokumen Anda",
+    id: "Analisa Dokumen Anda",
     en: "Your Document Analysis",
   },
   settings: {
