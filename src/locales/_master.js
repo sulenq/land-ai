@@ -13,11 +13,11 @@ export const navs = {
     en: "Chats",
   },
   new_document_analysis: {
-    id: "Analisa Dokumen Baru",
+    id: "Analisis Dokumen Baru",
     en: "New Document Analysis",
   },
   your_da: {
-    id: "Analisis Dokumen Anda",
+    id: "Analisa Dokumen Anda",
     en: "Your Document Analysis",
   },
   settings: {
@@ -139,6 +139,18 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const file_information = {
+  id: "Informasi Berkas",
+  en: "File Information",
+};
+export const process = {
+  id: "Proses",
+  en: "Process",
+};
+export const information_service_monitoring = {
+  id: "Monitoring Layanan Informasi",
+  en: "Information Service Monitoring",
+};
 export const share = {
   id: "Bagikan",
   en: "Share",

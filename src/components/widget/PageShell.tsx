@@ -34,7 +34,7 @@ import {
 
 const FONT_SIZE = "md";
 
-export const ContainerLayout = forwardRef<HTMLDivElement, StackProps>(
+export const ConstrainedContainer = forwardRef<HTMLDivElement, StackProps>(
   (props, ref) => {
     // Props
     const { children, ...restProps } = props;
@@ -298,6 +298,6 @@ export const PageContent = forwardRef<HTMLDivElement, StackProps>(
   },
 );
 
-ContainerLayout.displayName = "ContainerLayout";
+ConstrainedContainer.displayName = "ConstrainedContainer";
 PageContainer.displayName = "PageContainer";
 PageContent.displayName = "PageContent";

@@ -12,7 +12,10 @@ import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import { MContainer } from "@/components/widget/MContainer";
 import { Messages } from "@/components/widget/Messages";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { ContinuePrompt } from "@/components/widget/PromptComposer";
 import { CHAT_API_SESSION_SHOW } from "@/constants/apis";
 import { R_SPACING_MD, R_SUBTITLE, R_TITLE } from "@/constants/styles";
@@ -173,11 +176,13 @@ export default function Page() {
             {shouldFetchHistory && (
               <>
                 <FadingSkeletonContainer px={4} loading={initialLoading} mt={8}>
-                  <ContainerLayout flex={1}>{render.loading}</ContainerLayout>
+                  <ConstrainedContainer flex={1}>
+                    {render.loading}
+                  </ConstrainedContainer>
                 </FadingSkeletonContainer>
 
                 {!initialLoading && (
-                  <ContainerLayout
+                  <ConstrainedContainer
                     flex={1}
                     gap={8}
                     py={R_SPACING_MD}
@@ -190,20 +195,20 @@ export default function Page() {
                         {(!data || isEmptyArray(data)) && render.empty}
                       </>
                     )}
-                  </ContainerLayout>
+                  </ConstrainedContainer>
                 )}
               </>
             )}
 
             {!shouldFetchHistory && (
-              <ContainerLayout
+              <ConstrainedContainer
                 flex={1}
                 gap={8}
                 py={8}
                 // pb={messageContainerStyle?.pb}
               >
                 {render.loaded}
-              </ContainerLayout>
+              </ConstrainedContainer>
             )}
           </MContainer>
         </CContainer>
@@ -215,7 +220,7 @@ export default function Page() {
           px={[0, null, 4]}
           pb={[0, null, 4]}
         >
-          <ContainerLayout gap={4} align={"center"}>
+          <ConstrainedContainer gap={4} align={"center"}>
             <Btn
               iconButton
               flexShrink={0}
@@ -240,7 +245,7 @@ export default function Page() {
                 }}
               />
             </CContainer>
-          </ContainerLayout>
+          </ConstrainedContainer>
         </CContainer>
       </CContainer>
     </PageContainer>

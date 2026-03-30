@@ -10,7 +10,10 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { ContainerLayout, PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { DA_API_SERVICE_GET_ALL } from "@/constants/apis";
 import {
   Interface__DAService,
@@ -307,7 +310,7 @@ export default function Page() {
       <CContainer flex={1} gap={4}>
         {/* Step 1: Select Service */}
         {!selectedService && (
-          <ContainerLayout gap={6} flex={1}>
+          <ConstrainedContainer gap={6} flex={1}>
             <CContainer gap={1}>
               <P fontSize={"xl"} fontWeight={"semibold"} textAlign={"center"}>
                 Buat Surat dari Dokumen Pendukung
@@ -370,13 +373,13 @@ export default function Page() {
             {!servicesLoading &&
               !servicesError &&
               (!services || services.length === 0) && <FeedbackNoData />}
-          </ContainerLayout>
+          </ConstrainedContainer>
         )}
 
         {/* Step 2: Upload & Extract */}
         {selectedService && (
           <>
-            <ContainerLayout gap={6}>
+            <ConstrainedContainer gap={6}>
               {/* Header with back button */}
               <HStack gap={4}>
                 <Btn
@@ -509,21 +512,26 @@ export default function Page() {
                   </Btn>
                 )}
               </CContainer>
-            </ContainerLayout>
+            </ConstrainedContainer>
 
             {/* Loading indicator */}
             {isLoading && (
-              <ContainerLayout flex={1} align="center" justify="center" p={10}>
+              <ConstrainedContainer
+                flex={1}
+                align="center"
+                justify="center"
+                p={10}
+              >
                 <VStack gap={4}>
                   <Spinner color={`${themeConfig.colorPalette}.fg`} />
                   <P>Sedang diproses AI, harap tunggu sebentar...</P>
                 </VStack>
-              </ContainerLayout>
+              </ConstrainedContainer>
             )}
 
             {/* Download results */}
             {extractedData && (
-              <ContainerLayout gap={6}>
+              <ConstrainedContainer gap={6}>
                 <CContainer gap={2}>
                   <P fontSize="lg" fontWeight="semibold">
                     Hasil Ekstraksi Dokumen
@@ -556,7 +564,7 @@ export default function Page() {
                     Unggah Dokumen Lainnya
                   </Btn>
                 </CContainer>
-              </ContainerLayout>
+              </ConstrainedContainer>
             )}
           </>
         )}
