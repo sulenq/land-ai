@@ -29,10 +29,7 @@ import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationD
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import {
-  ConstrainedContainer,
-  PageContainer,
-} from "@/components/widget/PageShell";
+import { PageContainer } from "@/components/widget/PageShell";
 import {
   DA_API_SESSION_DELETE,
   DA_API_SESSION_GET_ALL,
@@ -55,7 +52,7 @@ import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
 import { capitalizeWords } from "@/utils/string";
 import { imgUrl } from "@/utils/url";
-import { HStack, MenuItemProps, StackProps } from "@chakra-ui/react";
+import { HStack, MenuItemProps, StackProps, Tabs } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import {
   ArrowRight,
@@ -463,10 +460,17 @@ const DAList = (props: Interface__DAList) => {
   };
 
   return (
-    <ConstrainedContainer flex={1} gap={8} {...restProps}>
+    <CContainer
+      flex={1}
+      gap={8}
+      p={4}
+      overflowY={"auto"}
+      maxH={"calc(100svh - 52px - 41px)"}
+      {...restProps}
+    >
       <CContainer gap={1} px={themeConfig.radii.component}>
-        <P fontSize={"3xl"} fontWeight={"semibold"}>
-          {l.navs.your_da}
+        <P fontSize={"xl"} fontWeight={"semibold"}>
+          {l.information_service_monitoring}
         </P>
 
         <HStack>
@@ -495,13 +499,16 @@ const DAList = (props: Interface__DAList) => {
           )}
         </>
       )}
-    </ConstrainedContainer>
+    </CContainer>
   );
 };
 
+// -----------------------------------------------------------------
+
 export default function Page() {
   // Contexts
-  const { lang } = useLang();
+  const { l, lang } = useLang();
+  const { themeConfig } = useThemeConfig();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
 
   // Hooks
@@ -532,8 +539,24 @@ export default function Page() {
   }, []);
 
   return (
-    <PageContainer p={8}>
-      <DAList daService={daService} />
+    <PageContainer>
+      <Tabs.Root
+        defaultValue={"search"}
+        colorPalette={themeConfig.colorPalette}
+      >
+        <Tabs.List px={4}>
+          <Tabs.Trigger value="search">{l.search}</Tabs.Trigger>
+          <Tabs.Trigger value="result" disabled>
+            {l.process}
+          </Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value="search" p={0}>
+          <DAList daService={daService} />
+        </Tabs.Content>
+
+        <Tabs.Content value="result"></Tabs.Content>
+      </Tabs.Root>
     </PageContainer>
   );
 }

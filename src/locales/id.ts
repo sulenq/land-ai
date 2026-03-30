@@ -221,6 +221,7 @@ const translations = {
     "success_message": "Terima kasih atas feedback Anda! Kami akan menggunakannya untuk meningkatkan layanan kami."
   },
   "file_extension": "Ekstensi file",
+  "file_information": "Informasi Berkas",
   "file_name": "Nama file",
   "file_size": "Ukuran file",
   "finished": "Selesai",
@@ -244,6 +245,7 @@ const translations = {
     "title": "Zona waktu diatur secara otomatis",
     "description": "${timezone}"
   },
+  "information_service_monitoring": "Monitoring Layanan Informasi",
   "is_allowed": "Diizinkan",
   "is_public": "Publik",
   "january": "Januari",
@@ -422,6 +424,7 @@ const translations = {
   "previous": "Sebelumnya",
   "previous_page": "Halaman sebelumnya",
   "problem": "Masalah",
+  "process": "Proses",
   "profile": "Profil",
   "progress": "Progres",
   "protect": "Lindungi",

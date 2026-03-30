@@ -221,6 +221,7 @@ const translations = {
     "success_message": "Thank you for your feedback! We will use it to improve our service."
   },
   "file_extension": "File extension",
+  "file_information": "File Information",
   "file_name": "File name",
   "file_size": "File size",
   "finished": "Finished",
@@ -244,6 +245,7 @@ const translations = {
     "title": "Timezone automatically set",
     "description": "${timezone}"
   },
+  "information_service_monitoring": "Information Service Monitoring",
   "is_allowed": "Allowed",
   "is_public": "Public",
   "january": "January",
@@ -422,6 +424,7 @@ const translations = {
   "previous": "Previous",
   "previous_page": "Previous page",
   "problem": "Problem",
+  "process": "Process",
   "profile": "Profile",
   "progress": "Progress",
   "protect": "Protect",

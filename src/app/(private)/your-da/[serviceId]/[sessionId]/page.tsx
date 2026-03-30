@@ -55,7 +55,7 @@ import {
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
 } from "@/constants/interfaces";
-import { R_SPACING_MD, R_SUBTITLE, R_TITLE } from "@/constants/styles";
+import { R_SPACING_MD } from "@/constants/styles";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import { useDASessions } from "@/context/useDASessions";
@@ -76,6 +76,7 @@ import {
   HStack,
   Stack,
   StackProps,
+  Tabs,
   TextProps,
 } from "@chakra-ui/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -410,7 +411,6 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                   uploadedDocuments={uploadedDocuments}
                   activeDocs={activeDocs}
                   setActiveDocs={setActiveDocs}
-                  bg={"bg.muted"}
                 />
               )}
             </Stack>
@@ -443,7 +443,7 @@ const FileName = (props: TextProps) => {
         placement: "right",
       }}
     >
-      <HStack cursor={"pointer"}>
+      <HStack w={"fit"} cursor={"pointer"}>
         <P
           lineClamp={1}
           fontWeight={"medium"}
@@ -498,7 +498,7 @@ const MetaData = () => {
       {/* Service */}
       <CContainer gap={2}>
         <HStack h={"32px"}>
-          <P fontWeight={"semibold"}>{capitalizeWords(l.service)}</P>
+          <P fontWeight={"semibold"}>{capitalizeWords(l.file_information)}</P>
         </HStack>
 
         <CContainer
@@ -545,43 +545,56 @@ const MetaData = () => {
         </HStack>
 
         <CContainer
-          gap={[4, null, 2]}
-          p={4}
+          gap={2}
           rounded={themeConfig.radii.container}
           // border={"1px solid"}
           borderColor={"border.muted"}
-          bg={"d0"}
         >
           {uploadedDocuments?.map((doc) => {
             return (
               <HStack
                 flexDir={["column", null, "row"]}
                 key={doc.documentRequirement.id}
-                align={"start"}
                 gapX={4}
+                bg={"d0"}
+                pl={4}
+                pr={3}
+                py={3}
+                rounded={themeConfig.radii.component}
               >
-                <HStack flexShrink={0} w={["full", null, "240px"]}>
-                  <ClampText color={"fg.muted"}>
-                    {doc.documentRequirement.name}
-                  </ClampText>
+                <CContainer gap={1}>
+                  <HStack flexShrink={0} w={["full", null, "240px"]}>
+                    <ClampText fontWeight={"medium"}>
+                      {doc.documentRequirement.name}
+                    </ClampText>
 
-                  {!doc.documentRequirement.isMandatory && (
-                    <Badge bg={"d1"}>{l.optional}</Badge>
+                    {!doc.documentRequirement.isMandatory && (
+                      <Badge bg={"d1"} colorPalette={"gray"}>
+                        {l.optional}
+                      </Badge>
+                    )}
+                  </HStack>
+
+                  {doc.metaData.fileName ? (
+                    <FileName color={"fg.muted"}>
+                      {doc.metaData.fileName}
+                    </FileName>
+                  ) : (
+                    <P>-</P>
                   )}
-                </HStack>
+                </CContainer>
 
-                {doc.metaData.fileName ? (
-                  <FileName
-                    onClick={() => {
-                      setActiveDocs([doc]);
-                      onOpen();
-                    }}
-                  >
-                    {doc.metaData.fileName}
-                  </FileName>
-                ) : (
-                  <P>-</P>
-                )}
+                <Btn
+                  variant={"subtle"}
+                  ml={"auto"}
+                  onClick={() => {
+                    setActiveDocs([doc]);
+                    onOpen();
+                  }}
+                >
+                  {l.open}
+                  <AppIcon icon={ArrowUpRightIcon} />
+                </Btn>
               </HStack>
             );
           })}
@@ -984,12 +997,73 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
       </MContainer>
 
       {/* Fraud Detection Section */}
-      <ConstrainedContainer>
+      <CContainer>
         <FraudAlertsPanel daSession={daSession} />
-      </ConstrainedContainer>
+      </CContainer>
     </>
   );
 });
+
+// -----------------------------------------------------------------
+
+interface Props__GenerateLetterButtons extends StackProps {
+  data?: Interface__DASessionDetail;
+}
+
+const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
+  // Props
+  const { data, ...restProps } = props;
+
+  // States
+  const rawData = data?.rawData;
+  const LETTERS = [
+    {
+      key: "suratKuasa",
+      label: "Surat Kuasa",
+      pdf: <SuratKuasaPDF data={rawData} />,
+    },
+    {
+      key: "suratPermohonan",
+      label: "Surat Permohonan",
+      pdf: <SuratPermohonanPDF data={rawData} />,
+    },
+    {
+      key: "suratPernyataan",
+      label: "Surat Pernyataan",
+      pdf: <SuratPernyataanPDF data={rawData} />,
+    },
+  ];
+
+  return (
+    <ConstrainedContainer {...restProps}>
+      <CContainer gap={2} align={"center"}>
+        <HStack wrap={"wrap"} justify={"center"}>
+          {LETTERS.map((letter) => {
+            return (
+              <PDFDownloadLink
+                key={letter.key}
+                document={letter.pdf as any}
+                fileName={`${letter.label}.pdf`}
+              >
+                {({ loading }: any) => (
+                  <Btn variant={"outline"} size={"sm"} disabled={loading}>
+                    <AppIcon icon={DownloadIcon} boxSize={4} />
+                    {letter.label} PDF
+                  </Btn>
+                )}
+              </PDFDownloadLink>
+            );
+          })}
+        </HStack>
+
+        {/* <Btn w={"fit"} variant={"outline"} size={"xs"} onClick={downloadAll}>
+          <AppIcon icon={DownloadIcon} />
+          {l.download} {l.all}
+        </Btn> */}
+      </CContainer>
+    </ConstrainedContainer>
+  );
+};
 
 // -----------------------------------------------------------------
 
@@ -1023,7 +1097,7 @@ const ResultSection = (props: Props__ResultSection) => {
         mb={[2, null, 0]}
         zIndex={"sticky"}
       >
-        <ConstrainedContainer>
+        <CContainer>
           <HStack
             wrap={"wrap"}
             justify={"space-between"}
@@ -1095,19 +1169,19 @@ const ResultSection = (props: Props__ResultSection) => {
               </Tooltip>
             </HStack>
           </HStack>
-        </ConstrainedContainer>
+        </CContainer>
       </CContainer>
 
       {/* Accordion View */}
       <Box display={viewMode === "accordion" ? "block" : "none"}>
         <CContainer px={4}>
-          <ConstrainedContainer>
+          <CContainer>
             <AccordionMode
               daSession={daSession}
               accordionValue={accordionValue}
               setAccordionValue={setAccordionValue}
             />
-          </ConstrainedContainer>
+          </CContainer>
         </CContainer>
       </Box>
 
@@ -1125,64 +1199,107 @@ const ResultSection = (props: Props__ResultSection) => {
 
 // -----------------------------------------------------------------
 
-interface Props__GenerateLetterButtons extends StackProps {
-  data?: Interface__DASessionDetail;
-}
+// interface Props__ResultTrigger extends StackProps {
+//   data?: Interface__DASessionDetail;
+//   containerDimension: {
+//     width: number;
+//     height: number;
+//   };
+// }
+// const ResultTrigger = (props: Props__ResultTrigger) => {
+//   // Props
+//   const { data, containerDimension, ...restProps } = props;
 
-const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
-  // Props
-  const { data, ...restProps } = props;
+//   // Contexts
+//   const { l } = useLang();
+//   const { themeConfig } = useThemeConfig();
 
-  // States
-  const rawData = data?.rawData;
-  const LETTERS = [
-    {
-      key: "suratKuasa",
-      label: "Surat Kuasa",
-      pdf: <SuratKuasaPDF data={rawData} />,
-    },
-    {
-      key: "suratPermohonan",
-      label: "Surat Permohonan",
-      pdf: <SuratPermohonanPDF data={rawData} />,
-    },
-    {
-      key: "suratPernyataan",
-      label: "Surat Pernyataan",
-      pdf: <SuratPernyataanPDF data={rawData} />,
-    },
-  ];
+//   // Hooks
+//   const { isOpen, onOpen } = usePopDisclosure(disclosureId(`da_result`));
 
-  return (
-    <ConstrainedContainer {...restProps}>
-      <CContainer gap={2} align={"center"}>
-        <HStack wrap={"wrap"} justify={"center"}>
-          {LETTERS.map((letter) => {
-            return (
-              <PDFDownloadLink
-                key={letter.key}
-                document={letter.pdf as any}
-                fileName={`${letter.label}.pdf`}
-              >
-                {({ loading }: any) => (
-                  <Btn variant={"outline"} size={"sm"} disabled={loading}>
-                    <AppIcon icon={DownloadIcon} boxSize={4} />
-                    {letter.label} PDF
-                  </Btn>
-                )}
-              </PDFDownloadLink>
-            );
-          })}
-        </HStack>
+//   // Derived Values
+//   const processing = data?.status === "PROCESSING";
+//   const failed = data?.status === "FAILED";
+//   const completed = data?.status === "COMPLETED";
 
-        {/* <Btn w={"fit"} variant={"outline"} size={"xs"} onClick={downloadAll}>
-          <AppIcon icon={DownloadIcon} />
-          {l.download} {l.all}
-        </Btn> */}
-      </CContainer>
-    </ConstrainedContainer>
-  );
-};
+//   return (
+//     <>
+//       <CContainer w={"fit"} onClick={onOpen} {...restProps}></CContainer>
+
+//       <DisclosureRoot open={isOpen} lazyLoad size={"cover"}>
+//         <DisclosureContent>
+//           <DisclosureHeader>
+//             <DisclosureHeaderContent title={l.result} />
+//           </DisclosureHeader>
+
+//           <DisclosureBody>
+//             <CContainer>
+//               {processing && (
+//                 <FeedbackState
+//                   icon={<Spinner />}
+//                   title={l.alert_da_analyze_processing.title}
+//                   description={l.alert_da_analyze_processing.description}
+//                   m={"auto"}
+//                   my={"80px"}
+//                 />
+//               )}
+
+//               {failed && (
+//                 <FeedbackState
+//                   icon={<LucideIcon icon={AlertTriangleIcon} />}
+//                   title={l.alert_da_analyze_failed.title}
+//                   description={l.alert_da_analyze_failed.description}
+//                   m={"auto"}
+//                   my={"80px"}
+//                 />
+//               )}
+
+//               {completed && (
+//                 <>
+//                   <ResultSection
+//                     daSession={data}
+//                     containerDimension={containerDimension}
+//                   />
+
+//                   <GenerateLetterButtons data={data} mt={8} />
+//                 </>
+//               )}
+
+//               <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
+//                 <NavLink to={"/new-da"}>
+//                   <Btn
+//                     variant={"ghost"}
+//                     color={`${themeConfig.colorPalette}.fg`}
+//                   >
+//                     {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
+//                   </Btn>
+//                 </NavLink>
+
+//                 <NavLink to={`/new-da/${data?.documentService.id}`}>
+//                   <Btn
+//                     variant={"ghost"}
+//                     color={`${themeConfig.colorPalette}.fg`}
+//                   >
+//                     {l.new_da_with_same_service}
+//                     <AppIcon icon={ArrowUpRightIcon} />
+//                   </Btn>
+//                 </NavLink>
+//               </HStack>
+//             </CContainer>
+
+//             <CContainer>
+//               <HelperText>{l.msg_da_disclaimer}</HelperText>
+//             </CContainer>
+//           </DisclosureBody>
+
+//           <DisclosureFooter>
+//             <BackButton />
+//           </DisclosureFooter>
+//         </DisclosureContent>
+//       </DisclosureRoot>
+//     </>
+//   );
+// };
 
 // -----------------------------------------------------------------
 
@@ -1204,9 +1321,9 @@ export default function Page() {
   // Hooks
   const { serviceId, sessionId } = useParams();
   const router = useRouter();
-  const containerDimension = useContainerDimension(containerRef);
   const searchParams = useSearchParams();
   const daServiceParam = searchParams.get("service");
+  const containerDimension = useContainerDimension(containerRef);
 
   // States
   const activeDASession = activeDA.session;
@@ -1302,16 +1419,16 @@ export default function Page() {
     empty: <FeedbackNoData m={"auto"} />,
     notFound: <FeedbackNotFound m={"auto"} />,
     loaded: (
-      <CContainer flex={1} gap={8}>
+      <CContainer flex={1} gap={8} pt={4}>
         <CContainer px={4}>
-          <ConstrainedContainer gap={8}>
+          <CContainer gap={8}>
             {/* Header */}
             <CContainer gap={1}>
-              <ClampText fontSize={R_TITLE} fontWeight={"semibold"}>
+              <ClampText fontSize={"xl"} fontWeight={"semibold"}>
                 {activeDASession?.title}
               </ClampText>
 
-              <P fontSize={R_SUBTITLE} color={"fg.subtle"}>
+              <P color={"fg.subtle"}>
                 {formatDate(activeDASession?.createdAt, {
                   withTime: true,
                 })}
@@ -1320,90 +1437,122 @@ export default function Page() {
 
             {/* Meta */}
             <MetaData />
-          </ConstrainedContainer>
+          </CContainer>
         </CContainer>
 
         {/* Result */}
-        <CContainer>
-          {processing && (
-            <FeedbackState
-              icon={<Spinner />}
-              title={l.alert_da_analyze_processing.title}
-              description={l.alert_da_analyze_processing.description}
-              m={"auto"}
-              my={"80px"}
-            />
-          )}
+        {/* <ResultTrigger data={data} containerDimension={containerDimension}>
+          <Btn>{l.analysis_result}</Btn>
+        </ResultTrigger> */}
 
-          {failed && (
-            <FeedbackState
-              icon={<LucideIcon icon={AlertTriangleIcon} />}
-              title={l.alert_da_analyze_failed.title}
-              description={l.alert_da_analyze_failed.description}
-              m={"auto"}
-              my={"80px"}
-            />
-          )}
-
-          {completed && (
+        <>
+          <CContainer>
             <>
-              <ResultSection
-                daSession={data}
-                containerDimension={containerDimension}
-              />
+              {processing && (
+                <FeedbackState
+                  icon={<Spinner />}
+                  title={l.alert_da_analyze_processing.title}
+                  description={l.alert_da_analyze_processing.description}
+                  m={"auto"}
+                  my={"80px"}
+                />
+              )}
 
-              <GenerateLetterButtons data={data} mt={8} />
+              {failed && (
+                <FeedbackState
+                  icon={<LucideIcon icon={AlertTriangleIcon} />}
+                  title={l.alert_da_analyze_failed.title}
+                  description={l.alert_da_analyze_failed.description}
+                  m={"auto"}
+                  my={"80px"}
+                />
+              )}
+
+              {completed && (
+                <>
+                  <ResultSection
+                    daSession={data}
+                    containerDimension={containerDimension}
+                  />
+
+                  <GenerateLetterButtons data={data} mt={8} />
+                </>
+              )}
             </>
-          )}
 
-          <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
-            <NavLink to={"/new-da"}>
-              <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
-                {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
-              </Btn>
-            </NavLink>
+            <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
+              <NavLink to={"/new-da"}>
+                <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
+                  {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
+                </Btn>
+              </NavLink>
 
-            <NavLink to={`/new-da/${data?.documentService.id}`}>
-              <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
-                {l.new_da_with_same_service}
-                <AppIcon icon={ArrowUpRightIcon} />
-              </Btn>
-            </NavLink>
-          </HStack>
-        </CContainer>
+              <NavLink to={`/new-da/${data?.documentService.id}`}>
+                <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
+                  {l.new_da_with_same_service}
+                  <AppIcon icon={ArrowUpRightIcon} />
+                </Btn>
+              </NavLink>
+            </HStack>
+          </CContainer>
 
-        <ConstrainedContainer>
-          <HelperText>{l.msg_da_disclaimer}</HelperText>
-        </ConstrainedContainer>
+          <CContainer px={4} pb={4}>
+            <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+          </CContainer>
+        </>
       </CContainer>
     ),
   };
 
   return (
-    <PageContainer ref={containerRef} py={8} pos={"relative"}>
-      {/* <PdfViewer height={"800px"}>
-        <SuratPermohonanPDF data={data?.rawData} />
-      </PdfViewer> */}
+    <PageContainer ref={containerRef} pos={"relative"}>
+      <Tabs.Root
+        defaultValue={"result"}
+        colorPalette={themeConfig.colorPalette}
+        flex={1}
+      >
+        <Tabs.List px={4}>
+          <Tabs.Trigger
+            value="search"
+            onClick={() => {
+              router.push(`/your-da/${serviceId}?service=${daServiceParam}`);
+            }}
+          >
+            {l.search}
+          </Tabs.Trigger>
+          <Tabs.Trigger value="result">{l.process}</Tabs.Trigger>
+        </Tabs.List>
 
-      <CContainer flex={1} gap={4} justify={"space-between"}>
-        <FadingSkeletonContainer loading={initialLoading}>
-          <ConstrainedContainer flex={1} pb={8} mt={8}>
-            {render.loading}
-          </ConstrainedContainer>
-        </FadingSkeletonContainer>
+        <Tabs.Content value="search"></Tabs.Content>
 
-        {!initialLoading && (
-          <>
-            {error && render.error}
-            {!error && (
+        <Tabs.Content value="result" p={0}>
+          <CContainer
+            flex={1}
+            justify={"space-between"}
+            gap={4}
+            maxH={"calc(100svh - 52px - 41px)"}
+            overflowY={"auto"}
+          >
+            <FadingSkeletonContainer loading={initialLoading}>
+              <CContainer flex={1} p={4} mt={12}>
+                {render.loading}
+              </CContainer>
+            </FadingSkeletonContainer>
+
+            {!initialLoading && (
               <>
-                {activeDASession && render.loaded}
-                {!activeDASession && !data && render.empty}
+                {error && render.error}
+                {!error && (
+                  <>
+                    {activeDASession && render.loaded}
+                    {!activeDASession && !data && render.empty}
+                  </>
+                )}
               </>
             )}
-          </>
-        )}
-      </CContainer>
+          </CContainer>
+        </Tabs.Content>
+      </Tabs.Root>
     </PageContainer>
   );
 }
