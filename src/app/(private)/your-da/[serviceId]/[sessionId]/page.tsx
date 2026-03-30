@@ -575,7 +575,13 @@ const MetaData = () => {
                   </HStack>
 
                   {doc.metaData.fileName ? (
-                    <FileName color={"fg.muted"}>
+                    <FileName
+                      color={"fg.muted"}
+                      onClick={() => {
+                        setActiveDocs([doc]);
+                        onOpen();
+                      }}
+                    >
                       {doc.metaData.fileName}
                     </FileName>
                   ) : (
