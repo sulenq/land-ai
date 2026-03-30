@@ -51,7 +51,7 @@ export const FraudAlertCard: React.FC<FraudAlertCardProps> = ({
     >
       <Box w={"4px"} bg={sevConfig.borderColor} rounded={"full"} />
 
-      <CContainer px={2}>
+      <CContainer pl={2}>
         <HStack justify="space-between" align="start">
           <Box flex={1}>
             <HStack gap={2} mb={2} wrap="wrap">
