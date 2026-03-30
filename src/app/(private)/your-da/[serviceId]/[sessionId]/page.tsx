@@ -67,7 +67,6 @@ import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
-import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { fileUrl, imgUrl } from "@/utils/url";
 import {
@@ -1425,13 +1424,15 @@ export default function Page() {
             {/* Header */}
             <CContainer gap={1}>
               <ClampText fontSize={"xl"} fontWeight={"semibold"}>
-                {activeDASession?.title}
+                {activeDASession?.id}
               </ClampText>
 
               <P color={"fg.subtle"}>
-                {formatDate(activeDASession?.createdAt, {
+                {/* {formatDate(activeDASession?.createdAt, {
                   withTime: true,
-                })}
+                })} */}
+
+                {activeDASession?.title}
               </P>
             </CContainer>
 
