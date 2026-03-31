@@ -206,6 +206,7 @@ const translations = {
   "evidence": "Bukti",
   "example_UI": "Contoh UI",
   "exceed_char_limit": "Melebihi batas karakter",
+  "execution_time": "Waktu eksekusi",
   "explanation": "Penjelasan",
   "february": "Februari",
   "feedback": {
@@ -474,6 +475,7 @@ const translations = {
   "service_6_title": "Pendaftaran Surat Keputusan (SK)",
   "service_7_description": "Konversi hak guna bangunan atau hak pakai menjadi hak milik sesuai ketentuan.",
   "service_7_title": "Perubahan Hak (HGB/Hak Pakai menjadi Hak Milik)",
+  "service_name": "Nama layanan",
   "settings": "Pengaturan",
   "settings_adaptive_dark_mode": {
     "title": "Mode gelap adaptif",

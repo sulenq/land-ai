@@ -139,6 +139,14 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const execution_time = {
+  id: "Waktu eksekusi",
+  en: "Execution time",
+};
+export const service_name = {
+  id: "Nama layanan",
+  en: "Service name",
+};
 export const file_information = {
   id: "Informasi Berkas",
   en: "File Information",

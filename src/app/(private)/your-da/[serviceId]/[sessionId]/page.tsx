@@ -41,6 +41,7 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
+import { InfoPopover } from "@/components/widget/InfoPopover";
 import { MContainer } from "@/components/widget/MContainer";
 import {
   ConstrainedContainer,
@@ -494,7 +495,7 @@ const MetaData = () => {
 
   return (
     <>
-      {/* Service */}
+      {/* File Information */}
       <CContainer gap={2}>
         <HStack h={"32px"}>
           <P fontWeight={"semibold"}>{capitalizeWords(l.file_information)}</P>
@@ -510,7 +511,7 @@ const MetaData = () => {
         >
           <HStack gap={4} align={"start"}>
             <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-              {l.name}
+              {l.service}
             </P>
 
             <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
@@ -524,15 +525,27 @@ const MetaData = () => {
               />
 
               <P>{documentService?.title[lang]}</P>
+
+              <InfoPopover
+                popoverContent={documentService?.description[lang]}
+              />
             </HStack>
           </HStack>
 
           <HStack gap={4} align={"start"}>
             <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-              {l.description}
+              {l.category}
             </P>
 
-            <P>{documentService?.description[lang]}</P>
+            <P>{activeDASession?.kategori}</P>
+          </HStack>
+
+          <HStack gap={4} align={"start"}>
+            <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+              {l.execution_time}
+            </P>
+
+            <P>{activeDASession?.totalExecutionTime}</P>
           </HStack>
         </CContainer>
       </CContainer>
@@ -562,7 +575,7 @@ const MetaData = () => {
                 rounded={themeConfig.radii.component}
               >
                 <CContainer gap={1}>
-                  <HStack flexShrink={0} w={["full", null, "240px"]}>
+                  <HStack flexShrink={0}>
                     <ClampText fontWeight={"medium"}>
                       {doc.documentRequirement.name}
                     </ClampText>

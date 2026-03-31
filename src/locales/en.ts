@@ -206,6 +206,7 @@ const translations = {
   "evidence": "Evidence",
   "example_UI": "Example UI",
   "exceed_char_limit": "Exceed character limit",
+  "execution_time": "Execution time",
   "explanation": "Explanation",
   "february": "February",
   "feedback": {
@@ -474,6 +475,7 @@ const translations = {
   "service_6_title": "Decree Registration (SK)",
   "service_7_description": "Conversion of building or usage rights into full ownership under applicable regulations.",
   "service_7_title": "Conversion of Land Rights to Ownership",
+  "service_name": "Service name",
   "settings": "Settings",
   "settings_adaptive_dark_mode": {
     "title": "Adaptive dark mode",

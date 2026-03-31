@@ -317,6 +317,8 @@ export interface Interface__DASessionDetail extends Interface__DASession {
   uploadedDocuments: Interface__DAUploadedDocument[];
   result: Interface__DAAnalysisResultItem[];
   rawData: any;
+  kategori: string;
+  totalExecutionTime: string;
 }
 export type Interface__DASessionDraft = Partial<Interface__DASessionDetail>;
 export interface Interface__ActiveDAState {
