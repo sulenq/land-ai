@@ -190,6 +190,8 @@ export const DataTable = (props: Props__DataTable) => {
         <Table.Root
           w={headers.length > 1 ? "full" : "fit-content"}
           tableLayout={"auto"}
+          borderCollapse={"separate"}
+          borderSpacing={0}
         >
           <Table.Header>
             <Table.Row
@@ -313,7 +315,7 @@ export const DataTable = (props: Props__DataTable) => {
                     pos={"relative"}
                   >
                     {/* <Box
-                      h={tdMinH}
+                      minH={tdMinH}
                       w={"6px"}
                       bg={"body"}
                       pos={"absolute"}
@@ -339,31 +341,35 @@ export const DataTable = (props: Props__DataTable) => {
                   bg={"body"}
                   {...trBodyProps}
                 >
+                  {/* Batch checkbox column */}
                   {!isEmptyArray(batchOptions) && (
                     <Table.Cell
                       minW={"0% !important"}
                       maxW={optionsCellWidth}
                       w={optionsCellWidth}
-                      h={tdMinH}
+                      minH={tdMinH}
                       p={0}
+                      bg={"body"}
+                      borderBottom={
+                        rowIdx !== resolvedTableData.length - 1
+                          ? "1px solid !important"
+                          : ""
+                      }
+                      borderColor={
+                        isRowSelected
+                          ? `${selectedColor} !important`
+                          : `${tdBorderColor} !important`
+                      }
                       position={"sticky"}
                       left={0}
-                      bg={"body"}
                       zIndex={2}
                     >
                       <Center
-                        h={tdMinH}
+                        minH={tdMinH}
+                        h={"full"}
                         bg={isRowSelected ? selectedColor : tdBg}
                         px={"10px"}
                         cursor={"pointer"}
-                        borderBottom={
-                          rowIdx !== resolvedTableData.length - 1
-                            ? "1px solid"
-                            : ""
-                        }
-                        borderColor={
-                          isRowSelected ? selectedColor : tdBorderColor
-                        }
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleRowSelection(row);
@@ -379,21 +385,27 @@ export const DataTable = (props: Props__DataTable) => {
                     </Table.Cell>
                   )}
 
-                  {/* Numbering Column */}
-                  <Table.Cell whiteSpace={"nowrap"} p={0}>
+                  {/* Numbering column */}
+                  <Table.Cell
+                    whiteSpace={"nowrap"}
+                    p={0}
+                    borderBottom={
+                      rowIdx !== resolvedTableData.length - 1
+                        ? "1px solid !important"
+                        : ""
+                    }
+                    borderColor={
+                      isRowSelected
+                        ? `${selectedColor} !important`
+                        : `${tdBorderColor} !important`
+                    }
+                  >
                     <HStack
                       py={3}
                       px={cellPx}
-                      h={tdMinH}
+                      minH={tdMinH}
+                      h={"full"}
                       bg={isRowSelected ? selectedColor : tdBg}
-                      borderBottom={
-                        rowIdx !== resolvedTableData.length - 1
-                          ? "1px solid"
-                          : ""
-                      }
-                      borderColor={
-                        isRowSelected ? selectedColor : tdBorderColor
-                      }
                       fontSize={"md"}
                       color={"fg.subtle"}
                       justify={"center"}
@@ -402,27 +414,34 @@ export const DataTable = (props: Props__DataTable) => {
                     </HStack>
                   </Table.Cell>
 
+                  {/* Main columns */}
                   {row.columns.map((col, colIndex) => (
                     <Table.Cell
                       key={colIndex}
                       whiteSpace={"nowrap"}
+                      minH={tdMinH}
                       p={0}
                       fontSize={"md"}
+                      borderBottom={
+                        rowIdx !== resolvedTableData.length - 1
+                          ? "1px solid !important"
+                          : ""
+                      }
+                      borderColor={
+                        isRowSelected
+                          ? `${selectedColor} !important`
+                          : `${tdBorderColor} !important`
+                      }
                       {...col?.tableCellProps}
                     >
                       <HStack
+                        // className="debug"
+                        align={"stretch"}
+                        minH={tdMinH}
+                        h={"full"}
                         py={3}
                         px={cellPx}
-                        h={tdMinH}
                         bg={isRowSelected ? selectedColor : tdBg}
-                        borderBottom={
-                          rowIdx !== resolvedTableData.length - 1
-                            ? "1px solid"
-                            : ""
-                        }
-                        borderColor={
-                          isRowSelected ? selectedColor : tdBorderColor
-                        }
                         justify={col.align}
                         {...col?.wrapperProps}
                       >
@@ -433,37 +452,41 @@ export const DataTable = (props: Props__DataTable) => {
                     </Table.Cell>
                   ))}
 
+                  {/* Row options column */}
                   {!isEmptyArray(rowOptions) && (
                     <Table.Cell
                       minW={"0% !important"}
                       w={optionsCellWidth}
                       maxW={optionsCellWidth}
-                      h={tdMinH}
-                      bg={"body"}
+                      minH={tdMinH}
                       p={0}
+                      bg={"body"}
+                      borderBottom={
+                        rowIdx !== resolvedTableData.length - 1
+                          ? "1px solid !important"
+                          : ""
+                      }
+                      borderColor={
+                        isRowSelected
+                          ? `${selectedColor} !important`
+                          : `${tdBorderColor} !important`
+                      }
                       position={"sticky"}
                       right={"0"}
                       zIndex={2}
                     >
                       <Center
-                        h={tdMinH}
+                        minH={tdMinH}
+                        h={"full"}
                         px={"10px"}
                         bg={isRowSelected ? selectedColor : tdBg}
-                        borderBottom={
-                          rowIdx !== resolvedTableData.length - 1
-                            ? "1px solid"
-                            : ""
-                        }
-                        borderColor={
-                          isRowSelected ? selectedColor : tdBorderColor
-                        }
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
                         pos={"relative"}
                       >
                         {/* <Box
-                          h={tdMinH}
+                          minH={tdMinH}
                           w={"6px"}
                           bg={"body"}
                           pos={"absolute"}

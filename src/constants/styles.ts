@@ -11,6 +11,8 @@ export const DESKTOP_NAVS_BG = "body";
 export const DESKTOP_CONTENT_CONTAINER_BG = "body";
 
 // Sizes
+export const CONSTRAINED_MAX_W_NUMBER = 720;
+export const CONSTRAINED_MAX_W = `${CONSTRAINED_MAX_W_NUMBER}px`;
 export const R_TITLE = ["xl", null, "3xl"];
 export const R_SUBTITLE = ["md", null, "lg"];
 export const TOPBAR_H = "52px";

@@ -31,6 +31,7 @@ import {
   useMemo,
   useRef,
 } from "react";
+import { CONSTRAINED_MAX_W } from "@/constants/styles";
 
 const FONT_SIZE = "md";
 
@@ -43,7 +44,7 @@ export const ConstrainedContainer = forwardRef<HTMLDivElement, StackProps>(
       <CContainer
         className="page-layout"
         ref={ref}
-        maxW={"720px"}
+        maxW={CONSTRAINED_MAX_W}
         mx={"auto"}
         {...restProps}
       >

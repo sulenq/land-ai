@@ -912,6 +912,7 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
     [uploadedDocuments],
   );
 
+  // Derived Values
   const rows = useMemo<Interface__FormattedTableRow[]>(() => {
     return (result ?? []).map((r, idx) => {
       const isMatch = r.validation.status;
@@ -935,12 +936,13 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
 
             return {
               td: (
-                <ClampText
+                <P
                   color={isNotFound ? "fg.warning" : ""}
                   maxW={"200px"}
+                  whiteSpace={"wrap"}
                 >
                   {isNotFound ? l.not_found : v.value || "-"}
-                </ClampText>
+                </P>
               ),
               dim: isNotFound || v.value === null,
               value: v.value,
@@ -961,6 +963,14 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
     });
   }, [result, l]);
 
+  // SX
+  // const px = useMemo(() => {
+  //   return containerDimension &&
+  //     containerDimension?.width < CONSTRAINED_MAX_W_NUMBER
+  //     ? 4
+  //     : `calc((${containerDimension?.width}px - ${CONSTRAINED_MAX_W} - 32px)/2)`;
+  // }, [containerDimension]);
+
   return (
     <>
       <MContainer
@@ -978,23 +988,23 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
         }}
         onMouseDown={(e) => {
           const target = e.target as HTMLElement;
-          if (
-            target.closest(
-              '[data-part="content"], [role="dialog"], [data-scope="popover"], button, a, input',
-            )
-          )
-            return;
+          console.debug(containerRef.current);
+
+          if (target.closest("button, a, input")) return;
 
           e.preventDefault();
           const container = containerRef.current;
           if (!container) return;
 
           const startX = e.clientX;
+          const startY = e.clientY;
           const scrollLeft = container.scrollLeft;
+          const scrollTop = container.scrollTop;
 
           const onMouseMove = (ev: MouseEvent) => {
             ev.preventDefault();
             container.scrollLeft = scrollLeft - (ev.clientX - startX);
+            container.scrollTop = scrollTop - (ev.clientY - startY);
           };
           const onMouseUp = () => {
             window.removeEventListener("mousemove", onMouseMove);
@@ -1102,7 +1112,8 @@ const ResultSection = (props: Props__ResultSection) => {
   const { themeConfig } = useThemeConfig();
 
   // States
-  const [viewMode, setViewMode] = useState<"accordion" | "table">("accordion");
+  // TODO default is 'accordion'
+  const [viewMode, setViewMode] = useState<"accordion" | "table">("table");
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const uploadedDocuments = daSession?.uploadedDocuments;
 
@@ -1120,11 +1131,9 @@ const ResultSection = (props: Props__ResultSection) => {
             wrap={"wrap"}
             justify={"space-between"}
             pb={2}
-            bg="linear-gradient(
-              to bottom,
-              var(--chakra-colors-body) 80%,
-              transparent 100%
-            )"
+            bg={
+              "linear-gradient(to bottom, var(--chakra-colors-body) 80%, transparent 100%)"
+            }
           >
             <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
 
@@ -1350,6 +1359,7 @@ export default function Page() {
   // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
+      // initialData: DUMMY_ACTIVE_DA_SESSION as any,
       url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
       dataResource: false,
       dependencies: [sessionId, pollingTick],

@@ -877,6 +877,7 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
     [uploadedDocuments],
   );
 
+  // Derived Values
   const rows = useMemo<Interface__FormattedTableRow[]>(() => {
     return (result ?? []).map((r, idx) => {
       const isMatch = r.validation.status;
@@ -925,6 +926,15 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
       };
     });
   }, [result, l]);
+
+  // SX
+  // SX
+  // const px = useMemo(() => {
+  //   return containerDimension &&
+  //     containerDimension?.width < CONSTRAINED_MAX_W_NUMBER
+  //     ? 4
+  //     : `calc((${containerDimension?.width}px - ${CONSTRAINED_MAX_W} - 32px)/2)`;
+  // }, [containerDimension]);
 
   return (
     <>
