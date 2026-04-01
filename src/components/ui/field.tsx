@@ -1,3 +1,5 @@
+import { P } from "@/components/ui/p";
+import { Tooltip } from "@/components/ui/tooltip";
 import useLang from "@/context/useLang";
 import {
   Badge,
@@ -34,11 +36,20 @@ export const Field = forwardRef<HTMLDivElement, Props__Field>(
     return (
       <ChakraField.Root ref={ref} gap={2} {...rest}>
         {label && (
-          <ChakraField.Label fontSize={"md"} color={"fg.muted"} {...labelProps}>
-            {label}
+          <ChakraField.Label w={"full"} {...labelProps}>
+            <Tooltip content={label}>
+              <P fontSize={"md"} color={"fg.muted"} lineClamp={1}>
+                {label}
+              </P>
+            </Tooltip>
 
             {optional && (
-              <Badge colorScheme="gray" color={"fg.muted"} mt={"auto"}>
+              <Badge
+                colorScheme="gray"
+                color={"fg.muted"}
+                ml={"auto"}
+                mt={"auto"}
+              >
                 {l.optional.toLocaleLowerCase()}
               </Badge>
             )}
