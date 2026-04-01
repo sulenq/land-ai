@@ -73,6 +73,7 @@ import { fileUrl, imgUrl } from "@/utils/url";
 import {
   Badge,
   Box,
+  Center,
   HStack,
   Stack,
   StackProps,
@@ -84,6 +85,7 @@ import {
   AlertTriangleIcon,
   ArrowUpRightIcon,
   CheckCheckIcon,
+  CheckIcon,
   DownloadIcon,
   LayoutListIcon,
   ListIcon,
@@ -902,12 +904,30 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
   const result = daSession?.result;
   const headers = useMemo<Interface__FormattedTableHeader[]>(
     () => [
-      { th: "Item Validasi", sortable: true },
+      {
+        th: "Item Validasi",
+        sortable: true,
+        headerProps: {
+          position: "sticky",
+          left: 0,
+          zIndex: 4,
+          bg: "body",
+        },
+      },
       ...(uploadedDocuments ?? []).map((doc) => ({
         th: doc.documentRequirement.name,
         sortable: true,
       })),
-      { th: "Validasi", sortable: true },
+      {
+        th: "Valid",
+        sortable: true,
+        headerProps: {
+          position: "sticky",
+          right: 0,
+          zIndex: 4,
+          bg: "body",
+        },
+      },
     ],
     [uploadedDocuments],
   );
@@ -922,7 +942,17 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
         idx: idx,
         data: r,
         columns: [
-          { td: r.label, value: r.label, dataType: "string" },
+          {
+            td: r.label,
+            value: r.label,
+            dataType: "string",
+            tableCellProps: {
+              position: "sticky",
+              left: 0,
+              zIndex: 2,
+              bg: "body",
+            },
+          },
           ...r.values.map((v) => {
             // const documentRequirement = documentRequirements?.find((dr) => {
             //   return dr.id === v.documentId;
@@ -951,12 +981,24 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
           }),
           {
             td: (
-              <P color={isMatch ? "fg.success" : "fg.error"}>
-                {isMatch ? l.match : l.mismatch}
-              </P>
+              <Tooltip content={isMatch ? l.match : l.mismatch}>
+                <Center>
+                  <AppIcon
+                    icon={isMatch ? CheckIcon : XIcon}
+                    color={isMatch ? "fg.success" : "fg.error"}
+                    mx={"auto"}
+                  />
+                </Center>
+              </Tooltip>
             ),
             value: r.validation.status,
             dataType: "boolean",
+            tableCellProps: {
+              position: "sticky",
+              right: 0,
+              zIndex: 2,
+              bg: "body",
+            },
           },
         ],
       };
@@ -1020,6 +1062,8 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
             rows={rows}
             minH={0}
             borderColor={"border.muted"}
+            overflow={"visible"}
+            contentContainerProps={{ overflow: "visible" }}
           />
         </CContainer>
       </MContainer>
