@@ -13,6 +13,7 @@ import { ConfirmationDisclosureTrigger } from "@/components/widget/ConfirmationD
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { AUTH_API_SIGNOUT } from "@/constants/apis";
+import { PREFIX_ADMIN_ROUTES } from "@/constants/navs";
 import { BASE_ICON_BOX_SIZE } from "@/constants/styles";
 import useADM from "@/context/useADM";
 import useAuthMiddleware from "@/context/useAuthMiddleware";
@@ -34,19 +35,6 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-
-const MENUS = [
-  {
-    labelKey: "my_profile",
-    icon: UserIcon,
-    path: "/settings/profile",
-  },
-  {
-    labelKey: "navs.settings",
-    icon: SettingsIcon,
-    path: "/settings",
-  },
-];
 
 interface Props__MiniMyProfile extends StackProps {
   onClose?: () => void;
@@ -166,26 +154,45 @@ export const ProfileMenu = (props: Props__MiniMyProfile) => {
           </Btn>
         )}
 
-        {MENUS.map((menu) => {
-          return (
-            <NavLink key={menu.path} to={menu.path} w={"full"}>
-              <Btn
-                clicky={false}
-                px={2}
-                variant={"ghost"}
-                justifyContent={"start"}
-                pos={"relative"}
-                onClick={() => {
-                  onClose?.();
-                }}
-              >
-                <AppIcon icon={menu.icon} />
+        <NavLink
+          to={`${isAdminRoute ? PREFIX_ADMIN_ROUTES : ""}/settings/profile`}
+          w={"full"}
+        >
+          <Btn
+            clicky={false}
+            px={2}
+            variant={"ghost"}
+            justifyContent={"start"}
+            pos={"relative"}
+            onClick={() => {
+              onClose?.();
+            }}
+          >
+            <AppIcon icon={UserIcon} />
 
-                {pluckString(l, menu.labelKey)}
-              </Btn>
-            </NavLink>
-          );
-        })}
+            {pluckString(l, "navs.profile")}
+          </Btn>
+        </NavLink>
+
+        <NavLink
+          to={`${isAdminRoute ? PREFIX_ADMIN_ROUTES : ""}/settings/profile`}
+          w={"full"}
+        >
+          <Btn
+            clicky={false}
+            px={2}
+            variant={"ghost"}
+            justifyContent={"start"}
+            pos={"relative"}
+            onClick={() => {
+              onClose?.();
+            }}
+          >
+            <AppIcon icon={SettingsIcon} />
+
+            {pluckString(l, "navs.settings")}
+          </Btn>
+        </NavLink>
 
         <ConfirmationDisclosureTrigger
           id="signout"

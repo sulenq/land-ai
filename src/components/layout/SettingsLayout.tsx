@@ -38,7 +38,6 @@ import { useEffect, useRef, useState } from "react";
 const NAVS =
   OTHER_PRIVATE_NAV_GROUPS[0].navs.find((n) => n.path === "/settings")
     ?.children || [];
-const NAVS_COLOR = "ibody";
 const ROOT_PATH = `/settings`;
 
 const NavsList = (props: any) => {
@@ -119,7 +118,6 @@ const NavsList = (props: any) => {
                         variant={isActive ? "subtle" : "ghost"}
                         colorPalette={isActive ? themeConfig.colorPalette : ""}
                         px={2}
-                        color={isActive ? "" : NAVS_COLOR}
                         pos={"relative"}
                       >
                         {isActive && <LeftIndicator />}
@@ -158,6 +156,9 @@ export default function SettingsLayout(props: Props__Layout) {
 
   // States
   const isAdminRoutes = pathname.startsWith(PREFIX_ADMIN_ROUTES);
+
+  console.debug(isAdminRoutes);
+
   const resolvedRootPath = isAdminRoutes
     ? `${PREFIX_ADMIN_ROUTES}${ROOT_PATH}`
     : ROOT_PATH;
@@ -174,7 +175,7 @@ export default function SettingsLayout(props: Props__Layout) {
   }, [containerDimension]);
 
   return (
-    <PageContainer id="settings_route_container" ref={containerRef} p={0}>
+    <PageContainer id={"settings_route_container"} ref={containerRef} p={0}>
       {containerDimension.width > 0 && (
         <HStack align={"stretch"} flex={1} gap={0} overflowY={"auto"}>
           {/* Sidebar */}
