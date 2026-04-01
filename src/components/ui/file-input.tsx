@@ -150,13 +150,13 @@ export const InputComponent = (props: Props__FileInputInputComponent) => {
     onChange?.(files.length > 0 ? files : undefined);
   }
 
-  // clear input when resolvedDisabled = true
+  // clear input when existing files reached max limit
   useEffect(() => {
-    if (resolvedDisabled) {
+    if (existingCount >= maxFiles && !isEmptyArray(inputValue)) {
       onChange?.(undefined);
       setKey((ps) => ps + 1);
     }
-  }, [resolvedDisabled]);
+  }, [existingCount, maxFiles, inputValue, onChange]);
 
   return (
     <>
