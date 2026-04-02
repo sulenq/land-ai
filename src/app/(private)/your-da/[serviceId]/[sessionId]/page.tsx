@@ -691,10 +691,7 @@ const AccordionItemsList = memo(function AccordionItemsList(
                 )}
 
                 {documentRequirement?.extractionSchema?.map((field) => {
-                  const value = getValueResult(
-                    field.label,
-                    doc,
-                  );
+                  const value = getValueResult(field.label, doc);
                   const isNotFound = value === "NOT_FOUND";
 
                   return (
@@ -786,10 +783,7 @@ const AccordionItemsList = memo(function AccordionItemsList(
                     <AccordionItemContent px={0} py={2}>
                       <CContainer rounded={"md"} gap={2}>
                         {uploadedDocuments?.map((doc) => {
-                          const val = getValueResult(
-                            fieldLabel,
-                            doc,
-                          );
+                          const val = getValueResult(fieldLabel, doc);
                           const isNotFound = val === "NOT_FOUND";
 
                           return (
@@ -954,8 +948,8 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
               (doc as any)?.jobId,
               doc.documentRequirement.id,
             ].filter((value) => value != null);
-            const matchedValue = r.values.find(
-              (value) => candidateIds.includes(value.documentId),
+            const matchedValue = r.values.find((value) =>
+              candidateIds.includes(value.documentId),
             );
             const value = matchedValue?.value ?? null;
             const isNotFound = value === "NOT_FOUND";
@@ -968,7 +962,7 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
                   whiteSpace={"wrap"}
                 >
                   {isNotFound ? l.not_found : value || "-"}
-                </ClampText>
+                </P>
               ),
               dim: isNotFound || value === null,
               value,

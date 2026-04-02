@@ -6,7 +6,6 @@ import {
   ClipboardClockIcon,
   DatabaseIcon,
   FilePenLineIcon,
-  FileTextIcon,
   HomeIcon,
   LanguagesIcon,
   LockKeyholeIcon,
@@ -58,13 +57,13 @@ export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
         allowedRoles: [],
         allowedPermissions: [],
       },
-      {
-        icon: FileTextIcon,
-        labelKey: "navs.your_da",
-        path: "/your-da",
-        allowedRoles: [],
-        allowedPermissions: [],
-      },
+      // {
+      //   icon: FileTextIcon,
+      //   labelKey: "navs.your_da",
+      //   path: "/your-da",
+      //   allowedRoles: [],
+      //   allowedPermissions: [],
+      // },
     ],
   },
 ];
