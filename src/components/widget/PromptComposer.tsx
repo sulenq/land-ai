@@ -141,7 +141,7 @@ export const PromptInput = (props: Props__PromptInput) => {
       ref={containerRef}
       p={3}
       bg={"bg.muted"}
-      rounded={themeConfig.radii.component}
+      rounded={themeConfig.radii.container}
       mx={"auto"}
       maxH={"300px"}
       {...restProps}

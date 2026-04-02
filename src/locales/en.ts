@@ -388,7 +388,7 @@ const translations = {
     "welcome": "Welcome screen",
     "new_chat": "New Chat",
     "your_chats": "Chats",
-    "new_document_analysis": "New Document Analysis",
+    "new_document_analysis": "Upload Application Document",
     "your_da": "Your Document Analysis",
     "settings": "Settings",
     "master_data": "Master Data",

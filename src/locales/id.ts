@@ -388,8 +388,8 @@ const translations = {
     "welcome": "Halaman utama",
     "new_chat": "Obrolan Baru",
     "your_chats": "Obrolan",
-    "new_document_analysis": "Analisis Dokumen Baru",
-    "your_da": "Analisa Dokumen Anda",
+    "new_document_analysis": "Unggah Dokumen Permohonan",
+    "your_da": "Analisis Dokumen Anda",
     "settings": "Pengaturan",
     "master_data": "Master Data",
     "profile": "Profil"
