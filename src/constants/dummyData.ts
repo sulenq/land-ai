@@ -11512,7 +11512,7 @@ export const DUMMY_DA_SESSION: Interface__DASession = {
 };
 
 export const DUMMY_TRIAL_SESSION: Interface__TrialSession = {
-  id: "ts-001-2026",
+  id: "1",
   user: dummyUser,
   step: 1,
   createdAt: "2026-04-02T09:00:00Z",
