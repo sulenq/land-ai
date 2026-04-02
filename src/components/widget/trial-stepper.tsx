@@ -1,6 +1,10 @@
+import { Btn } from "@/components/ui/btn";
+import { P } from "@/components/ui/p";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useTrialSessionContext } from "@/context/useTrialSessionContext";
-import { Steps, StepsRootProps } from "@chakra-ui/react";
+import { HStack, Steps, StepsRootProps } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export const TRIAL_STEPS = [
   {
@@ -27,10 +31,15 @@ export const TRIAL_STEPS = [
 
 export const TrialStepper = (props: StepsRootProps) => {
   // Contexts
-  const step = useTrialSessionContext((s) => s.trialSession?.step) ?? 1;
+  const trialSession = useTrialSessionContext((s) => s.trialSession);
+  const trialId = trialSession?.id;
+  const step = trialSession?.step ?? 1;
   const setStep = useTrialSessionContext((s) => s.setStep);
-  // const prevStep = useTrialSessionContext((s) => s.prevStep);
-  // const nextStep = useTrialSessionContext((s) => s.nextStep);
+  const prevStep = useTrialSessionContext((s) => s.prevStep);
+  const nextStep = useTrialSessionContext((s) => s.nextStep);
+
+  // Hooks
+  const router = useRouter();
 
   // Derived Values
   const resolvedStep = step - 1;
@@ -40,6 +49,26 @@ export const TrialStepper = (props: StepsRootProps) => {
   // 2 => /service-trial/{trialId}
   // 3 => /service-trial/{trialId}
   // 4 => /service-trial/{trialId}/summary
+
+  useEffect(() => {
+    if (!trialSession || !trialId) return;
+
+    switch (step) {
+      case 1:
+        router.push("/service-trial");
+        break;
+      case 2:
+      case 3:
+        router.push(`/service-trial/${trialId}`);
+        break;
+      case 4:
+        router.push(`/service-trial/${trialId}/summary`);
+        break;
+      default:
+        router.push("/service-trial");
+        break;
+    }
+  }, [step, trialId, router]);
 
   return (
     <Steps.Root
@@ -61,7 +90,7 @@ export const TrialStepper = (props: StepsRootProps) => {
         ))}
       </Steps.List>
 
-      {/* <HStack mx={"auto"}>
+      <HStack mx={"auto"}>
         <P>Tes stepper</P>
 
         <Btn size={"xs"} variant={"outline"} onClick={prevStep}>
@@ -70,7 +99,7 @@ export const TrialStepper = (props: StepsRootProps) => {
         <Btn size={"xs"} variant={"outline"} onClick={nextStep}>
           Next
         </Btn>
-      </HStack> */}
+      </HStack>
 
       {TRIAL_STEPS.map((step, index) => (
         <Steps.Content

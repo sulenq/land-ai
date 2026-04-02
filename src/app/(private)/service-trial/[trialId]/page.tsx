@@ -506,9 +506,8 @@ const MetaData = () => {
   // Constants
   const documentService = activeDASession?.documentService;
   const uploadedDocuments = activeDASession?.uploadedDocuments;
-  const trialDaSessions = useTrialSessionContext(
-    (s) => s.trialSession?.trialDaSessions,
-  );
+  const trialSession = useTrialSessionContext((s) => s.trialSession);
+  const step = trialSession?.step;
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(
@@ -521,7 +520,7 @@ const MetaData = () => {
   );
 
   // Derived Values
-  const isManualPhase = (trialDaSessions?.length ?? 0) <= 3;
+  const isManualPhase = step === 2;
 
   return (
     <>
@@ -1269,6 +1268,7 @@ export default function Page() {
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const trialSession = useTrialSessionContext((s) => s.trialSession);
   const setActiveDaSession = useActiveDA((s) => s.setSession);
+  const step = trialSession?.step;
   const trialDaSessions = trialSession?.trialDaSessions;
   const currentDaSessionId = trialDaSessions?.[0].daSession?.id;
 
@@ -1293,7 +1293,7 @@ export default function Page() {
   });
 
   // Derived Values
-  const isAiPhase = (trialDaSessions?.length ?? 0) > 3;
+  const isAiPhase = step === 3;
   // TODO make disabled condition for trial verification buttons
   const isDisabled = true;
 
@@ -1350,26 +1350,23 @@ export default function Page() {
         {/* Meta */}
         <MetaData />
 
-        {isAiPhase && (
-          <>
-            {/* Result */}
-            <CContainer>
-              <ResultSection
-                daSession={currentDaSession}
-                containerDimension={containerDimension}
-              />
+        <>
+          {/* Result */}
+          <CContainer>
+            <ResultSection
+              daSession={currentDaSession}
+              containerDimension={containerDimension}
+              display={isAiPhase ? "flex" : "none"}
+            />
 
-              {/* <GenerateLetterButtons data={data} mt={8} /> */}
-            </CContainer>
+            {/* <GenerateLetterButtons data={data} mt={8} /> */}
+          </CContainer>
 
-            {/* Helper Text */}
-            <CContainer>
-              <HelperText textAlign={"center"}>
-                {l.msg_da_disclaimer}
-              </HelperText>
-            </CContainer>
-          </>
-        )}
+          {/* Helper Text */}
+          <CContainer>
+            <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+          </CContainer>
+        </>
 
         {/* Verification */}
         <TrialDaSessionVerificationButtons disabled={isDisabled} mx={"auto"} />
