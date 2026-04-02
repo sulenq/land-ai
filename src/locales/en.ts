@@ -390,6 +390,7 @@ const translations = {
     "your_chats": "Chats",
     "new_document_analysis": "Upload Application Document",
     "your_da": "Your Document Analysis",
+    "service_trial": "Service Trial",
     "settings": "Settings",
     "master_data": "Master Data",
     "profile": "Profile"

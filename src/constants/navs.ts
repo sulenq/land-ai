@@ -5,7 +5,6 @@ import {
   BrushIcon,
   DatabaseIcon,
   FilePenLineIcon,
-  FileTextIcon,
   HomeIcon,
   LanguagesIcon,
   LockKeyholeIcon,
@@ -13,6 +12,7 @@ import {
   SettingsIcon,
   ShieldHalfIcon,
   SquarePenIcon,
+  TimerIcon,
   UserCogIcon,
   UserIcon,
   UsersIcon,
@@ -43,13 +43,6 @@ export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
         allowedPermissions: [],
       },
       {
-        icon: FileTextIcon,
-        labelKey: "navs.your_da",
-        path: "/your-da",
-        allowedRoles: [],
-        allowedPermissions: [],
-      },
-      {
         icon: FilePenLineIcon,
         labelKey: "navs.create_letter",
         label: "Buat Surat", // Fallback label in case translations don't have it yet
@@ -57,6 +50,20 @@ export const PRIVATE_NAV_GROUPS: Interface__NavGroup[] = [
         allowedRoles: [],
         allowedPermissions: [],
       },
+      {
+        icon: TimerIcon,
+        labelKey: "navs.service_trial",
+        path: "/service-trial",
+        allowedRoles: [],
+        allowedPermissions: [],
+      },
+      // {
+      //   icon: FileTextIcon,
+      //   labelKey: "navs.your_da",
+      //   path: "/your-da",
+      //   allowedRoles: [],
+      //   allowedPermissions: [],
+      // },
     ],
   },
 ];

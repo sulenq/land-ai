@@ -390,6 +390,7 @@ const translations = {
     "your_chats": "Obrolan",
     "new_document_analysis": "Unggah Dokumen Permohonan",
     "your_da": "Analisis Dokumen Anda",
+    "service_trial": "Uji Coba Layanan ",
     "settings": "Pengaturan",
     "master_data": "Master Data",
     "profile": "Profil"

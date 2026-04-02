@@ -20,6 +20,10 @@ export const navs = {
     id: "Analisis Dokumen Anda",
     en: "Your Document Analysis",
   },
+  service_trial: {
+    id: "Uji Coba Layanan ",
+    en: "Service Trial",
+  },
   settings: {
     id: "Pengaturan",
     en: "Settings",
