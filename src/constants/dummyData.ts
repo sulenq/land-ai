@@ -3,6 +3,8 @@ import {
   Interface__ChatMessage,
   Interface__ChatSession,
   Interface__DASession,
+  Interface__TrialDADocumentDetail,
+  Interface__TrialSession,
   Interface__User,
 } from "@/constants/interfaces";
 
@@ -549,10 +551,11 @@ export const DUMMY_ACTIVE_DA_SESSION = {
   id: "1a0afae3-91c3-4374-9e14-11c372f1d006",
   title: "Peralihan -  11:08 GMT+7",
   createdAt: "2026-03-16T04:08:24.976Z",
-  serviceId: 9,
+  serviceId: "9",
   serviceName: "Peralihan",
   status: "COMPLETED",
   totalExecutionTime: "221.24s",
+  kategori: "Dummy Kategori",
   documentService: {
     id: 9,
     title: {
@@ -5668,6 +5671,7 @@ export const DUMMY_ACTIVE_DA_SESSION = {
         ],
       },
     ],
+    createdAt: "2026-03-16T04:08:24.976Z",
   },
   uploadedDocuments: [
     {
@@ -11440,3 +11444,88 @@ export const dummyAllActivityLogs = [
     deletedAt: null,
   },
 ];
+
+export const DUMMY_TRIAL_DA_DOCUMENT_DETAILS: Interface__TrialDADocumentDetail[] =
+  [
+    {
+      jobId: "job-8812-a1",
+      docName: "KTP_Pemohon_Sesuai.pdf",
+      startTime: "2026-04-02T10:00:00Z",
+      endTime: "2026-04-02T10:01:30Z",
+      timeMs: 90000,
+      status: "VERIFIED",
+      notes: "",
+    },
+    {
+      jobId: "job-8812-b2",
+      docName: "Sertipikat_Tanah_HGB.pdf",
+      startTime: "2026-04-02T10:02:00Z",
+      endTime: "2026-04-02T10:05:00Z",
+      timeMs: 180000,
+      status: "VERIFIED",
+      notes: "",
+    },
+    {
+      jobId: "job-8812-c3",
+      docName: "Bukti_Bayar_PBB_2025.jpg",
+      startTime: "2026-04-02T10:06:00Z",
+      endTime: "2026-04-02T10:07:15Z",
+      timeMs: 75000,
+      status: "REJECTED",
+      notes:
+        "Document is blurry and unreadable. Please re-upload with higher resolution.",
+    },
+    {
+      jobId: "job-8812-d4",
+      docName: "Akta_Jual_Beli_No12.pdf",
+      startTime: "2026-04-02T10:10:00Z",
+      endTime: "2026-04-02T10:14:00Z",
+      timeMs: 240000,
+      status: "VERIFIED",
+      notes: "",
+    },
+    {
+      jobId: "job-8812-e5",
+      docName: "Surat_Kuasa_Warisan.pdf",
+      startTime: "2026-04-02T10:15:00Z",
+      endTime: "2026-04-02T10:16:30Z",
+      timeMs: 90000,
+      status: "REJECTED",
+      notes: "Missing physical stamp (meterai) and wet signature.",
+    },
+    {
+      jobId: "job-8812-f6",
+      docName: "Izin_Mendirikan_Bangunan.pdf",
+      startTime: "2026-04-02T10:20:00Z",
+      endTime: "2026-04-02T10:22:45Z",
+      timeMs: 165000,
+      status: "VERIFIED",
+      notes: "",
+    },
+  ];
+
+export const DUMMY_DA_SESSION: Interface__DASession = {
+  id: "e98ea789-ab5c-4fbd-bfb7-42f4b812dc8c",
+  title: "HT - Wijayati",
+  status: "COMPLETED",
+  createdAt: "2025-01-01T10:00:00Z",
+};
+
+export const DUMMY_TRIAL_SESSION: Interface__TrialSession = {
+  id: "ts-001-2026",
+  user: dummyUser,
+  step: 1,
+  createdAt: "2026-04-02T09:00:00Z",
+  trialDaSessions: [
+    {
+      id: "1",
+      daSession: DUMMY_DA_SESSION,
+      startTime: "2026-04-02T09:00:00Z",
+      endTime: "2026-04-02T09:15:00Z",
+      manualDetails: DUMMY_TRIAL_DA_DOCUMENT_DETAILS,
+      aiDetails: [],
+      createdAt: "2026-04-02T09:00:00Z",
+    },
+    // to 6 items
+  ],
+};

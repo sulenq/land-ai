@@ -110,6 +110,7 @@ const PageControl = (props: Props__PageControl) => {
             variant={"ghost"}
             fontWeight={"medium"}
             whiteSpace={"nowrap"}
+            size={"sm"}
             fontVariantNumeric={"tabular-nums"}
           >
             {page} / {numPages || "?"}
@@ -249,7 +250,7 @@ const Toolbar = (props: Props__PDFToolbar) => {
           </Icon>
 
           {viewer.mode === "single" && "Single"}
-          {viewer.mode === "continuous" && "Continuous"}
+          {viewer.mode === "continuous" && "Scroll"}
         </UtilBtn>
       </HStack>
     </HScroll>
@@ -265,7 +266,13 @@ export interface Props__PdfViewer extends StackProps {
 
 export const PdfViewer = (props: Props__PdfViewer) => {
   // Props
-  const { fileUrl, fileName, toolBarProps, defaultMode = "continuous", ...restProps } = props;
+  const {
+    fileUrl,
+    fileName,
+    toolBarProps,
+    defaultMode = "continuous",
+    ...restProps
+  } = props;
 
   // Contexts
   const { l } = useLang();
@@ -298,7 +305,7 @@ export const PdfViewer = (props: Props__PdfViewer) => {
       if (viewer.mode === "continuous") {
         setTimeout(() => {
           const pageElement = documentRef.current?.querySelector(
-            `[data-page-number="${p}"]`
+            `[data-page-number="${p}"]`,
           );
           pageElement?.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 100);
@@ -332,7 +339,10 @@ export const PdfViewer = (props: Props__PdfViewer) => {
       if (containerRef.current && pdfInfo) {
         const containerHeight = containerRef.current.clientHeight - 80; // minus toolbar
         const scale = containerHeight / pdfInfo.originalHeight;
-        setViewer((ps) => ({ ...ps, scale: Math.max(0.5, Math.min(scale, 2)) }));
+        setViewer((ps) => ({
+          ...ps,
+          scale: Math.max(0.5, Math.min(scale, 2)),
+        }));
       }
     },
 
@@ -506,10 +516,7 @@ export const PdfViewer = (props: Props__PdfViewer) => {
               <>
                 {viewer.mode === "single" && (
                   // Single Mode - dengan horizontal scroll saat zoom
-                  <Box
-                    minW={"max-content"}
-                    mx={"auto"}
-                  >
+                  <Box minW={"max-content"} mx={"auto"}>
                     <Page
                       pageNumber={viewer.page}
                       renderTextLayer={true}
@@ -521,7 +528,7 @@ export const PdfViewer = (props: Props__PdfViewer) => {
                 )}
 
                 {viewer.mode === "continuous" && (
-                  // Continuous Mode - scroll vertical dengan horizontal scroll saat zoom
+                  // Scroll Mode - scroll vertical dengan horizontal scroll saat zoom
                   <Box
                     display={"flex"}
                     flexDirection={"column"}
@@ -531,7 +538,7 @@ export const PdfViewer = (props: Props__PdfViewer) => {
                   >
                     {Array.from(
                       { length: viewer.numPages || 0 },
-                      (_, index) => index + 1
+                      (_, index) => index + 1,
                     ).map((pageNumber) => (
                       <Box
                         key={`page_${pageNumber}`}

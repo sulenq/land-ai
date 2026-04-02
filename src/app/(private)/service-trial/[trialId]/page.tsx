@@ -1,5 +1,7 @@
 "use client";
 
+// TODO ubah activeDA => context trial session
+
 import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
 import {
   AccordionItem,
@@ -22,8 +24,6 @@ import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { P } from "@/components/ui/p";
 import { Segmented } from "@/components/ui/segment-group";
-import { FadingSkeletonContainer } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
@@ -32,13 +32,15 @@ import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import FeedbackState from "@/components/widget/FeedbackState";
-import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { InfoPopover } from "@/components/widget/InfoPopover";
 import { MContainer } from "@/components/widget/MContainer";
-import { PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
+import { TrialStepper } from "@/components/widget/trial-stepper";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { DUMMY_PDF_URL } from "@/constants/dummyData";
 import {
@@ -50,9 +52,9 @@ import {
 import { R_SPACING_MD } from "@/constants/styles";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
-import { useDASessions } from "@/context/useDASessions";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import { useTrialSessionContext } from "@/context/useTrialSessionContext";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
@@ -65,14 +67,14 @@ import {
   Badge,
   Box,
   Center,
+  Group,
+  GroupProps,
   HStack,
   Stack,
   StackProps,
-  Tabs,
   TextProps,
 } from "@chakra-ui/react";
 import {
-  AlertTriangleIcon,
   ArrowUpRightIcon,
   CheckCheckIcon,
   CheckIcon,
@@ -82,7 +84,6 @@ import {
   TableIcon,
   XIcon,
 } from "lucide-react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, {
   memo,
   useCallback,
@@ -132,7 +133,6 @@ const PdfViewerUploadedDocuments = (
         return (
           <HStack
             key={doc.documentRequirement.id}
-            align={"start"}
             px={3}
             py={2}
             rounded={themeConfig.radii.component}
@@ -172,7 +172,7 @@ const PdfViewerUploadedDocuments = (
               </Tooltip>
             </CContainer>
 
-            {isActive && <DotIndicator ml={"auto"} mt={2} />}
+            {isActive && <DotIndicator ml={"auto"} />}
           </HStack>
         );
       })}
@@ -245,11 +245,14 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
   // Hooks
   const iss = useIsSmScreenWidth();
 
+  // Reset activeDocs on close
   useEffect(() => {
     if (!open) {
       setActiveDocs([]);
     }
   }, [open]);
+
+  // console.debug(activeDocs);
 
   return (
     <>
@@ -285,6 +288,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 </CContainer>
               )}
 
+              {/* PDF Viewer */}
               <CContainer
                 flex={1}
                 gap={4}
@@ -390,6 +394,18 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                             flex={1}
                             minH={0}
                           />
+
+                          <CContainer my={4}>
+                            <Group mx={"auto"}>
+                              <Btn variant={"outline"} colorPalette={"red"}>
+                                Tolak
+                              </Btn>
+
+                              <Btn variant={"outline"} colorPalette={"green"}>
+                                Valid dan siap disahkan
+                              </Btn>
+                            </Group>
+                          </CContainer>
                         </CContainer>
                       );
                     })}
@@ -415,6 +431,23 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
         </DisclosureContent>
       </DisclosureRoot>
     </>
+  );
+};
+
+// -----------------------------------------------------------------
+
+const Header = () => {
+  // Contexts
+  const activeDASession = useActiveDA((s) => s.activeDA.session);
+
+  return (
+    <CContainer gap={1}>
+      <ClampText fontSize={"xl"} fontWeight={"semibold"}>
+        {activeDASession?.title}
+      </ClampText>
+
+      <P color={"fg.subtle"}>{activeDASession?.id}</P>
+    </CContainer>
   );
 };
 
@@ -473,6 +506,9 @@ const MetaData = () => {
   // Constants
   const documentService = activeDASession?.documentService;
   const uploadedDocuments = activeDASession?.uploadedDocuments;
+  const trialDaSessions = useTrialSessionContext(
+    (s) => s.trialSession?.trialDaSessions,
+  );
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(
@@ -483,6 +519,9 @@ const MetaData = () => {
   const [activeDocs, setActiveDocs] = useState<Interface__DAUploadedDocument[]>(
     uploadedDocuments?.[0] ? [uploadedDocuments[0]] : [],
   );
+
+  // Derived Values
+  const isManualPhase = (trialDaSessions?.length ?? 0) <= 3;
 
   return (
     <>
@@ -542,80 +581,82 @@ const MetaData = () => {
       </CContainer>
 
       {/* Uploaded files */}
-      <CContainer gap={2}>
-        <HStack h={"32px"}>
-          <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
-        </HStack>
+      {isManualPhase && (
+        <CContainer gap={2}>
+          <HStack h={"32px"}>
+            <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
+          </HStack>
 
-        <CContainer
-          gap={2}
-          rounded={themeConfig.radii.container}
-          // border={"1px solid"}
-          borderColor={"border.muted"}
-        >
-          {uploadedDocuments?.map((doc) => {
-            return (
-              <HStack
-                flexDir={["column", null, "row"]}
-                key={doc.documentRequirement.id}
-                gapX={4}
-                bg={"d0"}
-                pl={4}
-                pr={3}
-                py={3}
-                rounded={themeConfig.radii.component}
-              >
-                <CContainer gap={1}>
-                  <HStack flexShrink={0}>
-                    <ClampText fontWeight={"medium"}>
-                      {doc.documentRequirement.name}
-                    </ClampText>
-
-                    {!doc.documentRequirement.isMandatory && (
-                      <Badge bg={"d1"} colorPalette={"gray"}>
-                        {l.optional}
-                      </Badge>
-                    )}
-                  </HStack>
-
-                  {doc.metaData.fileName ? (
-                    <FileName
-                      color={"fg.muted"}
-                      onClick={() => {
-                        setActiveDocs([doc]);
-                        onOpen();
-                      }}
-                    >
-                      {doc.metaData.fileName}
-                    </FileName>
-                  ) : (
-                    <P>-</P>
-                  )}
-                </CContainer>
-
-                <Btn
-                  variant={"subtle"}
-                  ml={"auto"}
-                  onClick={() => {
-                    setActiveDocs([doc]);
-                    onOpen();
-                  }}
+          <CContainer
+            gap={2}
+            rounded={themeConfig.radii.container}
+            // border={"1px solid"}
+            borderColor={"border.muted"}
+          >
+            {uploadedDocuments?.map((doc) => {
+              return (
+                <HStack
+                  flexDir={["column", null, "row"]}
+                  key={doc.documentRequirement.id}
+                  gapX={4}
+                  bg={"d0"}
+                  pl={4}
+                  pr={3}
+                  py={3}
+                  rounded={themeConfig.radii.component}
                 >
-                  {l.open}
-                  <AppIcon icon={ArrowUpRightIcon} />
-                </Btn>
-              </HStack>
-            );
-          })}
-        </CContainer>
+                  <CContainer gap={1}>
+                    <HStack flexShrink={0}>
+                      <ClampText fontWeight={"medium"}>
+                        {doc.documentRequirement.name}
+                      </ClampText>
 
-        <PdfViewerDisclosure
-          open={isOpen}
-          uploadedDocuments={uploadedDocuments}
-          activeDocs={activeDocs}
-          setActiveDocs={setActiveDocs}
-        />
-      </CContainer>
+                      {!doc.documentRequirement.isMandatory && (
+                        <Badge bg={"d1"} colorPalette={"gray"}>
+                          {l.optional}
+                        </Badge>
+                      )}
+                    </HStack>
+
+                    {doc.metaData.fileName ? (
+                      <FileName
+                        color={"fg.muted"}
+                        onClick={() => {
+                          setActiveDocs([doc]);
+                          onOpen();
+                        }}
+                      >
+                        {doc.metaData.fileName}
+                      </FileName>
+                    ) : (
+                      <P>-</P>
+                    )}
+                  </CContainer>
+
+                  <Btn
+                    variant={"subtle"}
+                    ml={"auto"}
+                    onClick={() => {
+                      setActiveDocs([doc]);
+                      onOpen();
+                    }}
+                  >
+                    {l.open}
+                    <AppIcon icon={ArrowUpRightIcon} />
+                  </Btn>
+                </HStack>
+              );
+            })}
+          </CContainer>
+
+          <PdfViewerDisclosure
+            open={isOpen}
+            uploadedDocuments={uploadedDocuments}
+            activeDocs={activeDocs}
+            setActiveDocs={setActiveDocs}
+          />
+        </CContainer>
+      )}
     </>
   );
 };
@@ -1067,67 +1108,6 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
 
 // -----------------------------------------------------------------
 
-// interface Props__GenerateLetterButtons extends StackProps {
-//   data?: Interface__DASessionDetail;
-// }
-
-// const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
-//   // Props
-//   const { data, ...restProps } = props;
-
-//   // States
-//   const rawData = data?.rawData;
-//   const LETTERS = [
-//     {
-//       key: "suratKuasa",
-//       label: "Surat Kuasa",
-//       pdf: <SuratKuasaPDF data={rawData} />,
-//     },
-//     {
-//       key: "suratPermohonan",
-//       label: "Surat Permohonan",
-//       pdf: <SuratPermohonanPDF data={rawData} />,
-//     },
-//     {
-//       key: "suratPernyataan",
-//       label: "Surat Pernyataan",
-//       pdf: <SuratPernyataanPDF data={rawData} />,
-//     },
-//   ];
-
-//   return (
-//     <ConstrainedContainer {...restProps}>
-//       <CContainer gap={2} align={"center"}>
-//         <HStack wrap={"wrap"} justify={"center"}>
-//           {LETTERS.map((letter) => {
-//             return (
-//               <PDFDownloadLink
-//                 key={letter.key}
-//                 document={letter.pdf as any}
-//                 fileName={`${letter.label}.pdf`}
-//               >
-//                 {({ loading }: any) => (
-//                   <Btn variant={"outline"} size={"sm"} disabled={loading}>
-//                     <AppIcon icon={DownloadIcon} boxSize={4} />
-//                     {letter.label} PDF
-//                   </Btn>
-//                 )}
-//               </PDFDownloadLink>
-//             );
-//           })}
-//         </HStack>
-
-//         {/* <Btn w={"fit"} variant={"outline"} size={"xs"} onClick={downloadAll}>
-//           <AppIcon icon={DownloadIcon} />
-//           {l.download} {l.all}
-//         </Btn> */}
-//       </CContainer>
-//     </ConstrainedContainer>
-//   );
-// };
-
-// -----------------------------------------------------------------
-
 interface Props__ResultSection extends StackProps {
   daSession?: Interface__DASessionDetail;
   containerDimension?: {
@@ -1153,7 +1133,6 @@ const ResultSection = (props: Props__ResultSection) => {
   return (
     <CContainer pos={"relative"} {...restProps}>
       <CContainer
-        px={4}
         pos={"sticky"}
         top={"-32px"}
         mb={[2, null, 0]}
@@ -1234,7 +1213,7 @@ const ResultSection = (props: Props__ResultSection) => {
 
       {/* Accordion View */}
       <Box display={viewMode === "accordion" ? "block" : "none"}>
-        <CContainer px={4}>
+        <CContainer>
           <CContainer>
             <AccordionMode
               daSession={daSession}
@@ -1246,7 +1225,7 @@ const ResultSection = (props: Props__ResultSection) => {
       </Box>
 
       <Box display={viewMode === "table" ? "block" : "none"}>
-        <CContainer px={4}>
+        <CContainer>
           <TableMode
             daSession={daSession}
             containerDimension={containerDimension}
@@ -1259,220 +1238,104 @@ const ResultSection = (props: Props__ResultSection) => {
 
 // -----------------------------------------------------------------
 
-// interface Props__ResultTrigger extends StackProps {
-//   data?: Interface__DASessionDetail;
-//   containerDimension: {
-//     width: number;
-//     height: number;
-//   };
-// }
-// const ResultTrigger = (props: Props__ResultTrigger) => {
-//   // Props
-//   const { data, containerDimension, ...restProps } = props;
+interface Props__TrialDaSessionVerificationButtons extends GroupProps {
+  disabled?: boolean;
+}
 
-//   // Contexts
-//   const { l } = useLang();
-//   const { themeConfig } = useThemeConfig();
+const TrialDaSessionVerificationButtons = (
+  props: Props__TrialDaSessionVerificationButtons,
+) => {
+  // Props
+  const { disabled, ...restProps } = props;
 
-//   // Hooks
-//   const { isOpen, onOpen } = usePopDisclosure(disclosureId(`da_result`));
+  return (
+    <Group {...restProps}>
+      <Btn variant={"outline"} colorPalette={"red"} disabled={disabled}>
+        Tolak
+      </Btn>
 
-//   // Derived Values
-//   const processing = data?.status === "PROCESSING";
-//   const failed = data?.status === "FAILED";
-//   const completed = data?.status === "COMPLETED";
-
-//   return (
-//     <>
-//       <CContainer w={"fit"} onClick={onOpen} {...restProps}></CContainer>
-
-//       <DisclosureRoot open={isOpen} lazyLoad size={"cover"}>
-//         <DisclosureContent>
-//           <DisclosureHeader>
-//             <DisclosureHeaderContent title={l.result} />
-//           </DisclosureHeader>
-
-//           <DisclosureBody>
-//             <CContainer>
-//               {processing && (
-//                 <FeedbackState
-//                   icon={<Spinner />}
-//                   title={l.alert_da_analyze_processing.title}
-//                   description={l.alert_da_analyze_processing.description}
-//                   m={"auto"}
-//                   my={"80px"}
-//                 />
-//               )}
-
-//               {failed && (
-//                 <FeedbackState
-//                   icon={<LucideIcon icon={AlertTriangleIcon} />}
-//                   title={l.alert_da_analyze_failed.title}
-//                   description={l.alert_da_analyze_failed.description}
-//                   m={"auto"}
-//                   my={"80px"}
-//                 />
-//               )}
-
-//               {completed && (
-//                 <>
-//                   <ResultSection
-//                     daSession={data}
-//                     containerDimension={containerDimension}
-//                   />
-
-//                   <GenerateLetterButtons data={data} mt={8} />
-//                 </>
-//               )}
-
-//               <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
-//                 <NavLink to={"/new-da"}>
-//                   <Btn
-//                     variant={"ghost"}
-//                     color={`${themeConfig.colorPalette}.fg`}
-//                   >
-//                     {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
-//                   </Btn>
-//                 </NavLink>
-
-//                 <NavLink to={`/new-da/${data?.documentService.id}`}>
-//                   <Btn
-//                     variant={"ghost"}
-//                     color={`${themeConfig.colorPalette}.fg`}
-//                   >
-//                     {l.new_da_with_same_service}
-//                     <AppIcon icon={ArrowUpRightIcon} />
-//                   </Btn>
-//                 </NavLink>
-//               </HStack>
-//             </CContainer>
-
-//             <CContainer>
-//               <HelperText>{l.msg_da_disclaimer}</HelperText>
-//             </CContainer>
-//           </DisclosureBody>
-
-//           <DisclosureFooter>
-//             <BackButton />
-//           </DisclosureFooter>
-//         </DisclosureContent>
-//       </DisclosureRoot>
-//     </>
-//   );
-// };
+      <Btn variant={"outline"} colorPalette={"green"} disabled={disabled}>
+        Valid dan siap disahkan
+      </Btn>
+    </Group>
+  );
+};
 
 // -----------------------------------------------------------------
 
 export default function Page() {
   // Contexts
   const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
-  const removeFromDASessions = useDASessions((s) => s.removeFromDASessions);
-  const updateIsNewDA = useActiveDA((s) => s.updateIsNewDA);
-  const updateHasLoadedHistory = useActiveDA((s) => s.updateHasLoadedHistory);
-  const clearActiveDa = useActiveDA((s) => s.clearActiveDa);
-  const setSession = useActiveDA((s) => s.setSession);
-  const activeDA = useActiveDA((s) => s.activeDA);
+  const trialSession = useTrialSessionContext((s) => s.trialSession);
+  const setActiveDaSession = useActiveDA((s) => s.setSession);
+  const trialDaSessions = trialSession?.trialDaSessions;
+  const currentDaSessionId = trialDaSessions?.[0].daSession?.id;
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Hooks
-  const { serviceId, sessionId } = useParams();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const daServiceParam = searchParams.get("service");
   const containerDimension = useContainerDimension(containerRef);
 
   // States
-  const activeDASession = activeDA.session;
-  const activeDASessionId = activeDASession?.id;
-  const [pollingTick, setPollingTick] = useState(0);
-  // const initialLoading = true;
-  const { initialLoading, error, status, data, onRetry } =
-    useDataState<Interface__DASessionDetail>({
-      // initialData: DUMMY_ACTIVE_DA_SESSION as any,
-      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
-      dataResource: false,
-      dependencies: [sessionId, pollingTick],
-      loadingBarInitialOnly: true,
-    });
+  const {
+    initialLoading,
+    error,
+    data: currentDaSession,
+    onRetry,
+  } = useDataState<Interface__DASessionDetail>({
+    // initialData: DUMMY_ACTIVE_DA_SESSION as any,
+    url: `${DA_API_SESSION_DETAIL}/${currentDaSessionId}`,
+    dataResource: false,
+    dependencies: [currentDaSessionId],
+    loadingBarInitialOnly: true,
+  });
 
   // Derived Values
-  const processing = data?.status === "PROCESSING";
-  const failed = data?.status === "FAILED";
-  const completed = data?.status === "COMPLETED";
-
-  // Update has loaded history on session change
-  useEffect(() => {
-    updateIsNewDA(false);
-    if (activeDASessionId !== sessionId) {
-      updateHasLoadedHistory(false);
-      clearActiveDa();
-    }
-  }, [sessionId]);
-
-  // Set active DA on data load
-  useEffect(() => {
-    if (data && data.id === sessionId) {
-      setSession(data);
-    }
-  }, [data, sessionId, setSession]);
-
-  // Handle 404 - redirect and remove session
-  useEffect(() => {
-    if (status === 404) {
-      removeFromDASessions(sessionId as string);
-      router.push("/new-da");
-    }
-  }, [status]);
+  const isAiPhase = (trialDaSessions?.length ?? 0) > 3;
+  // TODO make disabled condition for trial verification buttons
+  const isDisabled = true;
 
   // Update breadcrumbs
   useEffect(() => {
-    if (activeDA.session) {
+    if (currentDaSession) {
       setBreadcrumbs({
-        backPath: `/your-da/${serviceId}?service=${daServiceParam}`,
+        backPath: `/service-trial`,
         activeNavs: [
           {
-            labelKey: `navs.your_da`,
-            path: `/da`,
+            labelKey: `navs.service_trial`,
+            path: `/service-trial`,
           },
           {
-            label: activeDA.session?.title,
-            path: `/da/${sessionId}`,
+            label: currentDaSession?.title,
+            path: `/service-trial/${currentDaSessionId}`,
           },
         ],
       });
     } else {
       setBreadcrumbs({
-        backPath: `/your-da/${serviceId}`,
+        backPath: `/your-da/${currentDaSessionId}`,
         activeNavs: [
           {
-            labelKey: `navs.your_da`,
-            path: `/da`,
+            labelKey: `navs.service_trial`,
+            path: `/service-trial`,
           },
           {
             label: "...",
-            path: `/da/${sessionId}`,
+            path: `/service-trial/${currentDaSessionId}`,
           },
         ],
       });
     }
-  }, [activeDA.session]);
+  }, [currentDaSession]);
 
-  // Refetch if processing
+  // Set active DA on data load
   useEffect(() => {
-    if (data?.status !== "PROCESSING") return;
-
-    const interval = setInterval(() => {
-      setPollingTick((t) => t + 1);
-    }, 3000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [data?.status]);
+    if (currentDaSession && currentDaSession.id === currentDaSessionId) {
+      setActiveDaSession(currentDaSession);
+    }
+  }, [currentDaSession, currentDaSessionId, setActiveDaSession]);
 
   const render = {
     loading: <DASessonPageSkeleton />,
@@ -1480,142 +1343,63 @@ export default function Page() {
     empty: <FeedbackNoData m={"auto"} />,
     notFound: <FeedbackNotFound m={"auto"} />,
     loaded: (
-      <CContainer flex={1} gap={8} pt={4}>
-        <CContainer px={4}>
-          <CContainer gap={8}>
-            {/* Header */}
-            <CContainer gap={1}>
-              <ClampText fontSize={"xl"} fontWeight={"semibold"}>
-                {activeDASession?.id}
-              </ClampText>
+      <CContainer flex={1} gap={8}>
+        {/* Header */}
+        <Header />
 
-              <P color={"fg.subtle"}>
-                {/* {formatDate(activeDASession?.createdAt, {
-                  withTime: true,
-                })} */}
+        {/* Meta */}
+        <MetaData />
 
-                {activeDASession?.title}
-              </P>
+        {isAiPhase && (
+          <>
+            {/* Result */}
+            <CContainer>
+              <ResultSection
+                daSession={currentDaSession}
+                containerDimension={containerDimension}
+              />
+
+              {/* <GenerateLetterButtons data={data} mt={8} /> */}
             </CContainer>
 
-            {/* Meta */}
-            <MetaData />
-          </CContainer>
-        </CContainer>
+            {/* Helper Text */}
+            <CContainer>
+              <HelperText textAlign={"center"}>
+                {l.msg_da_disclaimer}
+              </HelperText>
+            </CContainer>
+          </>
+        )}
 
-        {/* Result */}
-        {/* <ResultTrigger data={data} containerDimension={containerDimension}>
-          <Btn>{l.analysis_result}</Btn>
-        </ResultTrigger> */}
-
-        <>
-          <CContainer>
-            <>
-              {processing && (
-                <FeedbackState
-                  icon={<Spinner />}
-                  title={l.alert_da_analyze_processing.title}
-                  description={l.alert_da_analyze_processing.description}
-                  m={"auto"}
-                  my={"80px"}
-                />
-              )}
-
-              {failed && (
-                <FeedbackState
-                  icon={<LucideIcon icon={AlertTriangleIcon} />}
-                  title={l.alert_da_analyze_failed.title}
-                  description={l.alert_da_analyze_failed.description}
-                  m={"auto"}
-                  my={"80px"}
-                />
-              )}
-
-              {completed && (
-                <>
-                  <ResultSection
-                    daSession={data}
-                    containerDimension={containerDimension}
-                  />
-
-                  {/* <GenerateLetterButtons data={data} mt={8} /> */}
-                </>
-              )}
-            </>
-
-            {/* <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
-              <NavLink to={"/new-da"}>
-                <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
-                  {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
-                </Btn>
-              </NavLink>
-
-              <NavLink to={`/new-da/${data?.documentService.id}`}>
-                <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
-                  {l.new_da_with_same_service}
-                  <AppIcon icon={ArrowUpRightIcon} />
-                </Btn>
-              </NavLink>
-            </HStack> */}
-          </CContainer>
-
-          <CContainer px={4} pb={4}>
-            <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
-          </CContainer>
-        </>
+        {/* Verification */}
+        <TrialDaSessionVerificationButtons disabled={isDisabled} mx={"auto"} />
       </CContainer>
     ),
   };
 
+  // console.debug(trialSession);
+
   return (
-    <PageContainer ref={containerRef} pos={"relative"}>
-      <Tabs.Root
-        defaultValue={"result"}
-        colorPalette={themeConfig.colorPalette}
-        flex={1}
-      >
-        <Tabs.List px={4}>
-          <Tabs.Trigger
-            value="search"
-            onClick={() => {
-              router.push(`/your-da/${serviceId}?service=${daServiceParam}`);
-            }}
-          >
-            {l.search}
-          </Tabs.Trigger>
-          <Tabs.Trigger value="result">{l.process}</Tabs.Trigger>
-        </Tabs.List>
+    <PageContainer ref={containerRef} p={8} pos={"relative"}>
+      <ConstrainedContainer flex={1} justify={"space-between"} gap={8}>
+        <CContainer>
+          <TrialStepper />
+        </CContainer>
 
-        <Tabs.Content value="search"></Tabs.Content>
+        {initialLoading && render.loading}
 
-        <Tabs.Content value="result" p={0}>
-          <CContainer
-            flex={1}
-            justify={"space-between"}
-            gap={4}
-            maxH={"calc(100svh - 52px - 41px)"}
-            overflowY={"auto"}
-          >
-            <FadingSkeletonContainer loading={initialLoading}>
-              <CContainer flex={1} p={4} mt={12}>
-                {render.loading}
-              </CContainer>
-            </FadingSkeletonContainer>
-
-            {!initialLoading && (
+        {!initialLoading && (
+          <>
+            {error && render.error}
+            {!error && (
               <>
-                {error && render.error}
-                {!error && (
-                  <>
-                    {activeDASession && render.loaded}
-                    {!activeDASession && !data && render.empty}
-                  </>
-                )}
+                {currentDaSession && render.loaded}
+                {!currentDaSession && render.empty}
               </>
             )}
-          </CContainer>
-        </Tabs.Content>
-      </Tabs.Root>
+          </>
+        )}
+      </ConstrainedContainer>
     </PageContainer>
   );
 }

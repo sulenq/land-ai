@@ -326,3 +326,34 @@ export interface Interface__ActiveDAState {
   isNewDA: boolean;
   hasLoadedHistory: boolean;
 }
+
+// -----------------------------------------------------------------
+
+// Trial
+export interface Interface__TrialSession {
+  id: string;
+  user: Interface__User;
+  step: number;
+  trialDaSessions: Interface__TrialDASession[];
+  createdAt: string;
+}
+
+export interface Interface__TrialDASession {
+  id: string;
+  daSession: Interface__DASession;
+  startTime: string;
+  endTime: string;
+  manualDetails: Interface__TrialDADocumentDetail[];
+  aiDetails: Interface__TrialDADocumentDetail[];
+  createdAt: string;
+}
+
+export interface Interface__TrialDADocumentDetail {
+  jobId: string;
+  docName: string;
+  startTime: string;
+  endTime: string;
+  timeMs: number; // duration
+  status: "VERIFIED" | "REJECTED";
+  notes: string; // used if rejected only
+}
