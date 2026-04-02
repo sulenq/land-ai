@@ -20,7 +20,6 @@ import {
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
-import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import { Segmented } from "@/components/ui/segment-group";
 import { FadingSkeletonContainer } from "@/components/ui/skeleton";
@@ -29,11 +28,6 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
 import { ClampText } from "@/components/widget/ClampText";
-import {
-  SuratKuasaPDF,
-  SuratPermohonanPDF,
-  SuratPernyataanPDF,
-} from "@/components/widget/DALetterTemplate";
 import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
@@ -43,10 +37,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { InfoPopover } from "@/components/widget/InfoPopover";
 import { MContainer } from "@/components/widget/MContainer";
-import {
-  ConstrainedContainer,
-  PageContainer,
-} from "@/components/widget/PageShell";
+import { PageContainer } from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { DUMMY_PDF_URL } from "@/constants/dummyData";
@@ -80,13 +71,11 @@ import {
   Tabs,
   TextProps,
 } from "@chakra-ui/react";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
   ArrowUpRightIcon,
   CheckCheckIcon,
   CheckIcon,
-  DownloadIcon,
   LayoutListIcon,
   ListIcon,
   ShieldAlertIcon,
@@ -1078,64 +1067,64 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
 
 // -----------------------------------------------------------------
 
-interface Props__GenerateLetterButtons extends StackProps {
-  data?: Interface__DASessionDetail;
-}
+// interface Props__GenerateLetterButtons extends StackProps {
+//   data?: Interface__DASessionDetail;
+// }
 
-const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
-  // Props
-  const { data, ...restProps } = props;
+// const GenerateLetterButtons = (props: Props__GenerateLetterButtons) => {
+//   // Props
+//   const { data, ...restProps } = props;
 
-  // States
-  const rawData = data?.rawData;
-  const LETTERS = [
-    {
-      key: "suratKuasa",
-      label: "Surat Kuasa",
-      pdf: <SuratKuasaPDF data={rawData} />,
-    },
-    {
-      key: "suratPermohonan",
-      label: "Surat Permohonan",
-      pdf: <SuratPermohonanPDF data={rawData} />,
-    },
-    {
-      key: "suratPernyataan",
-      label: "Surat Pernyataan",
-      pdf: <SuratPernyataanPDF data={rawData} />,
-    },
-  ];
+//   // States
+//   const rawData = data?.rawData;
+//   const LETTERS = [
+//     {
+//       key: "suratKuasa",
+//       label: "Surat Kuasa",
+//       pdf: <SuratKuasaPDF data={rawData} />,
+//     },
+//     {
+//       key: "suratPermohonan",
+//       label: "Surat Permohonan",
+//       pdf: <SuratPermohonanPDF data={rawData} />,
+//     },
+//     {
+//       key: "suratPernyataan",
+//       label: "Surat Pernyataan",
+//       pdf: <SuratPernyataanPDF data={rawData} />,
+//     },
+//   ];
 
-  return (
-    <ConstrainedContainer {...restProps}>
-      <CContainer gap={2} align={"center"}>
-        <HStack wrap={"wrap"} justify={"center"}>
-          {LETTERS.map((letter) => {
-            return (
-              <PDFDownloadLink
-                key={letter.key}
-                document={letter.pdf as any}
-                fileName={`${letter.label}.pdf`}
-              >
-                {({ loading }: any) => (
-                  <Btn variant={"outline"} size={"sm"} disabled={loading}>
-                    <AppIcon icon={DownloadIcon} boxSize={4} />
-                    {letter.label} PDF
-                  </Btn>
-                )}
-              </PDFDownloadLink>
-            );
-          })}
-        </HStack>
+//   return (
+//     <ConstrainedContainer {...restProps}>
+//       <CContainer gap={2} align={"center"}>
+//         <HStack wrap={"wrap"} justify={"center"}>
+//           {LETTERS.map((letter) => {
+//             return (
+//               <PDFDownloadLink
+//                 key={letter.key}
+//                 document={letter.pdf as any}
+//                 fileName={`${letter.label}.pdf`}
+//               >
+//                 {({ loading }: any) => (
+//                   <Btn variant={"outline"} size={"sm"} disabled={loading}>
+//                     <AppIcon icon={DownloadIcon} boxSize={4} />
+//                     {letter.label} PDF
+//                   </Btn>
+//                 )}
+//               </PDFDownloadLink>
+//             );
+//           })}
+//         </HStack>
 
-        {/* <Btn w={"fit"} variant={"outline"} size={"xs"} onClick={downloadAll}>
-          <AppIcon icon={DownloadIcon} />
-          {l.download} {l.all}
-        </Btn> */}
-      </CContainer>
-    </ConstrainedContainer>
-  );
-};
+//         {/* <Btn w={"fit"} variant={"outline"} size={"xs"} onClick={downloadAll}>
+//           <AppIcon icon={DownloadIcon} />
+//           {l.download} {l.all}
+//         </Btn> */}
+//       </CContainer>
+//     </ConstrainedContainer>
+//   );
+// };
 
 // -----------------------------------------------------------------
 
@@ -1549,12 +1538,12 @@ export default function Page() {
                     containerDimension={containerDimension}
                   />
 
-                  <GenerateLetterButtons data={data} mt={8} />
+                  {/* <GenerateLetterButtons data={data} mt={8} /> */}
                 </>
               )}
             </>
 
-            <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
+            {/* <HStack wrap={"wrap"} gap={1} justify={"center"} mt={4}>
               <NavLink to={"/new-da"}>
                 <Btn variant={"ghost"} color={`${themeConfig.colorPalette}.fg`}>
                   {l.new_da} <AppIcon icon={ArrowUpRightIcon} />
@@ -1567,7 +1556,7 @@ export default function Page() {
                   <AppIcon icon={ArrowUpRightIcon} />
                 </Btn>
               </NavLink>
-            </HStack>
+            </HStack> */}
           </CContainer>
 
           <CContainer px={4} pb={4}>
