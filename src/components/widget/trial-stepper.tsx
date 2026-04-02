@@ -54,9 +54,6 @@ export const TrialStepper = (props: StepsRootProps) => {
     if (!trialSession || !trialId) return;
 
     switch (step) {
-      case 1:
-        router.push("/service-trial");
-        break;
       case 2:
       case 3:
         router.push(`/service-trial/${trialId}`);
