@@ -61,9 +61,9 @@ export const TrialStepper = (props: StepsRootProps) => {
       case 3:
         router.push(`/service-trial/${trialId}`);
         break;
-      // case 4:
-      //   router.push(`/service-trial/${trialId}/summary`);
-      //   break;
+      case 4:
+        router.push(`/service-trial/${trialId}/summary`);
+        break;
       default:
         router.push("/service-trial");
         break;
