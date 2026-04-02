@@ -1,5 +1,6 @@
 import {
   DA_API_EXTRACT_SERTIPIKAT,
+  DA_API_SESSON_CREATE,
   DA_API_SESSION_DETAIL,
 } from "@/constants/apis";
 import useRequest from "@/hooks/useRequest";
@@ -19,7 +20,7 @@ export default function useExtractSertipikat() {
     showErrorToast: true,
     successMessage: {
       title: "Berhasil diunggah",
-      description: "Sertipikat sedang diproses...",
+      description: "Dokumen sedang diproses...",
     },
   });
 
@@ -70,6 +71,52 @@ export default function useExtractSertipikat() {
     [uploadReq],
   );
 
+  const uploadDocuments = useCallback(
+    async (
+      filesByRequirement: Record<string, File>,
+      serviceId: string,
+      title?: string,
+    ) => {
+      setSessionId(null);
+      setExtractedData(null);
+
+      const formData = new FormData();
+      formData.append("serviceId", serviceId);
+      if (title) {
+        formData.append("title", title);
+      }
+
+      Object.entries(filesByRequirement).forEach(([requirementId, file]) => {
+        formData.append(`files[${requirementId}]`, file);
+      });
+
+      try {
+        const res = await uploadReq({
+          config: {
+            method: "POST",
+            url: DA_API_SESSON_CREATE,
+            data: formData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          },
+        });
+
+        const id =
+          res?.data?.data?.sessionId ||
+          res?.data?.data?.id ||
+          res?.data?.data?.jobId;
+        if (id) {
+          setSessionId(id);
+          setIsPolling(true);
+        }
+      } catch (e) {
+        console.error("Bulk upload failed", e);
+      }
+    },
+    [uploadReq],
+  );
+
   const pollStatus = useCallback(async () => {
     if (!sessionId || !isPolling) return;
 
@@ -114,6 +161,7 @@ export default function useExtractSertipikat() {
   const isLoading = isUploading || isPolling;
 
   return {
+    uploadDocuments,
     uploadSertipikat,
     isLoading,
     isPolling,

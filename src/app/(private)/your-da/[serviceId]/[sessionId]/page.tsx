@@ -644,16 +644,26 @@ const AccordionItemsList = memo(function AccordionItemsList(
   }, [result]);
 
   const getValueResult = useCallback(
-    (label: string, index: number) => {
+    (label: string, uploadedDocument: any) => {
       const field = resultByLabel.get(label);
-      return field?.values?.[index]?.value ?? null;
+      const candidateIds = [
+        uploadedDocument?.id,
+        uploadedDocument?.jobId,
+        uploadedDocument?.documentRequirement?.id,
+      ].filter((value) => value != null);
+      const matchedValue = field?.values?.find(
+        (value: { documentId: number }) =>
+          candidateIds.includes(value.documentId),
+      );
+
+      return matchedValue?.value ?? null;
     },
     [resultByLabel],
   );
 
   return (
     <>
-      {uploadedDocuments?.map((doc, index) => {
+      {uploadedDocuments?.map((doc) => {
         const documentRequirement = documentRequirements?.find((dr) => {
           return dr.id === doc.documentRequirement.id;
         });
@@ -681,7 +691,10 @@ const AccordionItemsList = memo(function AccordionItemsList(
                 )}
 
                 {documentRequirement?.extractionSchema?.map((field) => {
-                  const value = getValueResult(field.label, index);
+                  const value = getValueResult(
+                    field.label,
+                    doc,
+                  );
                   const isNotFound = value === "NOT_FOUND";
 
                   return (
@@ -772,8 +785,11 @@ const AccordionItemsList = memo(function AccordionItemsList(
 
                     <AccordionItemContent px={0} py={2}>
                       <CContainer rounded={"md"} gap={2}>
-                        {uploadedDocuments?.map((doc, docIndex) => {
-                          const val = getValueResult(fieldLabel, docIndex);
+                        {uploadedDocuments?.map((doc) => {
+                          const val = getValueResult(
+                            fieldLabel,
+                            doc,
+                          );
                           const isNotFound = val === "NOT_FOUND";
 
                           return (
@@ -931,27 +947,18 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
         idx: idx,
         data: r,
         columns: [
-          {
-            td: r.label,
-            value: r.label,
-            dataType: "string",
-            tableCellProps: {
-              position: "sticky",
-              left: 0,
-              zIndex: 2,
-              bg: "body",
-            },
-          },
-          ...r.values.map((v) => {
-            // const documentRequirement = documentRequirements?.find((dr) => {
-            //   return dr.id === v.documentId;
-            // });
-            // const isInSchema = documentRequirement?.extractionSchema?.find(
-            //   (es) => {
-            //     return es.label === r.label;
-            //   },
-            // );
-            const isNotFound = v.value === "NOT_FOUND";
+          { td: r.label, value: r.label, dataType: "string" },
+          ...(uploadedDocuments ?? []).map((doc) => {
+            const candidateIds = [
+              (doc as any)?.id,
+              (doc as any)?.jobId,
+              doc.documentRequirement.id,
+            ].filter((value) => value != null);
+            const matchedValue = r.values.find(
+              (value) => candidateIds.includes(value.documentId),
+            );
+            const value = matchedValue?.value ?? null;
+            const isNotFound = value === "NOT_FOUND";
 
             return {
               td: (
@@ -960,12 +967,12 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
                   maxW={"200px"}
                   whiteSpace={"wrap"}
                 >
-                  {isNotFound ? l.not_found : v.value || "-"}
-                </P>
+                  {isNotFound ? l.not_found : value || "-"}
+                </ClampText>
               ),
-              dim: isNotFound || v.value === null,
-              value: v.value,
-              dataType: v.renderType,
+              dim: isNotFound || value === null,
+              value,
+              dataType: matchedValue?.renderType || "string",
             };
           }),
           {
@@ -992,7 +999,7 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
         ],
       };
     });
-  }, [result, l]);
+  }, [result, uploadedDocuments, l]);
 
   // SX
   // const px = useMemo(() => {

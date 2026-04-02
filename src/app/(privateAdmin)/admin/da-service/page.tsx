@@ -590,20 +590,23 @@ const Delete = (props: any) => {
   function onDelete() {
     back();
 
-    req({
-      config: {
-        url: `${BASE_ENDPOINT}/delete`,
-        method: "DELETE",
-        data: {
-          daServiceIds: deletedIds,
+    // Delete each service one by one
+    deletedIds.forEach((id: string | number, index: number) => {
+      req({
+        config: {
+          url: `${BASE_ENDPOINT}/destroy/${id}`,
+          method: "DELETE",
         },
-      },
-      onResolve: {
-        onSuccess: () => {
-          setRt((ps) => !ps);
-          clearSelectedRows?.();
+        onResolve: {
+          onSuccess: () => {
+            // Only trigger refresh and clear selection on the last item
+            if (index === deletedIds.length - 1) {
+              setRt((ps) => !ps);
+              clearSelectedRows?.();
+            }
+          },
         },
-      },
+      });
     });
   }
 

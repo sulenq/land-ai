@@ -29,6 +29,8 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
+type Type__PdfLoadPhase = "loading" | "rendering" | "ready";
+
 export interface Interface__PdfViewer {
   pageWidth: number;
   numPages: number | null;
@@ -276,6 +278,7 @@ export const PdfViewer = (props: Props__PdfViewer) => {
 
   // Contexts
   const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -294,6 +297,13 @@ export const PdfViewer = (props: Props__PdfViewer) => {
     originalWidth: number;
     originalHeight: number;
   } | null>(null);
+  const [loadState, setLoadState] = useState<{
+    phase: Type__PdfLoadPhase;
+    progress: number;
+  }>({
+    phase: "loading",
+    progress: 0,
+  });
 
   const utils: Interface__PdfViewerUtils = {
     setPageWidth: (width: number) =>
@@ -393,9 +403,26 @@ export const PdfViewer = (props: Props__PdfViewer) => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    setViewer((ps) => ({
+      ...ps,
+      numPages: null,
+      page: 1,
+    }));
+    setPdfInfo(null);
+    setLoadState({
+      phase: "loading",
+      progress: 0,
+    });
+  }, [fileUrl]);
+
   // Simpan info PDF untuk fitToHeight
   const handleLoadSuccess = useCallback((pdf: any) => {
     setViewer((v) => ({ ...v, numPages: pdf.numPages }));
+    setLoadState((prev) => ({
+      phase: "rendering",
+      progress: Math.max(prev.progress, 92),
+    }));
     // Ambil ukuran halaman pertama
     pdf.getPage(1).then((page: any) => {
       const viewport = page.getViewport({ scale: 1 });
@@ -403,6 +430,36 @@ export const PdfViewer = (props: Props__PdfViewer) => {
         originalWidth: viewport.width,
         originalHeight: viewport.height,
       });
+    });
+  }, []);
+
+  const handleLoadProgress = useCallback(
+    (progressData: { loaded: number; total: number }) => {
+      if (!progressData?.total) return;
+
+      const nextProgress = Math.min(
+        90,
+        Math.round((progressData.loaded / progressData.total) * 100),
+      );
+
+      setLoadState((prev) => {
+        if (prev.phase === "ready") return prev;
+        return {
+          ...prev,
+          progress: Math.max(prev.progress, nextProgress),
+        };
+      });
+    },
+    [],
+  );
+
+  const handlePageRenderSuccess = useCallback(() => {
+    setLoadState((prev) => {
+      if (prev.phase === "ready") return prev;
+      return {
+        phase: "ready",
+        progress: 100,
+      };
     });
   }, []);
 
@@ -499,10 +556,52 @@ export const PdfViewer = (props: Props__PdfViewer) => {
           window.addEventListener("mouseup", onMouseUp);
         }}
       >
+        {loadState.phase !== "ready" && (
+          <CContainer
+            position={"absolute"}
+            inset={2}
+            zIndex={1}
+            align={"center"}
+            justify={"center"}
+            bg={"rgba(18, 18, 18, 0.82)"}
+            borderRadius={"lg"}
+            pointerEvents={"none"}
+            gap={4}
+            px={6}
+          >
+            <Spinner />
+            <CContainer gap={2} maxW={"360px"} w={"full"} align={"center"}>
+              <P fontWeight={"semibold"} color={"white"}>
+                {loadState.phase === "loading"
+                  ? "Memuat PDF..."
+                  : "Merender halaman PDF..."}
+              </P>
+              <P fontSize={"sm"} color={"whiteAlpha.700"} textAlign={"center"}>
+                {loadState.progress}% selesai
+              </P>
+              <Box
+                w={"full"}
+                h={"8px"}
+                bg={"whiteAlpha.200"}
+                rounded={"full"}
+                overflow={"hidden"}
+              >
+                <Box
+                  h={"full"}
+                  w={`${loadState.progress}%`}
+                  bg={`${themeConfig.colorPalette}.solid`}
+                  transition={"width 180ms ease"}
+                />
+              </Box>
+            </CContainer>
+          </CContainer>
+        )}
+
         <Document
           file={fileUrl}
           onLoadSuccess={handleLoadSuccess}
-          loading={<Spinner />}
+          onLoadProgress={handleLoadProgress}
+          loading={null}
           error={
             <FeedbackState
               icon={<IconFileOff stroke={1.8} />}
@@ -519,6 +618,7 @@ export const PdfViewer = (props: Props__PdfViewer) => {
                   <Box minW={"max-content"} mx={"auto"}>
                     <Page
                       pageNumber={viewer.page}
+                      onRenderSuccess={handlePageRenderSuccess}
                       renderTextLayer={true}
                       renderAnnotationLayer={true}
                       width={viewer.pageWidth * viewer.scale}
@@ -546,6 +646,7 @@ export const PdfViewer = (props: Props__PdfViewer) => {
                       >
                         <Page
                           pageNumber={pageNumber}
+                          onRenderSuccess={handlePageRenderSuccess}
                           renderTextLayer={true}
                           renderAnnotationLayer={true}
                           width={viewer.pageWidth * viewer.scale}
