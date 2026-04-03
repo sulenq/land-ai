@@ -437,15 +437,22 @@ export const DataTable = (props: Props__DataTable) => {
                       <HStack
                         // className="debug"
                         align={"stretch"}
-                        minH={tdMinH}
-                        h={"full"}
                         py={3}
                         px={cellPx}
+                        h={"auto"}
+                        minH={tdMinH}
                         bg={isRowSelected ? selectedColor : tdBg}
                         justify={col.align}
+                        align={"start"}
+                        minW={0}
                         {...col?.wrapperProps}
                       >
-                        <Box opacity={row.dim || col.dim ? 0.4 : 1} w="full">
+                        <Box
+                          opacity={row.dim || col.dim ? 0.4 : 1}
+                          w="full"
+                          minW={0}
+                          overflow={"visible"}
+                        >
                           {col?.td}
                         </Box>
                       </HStack>

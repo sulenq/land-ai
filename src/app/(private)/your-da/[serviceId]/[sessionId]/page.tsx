@@ -37,7 +37,10 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { InfoPopover } from "@/components/widget/InfoPopover";
 import { MContainer } from "@/components/widget/MContainer";
-import { PageContainer } from "@/components/widget/PageShell";
+import {
+  ConstrainedContainer,
+  PageContainer,
+} from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { DUMMY_PDF_URL } from "@/constants/dummyData";
@@ -661,6 +664,23 @@ const AccordionItemsList = memo(function AccordionItemsList(
     [resultByLabel],
   );
 
+  const visibleValidationResults = useMemo(() => {
+    return (result ?? []).filter((item) => {
+      const filledCount = (uploadedDocuments ?? []).reduce((count, doc) => {
+        const value = getValueResult(item.label, doc);
+        const hasValue =
+          value !== null &&
+          value !== undefined &&
+          value !== "" &&
+          value !== "NOT_FOUND";
+
+        return count + (hasValue ? 1 : 0);
+      }, 0);
+
+      return filledCount > 1;
+    });
+  }, [result, uploadedDocuments, getValueResult]);
+
   return (
     <>
       {uploadedDocuments?.map((doc) => {
@@ -741,12 +761,12 @@ const AccordionItemsList = memo(function AccordionItemsList(
         <AccordionItemContent p={0}>
           <CContainer gap={1}>
             <AccordionRoot collapsible multiple>
-              {isEmptyArray(result) && (
+              {isEmptyArray(visibleValidationResults) && (
                 <FeedbackNotFound title={l.alert_no_data.title} mb={7} />
               )}
 
-              {result?.map((r, index) => {
-                const isLastIndex = index === result.length - 1;
+              {visibleValidationResults?.map((r, index) => {
+                const isLastIndex = index === visibleValidationResults.length - 1;
                 const fieldLabel = r.label;
                 const isMatch = r.validation.status;
 
@@ -931,17 +951,54 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
     [uploadedDocuments],
   );
 
-  // Derived Values
+  const visibleResult = useMemo(() => {
+    return (result ?? []).filter((item) => {
+      const filledCount = (uploadedDocuments ?? []).reduce((count, doc) => {
+        const candidateIds = [
+          (doc as any)?.id,
+          (doc as any)?.jobId,
+          doc.documentRequirement.id,
+        ].filter((value) => value != null);
+        const matchedValue = item.values.find((value) =>
+          candidateIds.includes(value.documentId),
+        );
+        const currentValue = matchedValue?.value ?? null;
+        const hasValue =
+          currentValue !== null &&
+          currentValue !== undefined &&
+          currentValue !== "" &&
+          currentValue !== "NOT_FOUND";
+
+        return count + (hasValue ? 1 : 0);
+      }, 0);
+
+      return filledCount > 1;
+    });
+  }, [result, uploadedDocuments]);
   const rows = useMemo<Interface__FormattedTableRow[]>(() => {
-    return (result ?? []).map((r, idx) => {
+    return visibleResult.map((r, idx) => {
       const isMatch = r.validation.status;
+      const wrappingCellProps = {
+        whiteSpace: "normal",
+      } as const;
+      const wrappingWrapperProps = {
+        h: "auto",
+        minH: "46px",
+        align: "start",
+      } as const;
 
       return {
         id: `${idx}`,
         idx: idx,
         data: r,
         columns: [
-          { td: r.label, value: r.label, dataType: "string" },
+          {
+            td: <P whiteSpace={"normal"}>{r.label}</P>,
+            value: r.label,
+            dataType: "string",
+            tableCellProps: wrappingCellProps,
+            wrapperProps: wrappingWrapperProps,
+          },
           ...(uploadedDocuments ?? []).map((doc) => {
             const candidateIds = [
               (doc as any)?.id,
@@ -959,7 +1016,8 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
                 <P
                   color={isNotFound ? "fg.warning" : ""}
                   maxW={"200px"}
-                  whiteSpace={"wrap"}
+                  whiteSpace={"normal"}
+                  wordBreak={"break-word"}
                 >
                   {isNotFound ? l.not_found : value || "-"}
                 </P>
@@ -967,33 +1025,48 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
               dim: isNotFound || value === null,
               value,
               dataType: matchedValue?.renderType || "string",
+              tableCellProps: wrappingCellProps,
+              wrapperProps: wrappingWrapperProps,
             };
           }),
           {
             td: (
               <Tooltip content={isMatch ? l.match : l.mismatch}>
-                <Center>
+                <HStack
+                  w={"full"}
+                  justify={"center"}
+                  gap={2}
+                  whiteSpace={"normal"}
+                >
                   <AppIcon
                     icon={isMatch ? CheckIcon : XIcon}
                     color={isMatch ? "fg.success" : "fg.error"}
-                    mx={"auto"}
                   />
-                </Center>
+                  <P
+                    color={isMatch ? "fg.success" : "fg.error"}
+                    whiteSpace={"normal"}
+                    wordBreak={"break-word"}
+                  >
+                    {isMatch ? l.match : l.mismatch}
+                  </P>
+                </HStack>
               </Tooltip>
             ),
             value: r.validation.status,
             dataType: "boolean",
             tableCellProps: {
+              ...wrappingCellProps,
               position: "sticky",
               right: 0,
               zIndex: 2,
               bg: "body",
             },
+            wrapperProps: wrappingWrapperProps,
           },
         ],
       };
     });
-  }, [result, uploadedDocuments, l]);
+  }, [visibleResult, uploadedDocuments, l]);
 
   // SX
   // const px = useMemo(() => {
@@ -1616,6 +1689,7 @@ export default function Page() {
             )}
           </CContainer>
         </Tabs.Content>
+
       </Tabs.Root>
     </PageContainer>
   );
