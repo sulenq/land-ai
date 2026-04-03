@@ -3,9 +3,7 @@
 import { Btn } from "@/components/ui/btn";
 import { CContainer } from "@/components/ui/c-container";
 import { DAServiceSkeleton } from "@/components/ui/c-loader";
-import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
-import { NavLink } from "@/components/ui/nav-link";
 import { P } from "@/components/ui/p";
 import { FadingSkeletonContainer } from "@/components/ui/skeleton";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -17,25 +15,134 @@ import {
   ConstrainedContainer,
   PageContainer,
 } from "@/components/widget/PageShell";
+import { TrialStepper } from "@/components/widget/trial-stepper";
 import { DA_API_SERVICE_GET_ALL } from "@/constants/apis";
 import { Interface__DAService } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
+import { useTrialSessionContext } from "@/context/useTrialSessionContext";
 import useDataState from "@/hooks/useDataState";
+import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
 import { getStorage, setStorage } from "@/utils/client";
 import { imgUrl } from "@/utils/url";
 import { SimpleGrid, StackProps } from "@chakra-ui/react";
 import { ArrowRightIcon } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const Services = (props: StackProps) => {
+interface Interface__ServiceItem extends StackProps {
+  index: number;
+  service: Interface__DAService;
+}
+
+const ServiceItem = (props: Interface__ServiceItem) => {
   // Props
-  const { ...restProps } = props;
+  const { index, service, ...restProps } = props;
 
   // Contexts
   const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
+  // const setTrialSession = useTrialSessionContext((s) => s.setTrialSession);
+  const setStep = useTrialSessionContext((s) => s.setStep);
+
+  // Hooks
+  const {
+    // req,
+    loading,
+  } = useRequest({
+    id: "create-trial-session",
+  });
+  const router = useRouter();
+
+  // Constants
+  const path = `/service-trial`; // + trial session id
+
+  // Utils
+  const handleCeateTrialSession = () => {
+    // const payload = {
+    //   daServiceId: service.id,
+    // };
+
+    // const config = {
+    //   url: "/api/trial/create",
+    //   method: "POST",
+    //   data: payload,
+    // };
+
+    // req({
+    //   config,
+    //   onResolve: {
+    //     onSuccess: (r) => {
+    //       setTrialSession(r.data);
+    //       setStep(2);
+    //       router.push(`${path}/${r.data.id}`);
+    //     },
+    //     onError: () => {},
+    //   },
+    // });
+
+    // TODO remove below
+    setStep(2);
+    router.push(`${path}/1`);
+  };
+
+  useEffect(() => {
+    setStep(1);
+  }, []);
+
+  return (
+    <CContainer
+      className={"clicky group"}
+      flex={"1 1 200px"}
+      w={"full"}
+      h={"282px"}
+      gap={8}
+      p={4}
+      border={"1px solid"}
+      borderColor={"border.subtle"}
+      rounded={themeConfig.radii.component}
+      cursor={"pointer"}
+      transition={"200ms"}
+      _hover={{
+        bg: "bg.muted",
+      }}
+      onClick={handleCeateTrialSession}
+      {...restProps}
+    >
+      <Img src={imgUrl(service.icon)} w={"40px"} h={"40px"} mb={"auto"} />
+
+      <CContainer gap={2}>
+        <Tooltip content={service?.title?.[lang]}>
+          <P fontSize={"lg"} fontWeight={"semibold"} lineClamp={2}>
+            {service?.title?.[lang]}
+          </P>
+        </Tooltip>
+
+        <Tooltip content={service?.description?.[lang]}>
+          <P color={"fg.muted"} lineClamp={2}>
+            {service?.description?.[lang]}
+          </P>
+        </Tooltip>
+      </CContainer>
+
+      <Btn
+        variant={"subtle"}
+        loading={loading}
+        _groupHover={{
+          bg: "bg.emphasized",
+        }}
+      >
+        {l.select}
+        <AppIcon icon={ArrowRightIcon} />
+      </Btn>
+    </CContainer>
+  );
+};
+
+const Services = (props: StackProps) => {
+  // Props
+  const { ...restProps } = props;
 
   // States
   // const initialLoading = true;
@@ -46,6 +153,7 @@ const Services = (props: StackProps) => {
     url: DA_API_SERVICE_GET_ALL,
     dataResource: false,
   });
+
   // Constants
   const DA_SERVICES_LENGTH_STORAGE_KEY = "da-services-length";
   const daServicesLength = getStorage(DA_SERVICES_LENGTH_STORAGE_KEY) || "7";
@@ -66,62 +174,9 @@ const Services = (props: StackProps) => {
         templateColumns={`repeat(auto-fill, minmax(200px, 1fr))`}
         gap={4}
       >
-        {data?.map((service) => {
+        {data?.map((service, index) => {
           return (
-            <NavLink
-              key={service.id}
-              to={`/your-da/${service.id}?service=${JSON.stringify({
-                id: service.id,
-                icon: service.icon,
-                title: service.title,
-                description: service.description,
-              })}`}
-              className={"clicky group"}
-              flex={"1 1 200px"}
-              w={"full"}
-              h={"282px"}
-              gap={8}
-              p={4}
-              border={"1px solid"}
-              borderColor={"border.subtle"}
-              rounded={themeConfig.radii.component}
-              cursor={"pointer"}
-              _hover={{
-                bg: "bg.muted",
-              }}
-              transition={"200ms"}
-            >
-              <Img
-                src={imgUrl(service.icon)}
-                w={"40px"}
-                h={"40px"}
-                mb={"auto"}
-              />
-
-              <CContainer gap={2}>
-                <Tooltip content={service?.title?.[lang]}>
-                  <P fontSize={"lg"} fontWeight={"semibold"} lineClamp={2}>
-                    {service?.title?.[lang]}
-                  </P>
-                </Tooltip>
-
-                <Tooltip content={service?.description?.[lang]}>
-                  <P color={"fg.muted"} lineClamp={2}>
-                    {service?.description?.[lang]}
-                  </P>
-                </Tooltip>
-              </CContainer>
-
-              <Btn
-                variant={"subtle"}
-                _groupHover={{
-                  bg: "bg.emphasized",
-                }}
-              >
-                {l.select}
-                <AppIcon icon={ArrowRightIcon} />
-              </Btn>
-            </NavLink>
+            <ServiceItem key={service.id} index={index} service={service} />
           );
         })}
       </SimpleGrid>
@@ -152,33 +207,12 @@ const Services = (props: StackProps) => {
 };
 
 export default function Page() {
-  // Contexts
-  const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
-
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-
   return (
     <PageContainer p={8}>
-      <ConstrainedContainer ref={containerRef} flex={1}>
-        <CContainer flex={1} gap={8} justify={"center"}>
-          <CContainer gap={1} px={themeConfig.radii.component}>
-            <P fontSize={"2xl"} fontWeight={"semibold"}>
-              {l.navs.your_da}
-            </P>
+      <ConstrainedContainer flex={1} justify={"center"} gap={8}>
+        <TrialStepper />
 
-            <P fontSize={"lg"} color={"fg.subtle"}>
-              {l.msg_da_select_service_helper}
-            </P>
-          </CContainer>
-
-          <Services />
-
-          <HelperText px={themeConfig.radii.component}>
-            {l.msg_da_disclaimer}
-          </HelperText>
-        </CContainer>
+        <Services my={"auto"} />
       </ConstrainedContainer>
     </PageContainer>
   );

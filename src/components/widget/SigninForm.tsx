@@ -322,7 +322,7 @@ export const SigninForm = (props: StackProps) => {
           <CContainer align={"center"} gap={2} mb={4}>
             <Logo mb={2} />
 
-            <H1 fontSize={"3xl"} fontWeight={"bold"} textAlign={"center"}>
+            <H1 fontSize={"2xl"} fontWeight={"bold"} textAlign={"center"}>
               {APP.name}
             </H1>
 

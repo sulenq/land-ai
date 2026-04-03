@@ -259,7 +259,7 @@ export default function Page() {
     loaded: (
       <CContainer gap={8}>
         <CContainer gap={1}>
-          <P fontSize={"3xl"} fontWeight={"semibold"}>
+          <P fontSize={"2xl"} fontWeight={"semibold"}>
             {data?.title?.[lang]}
           </P>
           <P fontSize={"lg"} color={"fg.subtle"}>

@@ -20,6 +20,7 @@ import {
   DisclosureRoot,
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
+import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { P } from "@/components/ui/p";
 import { Segmented } from "@/components/ui/segment-group";
@@ -1115,118 +1116,112 @@ const ResultSection = (props: Props__ResultSection) => {
   const { themeConfig } = useThemeConfig();
 
   // States
-  const [show, setShow] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"accordion" | "table">("accordion");
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const uploadedDocuments = daSession?.uploadedDocuments;
 
   return (
     <CContainer pos={"relative"} {...restProps}>
-      {!show && <Btn onClick={() => setShow(true)}>Lihat Hasil AI</Btn>}
+      <CContainer
+        pos={"sticky"}
+        top={"-32px"}
+        mb={[2, null, 0]}
+        zIndex={"sticky"}
+      >
+        <CContainer>
+          <HStack
+            wrap={"wrap"}
+            justify={"space-between"}
+            pb={2}
+            bg={
+              "linear-gradient(to bottom, var(--chakra-colors-body) 80%, transparent 100%)"
+            }
+          >
+            <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
 
-      <CContainer display={show ? "flex" : "none"}>
-        <CContainer
-          pos={"sticky"}
-          top={"-32px"}
-          mb={[2, null, 0]}
-          zIndex={"sticky"}
-        >
-          <CContainer>
-            <HStack
-              wrap={"wrap"}
-              justify={"space-between"}
-              pb={2}
-              bg={
-                "linear-gradient(to bottom, var(--chakra-colors-body) 80%, transparent 100%)"
-              }
-            >
-              <P fontWeight="semibold">{capitalizeWords(l.analysis_result)}</P>
-
-              <HStack flex={[1, null, 0]} gap={2}>
-                {/* Accordion controls - only in accordion mode */}
-                {viewMode === "accordion" && (
-                  <HStack flex={1} rounded={themeConfig.radii.component}>
-                    <Btn
-                      flex={1}
-                      variant="outline"
-                      size="xs"
-                      onClick={() => {
-                        if (uploadedDocuments) {
-                          setAccordionValue([
-                            ...uploadedDocuments.map((doc) => {
-                              return `${doc.documentRequirement.id}`;
-                            }),
-                            "validation",
-                          ]);
-                        }
-                      }}
-                    >
-                      {l.open_all}
-                    </Btn>
-
-                    <Btn
-                      flex={1}
-                      variant="outline"
-                      size="xs"
-                      onClick={() => {
-                        setAccordionValue([]);
-                      }}
-                    >
-                      {l.close_all}
-                    </Btn>
-                  </HStack>
-                )}
-
-                {/* View mode toggle */}
-                <Tooltip content={l.change_view_mode}>
-                  <Box>
-                    <Segmented
-                      items={[
-                        {
-                          value: "accordion",
-                          label: <AppIcon icon={LayoutListIcon} />,
-                        },
-                        {
-                          value: "table",
-                          label: <AppIcon icon={TableIcon} />,
-                        },
-                      ]}
-                      inputValue={viewMode}
-                      onChange={(value) =>
-                        setViewMode(value as "table" | "accordion")
+            <HStack flex={[1, null, 0]} gap={2}>
+              {/* Accordion controls - only in accordion mode */}
+              {viewMode === "accordion" && (
+                <HStack flex={1} rounded={themeConfig.radii.component}>
+                  <Btn
+                    flex={1}
+                    variant="outline"
+                    size="xs"
+                    onClick={() => {
+                      if (uploadedDocuments) {
+                        setAccordionValue([
+                          ...uploadedDocuments.map((doc) => {
+                            return `${doc.documentRequirement.id}`;
+                          }),
+                          "validation",
+                        ]);
                       }
-                      size={"xs"}
-                    />
-                  </Box>
-                </Tooltip>
-              </HStack>
+                    }}
+                  >
+                    {l.open_all}
+                  </Btn>
+
+                  <Btn
+                    flex={1}
+                    variant="outline"
+                    size="xs"
+                    onClick={() => {
+                      setAccordionValue([]);
+                    }}
+                  >
+                    {l.close_all}
+                  </Btn>
+                </HStack>
+              )}
+
+              {/* View mode toggle */}
+              <Tooltip content={l.change_view_mode}>
+                <Box>
+                  <Segmented
+                    items={[
+                      {
+                        value: "accordion",
+                        label: <AppIcon icon={LayoutListIcon} />,
+                      },
+                      {
+                        value: "table",
+                        label: <AppIcon icon={TableIcon} />,
+                      },
+                    ]}
+                    inputValue={viewMode}
+                    onChange={(value) =>
+                      setViewMode(value as "table" | "accordion")
+                    }
+                    size={"xs"}
+                  />
+                </Box>
+              </Tooltip>
             </HStack>
-          </CContainer>
+          </HStack>
         </CContainer>
+      </CContainer>
 
-        {/* Accordion View */}
-        <Box display={viewMode === "accordion" ? "block" : "none"}>
+      {/* Accordion View */}
+      <Box display={viewMode === "accordion" ? "block" : "none"}>
+        <CContainer>
           <CContainer>
-            <CContainer>
-              <AccordionMode
-                daSession={daSession}
-                accordionValue={accordionValue}
-                setAccordionValue={setAccordionValue}
-              />
-            </CContainer>
-          </CContainer>
-        </Box>
-
-        {/* Table View */}
-        <Box display={viewMode === "table" ? "block" : "none"}>
-          <CContainer>
-            <TableMode
+            <AccordionMode
               daSession={daSession}
-              containerDimension={containerDimension}
+              accordionValue={accordionValue}
+              setAccordionValue={setAccordionValue}
             />
           </CContainer>
-        </Box>
-      </CContainer>
+        </CContainer>
+      </Box>
+
+      <Box display={viewMode === "table" ? "block" : "none"}>
+        <CContainer>
+          <TableMode
+            daSession={daSession}
+            containerDimension={containerDimension}
+          />
+        </CContainer>
+      </Box>
     </CContainer>
   );
 };
@@ -1260,6 +1255,7 @@ const TrialDaSessionVerificationButtons = (
 
 export default function Page() {
   // Contexts
+  const { l } = useLang();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const trialSession = useTrialSessionContext((s) => s.trialSession);
   const setActiveDaSession = useActiveDA((s) => s.setSession);
@@ -1345,18 +1341,31 @@ export default function Page() {
         {/* Meta */}
         <MetaData />
 
-        {/* Result */}
-        <ResultSection
-          daSession={currentDaSession}
-          containerDimension={containerDimension}
-          display={isAiPhase ? "flex" : "none"}
-        />
+        <>
+          {/* Result */}
+          <CContainer>
+            <ResultSection
+              daSession={currentDaSession}
+              containerDimension={containerDimension}
+              display={isAiPhase ? "flex" : "none"}
+            />
+
+            {/* <GenerateLetterButtons data={data} mt={8} /> */}
+          </CContainer>
+
+          {/* Helper Text */}
+          <CContainer>
+            <HelperText textAlign={"center"}>{l.msg_da_disclaimer}</HelperText>
+          </CContainer>
+        </>
 
         {/* Verification */}
         <TrialDaSessionVerificationButtons disabled={isDisabled} mx={"auto"} />
       </CContainer>
     ),
   };
+
+  // console.debug(trialSession);
 
   return (
     <PageContainer ref={containerRef} p={8} pos={"relative"}>

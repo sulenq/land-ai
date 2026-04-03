@@ -87,7 +87,7 @@ export function ShareContent(props: Props) {
         {/* Title & Meta */}
         <CContainer gap={1} mb={2}>
           {title && (
-            <ClampText fontSize={"3xl"} fontWeight={"semibold"}>
+            <ClampText fontSize={"2xl"} fontWeight={"semibold"}>
               {title}
             </ClampText>
           )}

@@ -159,7 +159,7 @@ export default function Page() {
       <ConstrainedContainer ref={containerRef} flex={1}>
         <CContainer flex={1} gap={8} justify={"center"}>
           <CContainer gap={1} px={themeConfig.radii.component}>
-            <P fontSize={"3xl"} fontWeight={"semibold"}>
+            <P fontSize={"2xl"} fontWeight={"semibold"}>
               {l.document_analysis_service}
             </P>
 

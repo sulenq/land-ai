@@ -289,7 +289,7 @@ export const NewPrompt = (props: Props__NewChat) => {
         </HStack>
 
         <P
-          fontSize={"3xl"}
+          fontSize={"2xl"}
           fontWeight={"semibold"}
           color={"ibody"}
           lineHeight={1.3}

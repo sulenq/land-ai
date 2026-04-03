@@ -45,7 +45,7 @@ export const TrialStepper = (props: StepsRootProps) => {
   const resolvedStep = step - 1;
 
   // TODO get trial session and redirect based on step
-  // 1 => /service-trial
+  // 1 => /service-trial/select-da-service
   // 2 => /service-trial/{trialId}
   // 3 => /service-trial/{trialId}
   // 4 => /service-trial/{trialId}/summary
