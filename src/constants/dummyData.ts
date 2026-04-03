@@ -11526,7 +11526,7 @@ export const DUMMY_TRIAL_SESSION: Interface__TrialSession = {
   id: "1",
   user: dummyUser,
   step: 1,
-  daSessionStep: null,
+  daSessionStep: 1,
   createdAt: "2026-04-02T09:00:00Z",
   trialDaSessions: [
     {

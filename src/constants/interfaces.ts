@@ -344,7 +344,7 @@ export interface Interface__TrialSession {
   id: string;
   user: Interface__User;
   step: number;
-  daSessionStep: number | null;
+  daSessionStep: number;
   trialDaSessions: Interface__TrialDASession[];
   createdAt: string;
 }
