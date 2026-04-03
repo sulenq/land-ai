@@ -1051,7 +1051,6 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
         }}
         onMouseDown={(e) => {
           const target = e.target as HTMLElement;
-          console.debug(containerRef.current);
 
           if (target.closest("button, a, input")) return;
 

@@ -44,7 +44,7 @@ export const TrialStepper = (props: StepsRootProps) => {
   // Derived Values
   const resolvedStep = step - 1;
 
-  // TODO get trial session and redirect based on step
+  // TODO get trial session and redirect based on step, source of truth from BE
   // 1 => /service-trial/select-da-service
   // 2 => /service-trial/{trialId}
   // 3 => /service-trial/{trialId}
@@ -62,7 +62,7 @@ export const TrialStepper = (props: StepsRootProps) => {
         router.push(`/service-trial/${trialId}/summary`);
         break;
       default:
-        router.push("/service-trial");
+        router.push(`/service-trial/select-da-service`);
         break;
     }
   }, [step, trialId, router]);

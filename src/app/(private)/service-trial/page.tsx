@@ -54,7 +54,9 @@ export default function Page() {
             setTrialSession(r.data);
             router.push("/service-trial/select-da-service");
           },
-          onError: () => {},
+          onError: () => {
+            router.push("/service-trial/select-da-service");
+          },
         },
       });
     },
@@ -104,7 +106,7 @@ export default function Page() {
           </Alert.Root>
         </CContainer>
 
-        <form>
+        <form id={"create-session"} onSubmit={formik.handleSubmit}>
           <FieldsetRoot disabled={loading}>
             <Field
               label={"Nama"}
@@ -114,12 +116,22 @@ export default function Page() {
                 'Input nama anda kemudian klik "Mulai Pengujian" untuk memulai ujian'
               }
             >
-              <StringInput />
+              <StringInput
+                inputValue={formik.values.name}
+                onChange={(inputValue) => {
+                  formik.setFieldValue("name", inputValue);
+                }}
+              />
             </Field>
           </FieldsetRoot>
         </form>
 
-        <Btn colorPalette={themeConfig.colorPalette} loading={loading}>
+        <Btn
+          type={"submit"}
+          form={"create-session"}
+          colorPalette={themeConfig.colorPalette}
+          loading={loading}
+        >
           Mulai Pengujian
         </Btn>
       </ConstrainedContainer>
