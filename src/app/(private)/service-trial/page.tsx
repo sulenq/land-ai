@@ -78,32 +78,46 @@ export default function Page() {
             </P>
           </CContainer>
 
-          <Alert.Root status={"warning"}>
-            <Alert.Content gap={4}>
-              <HStack>
-                <Alert.Indicator />
+          <CContainer gap={2}>
+            <Alert.Root status={"warning"}>
+              <Alert.Content gap={4}>
+                <HStack>
+                  <Alert.Indicator />
 
-                <P fontWeight={"semibold"}>Langkah - Langkah Pengujian</P>
-              </HStack>
+                  <P fontWeight={"semibold"}>Langkah - Langkah Pengujian</P>
+                </HStack>
 
-              <CContainer gap={4} px={1}>
-                {TRIAL_STEPS.map((step, index) => {
-                  const no = index + 1;
+                <CContainer gap={4} px={1}>
+                  {TRIAL_STEPS.map((step, index) => {
+                    const no = index + 1;
 
-                  return (
-                    <HStack align={"start"}>
-                      <P flexShrink={0}>{no}.</P>
+                    return (
+                      <HStack align={"start"}>
+                        <P flexShrink={0}>{no}.</P>
 
-                      <CContainer gap={1}>
-                        <P fontWeight={"medium"}>{step.title}</P>
-                        <P>{step.description}</P>
-                      </CContainer>
-                    </HStack>
-                  );
-                })}
-              </CContainer>
-            </Alert.Content>
-          </Alert.Root>
+                        <CContainer gap={1}>
+                          <P fontWeight={"medium"}>{step.title}</P>
+                          <P>{step.description}</P>
+                        </CContainer>
+                      </HStack>
+                    );
+                  })}
+                </CContainer>
+              </Alert.Content>
+            </Alert.Root>
+
+            <Alert.Root colorPalette={"gray"}>
+              <Alert.Indicator />
+
+              <Alert.Content gap={4}>
+                <P>
+                  Periksa setiap dokumen dengan cermat sesuai prosedur yang
+                  berlaku. Hasilnya digunakan untuk evaluasi dan peningkatan
+                  efisiensi layanan pertanahan.
+                </P>
+              </Alert.Content>
+            </Alert.Root>
+          </CContainer>
         </CContainer>
 
         <form id={"create-session"} onSubmit={formik.handleSubmit}>

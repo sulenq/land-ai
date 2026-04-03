@@ -10,22 +10,22 @@ export const TRIAL_STEPS = [
   {
     title: "Pilih Layanan",
     description:
-      "Pilih jenis layanan pertanahan untuk memulai simulasi uji coba.",
+      "Peserta memilih satu kategori pemeriksaan dari empat pilihan yang tersedia: SKPT, Pengecekan Sertifikat, Hak Tanggungan, atau Peralihan Hak. Setiap kategori berisi 3 berkas dengan dokumen-dokumen nyata yang harus diperiksa.",
   },
   {
     title: "Fase Manual",
     description:
-      "Validasi 3 berkas secara mandiri (setujui/tolak) untuk menetapkan standar durasi pemeriksaan manual.",
+      "Periksa setiap dokumen satu per satu tanpa bantuan sistem. Buka setiap dokumen, tinjau isinya, lalu putuskan: Valid atau Tolak.",
   },
   {
     title: "Fase AI-Assisted",
     description:
-      "Validasi 3 hasil analisis otomatis dari AI untuk membandingkan akurasi dan efisiensi waktu.",
+      "Periksa berkas dengan dukungan sistem AI, tinjau hasilnya, lalu putuskan: Valid atau Tolak.",
   },
   {
-    title: "Ringkasan",
+    title: "Hasil",
     description:
-      "Tinjau perbandingan performa antara pemeriksaan manual dan bantuan AI dari seluruh sesi simulasi.",
+      "Setelah kedua fase selesai, sistem menampilkan perbandingan waktu per berkas antara fase Manual dan AI-Assisted, sehingga peserta dapat melihat selisih efisiensi secara langsung.",
   },
 ];
 

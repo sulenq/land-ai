@@ -562,8 +562,6 @@ const UploadedFiles = () => {
 
   // Constants
   const uploadedDocuments = activeDASession?.uploadedDocuments;
-  const trialSession = useTrialSessionContext((s) => s.trialSession);
-  const step = trialSession?.step;
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(
@@ -575,88 +573,80 @@ const UploadedFiles = () => {
     uploadedDocuments?.[0] ? [uploadedDocuments[0]] : [],
   );
 
-  // Derived Values
-  const isManualPhase = step === 2;
-
   return (
-    <>
-      {isManualPhase && (
-        <CContainer gap={2}>
-          <HStack h={"32px"}>
-            <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
-          </HStack>
+    <CContainer gap={2}>
+      <HStack h={"32px"}>
+        <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
+      </HStack>
 
-          <CContainer
-            gap={2}
-            rounded={themeConfig.radii.container}
-            // border={"1px solid"}
-            borderColor={"border.muted"}
-          >
-            {uploadedDocuments?.map((doc) => {
-              return (
-                <HStack
-                  flexDir={["column", null, "row"]}
-                  key={doc.documentRequirement.id}
-                  gapX={4}
-                  bg={"d0"}
-                  pl={4}
-                  pr={3}
-                  py={3}
-                  rounded={themeConfig.radii.component}
-                >
-                  <CContainer gap={1}>
-                    <HStack flexShrink={0}>
-                      <ClampText fontWeight={"medium"}>
-                        {doc.documentRequirement.name}
-                      </ClampText>
+      <CContainer
+        gap={2}
+        rounded={themeConfig.radii.container}
+        borderColor={"border.muted"}
+      >
+        {uploadedDocuments?.map((doc) => {
+          return (
+            <HStack
+              flexDir={["column", null, "row"]}
+              key={doc.documentRequirement.id}
+              gapX={4}
+              bg={"d0"}
+              pl={4}
+              pr={3}
+              py={3}
+              rounded={themeConfig.radii.component}
+            >
+              <CContainer gap={1}>
+                <HStack flexShrink={0}>
+                  <ClampText fontWeight={"medium"}>
+                    {doc.documentRequirement.name}
+                  </ClampText>
 
-                      {!doc.documentRequirement.isMandatory && (
-                        <Badge bg={"d1"} colorPalette={"gray"}>
-                          {l.optional}
-                        </Badge>
-                      )}
-                    </HStack>
+                  {!doc.documentRequirement.isMandatory && (
+                    <Badge bg={"d1"} colorPalette={"gray"}>
+                      {l.optional}
+                    </Badge>
+                  )}
+                </HStack>
 
-                    {doc.metaData.fileName ? (
-                      <FileName
-                        color={"fg.muted"}
-                        onClick={() => {
-                          setActiveDocs([doc]);
-                          onOpen();
-                        }}
-                      >
-                        {doc.metaData.fileName}
-                      </FileName>
-                    ) : (
-                      <P>-</P>
-                    )}
-                  </CContainer>
-
-                  <Btn
-                    variant={"subtle"}
-                    ml={"auto"}
+                {doc.metaData.fileName ? (
+                  <FileName
+                    color={"fg.muted"}
                     onClick={() => {
                       setActiveDocs([doc]);
                       onOpen();
                     }}
                   >
-                    {l.open}
-                    <AppIcon icon={ArrowUpRightIcon} />
-                  </Btn>
-                </HStack>
-              );
-            })}
-          </CContainer>
+                    {doc.metaData.fileName}
+                  </FileName>
+                ) : (
+                  <P>-</P>
+                )}
+              </CContainer>
 
-          <PdfViewerDisclosure
-            open={isOpen}
-            uploadedDocuments={uploadedDocuments}
-            activeDocs={activeDocs}
-            setActiveDocs={setActiveDocs}
-          />
-        </CContainer>
-      )}
-    </>
+              <Btn
+                variant={"subtle"}
+                ml={"auto"}
+                onClick={() => {
+                  setActiveDocs([doc]);
+                  onOpen();
+                }}
+              >
+                {l.open}
+                <AppIcon icon={ArrowUpRightIcon} />
+              </Btn>
+            </HStack>
+          );
+        })}
+      </CContainer>
+
+      <PdfViewerDisclosure
+        open={isOpen}
+        uploadedDocuments={uploadedDocuments}
+        activeDocs={activeDocs}
+        setActiveDocs={setActiveDocs}
+      />
+    </CContainer>
   );
 };
 
