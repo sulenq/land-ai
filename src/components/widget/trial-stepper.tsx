@@ -1,6 +1,7 @@
 import { Btn } from "@/components/ui/btn";
 import { P } from "@/components/ui/p";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useThemeConfig } from "@/context/useThemeConfig";
 import { useTrialSessionContext } from "@/context/useTrialSessionContext";
 import { HStack, Steps, StepsRootProps } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -31,6 +32,7 @@ export const TRIAL_STEPS = [
 
 export const TrialStepper = (props: StepsRootProps) => {
   // Contexts
+  const { themeConfig } = useThemeConfig();
   const trialSession = useTrialSessionContext((s) => s.trialSession);
   const trialId = trialSession?.id;
   const step = trialSession?.step ?? 1;
@@ -75,6 +77,7 @@ export const TrialStepper = (props: StepsRootProps) => {
       onStepChange={(e) => setStep(e.step)}
       count={TRIAL_STEPS.length}
       gap={6}
+      colorPalette={themeConfig.colorPalette}
       {...props}
     >
       <Steps.List>
