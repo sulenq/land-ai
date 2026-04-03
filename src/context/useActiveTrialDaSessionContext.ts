@@ -7,6 +7,10 @@ interface State_Actions {
     newState: Partial<Interface__TrialDASessionDetail>,
   ) => void;
   resetActiveTrialDaSession: () => void;
+
+  updateUploadedFilesValidationStatus: (
+    manualDetails: Interface__TrialDASessionDetail["manualDetails"],
+  ) => void;
 }
 
 export const useActiveTrialDaSessionContext = create<State_Actions>((set) => ({
@@ -22,5 +26,12 @@ export const useActiveTrialDaSessionContext = create<State_Actions>((set) => ({
   resetActiveTrialDaSession: () =>
     set(() => ({
       activeTrialDaSession: null,
+    })),
+
+  updateUploadedFilesValidationStatus: (manualDetails) =>
+    set((state) => ({
+      activeTrialDaSession: state.activeTrialDaSession
+        ? { ...state.activeTrialDaSession, manualDetails }
+        : null,
     })),
 }));

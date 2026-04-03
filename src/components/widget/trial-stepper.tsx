@@ -94,17 +94,6 @@ export const TrialStepper = (props: StepsRootProps) => {
         ))}
       </Steps.List>
 
-      <HStack mx={"auto"}>
-        <P>Tes stepper</P>
-
-        <Btn size={"xs"} variant={"outline"} onClick={prevStep}>
-          Prev
-        </Btn>
-        <Btn size={"xs"} variant={"outline"} onClick={nextStep}>
-          Next
-        </Btn>
-      </HStack>
-
       {TRIAL_STEPS.map((step, index) => (
         <Steps.Content
           key={index}
@@ -115,6 +104,17 @@ export const TrialStepper = (props: StepsRootProps) => {
           {step.description}
         </Steps.Content>
       ))}
+
+      <HStack mx={"auto"}>
+        <P>Stepper (debug)</P>
+
+        <Btn size={"xs"} variant={"outline"} onClick={prevStep}>
+          Prev
+        </Btn>
+        <Btn size={"xs"} variant={"outline"} onClick={nextStep}>
+          Next
+        </Btn>
+      </HStack>
     </Steps.Root>
   );
 };

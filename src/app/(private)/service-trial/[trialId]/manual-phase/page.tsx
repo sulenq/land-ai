@@ -1,7 +1,5 @@
 "use client";
 
-// TODO ubah activeDA => context trial session
-
 import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
 import {
   AccordionItem,
@@ -21,9 +19,11 @@ import {
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
 import { Divider } from "@/components/ui/divider";
+import { Field, FieldsetRoot } from "@/components/ui/field";
 import { Img } from "@/components/ui/img";
 import { P } from "@/components/ui/p";
 import { Segmented } from "@/components/ui/segment-group";
+import { Textarea } from "@/components/ui/textarea";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
@@ -60,7 +60,9 @@ import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
+import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
+import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
 import { capitalizeWords } from "@/utils/string";
 import { fileUrl, imgUrl } from "@/utils/url";
@@ -72,6 +74,7 @@ import {
   Stack,
   StackProps,
 } from "@chakra-ui/react";
+import { useFormik } from "formik";
 import {
   CheckCheckIcon,
   CheckCircleIcon,
@@ -90,8 +93,157 @@ import React, {
   useRef,
   useState,
 } from "react";
+import * as yup from "yup";
 
-// TODO ubah activeDA => context trial session
+// -----------------------------------------------------------------
+
+const Header = () => {
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+  const daSessionStep = useTrialSessionContext(
+    (s) => s.trialSession?.daSessionStep,
+  );
+  const activeTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession,
+  );
+
+  return (
+    <CContainer gap={8}>
+      {/* DA Session progress indicator */}
+      <CContainer gap={2}>
+        <HStack justify={"space-between"}>
+          <P>
+            Berkas saat ini (debug) : {activeTrialDaSession?.id}
+            {" - "}
+            {activeTrialDaSession?.daSession?.id}
+          </P>
+          <P textAlign={"center"}>{daSessionStep || 0}/3 Berkas Selesai</P>
+        </HStack>
+
+        <HStack>
+          {Array.from({ length: 3 }, (_, index) => {
+            const isDone = daSessionStep ? index + 1 <= daSessionStep : false;
+
+            return (
+              <Box
+                key={index}
+                flex={1}
+                h={"8px"}
+                bg={isDone ? `${themeConfig.colorPalette}.solid` : "bg.muted"}
+                rounded={themeConfig.radii.component}
+              />
+            );
+          })}
+        </HStack>
+      </CContainer>
+    </CContainer>
+  );
+};
+
+// -----------------------------------------------------------------
+
+// const FileName = (props: TextProps) => {
+//   // Props
+//   const { children, ...restProps } = props;
+
+//   // States
+//   const [hover, setHover] = useState<boolean>(false);
+
+//   return (
+//     <Tooltip
+//       content={children}
+//       positioning={{
+//         placement: "right",
+//       }}
+//     >
+//       <HStack w={"fit"} cursor={"pointer"}>
+//         <P
+//           lineClamp={1}
+//           fontWeight={"medium"}
+//           borderBottom={"1px solid"}
+//           borderColor={hover ? "fg" : "transparent"}
+//           transition={"200ms"}
+//           onMouseEnter={() => {
+//             setHover(true);
+//           }}
+//           onMouseLeave={() => {
+//             setHover(false);
+//           }}
+//           {...restProps}
+//         >
+//           {children}
+//         </P>
+
+//         <AppIcon
+//           icon={ArrowUpRightIcon}
+//           opacity={hover ? 1 : 0}
+//           transition={"200ms"}
+//         />
+//       </HStack>
+//     </Tooltip>
+//   );
+// };
+
+// -----------------------------------------------------------------
+
+const FileInformation = () => {
+  // Contexts
+  const { l, lang } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const activeTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession,
+  );
+  const activeDaSession = activeTrialDaSession?.daSession;
+
+  // Constants
+  const documentService = activeDaSession?.documentService;
+
+  return (
+    <CContainer gap={2}>
+      <HStack h={"32px"}>
+        <P fontWeight={"semibold"}>{capitalizeWords(l.file_information)}</P>
+      </HStack>
+
+      <CContainer
+        gap={2}
+        p={4}
+        rounded={themeConfig.radii.container}
+        // border={"1px solid"}
+        borderColor={"border.muted"}
+        bg={"d0"}
+      >
+        <HStack gap={4} align={"start"}>
+          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+            {l.service}
+          </P>
+
+          <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
+            <Img
+              key={activeDaSession?.documentService?.icon}
+              src={imgUrl(activeDaSession?.documentService?.icon)}
+              flexShrink={0}
+              w={"20px"}
+              h={"20px"}
+              objectFit={"contain"}
+            />
+
+            <P>{documentService?.title[lang]}</P>
+
+            <InfoPopover popoverContent={documentService?.description[lang]} />
+          </HStack>
+        </HStack>
+
+        <HStack gap={4} align={"start"}>
+          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+            {l.category}
+          </P>
+
+          <P>{activeDaSession?.kategori}</P>
+        </HStack>
+      </CContainer>
+    </CContainer>
+  );
+};
 
 // -----------------------------------------------------------------
 
@@ -375,9 +527,16 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
 
                             <CContainer my={4}>
                               <Group mx={"auto"}>
-                                <Btn colorPalette={"teal"}>
-                                  Valid dan siap disahkan
-                                </Btn>
+                                <ValidationConfirmation
+                                  id={doc.documentRequirement.id.toString()}
+                                  validationType={"uploadedFile"}
+                                  metaType={doc.documentRequirement.name}
+                                  validationStatus={"valid"}
+                                >
+                                  <Btn colorPalette={"teal"}>
+                                    Valid dan siap disahkan
+                                  </Btn>
+                                </ValidationConfirmation>
                               </Group>
                             </CContainer>
                           </CContainer>
@@ -411,141 +570,146 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
 
 // -----------------------------------------------------------------
 
-const Header = () => {
+interface Props__ValidationConfirmation extends StackProps {
+  id: string;
+  validationType: "uploadedFile" | "trialDaSession";
+  metaType?: string;
+  validationStatus: "valid" | "rejected";
+}
+
+const ValidationConfirmation = (props: Props__ValidationConfirmation) => {
+  // Props
+  const {
+    children,
+    id,
+    validationType,
+    metaType,
+    validationStatus,
+    ...restProps
+  } = props;
+  const ID = `${disclosureId(id)}-${validationType}-${validationStatus}`;
+
   // Contexts
-  const { themeConfig } = useThemeConfig();
-  const daSessionStep = useTrialSessionContext(
-    (s) => s.trialSession?.daSessionStep,
+  const { l } = useLang();
+  const trialSession = useTrialSessionContext((s) => s.trialSession);
+  const updateUploadedFilesValidationStatus = useActiveTrialDaSessionContext(
+    (s) => s.updateUploadedFilesValidationStatus,
   );
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(ID);
+  const { req, loading } = useRequest({
+    id: "validation-confirmation",
+  });
+
+  // States
+  const formik = useFormik({
+    validateOnChange: false,
+    initialValues: { notes: "" },
+    validationSchema: yup.object().shape({
+      notes:
+        validationStatus === "rejected"
+          ? yup.string().required(l.msg_required_form)
+          : yup.string().notRequired(),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      if (!trialSession?.id) return;
+
+      const url = {
+        uploadedFile: `/api/trial/step-2/uploaded-file/validation/${trialSession?.id}`,
+        trialDaSession: `/api/trial/da-session/validation/${trialSession?.id}`,
+      };
+
+      const payload = {
+        validationStatus: validationStatus,
+        notes: values.notes,
+      };
+
+      const config = {
+        url: url[validationType] as string,
+        method: "POST",
+        data: payload,
+      };
+
+      req({
+        config,
+        onResolve: {
+          onSuccess: (r) => {
+            if (validationType === "uploadedFile") {
+              updateUploadedFilesValidationStatus(r.data.data.manualDetails);
+            }
+
+            resetForm();
+
+            if (isOpen) {
+              back();
+            }
+          },
+        },
+      });
+    },
+  });
+
+  // Derived Values
+  const label = `${validationType === "uploadedFile" ? "file yang diunggah" : "berkas"} ${metaType ? `(${metaType})` : ""}`;
 
   return (
-    <CContainer gap={8}>
-      {/* DA Session progress indicator */}
-      <CContainer gap={2}>
-        <P textAlign={"center"}>{daSessionStep}/3 Berkas Selesai</P>
-
-        <HStack>
-          {Array.from({ length: 3 }, (_, index) => {
-            const isDone = daSessionStep ? index + 1 <= daSessionStep : false;
-
-            return (
-              <Box
-                key={index}
-                flex={1}
-                h={"8px"}
-                bg={isDone ? `${themeConfig.colorPalette}.solid` : "bg.muted"}
-                rounded={themeConfig.radii.component}
-              />
-            );
-          })}
-        </HStack>
+    <>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps}>
+        {children}
       </CContainer>
-    </CContainer>
-  );
-};
 
-// -----------------------------------------------------------------
+      <DisclosureRoot open={isOpen} lazyLoad size={"xs"}>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={`Validasi Data`} />
+          </DisclosureHeader>
 
-// const FileName = (props: TextProps) => {
-//   // Props
-//   const { children, ...restProps } = props;
+          <DisclosureBody>
+            <CContainer>
+              <P>
+                {validationStatus === "rejected"
+                  ? `Tolak ${label} ini?`
+                  : `Validasi ${label} ini?`}
+              </P>
 
-//   // States
-//   const [hover, setHover] = useState<boolean>(false);
+              <form id={ID} onSubmit={formik.handleSubmit}>
+                <FieldsetRoot disabled={loading}>
+                  {validationStatus === "rejected" && (
+                    <Field
+                      invalid={!!formik.errors.notes}
+                      errorText={formik.errors.notes as string}
+                      mt={4}
+                    >
+                      <Textarea
+                        inputValue={formik.values.notes}
+                        onChange={(inputValue) => {
+                          formik.setFieldValue("notes", inputValue);
+                        }}
+                        placeholder={"Catatan"}
+                      />
+                    </Field>
+                  )}
+                </FieldsetRoot>
+              </form>
+            </CContainer>
+          </DisclosureBody>
 
-//   return (
-//     <Tooltip
-//       content={children}
-//       positioning={{
-//         placement: "right",
-//       }}
-//     >
-//       <HStack w={"fit"} cursor={"pointer"}>
-//         <P
-//           lineClamp={1}
-//           fontWeight={"medium"}
-//           borderBottom={"1px solid"}
-//           borderColor={hover ? "fg" : "transparent"}
-//           transition={"200ms"}
-//           onMouseEnter={() => {
-//             setHover(true);
-//           }}
-//           onMouseLeave={() => {
-//             setHover(false);
-//           }}
-//           {...restProps}
-//         >
-//           {children}
-//         </P>
+          <DisclosureFooter>
+            <BackButton />
 
-//         <AppIcon
-//           icon={ArrowUpRightIcon}
-//           opacity={hover ? 1 : 0}
-//           transition={"200ms"}
-//         />
-//       </HStack>
-//     </Tooltip>
-//   );
-// };
-
-// -----------------------------------------------------------------
-
-const FileInformation = () => {
-  // Contexts
-  const { l, lang } = useLang();
-  const { themeConfig } = useThemeConfig();
-  const activeTrialDaSession = useActiveTrialDaSessionContext(
-    (s) => s.activeTrialDaSession,
-  );
-  const activeDaSession = activeTrialDaSession?.daSession;
-
-  // Constants
-  const documentService = activeDaSession?.documentService;
-
-  return (
-    <CContainer gap={2}>
-      <HStack h={"32px"}>
-        <P fontWeight={"semibold"}>{capitalizeWords(l.file_information)}</P>
-      </HStack>
-
-      <CContainer
-        gap={2}
-        p={4}
-        rounded={themeConfig.radii.container}
-        // border={"1px solid"}
-        borderColor={"border.muted"}
-        bg={"d0"}
-      >
-        <HStack gap={4} align={"start"}>
-          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-            {l.service}
-          </P>
-
-          <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
-            <Img
-              key={activeDaSession?.documentService?.icon}
-              src={imgUrl(activeDaSession?.documentService?.icon)}
-              flexShrink={0}
-              w={"20px"}
-              h={"20px"}
-              objectFit={"contain"}
-            />
-
-            <P>{documentService?.title[lang]}</P>
-
-            <InfoPopover popoverContent={documentService?.description[lang]} />
-          </HStack>
-        </HStack>
-
-        <HStack gap={4} align={"start"}>
-          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-            {l.category}
-          </P>
-
-          <P>{activeDaSession?.kategori}</P>
-        </HStack>
-      </CContainer>
-    </CContainer>
+            <Btn
+              type={"submit"}
+              form={ID}
+              colorPalette={validationStatus === "rejected" ? "red" : "teal"}
+              loading={loading}
+            >
+              {validationStatus === "rejected" ? "Tolak" : "Validasi"}
+            </Btn>
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
   );
 };
 
@@ -602,6 +766,7 @@ const UploadedFiles = () => {
                 {doc.documentRequirement.name}
               </ClampText>
 
+              {/* Action buttons */}
               <HStack>
                 <Btn
                   clicky={false}
@@ -624,20 +789,27 @@ const UploadedFiles = () => {
 
                 <Divider w={"1px"} h={"20px"} />
 
-                <Btn
-                  clicky={false}
-                  h={"fit"}
-                  px={0}
-                  border={"none"}
-                  borderBottom={"1px solid"}
-                  borderColor={"fg.error"}
-                  rounded={0}
-                  variant={"plain"}
-                  colorPalette={"red"}
-                  ml={"auto"}
+                <ValidationConfirmation
+                  id={doc.documentRequirement.id.toString()}
+                  validationType={"uploadedFile"}
+                  metaType={doc.documentRequirement.name}
+                  validationStatus={"rejected"}
                 >
-                  Tolak
-                </Btn>
+                  <Btn
+                    clicky={false}
+                    h={"fit"}
+                    px={0}
+                    border={"none"}
+                    borderBottom={"1px solid"}
+                    borderColor={"fg.error"}
+                    rounded={0}
+                    variant={"plain"}
+                    colorPalette={"red"}
+                    ml={"auto"}
+                  >
+                    Tolak
+                  </Btn>
+                </ValidationConfirmation>
               </HStack>
             </HStack>
           );
@@ -1289,20 +1461,29 @@ const TrialDaSessionFinalValidations = (
       </CContainer>
 
       <HStack>
-        <Btn
+        <ValidationConfirmation
+          id={"active-da-session"}
+          validationType={"trialDaSession"}
+          validationStatus={"rejected"}
           flex={1}
-          variant={"outline"}
-          colorPalette={"red"}
-          disabled={disabled}
         >
-          <AppIcon icon={XCircleIcon} />
-          Tolak berkas
-        </Btn>
+          <Btn variant={"outline"} colorPalette={"red"} disabled={disabled}>
+            <AppIcon icon={XCircleIcon} />
+            Tolak berkas
+          </Btn>
+        </ValidationConfirmation>
 
-        <Btn flex={1} colorPalette={"teal"} disabled={disabled}>
-          <AppIcon icon={CheckCircleIcon} />
-          Valid & siap disahkan
-        </Btn>
+        <ValidationConfirmation
+          id={"active-da-session"}
+          validationType={"trialDaSession"}
+          validationStatus={"valid"}
+          flex={1}
+        >
+          <Btn colorPalette={"teal"} disabled={disabled}>
+            <AppIcon icon={CheckCircleIcon} />
+            Valid & siap disahkan
+          </Btn>
+        </ValidationConfirmation>
       </HStack>
     </CContainer>
   );
