@@ -55,8 +55,10 @@ export const TrialStepper = (props: StepsRootProps) => {
 
     switch (step) {
       case 2:
+        router.push(`/service-trial/${trialId}/manual-phase`);
+        break;
       case 3:
-        router.push(`/service-trial/${trialId}`);
+        router.push(`/service-trial/${trialId}/ai-phase`);
         break;
       case 4:
         router.push(`/service-trial/${trialId}/summary`);
