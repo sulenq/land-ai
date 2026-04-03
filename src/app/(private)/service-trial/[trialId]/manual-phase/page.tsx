@@ -120,7 +120,8 @@ const Header = () => {
             {" - "}
             {activeTrialDaSession?.daSession?.id}
           </P>
-          <P textAlign={"center"}>{daSessionStep || 0}/3 Berkas Selesai</P>
+
+          <P textAlign={"center"}>Berkas ke-{daSessionStep || 1} / 3</P>
         </HStack>
 
         <HStack>
