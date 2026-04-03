@@ -157,8 +157,6 @@ export default function SettingsLayout(props: Props__Layout) {
   // States
   const isAdminRoutes = pathname.startsWith(PREFIX_ADMIN_ROUTES);
 
-  console.debug(isAdminRoutes);
-
   const resolvedRootPath = isAdminRoutes
     ? `${PREFIX_ADMIN_ROUTES}${ROOT_PATH}`
     : ROOT_PATH;

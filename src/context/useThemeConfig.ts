@@ -21,7 +21,7 @@ export const DEFAULT: ThemeConfigProps = {
   primaryColor: `${COLOR_PALETTES[0].palette}.500`,
   primaryColorHex: COLOR_PALETTES[0].primaryHex,
   logo: `${IMAGES_PATH}/logo_graphic.png`,
-  radii: ROUNDED_PRESETS[4],
+  radii: ROUNDED_PRESETS[5],
 };
 
 interface Props {

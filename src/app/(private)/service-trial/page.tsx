@@ -79,7 +79,10 @@ export default function Page() {
           </CContainer>
 
           <CContainer gap={2}>
-            <Alert.Root status={"warning"}>
+            <Alert.Root
+              status={"warning"}
+              rounded={themeConfig.radii.component}
+            >
               <Alert.Content gap={4}>
                 <HStack>
                   <Alert.Indicator />
@@ -106,7 +109,10 @@ export default function Page() {
               </Alert.Content>
             </Alert.Root>
 
-            <Alert.Root colorPalette={"gray"}>
+            <Alert.Root
+              colorPalette={"gray"}
+              rounded={themeConfig.radii.component}
+            >
               <Alert.Indicator />
 
               <Alert.Content gap={4}>

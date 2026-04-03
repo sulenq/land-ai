@@ -1241,12 +1241,12 @@ const ResultSection = (props: Props__ResultSection) => {
 
 // -----------------------------------------------------------------
 
-interface Props__TrialDaSessionVerificationButtons extends GroupProps {
+interface Props__TrialDaSessionFinalValidations extends GroupProps {
   disabled?: boolean;
 }
 
-const TrialDaSessionVerificationButtons = (
-  props: Props__TrialDaSessionVerificationButtons,
+const TrialDaSessionFinalValidations = (
+  props: Props__TrialDaSessionFinalValidations,
 ) => {
   // Props
   const { disabled, ...restProps } = props;
@@ -1361,7 +1361,7 @@ export default function Page() {
         />
 
         {/* Verification */}
-        <TrialDaSessionVerificationButtons disabled={isDisabled} mx={"auto"} />
+        <TrialDaSessionFinalValidations disabled={isDisabled} mx={"auto"} />
       </CContainer>
     ),
   };

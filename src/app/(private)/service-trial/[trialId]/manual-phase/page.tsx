@@ -20,6 +20,7 @@ import {
   DisclosureRoot,
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
+import { Divider } from "@/components/ui/divider";
 import { Img } from "@/components/ui/img";
 import { P } from "@/components/ui/p";
 import { Segmented } from "@/components/ui/segment-group";
@@ -31,7 +32,6 @@ import { DataTable } from "@/components/widget/DataTable";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { DotIndicator } from "@/components/widget/Indicator";
 import { InfoPopover } from "@/components/widget/InfoPopover";
 import { MContainer } from "@/components/widget/MContainer";
 import {
@@ -48,7 +48,6 @@ import {
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
 } from "@/constants/interfaces";
-import { R_SPACING_MD } from "@/constants/styles";
 import { useActiveDA } from "@/context/useActiveDA";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
@@ -67,7 +66,6 @@ import {
   Box,
   Center,
   Group,
-  GroupProps,
   HStack,
   Stack,
   StackProps,
@@ -76,11 +74,12 @@ import {
 import {
   ArrowUpRightIcon,
   CheckCheckIcon,
+  CheckCircleIcon,
   CheckIcon,
   LayoutListIcon,
-  ListIcon,
   ShieldAlertIcon,
   TableIcon,
+  XCircleIcon,
   XIcon,
 } from "lucide-react";
 import React, {
@@ -94,133 +93,128 @@ import React, {
 
 // -----------------------------------------------------------------
 
-interface Props__PdfViewerUploadedDocuments extends StackProps {
-  uploadedDocuments?: Interface__DAUploadedDocument[];
-  activeDocs: Interface__DAUploadedDocument[];
-  setActiveDocs: React.Dispatch<
-    React.SetStateAction<Interface__DAUploadedDocument[]>
-  >;
-}
+// interface Props__PdfViewerUploadedDocuments extends StackProps {
+//   uploadedDocuments?: Interface__DAUploadedDocument[];
+//   activeDocs: Interface__DAUploadedDocument[];
+//   setActiveDocs: React.Dispatch<
+//     React.SetStateAction<Interface__DAUploadedDocument[]>
+//   >;
+// }
 
-const PdfViewerUploadedDocuments = (
-  props: Props__PdfViewerUploadedDocuments,
-) => {
-  // Props
-  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+// const PdfViewerUploadedDocuments = (
+//   props: Props__PdfViewerUploadedDocuments,
+// ) => {
+//   // Props
+//   const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
 
-  // Contexts
-  const { themeConfig } = useThemeConfig();
+//   // Contexts
+//   const { themeConfig } = useThemeConfig();
 
-  // Hooks
-  const iss = useIsSmScreenWidth();
+//   return (
+//     <CContainer
+//       flexShrink={0}
+//       gap={1}
+//       w={["full", null, "300px"]}
+//       h={"full"}
+//       p={2}
+//       overflowY={"auto"}
+//       {...restProps}
+//     >
+//       {uploadedDocuments?.map((doc) => {
+//         const isActive = activeDocs.some(
+//           (d) => d.documentRequirement.id === doc.documentRequirement.id,
+//         );
 
-  return (
-    <CContainer
-      flexShrink={0}
-      gap={1}
-      w={["full", null, "300px"]}
-      h={"full"}
-      p={2}
-      overflowY={"auto"}
-      {...restProps}
-    >
-      {uploadedDocuments?.map((doc) => {
-        const isActive = activeDocs.some(
-          (d) => d.documentRequirement.id === doc.documentRequirement.id,
-        );
+//         return (
+//           <HStack
+//             key={doc.documentRequirement.id}
+//             px={3}
+//             py={2}
+//             rounded={themeConfig.radii.component}
+//             cursor={"pointer"}
+//             _hover={{
+//               bg: "d1",
+//             }}
+//             onClick={() => {
+//               setActiveDocs(() => [doc]);
+//             }}
+//           >
+//             <CContainer gap={1}>
+//               <Tooltip content={doc.documentRequirement.name}>
+//                 <P
+//                   lineClamp={1}
+//                   fontSize={"sm"}
+//                   textAlign={"left"}
+//                   color={"fg.subtle"}
+//                   mr={4}
+//                 >
+//                   {doc.documentRequirement.name}
+//                 </P>
+//               </Tooltip>
 
-        return (
-          <HStack
-            key={doc.documentRequirement.id}
-            px={3}
-            py={2}
-            rounded={themeConfig.radii.component}
-            cursor={"pointer"}
-            _hover={{
-              bg: "d1",
-            }}
-            onClick={() => {
-              setActiveDocs((ps) =>
-                iss ? [doc] : ps[0] ? [ps[0], doc] : [doc],
-              );
-            }}
-          >
-            <CContainer gap={1}>
-              <Tooltip content={doc.documentRequirement.name}>
-                <P
-                  lineClamp={1}
-                  fontSize={"sm"}
-                  textAlign={"left"}
-                  color={"fg.subtle"}
-                  mr={4}
-                >
-                  {doc.documentRequirement.name}
-                </P>
-              </Tooltip>
+//               <Tooltip content={doc.metaData.fileName}>
+//                 <P
+//                   lineClamp={1}
+//                   fontSize={"sm"}
+//                   fontWeight={"medium"}
+//                   textAlign={"left"}
+//                   mr={4}
+//                 >
+//                   {doc.metaData.fileName}
+//                 </P>
+//               </Tooltip>
+//             </CContainer>
 
-              <Tooltip content={doc.metaData.fileName}>
-                <P
-                  lineClamp={1}
-                  fontSize={"sm"}
-                  fontWeight={"medium"}
-                  textAlign={"left"}
-                  mr={4}
-                >
-                  {doc.metaData.fileName}
-                </P>
-              </Tooltip>
-            </CContainer>
-
-            {isActive && <DotIndicator ml={"auto"} />}
-          </HStack>
-        );
-      })}
-    </CContainer>
-  );
-};
+//             {isActive && <DotIndicator ml={"auto"} />}
+//           </HStack>
+//         );
+//       })}
+//     </CContainer>
+//   );
+// };
 
 // -----------------------------------------------------------------
 
-const PdfViewerUploadedDocumentsTrigger = (
-  props: Props__PdfViewerUploadedDocuments,
-) => {
-  // Props
-  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
-  // Contexts
-  const { l } = useLang();
+// const PdfViewerUploadedDocumentsTrigger = (
+//   props: Props__PdfViewerUploadedDocuments,
+// ) => {
+//   // Props
+//   const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+//   // Contexts
+//   const { l } = useLang();
 
-  // Hooks
-  const { isOpen, onOpen } = usePopDisclosure(
-    disclosureId(`pdf-viewer-uploaded-documents-list`),
-  );
+//   // Hooks
+//   const { isOpen, onOpen } = usePopDisclosure(
+//     disclosureId(`pdf-viewer-uploaded-documents-list`),
+//   );
 
-  return (
-    <>
-      <CContainer w={"fit"} onClick={onOpen} {...restProps} />
+//   return (
+//     <>
+//       <CContainer w={"fit"} onClick={onOpen} {...restProps} />
 
-      <DisclosureRoot open={isOpen} lazyLoad>
-        <DisclosureContent>
-          <DisclosureHeader>
-            <DisclosureHeaderContent title={l.your_files} />
-          </DisclosureHeader>
+//       <DisclosureRoot open={isOpen} lazyLoad>
+//         <DisclosureContent>
+//           <DisclosureHeader>
+//             <DisclosureHeaderContent title={l.your_files} />
+//           </DisclosureHeader>
 
-          <DisclosureBody>
-            <PdfViewerUploadedDocuments
-              uploadedDocuments={uploadedDocuments}
-              activeDocs={activeDocs}
-              setActiveDocs={setActiveDocs}
-              p={0}
-            />
-          </DisclosureBody>
+//           <DisclosureBody>
+//             <PdfViewerUploadedDocuments
+//               uploadedDocuments={uploadedDocuments}
+//               activeDocs={activeDocs}
+//               setActiveDocs={setActiveDocs}
+//               p={0}
+//             />
+//           </DisclosureBody>
 
-          <DisclosureFooter>
-            <BackButton />
-          </DisclosureFooter>
-        </DisclosureContent>
-      </DisclosureRoot>
-    </>
-  );
-};
+//           <DisclosureFooter>
+//             <BackButton />
+//           </DisclosureFooter>
+//         </DisclosureContent>
+//       </DisclosureRoot>
+//     </>
+//   );
+// };
 
 // -----------------------------------------------------------------
 
@@ -235,11 +229,16 @@ interface Props__PdfViewerDisclosure {
 
 const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
   // Props
-  const { open, uploadedDocuments, activeDocs, setActiveDocs } = props;
+  const {
+    open,
+    // uploadedDocuments,
+    activeDocs,
+    setActiveDocs,
+  } = props;
 
   // Contexts
   const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
+  // const { themeConfig } = useThemeConfig();
 
   // Hooks
   const iss = useIsSmScreenWidth();
@@ -258,7 +257,12 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
       <DisclosureRoot open={open} lazyLoad size={"cover"}>
         <DisclosureContent>
           <DisclosureHeader>
-            <DisclosureHeaderContent title={capitalizeWords(l.uploaded_file)} />
+            <DisclosureHeaderContent
+              title={
+                activeDocs[0]?.metaData?.fileName ||
+                capitalizeWords(l.uploaded_file)
+              }
+            />
           </DisclosureHeader>
 
           <DisclosureBody p={0} bg={["body", null, "transparent"]}>
@@ -270,7 +274,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
               // roundedBottom={[0, null, themeConfig.radii.container]}
               overflow={"clip"}
             >
-              {iss && (
+              {/* {iss && (
                 <CContainer px={R_SPACING_MD}>
                   <PdfViewerUploadedDocumentsTrigger
                     uploadedDocuments={uploadedDocuments}
@@ -285,14 +289,15 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                     </Btn>
                   </PdfViewerUploadedDocumentsTrigger>
                 </CContainer>
-              )}
+              )} */}
 
               {/* PDF Viewer */}
               <CContainer
                 flex={1}
                 gap={4}
                 h={"full"}
-                p={4}
+                px={4}
+                pb={4}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
                 overflow={"hidden"}
@@ -337,88 +342,59 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                       window.addEventListener("mouseup", onMouseUp);
                     }}
                   >
-                    {activeDocs?.map((doc, index) => {
-                      return (
-                        <CContainer
-                          key={doc.documentRequirement.id}
-                          // bg={"bg.muted"}
-                          border={"1px solid"}
-                          borderColor={"border.muted"}
-                          rounded={themeConfig.radii.component}
-                          h={"full"}
-                          overflow={"hidden"}
-                          flexShrink={0}
-                          w={
-                            activeDocs.length === 1
-                              ? "full"
-                              : ["85%", null, "calc(50% - 8px)"]
-                          }
-                          css={{
-                            scrollSnapAlign: "start",
-                          }}
-                        >
-                          <HStack
-                            justify={"space-between"}
+                    {activeDocs?.map(
+                      (
+                        doc,
+                        // index
+                      ) => {
+                        return (
+                          <CContainer
+                            key={doc.documentRequirement.id}
+                            // bg={"bg.muted"}
+                            h={"full"}
+                            overflow={"hidden"}
                             flexShrink={0}
-                            p={2}
-                          >
-                            <P fontWeight={"medium"} ml={2}>
-                              {doc.metaData.fileName}
-                            </P>
-
-                            <Btn
-                              iconButton
-                              variant={"subtle"}
-                              rounded={"full"}
-                              size={"2xs"}
-                              onClick={() => {
-                                setActiveDocs((ps) =>
-                                  ps.filter((_, i) => i !== index),
-                                );
-                              }}
-                            >
-                              <AppIcon icon={XIcon} boxSize={4} />
-                            </Btn>
-                          </HStack>
-
-                          <PdfViewer
-                            fileUrl={
-                              fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
+                            w={
+                              activeDocs.length === 1
+                                ? "full"
+                                : ["85%", null, "calc(50% - 8px)"]
                             }
-                            fileName={doc.metaData.fileName}
-                            defaultMode="continuous"
-                            borderTop={"1px solid"}
-                            borderColor={"border.muted"}
-                            rounded={themeConfig.radii.component}
-                            flex={1}
-                            minH={0}
-                          />
+                            css={{
+                              scrollSnapAlign: "start",
+                            }}
+                          >
+                            <PdfViewer
+                              fileUrl={
+                                fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
+                              }
+                              fileName={doc.metaData.fileName}
+                              defaultMode="continuous"
+                              flex={1}
+                              minH={0}
+                            />
 
-                          <CContainer my={4}>
-                            <Group mx={"auto"}>
-                              <Btn variant={"outline"} colorPalette={"red"}>
-                                Tolak
-                              </Btn>
-
-                              <Btn variant={"outline"} colorPalette={"green"}>
-                                Valid dan siap disahkan
-                              </Btn>
-                            </Group>
+                            <CContainer my={4}>
+                              <Group mx={"auto"}>
+                                <Btn colorPalette={"teal"}>
+                                  Valid dan siap disahkan
+                                </Btn>
+                              </Group>
+                            </CContainer>
                           </CContainer>
-                        </CContainer>
-                      );
-                    })}
+                        );
+                      },
+                    )}
                   </HStack>
                 )}
               </CContainer>
 
-              {!iss && (
+              {/* {!iss && (
                 <PdfViewerUploadedDocuments
                   uploadedDocuments={uploadedDocuments}
                   activeDocs={activeDocs}
                   setActiveDocs={setActiveDocs}
                 />
-              )}
+              )} */}
             </Stack>
           </DisclosureBody>
 
@@ -587,8 +563,9 @@ const UploadedFiles = () => {
         {uploadedDocuments?.map((doc) => {
           return (
             <HStack
-              flexDir={["column", null, "row"]}
               key={doc.documentRequirement.id}
+              flexDir={["column", null, "row"]}
+              justify={"space-between"}
               gapX={4}
               bg={"d0"}
               pl={4}
@@ -596,45 +573,47 @@ const UploadedFiles = () => {
               py={3}
               rounded={themeConfig.radii.component}
             >
-              <CContainer gap={1}>
-                <HStack flexShrink={0}>
-                  <ClampText fontWeight={"medium"}>
-                    {doc.documentRequirement.name}
-                  </ClampText>
+              <ClampText fontWeight={"medium"}>
+                {doc.documentRequirement.name}
+              </ClampText>
 
-                  {!doc.documentRequirement.isMandatory && (
-                    <Badge bg={"d1"} colorPalette={"gray"}>
-                      {l.optional}
-                    </Badge>
-                  )}
-                </HStack>
+              <HStack>
+                <Btn
+                  clicky={false}
+                  h={"fit"}
+                  px={0}
+                  border={"none"}
+                  borderBottom={"1px solid"}
+                  borderColor={"fg.success"}
+                  rounded={0}
+                  variant={"plain"}
+                  colorPalette={"teal"}
+                  ml={"auto"}
+                  onClick={() => {
+                    setActiveDocs([doc]);
+                    onOpen();
+                  }}
+                >
+                  {l.view}
+                </Btn>
 
-                {doc.metaData.fileName ? (
-                  <FileName
-                    color={"fg.muted"}
-                    onClick={() => {
-                      setActiveDocs([doc]);
-                      onOpen();
-                    }}
-                  >
-                    {doc.metaData.fileName}
-                  </FileName>
-                ) : (
-                  <P>-</P>
-                )}
-              </CContainer>
+                <Divider w={"1px"} h={"20px"} />
 
-              <Btn
-                variant={"subtle"}
-                ml={"auto"}
-                onClick={() => {
-                  setActiveDocs([doc]);
-                  onOpen();
-                }}
-              >
-                {l.open}
-                <AppIcon icon={ArrowUpRightIcon} />
-              </Btn>
+                <Btn
+                  clicky={false}
+                  h={"fit"}
+                  px={0}
+                  border={"none"}
+                  borderBottom={"1px solid"}
+                  borderColor={"fg.error"}
+                  rounded={0}
+                  variant={"plain"}
+                  colorPalette={"red"}
+                  ml={"auto"}
+                >
+                  Tolak
+                </Btn>
+              </HStack>
             </HStack>
           );
         })}
@@ -1231,26 +1210,65 @@ const ResultSection = (props: Props__ResultSection) => {
 
 // -----------------------------------------------------------------
 
-interface Props__TrialDaSessionVerificationButtons extends GroupProps {
+interface Props__TrialDaSessionFinalValidations extends StackProps {
   disabled?: boolean;
 }
 
-const TrialDaSessionVerificationButtons = (
-  props: Props__TrialDaSessionVerificationButtons,
+const TrialDaSessionFinalValidations = (
+  props: Props__TrialDaSessionFinalValidations,
 ) => {
   // Props
   const { disabled, ...restProps } = props;
 
-  return (
-    <Group {...restProps}>
-      <Btn variant={"outline"} colorPalette={"red"} disabled={disabled}>
-        Tolak
-      </Btn>
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+  const activeDASession = useActiveDA((s) => s.activeDA.session);
 
-      <Btn variant={"outline"} colorPalette={"green"} disabled={disabled}>
-        Valid dan siap disahkan
-      </Btn>
-    </Group>
+  // Constants
+  const totalUploadedDocuments = activeDASession?.uploadedDocuments?.length;
+
+  return (
+    <CContainer
+      gap={4}
+      p={4}
+      bg={"d0"}
+      border={"1px solid"}
+      borderColor={"border.emphasized"}
+      rounded={themeConfig.radii.component}
+      {...restProps}
+    >
+      <CContainer gap={1}>
+        <HStack>
+          <AppIcon icon={CheckCheckIcon} />
+
+          <P fontSize={"lg"} fontWeight={"semibold"}>
+            Validasi Akhir Berkas
+          </P>
+        </HStack>
+
+        <P color={"fg.muted"}>
+          Semua {totalUploadedDocuments} dokumen telah diperiksa. Berikan
+          keupusan final untuk berkas ini.
+        </P>
+      </CContainer>
+
+      <HStack>
+        <Btn
+          flex={1}
+          variant={"outline"}
+          colorPalette={"red"}
+          disabled={disabled}
+        >
+          <AppIcon icon={XCircleIcon} />
+          Tolak berkas
+        </Btn>
+
+        <Btn flex={1} colorPalette={"teal"} disabled={disabled}>
+          <AppIcon icon={CheckCircleIcon} />
+          Valid & siap disahkan
+        </Btn>
+      </HStack>
+    </CContainer>
   );
 };
 
@@ -1351,7 +1369,7 @@ export default function Page() {
         />
 
         {/* Verification */}
-        <TrialDaSessionVerificationButtons disabled={isDisabled} mx={"auto"} />
+        <TrialDaSessionFinalValidations disabled={isDisabled} mx={"auto"} />
       </CContainer>
     ),
   };

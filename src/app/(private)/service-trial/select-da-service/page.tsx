@@ -84,7 +84,7 @@ const ServiceItem = (props: Interface__ServiceItem) => {
 
     // TODO remove below
     setStep(2);
-    router.push(`${path}/1`);
+    router.push(`${path}/1/manual-phase`);
   };
 
   useEffect(() => {
