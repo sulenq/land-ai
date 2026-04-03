@@ -298,8 +298,6 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 flex={1}
                 gap={4}
                 h={"full"}
-                px={4}
-                pb={4}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
                 overflow={"hidden"}
