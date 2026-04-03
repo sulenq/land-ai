@@ -49,8 +49,13 @@ interface FeedbackReasonTriggerProps extends StackProps {
 }
 const FeedbackReasonTrigger = (props: FeedbackReasonTriggerProps) => {
   // Props
-  const { children, session, messageId, onConfirmFeedback, ...restProps } =
-    props;
+  const {
+    children,
+    // session,
+    messageId,
+    onConfirmFeedback,
+    ...restProps
+  } = props;
   const ID = `feedback-${messageId}`;
 
   // Contexts

@@ -38,7 +38,11 @@ interface Interface__ServiceItem extends StackProps {
 
 const ServiceItem = (props: Interface__ServiceItem) => {
   // Props
-  const { index, service, ...restProps } = props;
+  const {
+    // index,
+    service,
+    ...restProps
+  } = props;
 
   // Contexts
   const { l, lang } = useLang();

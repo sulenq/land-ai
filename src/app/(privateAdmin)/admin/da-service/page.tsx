@@ -286,7 +286,12 @@ const Edit = (props: any) => {
   const ID = `${PREFIX_ID}_edit`;
 
   // Props
-  const { routeTitle, initialData, index, ...restProps } = props;
+  const {
+    routeTitle,
+    initialData,
+    // index,
+    ...restProps
+  } = props;
   const data = initialData as Interface__Data;
 
   // Contexts

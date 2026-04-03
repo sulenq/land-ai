@@ -27,7 +27,7 @@ const statusColors = {
 
 export const FraudAlertCard: React.FC<FraudAlertCardProps> = ({
   alert,
-  onResolve: _onResolve,
+  // onResolve: _onResolve,
 }) => {
   // Contexts
   const { themeConfig } = useThemeConfig();

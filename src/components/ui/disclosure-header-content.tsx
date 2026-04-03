@@ -61,7 +61,6 @@ export const DisclosureHeaderContent = (
             rounded={"full"}
             variant={iss ? "ghost" : "subtle"}
             onClick={() => {
-              ``;
               setMaximize((ps) => !ps);
             }}
           >

@@ -51,7 +51,8 @@ export default function Page() {
         config,
         onResolve: {
           onSuccess: (r) => {
-            setTrialSession(r.data);
+            setTrialSession(r.data.data);
+
             router.push("/service-trial/select-da-service");
           },
           onError: () => {
@@ -95,7 +96,7 @@ export default function Page() {
                     const no = index + 1;
 
                     return (
-                      <HStack align={"start"}>
+                      <HStack align={"start"} key={index}>
                         <P flexShrink={0}>{no}.</P>
 
                         <CContainer gap={1}>

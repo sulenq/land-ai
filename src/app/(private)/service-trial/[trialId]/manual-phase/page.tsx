@@ -50,10 +50,12 @@ import {
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
   Interface__TrialDASessionDetail,
+  Interface__TrialSession,
 } from "@/constants/interfaces";
 import { useActiveTrialDaSessionContext } from "@/context/useActiveTrialDaSessionContext";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
+import useRenderTrigger from "@/context/useRenderTrigger";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useTrialSessionContext } from "@/context/useTrialSessionContext";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
@@ -85,6 +87,7 @@ import {
   XCircleIcon,
   XIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, {
   memo,
   useCallback,
@@ -595,8 +598,10 @@ const ValidationConfirmation = (props: Props__ValidationConfirmation) => {
   const updateUploadedFilesValidationStatus = useActiveTrialDaSessionContext(
     (s) => s.updateUploadedFilesValidationStatus,
   );
+  const setRt = useRenderTrigger((s) => s.setRt);
 
   // Hooks
+  const router = useRouter();
   const { isOpen, onOpen } = usePopDisclosure(ID);
   const { req, loading } = useRequest({
     id: "validation-confirmation",
@@ -635,14 +640,29 @@ const ValidationConfirmation = (props: Props__ValidationConfirmation) => {
         config,
         onResolve: {
           onSuccess: (r) => {
-            if (validationType === "uploadedFile") {
-              updateUploadedFilesValidationStatus(r.data.data.manualDetails);
-            }
-
             resetForm();
 
             if (isOpen) {
               back();
+            }
+
+            if (validationType === "uploadedFile") {
+              const trialDaSessionDetail: Interface__TrialDASessionDetail =
+                r.data.data;
+
+              updateUploadedFilesValidationStatus(
+                trialDaSessionDetail.manualDetails,
+              );
+            }
+
+            if (validationType === "trialDaSession") {
+              const trialSession: Interface__TrialSession = r.data.data;
+
+              if (trialSession.daSessionStep === 3) {
+                router.push(`/service-trial/${trialSession.id}/ai-phase`);
+              } else {
+                setRt((ps) => !ps);
+              }
             }
           },
         },
