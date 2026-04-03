@@ -50,24 +50,24 @@ export const TrialStepper = (props: StepsRootProps) => {
   // 3 => /service-trial/{trialId}
   // 4 => /service-trial/{trialId}/summary
 
-  // useEffect(() => {
-  //   if (!trialSession || !trialId) return;
+  useEffect(() => {
+    if (!trialSession || !trialId) return;
 
-  //   switch (step) {
-  //     case 2:
-  //       router.push(`/service-trial/${trialId}/manual-phase`);
-  //       break;
-  //     case 3:
-  //       router.push(`/service-trial/${trialId}/ai-phase`);
-  //       break;
-  //     case 4:
-  //       router.push(`/service-trial/${trialId}/summary`);
-  //       break;
-  //     default:
-  //       router.push(`/service-trial/select-da-service`);
-  //       break;
-  //   }
-  // }, [step, trialId, router]);
+    switch (step) {
+      case 2:
+        router.push(`/service-trial/${trialId}/manual-phase`);
+        break;
+      case 3:
+        router.push(`/service-trial/${trialId}/ai-phase`);
+        break;
+      case 4:
+        router.push(`/service-trial/${trialId}/summary`);
+        break;
+      default:
+        router.push(`/service-trial/select-da-service`);
+        break;
+    }
+  }, [step, trialId, router]);
 
   return (
     <Steps.Root

@@ -37,10 +37,7 @@ import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
 import { InfoPopover } from "@/components/widget/InfoPopover";
 import { MContainer } from "@/components/widget/MContainer";
-import {
-  ConstrainedContainer,
-  PageContainer,
-} from "@/components/widget/PageShell";
+import { PageContainer } from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
 import { DUMMY_PDF_URL } from "@/constants/dummyData";
@@ -67,7 +64,6 @@ import { fileUrl, imgUrl } from "@/utils/url";
 import {
   Badge,
   Box,
-  Center,
   HStack,
   Stack,
   StackProps,
@@ -766,7 +762,8 @@ const AccordionItemsList = memo(function AccordionItemsList(
               )}
 
               {visibleValidationResults?.map((r, index) => {
-                const isLastIndex = index === visibleValidationResults.length - 1;
+                const isLastIndex =
+                  index === visibleValidationResults.length - 1;
                 const fieldLabel = r.label;
                 const isMatch = r.validation.status;
 
@@ -996,7 +993,13 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
             td: <P whiteSpace={"normal"}>{r.label}</P>,
             value: r.label,
             dataType: "string",
-            tableCellProps: wrappingCellProps,
+            tableCellProps: {
+              ...wrappingCellProps,
+              position: "sticky",
+              left: 0,
+              zIndex: 2,
+              bg: "body",
+            },
             wrapperProps: wrappingWrapperProps,
           },
           ...(uploadedDocuments ?? []).map((doc) => {
@@ -1688,7 +1691,6 @@ export default function Page() {
             )}
           </CContainer>
         </Tabs.Content>
-
       </Tabs.Root>
     </PageContainer>
   );

@@ -443,7 +443,6 @@ export const DataTable = (props: Props__DataTable) => {
                         minH={tdMinH}
                         bg={isRowSelected ? selectedColor : tdBg}
                         justify={col.align}
-                        align={"start"}
                         minW={0}
                         {...col?.wrapperProps}
                       >
