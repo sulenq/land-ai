@@ -596,7 +596,7 @@ const UploadedFiles = () => {
               pl={4}
               pr={3}
               py={3}
-              rounded={themeConfig.radii.component}
+              rounded={themeConfig.radii.container}
             >
               <ClampText fontWeight={"medium"}>
                 {doc.documentRequirement.name}
@@ -1270,7 +1270,7 @@ const TrialDaSessionFinalValidations = (
       bg={"d0"}
       border={"1px solid"}
       borderColor={"border.emphasized"}
-      rounded={themeConfig.radii.component}
+      rounded={themeConfig.radii.container}
       {...restProps}
     >
       <CContainer gap={1}>
