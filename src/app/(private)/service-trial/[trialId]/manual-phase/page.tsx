@@ -62,17 +62,14 @@ import { disclosureId } from "@/utils/disclosure";
 import { capitalizeWords } from "@/utils/string";
 import { fileUrl, imgUrl } from "@/utils/url";
 import {
-  Badge,
   Box,
   Center,
   Group,
   HStack,
   Stack,
   StackProps,
-  TextProps,
 } from "@chakra-ui/react";
 import {
-  ArrowUpRightIcon,
   CheckCheckIcon,
   CheckCircleIcon,
   CheckIcon,
@@ -90,6 +87,8 @@ import React, {
   useRef,
   useState,
 } from "react";
+
+// TODO ubah activeDA => context trial session
 
 // -----------------------------------------------------------------
 
@@ -413,7 +412,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
 
 const Header = () => {
   // Contexts
-  const activeDASession = useActiveDA((s) => s.activeDA.session);
+  const activeDASession = useActiveDA((s) => s.activeDA?.session);
 
   return (
     <CContainer gap={1}>
@@ -428,47 +427,47 @@ const Header = () => {
 
 // -----------------------------------------------------------------
 
-const FileName = (props: TextProps) => {
-  // Props
-  const { children, ...restProps } = props;
+// const FileName = (props: TextProps) => {
+//   // Props
+//   const { children, ...restProps } = props;
 
-  // States
-  const [hover, setHover] = useState<boolean>(false);
+//   // States
+//   const [hover, setHover] = useState<boolean>(false);
 
-  return (
-    <Tooltip
-      content={children}
-      positioning={{
-        placement: "right",
-      }}
-    >
-      <HStack w={"fit"} cursor={"pointer"}>
-        <P
-          lineClamp={1}
-          fontWeight={"medium"}
-          borderBottom={"1px solid"}
-          borderColor={hover ? "fg" : "transparent"}
-          transition={"200ms"}
-          onMouseEnter={() => {
-            setHover(true);
-          }}
-          onMouseLeave={() => {
-            setHover(false);
-          }}
-          {...restProps}
-        >
-          {children}
-        </P>
+//   return (
+//     <Tooltip
+//       content={children}
+//       positioning={{
+//         placement: "right",
+//       }}
+//     >
+//       <HStack w={"fit"} cursor={"pointer"}>
+//         <P
+//           lineClamp={1}
+//           fontWeight={"medium"}
+//           borderBottom={"1px solid"}
+//           borderColor={hover ? "fg" : "transparent"}
+//           transition={"200ms"}
+//           onMouseEnter={() => {
+//             setHover(true);
+//           }}
+//           onMouseLeave={() => {
+//             setHover(false);
+//           }}
+//           {...restProps}
+//         >
+//           {children}
+//         </P>
 
-        <AppIcon
-          icon={ArrowUpRightIcon}
-          opacity={hover ? 1 : 0}
-          transition={"200ms"}
-        />
-      </HStack>
-    </Tooltip>
-  );
-};
+//         <AppIcon
+//           icon={ArrowUpRightIcon}
+//           opacity={hover ? 1 : 0}
+//           transition={"200ms"}
+//         />
+//       </HStack>
+//     </Tooltip>
+//   );
+// };
 
 // -----------------------------------------------------------------
 
@@ -1281,6 +1280,7 @@ export default function Page() {
   const setActiveDaSession = useActiveDA((s) => s.setSession);
   const step = trialSession?.step;
   const trialDaSessions = trialSession?.trialDaSessions;
+  // TODO latest da sessions index
   const currentDaSessionId = trialDaSessions?.[0].daSession?.id;
 
   // Refs
