@@ -81,9 +81,11 @@ export const TrialStepper = (props: StepsRootProps) => {
         {TRIAL_STEPS.map((step, index) => (
           <Steps.Item key={index} index={index} title={step.title}>
             <Steps.Indicator />
+
             <Tooltip content={step.title}>
               <Steps.Title lineClamp={1}>{step.title}</Steps.Title>
             </Tooltip>
+
             <Steps.Separator />
           </Steps.Item>
         ))}
@@ -104,7 +106,7 @@ export const TrialStepper = (props: StepsRootProps) => {
         <Steps.Content
           key={index}
           index={index}
-          color={"fg.muted"}
+          color={"fg.subtle"}
           textAlign={"center"}
         >
           {step.description}

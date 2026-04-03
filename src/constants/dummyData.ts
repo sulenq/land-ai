@@ -4,6 +4,7 @@ import {
   Interface__ChatSession,
   Interface__DASession,
   Interface__TrialDADocumentDetail,
+  Interface__TrialDASessionDetail,
   Interface__TrialSession,
   Interface__User,
 } from "@/constants/interfaces";
@@ -548,8 +549,8 @@ export const DUMMY_DA_SESSIONS: Interface__DASession[] = [
   },
 ];
 export const DUMMY_ACTIVE_DA_SESSION = {
-  id: "1a0afae3-91c3-4374-9e14-11c372f1d006",
-  title: "Peralihan -  11:08 GMT+7",
+  id: "e98ea789-ab5c-4fbd-bfb7-42f4b812dc8c",
+  title: "HT - Wijayawati",
   createdAt: "2026-03-16T04:08:24.976Z",
   serviceId: "9",
   serviceName: "Peralihan",
@@ -11511,10 +11512,21 @@ export const DUMMY_DA_SESSION: Interface__DASession = {
   createdAt: "2025-01-01T10:00:00Z",
 };
 
+export const DUMMY_TRIAL_DA_SESSION_DETAIL: Interface__TrialDASessionDetail = {
+  id: "1",
+  daSession: DUMMY_ACTIVE_DA_SESSION as any,
+  startTime: "2026-04-02T09:00:00Z",
+  endTime: "2026-04-02T09:15:00Z",
+  manualDetails: DUMMY_TRIAL_DA_DOCUMENT_DETAILS,
+  aiDetails: [],
+  createdAt: "2026-04-02T09:00:00Z",
+};
+
 export const DUMMY_TRIAL_SESSION: Interface__TrialSession = {
   id: "1",
   user: dummyUser,
   step: 1,
+  daSessionStep: 1,
   createdAt: "2026-04-02T09:00:00Z",
   trialDaSessions: [
     {

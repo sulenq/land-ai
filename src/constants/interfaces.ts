@@ -344,6 +344,7 @@ export interface Interface__TrialSession {
   id: string;
   user: Interface__User;
   step: number;
+  daSessionStep: number;
   trialDaSessions: Interface__TrialDASession[];
   createdAt: string;
 }
@@ -351,6 +352,16 @@ export interface Interface__TrialSession {
 export interface Interface__TrialDASession {
   id: string;
   daSession: Interface__DASession;
+  startTime: string;
+  endTime: string;
+  manualDetails: Interface__TrialDADocumentDetail[];
+  aiDetails: Interface__TrialDADocumentDetail[];
+  createdAt: string;
+}
+
+export interface Interface__TrialDASessionDetail {
+  id: string;
+  daSession: Interface__DASessionDetail;
   startTime: string;
   endTime: string;
   manualDetails: Interface__TrialDADocumentDetail[];

@@ -40,15 +40,18 @@ import {
 } from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { TrialStepper } from "@/components/widget/trial-stepper";
-import { DA_API_SESSION_DETAIL } from "@/constants/apis";
-import { DUMMY_PDF_URL } from "@/constants/dummyData";
+import {
+  DUMMY_PDF_URL,
+  DUMMY_TRIAL_DA_SESSION_DETAIL,
+} from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__DAUploadedDocument,
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
+  Interface__TrialDASessionDetail,
 } from "@/constants/interfaces";
-import { useActiveDA } from "@/context/useActiveDA";
+import { useActiveTrialDaSessionContext } from "@/context/useActiveTrialDaSessionContext";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -412,15 +415,33 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
 
 const Header = () => {
   // Contexts
-  const activeDASession = useActiveDA((s) => s.activeDA?.session);
+  const { themeConfig } = useThemeConfig();
+  const daSessionStep = useTrialSessionContext(
+    (s) => s.trialSession?.daSessionStep,
+  );
 
   return (
-    <CContainer gap={1}>
-      <ClampText fontSize={"xl"} fontWeight={"semibold"}>
-        {activeDASession?.title}
-      </ClampText>
+    <CContainer gap={8}>
+      {/* DA Session progress indicator */}
+      <CContainer gap={2}>
+        <P textAlign={"center"}>{daSessionStep}/3 Berkas Selesai</P>
 
-      <P color={"fg.subtle"}>{activeDASession?.id}</P>
+        <HStack>
+          {Array.from({ length: 3 }, (_, index) => {
+            const isDone = daSessionStep ? index + 1 <= daSessionStep : false;
+
+            return (
+              <Box
+                key={index}
+                flex={1}
+                h={"8px"}
+                bg={isDone ? `${themeConfig.colorPalette}.solid` : "bg.muted"}
+                rounded={themeConfig.radii.component}
+              />
+            );
+          })}
+        </HStack>
+      </CContainer>
     </CContainer>
   );
 };
@@ -475,10 +496,13 @@ const FileInformation = () => {
   // Contexts
   const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
-  const activeDASession = useActiveDA((s) => s.activeDA.session);
+  const activeTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession,
+  );
+  const activeDaSession = activeTrialDaSession?.daSession;
 
   // Constants
-  const documentService = activeDASession?.documentService;
+  const documentService = activeDaSession?.documentService;
 
   return (
     <CContainer gap={2}>
@@ -501,8 +525,8 @@ const FileInformation = () => {
 
           <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
             <Img
-              key={activeDASession?.documentService?.icon}
-              src={imgUrl(activeDASession?.documentService?.icon)}
+              key={activeDaSession?.documentService?.icon}
+              src={imgUrl(activeDaSession?.documentService?.icon)}
               flexShrink={0}
               w={"20px"}
               h={"20px"}
@@ -520,7 +544,7 @@ const FileInformation = () => {
             {l.category}
           </P>
 
-          <P>{activeDASession?.kategori}</P>
+          <P>{activeDaSession?.kategori}</P>
         </HStack>
       </CContainer>
     </CContainer>
@@ -533,10 +557,14 @@ const UploadedFiles = () => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const activeDASession = useActiveDA((s) => s.activeDA.session);
+  const activeDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession?.daSession,
+  );
+
+  // console.debug(activeTrialDaSession);
 
   // Constants
-  const uploadedDocuments = activeDASession?.uploadedDocuments;
+  const uploadedDocuments = activeDaSession?.uploadedDocuments;
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(
@@ -1217,14 +1245,25 @@ const TrialDaSessionFinalValidations = (
   props: Props__TrialDaSessionFinalValidations,
 ) => {
   // Props
-  const { disabled, ...restProps } = props;
+  const { ...restProps } = props;
 
   // Contexts
   const { themeConfig } = useThemeConfig();
-  const activeDASession = useActiveDA((s) => s.activeDA.session);
+  const activeTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession,
+  );
+  const activeDaSession = activeTrialDaSession?.daSession;
 
   // Constants
-  const totalUploadedDocuments = activeDASession?.uploadedDocuments?.length;
+  const totalUploadedDocuments = activeDaSession?.uploadedDocuments?.length;
+
+  // Hooks
+  // TODO cek da step jika step === 3 maka navigate to ai phase, else next da session & hit api update da step + 1
+
+  // Derived Values
+  const disabled =
+    activeDaSession?.uploadedDocuments?.length !==
+    activeTrialDaSession?.manualDetails?.length;
 
   return (
     <CContainer
@@ -1277,11 +1316,13 @@ export default function Page() {
   // Contexts
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const trialSession = useTrialSessionContext((s) => s.trialSession);
-  const setActiveDaSession = useActiveDA((s) => s.setSession);
+  const setActiveTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.setActiveTrialDaSession,
+  );
   const step = trialSession?.step;
   const trialDaSessions = trialSession?.trialDaSessions;
   // TODO latest da sessions index
-  const currentDaSessionId = trialDaSessions?.[0].daSession?.id;
+  const currentDaSessionId = trialDaSessions?.at(-1)?.daSession?.id;
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -1293,11 +1334,11 @@ export default function Page() {
   const {
     initialLoading,
     error,
-    data: currentDaSession,
+    data: activeTrialDaSession,
     onRetry,
-  } = useDataState<Interface__DASessionDetail>({
-    // initialData: DUMMY_ACTIVE_DA_SESSION as any,
-    url: `${DA_API_SESSION_DETAIL}/${currentDaSessionId}`,
+  } = useDataState<Interface__TrialDASessionDetail>({
+    initialData: DUMMY_TRIAL_DA_SESSION_DETAIL as any,
+    // url: `${DA_API_SESSION_DETAIL}/${currentDaSessionId}`,
     dataResource: false,
     dependencies: [currentDaSessionId],
     loadingBarInitialOnly: true,
@@ -1305,12 +1346,10 @@ export default function Page() {
 
   // Derived Values
   const isAiPhase = step === 3;
-  // TODO make disabled condition for trial verification buttons
-  const isDisabled = true;
 
   // Update breadcrumbs
   useEffect(() => {
-    if (currentDaSession) {
+    if (activeTrialDaSession) {
       setBreadcrumbs({
         backPath: `/service-trial`,
         activeNavs: [
@@ -1319,7 +1358,7 @@ export default function Page() {
             path: `/service-trial`,
           },
           {
-            label: currentDaSession?.title,
+            label: activeTrialDaSession?.daSession?.title,
             path: `/service-trial/${currentDaSessionId}`,
           },
         ],
@@ -1339,14 +1378,17 @@ export default function Page() {
         ],
       });
     }
-  }, [currentDaSession]);
+  }, [activeTrialDaSession]);
 
-  // Set active DA on data load
+  // Set active trial DA session on data load
   useEffect(() => {
-    if (currentDaSession && currentDaSession.id === currentDaSessionId) {
-      setActiveDaSession(currentDaSession);
+    if (
+      activeTrialDaSession &&
+      activeTrialDaSession?.daSession?.id === currentDaSessionId
+    ) {
+      setActiveTrialDaSession(activeTrialDaSession);
     }
-  }, [currentDaSession, currentDaSessionId, setActiveDaSession]);
+  }, [activeTrialDaSession, currentDaSessionId, setActiveTrialDaSession]);
 
   const render = {
     loading: <DASessonPageSkeleton />,
@@ -1363,13 +1405,13 @@ export default function Page() {
         <UploadedFiles />
 
         <ResultSection
-          daSession={currentDaSession}
+          daSession={activeTrialDaSession?.daSession}
           containerDimension={containerDimension}
           display={isAiPhase ? "flex" : "none"}
         />
 
         {/* Verification */}
-        <TrialDaSessionFinalValidations disabled={isDisabled} mx={"auto"} />
+        <TrialDaSessionFinalValidations mx={"auto"} />
       </CContainer>
     ),
   };
@@ -1388,8 +1430,8 @@ export default function Page() {
             {error && render.error}
             {!error && (
               <>
-                {currentDaSession && render.loaded}
-                {!currentDaSession && render.empty}
+                {activeTrialDaSession && render.loaded}
+                {!activeTrialDaSession && render.empty}
               </>
             )}
           </>
