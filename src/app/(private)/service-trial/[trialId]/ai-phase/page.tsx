@@ -1,7 +1,5 @@
 "use client";
 
-// TODO ubah activeDA => context trial session
-
 import { FraudAlertsPanel } from "@/components/fraud/FraudAlertsPanel";
 import {
   AccordionItem,
@@ -20,9 +18,11 @@ import {
   DisclosureRoot,
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
+import { Field, FieldsetRoot } from "@/components/ui/field";
 import { Img } from "@/components/ui/img";
 import { P } from "@/components/ui/p";
 import { Segmented } from "@/components/ui/segment-group";
+import { Textarea } from "@/components/ui/textarea";
 import { Tooltip } from "@/components/ui/tooltip";
 import { AppIcon } from "@/components/widget/AppIcon";
 import BackButton from "@/components/widget/BackButton";
@@ -40,49 +40,58 @@ import {
 } from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { TrialStepper } from "@/components/widget/trial-stepper";
-import { DA_API_SESSION_DETAIL } from "@/constants/apis";
-import { DUMMY_PDF_URL } from "@/constants/dummyData";
+import {
+  DUMMY_PDF_URL,
+  DUMMY_TRIAL_DA_SESSION_DETAIL,
+} from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__DAUploadedDocument,
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
+  Interface__TrialDASessionDetail,
+  Interface__TrialSession,
 } from "@/constants/interfaces";
 import { R_SPACING_MD } from "@/constants/styles";
-import { useActiveDA } from "@/context/useActiveDA";
+import { useActiveTrialDaSessionContext } from "@/context/useActiveTrialDaSessionContext";
 import { useBreadcrumbs } from "@/context/useBreadcrumbs";
 import useLang from "@/context/useLang";
+import useRenderTrigger from "@/context/useRenderTrigger";
 import { useThemeConfig } from "@/context/useThemeConfig";
 import { useTrialSessionContext } from "@/context/useTrialSessionContext";
 import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
+import useRequest from "@/hooks/useRequest";
 import { isEmptyArray } from "@/utils/array";
+import { back } from "@/utils/client";
 import { disclosureId } from "@/utils/disclosure";
 import { capitalizeWords } from "@/utils/string";
 import { fileUrl, imgUrl } from "@/utils/url";
 import {
-  Badge,
   Box,
   Center,
-  Group,
-  GroupProps,
   HStack,
   Stack,
   StackProps,
   TextProps,
 } from "@chakra-ui/react";
+import { useFormik } from "formik";
 import {
   ArrowUpRightIcon,
   CheckCheckIcon,
+  CheckCircleIcon,
   CheckIcon,
+  EyeIcon,
   LayoutListIcon,
   ListIcon,
   ShieldAlertIcon,
   TableIcon,
+  XCircleIcon,
   XIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, {
   memo,
   useCallback,
@@ -91,6 +100,114 @@ import React, {
   useRef,
   useState,
 } from "react";
+import * as yup from "yup";
+
+// -----------------------------------------------------------------
+
+const Header = () => {
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+  const daSessionStep = useTrialSessionContext(
+    (s) => s.trialSession?.daSessionStep,
+  );
+  const activeTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession,
+  );
+
+  return (
+    <CContainer gap={8}>
+      {/* DA Session progress indicator */}
+      <CContainer gap={2}>
+        <HStack justify={"space-between"}>
+          <P>
+            Berkas saat ini (debug) : {activeTrialDaSession?.id}
+            {" - "}
+            {activeTrialDaSession?.daSession?.id}
+          </P>
+
+          <P textAlign={"center"}>Berkas ke-{daSessionStep || 1} / 3</P>
+        </HStack>
+
+        <HStack>
+          {Array.from({ length: 3 }, (_, index) => {
+            const isDone = daSessionStep ? index + 1 <= daSessionStep : false;
+
+            return (
+              <Box
+                key={index}
+                flex={1}
+                h={"8px"}
+                bg={isDone ? `${themeConfig.colorPalette}.solid` : "bg.muted"}
+                rounded={themeConfig.radii.component}
+              />
+            );
+          })}
+        </HStack>
+      </CContainer>
+    </CContainer>
+  );
+};
+
+// -----------------------------------------------------------------
+
+const FileInformation = () => {
+  // Contexts
+  const { l, lang } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const activeTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession,
+  );
+  const activeDaSession = activeTrialDaSession?.daSession;
+
+  // Constants
+  const documentService = activeDaSession?.documentService;
+
+  return (
+    <CContainer gap={2}>
+      <HStack h={"32px"}>
+        <P fontWeight={"semibold"}>{capitalizeWords(l.file_information)}</P>
+      </HStack>
+
+      <CContainer
+        gap={2}
+        p={4}
+        rounded={themeConfig.radii.container}
+        // border={"1px solid"}
+        borderColor={"border.muted"}
+        bg={"d0"}
+      >
+        <HStack gap={4} align={"start"}>
+          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+            {l.service}
+          </P>
+
+          <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
+            <Img
+              key={activeDaSession?.documentService?.icon}
+              src={imgUrl(activeDaSession?.documentService?.icon)}
+              flexShrink={0}
+              w={"20px"}
+              h={"20px"}
+              objectFit={"contain"}
+            />
+
+            <P>{documentService?.title[lang]}</P>
+
+            <InfoPopover popoverContent={documentService?.description[lang]} />
+          </HStack>
+        </HStack>
+
+        <HStack gap={4} align={"start"}>
+          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+            {l.category}
+          </P>
+
+          <P>{activeDaSession?.kategori}</P>
+        </HStack>
+      </CContainer>
+    </CContainer>
+  );
+};
 
 // -----------------------------------------------------------------
 
@@ -267,7 +384,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
               align={"stretch"}
               gap={0}
               h={"full"}
-              // roundedBottom={[0, null, themeConfig.radii.container]}
+              roundedBottom={[0, null, themeConfig.radii.container]}
               overflow={"clip"}
             >
               {iss && (
@@ -292,7 +409,6 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 flex={1}
                 gap={4}
                 h={"full"}
-                p={4}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
                 overflow={"hidden"}
@@ -306,6 +422,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                     flex={1}
                     gap={4}
                     h={"full"}
+                    p={4}
                     overflowX={"auto"}
                     overflowY={"hidden"}
                     css={{
@@ -341,18 +458,17 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                       return (
                         <CContainer
                           key={doc.documentRequirement.id}
-                          // bg={"bg.muted"}
-                          border={"1px solid"}
-                          borderColor={"border.muted"}
-                          rounded={themeConfig.radii.component}
-                          h={"full"}
-                          overflow={"hidden"}
                           flexShrink={0}
                           w={
                             activeDocs.length === 1
                               ? "full"
                               : ["85%", null, "calc(50% - 8px)"]
                           }
+                          h={"full"}
+                          border={"1px solid"}
+                          borderColor={"border.muted"}
+                          rounded={themeConfig.radii.component}
+                          overflow={"hidden"}
                           css={{
                             scrollSnapAlign: "start",
                           }}
@@ -387,24 +503,24 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                             }
                             fileName={doc.metaData.fileName}
                             defaultMode="continuous"
-                            borderTop={"1px solid"}
-                            borderColor={"border.muted"}
-                            rounded={themeConfig.radii.component}
                             flex={1}
                             minH={0}
                           />
 
-                          <CContainer my={4}>
-                            <Group mx={"auto"}>
-                              <Btn variant={"outline"} colorPalette={"red"}>
-                                Tolak
-                              </Btn>
-
-                              <Btn variant={"outline"} colorPalette={"green"}>
-                                Valid dan siap disahkan
-                              </Btn>
-                            </Group>
-                          </CContainer>
+                          {/* <CContainer my={4}>
+                              <Group mx={"auto"}>
+                                <ValidationConfirmation
+                                  id={doc.documentRequirement.id.toString()}
+                                  validationType={"uploadedFile"}
+                                  metaType={doc.documentRequirement.name}
+                                  validationStatus={"valid"}
+                                >
+                                  <Btn colorPalette={"teal"}>
+                                    Valid dan siap disahkan
+                                  </Btn>
+                                </ValidationConfirmation>
+                              </Group>
+                            </CContainer> */}
                         </CContainer>
                       );
                     })}
@@ -435,18 +551,163 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
 
 // -----------------------------------------------------------------
 
-const Header = () => {
+interface Props__ValidationConfirmation extends StackProps {
+  id: string;
+  validationType: "uploadedFile" | "trialDaSession";
+  metaType?: string;
+  validationStatus: "valid" | "rejected";
+}
+
+const ValidationConfirmation = (props: Props__ValidationConfirmation) => {
+  // Props
+  const {
+    children,
+    id,
+    validationType,
+    metaType,
+    validationStatus,
+    ...restProps
+  } = props;
+  const ID = `${disclosureId(id)}-${validationType}-${validationStatus}`;
+
   // Contexts
-  const activeDASession = useActiveDA((s) => s.activeDA.session);
+  const { l } = useLang();
+  const trialSession = useTrialSessionContext((s) => s.trialSession);
+  const updateUploadedFilesValidationStatus = useActiveTrialDaSessionContext(
+    (s) => s.updateUploadedFilesValidationStatus,
+  );
+  const setRt = useRenderTrigger((s) => s.setRt);
+
+  // Hooks
+  const router = useRouter();
+  const { isOpen, onOpen } = usePopDisclosure(ID);
+  const { req, loading } = useRequest({
+    id: "validation-confirmation",
+  });
+
+  // States
+  const formik = useFormik({
+    validateOnChange: false,
+    initialValues: { notes: "" },
+    validationSchema: yup.object().shape({
+      notes:
+        validationStatus === "rejected"
+          ? yup.string().required(l.msg_required_form)
+          : yup.string().notRequired(),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      if (!trialSession?.id) return;
+
+      const url = {
+        uploadedFile: `/api/trial/step-2/uploaded-file/validation/${trialSession?.id}`,
+        trialDaSession: `/api/trial/da-session/validation/${trialSession?.id}`,
+      };
+
+      const payload = {
+        validationStatus: validationStatus,
+        notes: values.notes,
+      };
+
+      const config = {
+        url: url[validationType] as string,
+        method: "POST",
+        data: payload,
+      };
+
+      req({
+        config,
+        onResolve: {
+          onSuccess: (r) => {
+            resetForm();
+
+            if (isOpen) {
+              back();
+            }
+
+            if (validationType === "uploadedFile") {
+              const trialDaSessionDetail: Interface__TrialDASessionDetail =
+                r.data.data;
+
+              updateUploadedFilesValidationStatus(
+                trialDaSessionDetail.manualDetails,
+              );
+            }
+
+            if (validationType === "trialDaSession") {
+              const trialSession: Interface__TrialSession = r.data.data;
+
+              if (trialSession.daSessionStep === 6) {
+                router.push(`/service-trial/${trialSession.id}/summary`);
+              } else {
+                setRt((ps) => !ps);
+              }
+            }
+          },
+        },
+      });
+    },
+  });
+
+  // Derived Values
+  const label = `${validationType === "uploadedFile" ? "file yang diunggah" : "berkas"} ${metaType ? `(${metaType})` : ""}`;
 
   return (
-    <CContainer gap={1}>
-      <ClampText fontSize={"xl"} fontWeight={"semibold"}>
-        {activeDASession?.title}
-      </ClampText>
+    <>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps}>
+        {children}
+      </CContainer>
 
-      <P color={"fg.subtle"}>{activeDASession?.id}</P>
-    </CContainer>
+      <DisclosureRoot open={isOpen} lazyLoad size={"xs"}>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={`Validasi Data`} />
+          </DisclosureHeader>
+
+          <DisclosureBody>
+            <CContainer>
+              <P>
+                {validationStatus === "rejected"
+                  ? `Tolak ${label} ini?`
+                  : `Validasi ${label} ini?`}
+              </P>
+
+              <form id={ID} onSubmit={formik.handleSubmit}>
+                <FieldsetRoot disabled={loading}>
+                  {validationStatus === "rejected" && (
+                    <Field
+                      invalid={!!formik.errors.notes}
+                      errorText={formik.errors.notes as string}
+                      mt={4}
+                    >
+                      <Textarea
+                        inputValue={formik.values.notes}
+                        onChange={(inputValue) => {
+                          formik.setFieldValue("notes", inputValue);
+                        }}
+                        placeholder={"Catatan"}
+                      />
+                    </Field>
+                  )}
+                </FieldsetRoot>
+              </form>
+            </CContainer>
+          </DisclosureBody>
+
+          <DisclosureFooter>
+            <BackButton />
+
+            <Btn
+              type={"submit"}
+              form={ID}
+              colorPalette={validationStatus === "rejected" ? "red" : "teal"}
+              loading={loading}
+            >
+              {validationStatus === "rejected" ? "Tolak" : "Validasi"}
+            </Btn>
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
   );
 };
 
@@ -496,74 +757,18 @@ const FileName = (props: TextProps) => {
 
 // -----------------------------------------------------------------
 
-const FileInformation = () => {
-  // Contexts
-  const { l, lang } = useLang();
-  const { themeConfig } = useThemeConfig();
-  const activeDASession = useActiveDA((s) => s.activeDA.session);
-
-  // Constants
-  const documentService = activeDASession?.documentService;
-
-  return (
-    <CContainer gap={2}>
-      <HStack h={"32px"}>
-        <P fontWeight={"semibold"}>{capitalizeWords(l.file_information)}</P>
-      </HStack>
-
-      <CContainer
-        gap={2}
-        p={4}
-        rounded={themeConfig.radii.container}
-        // border={"1px solid"}
-        borderColor={"border.muted"}
-        bg={"d0"}
-      >
-        <HStack gap={4} align={"start"}>
-          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-            {l.service}
-          </P>
-
-          <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
-            <Img
-              key={activeDASession?.documentService?.icon}
-              src={imgUrl(activeDASession?.documentService?.icon)}
-              flexShrink={0}
-              w={"20px"}
-              h={"20px"}
-              objectFit={"contain"}
-            />
-
-            <P>{documentService?.title[lang]}</P>
-
-            <InfoPopover popoverContent={documentService?.description[lang]} />
-          </HStack>
-        </HStack>
-
-        <HStack gap={4} align={"start"}>
-          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-            {l.category}
-          </P>
-
-          <P>{activeDASession?.kategori}</P>
-        </HStack>
-      </CContainer>
-    </CContainer>
-  );
-};
-
-// -----------------------------------------------------------------
-
 const UploadedFiles = () => {
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
-  const activeDASession = useActiveDA((s) => s.activeDA.session);
+  const activeDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession?.daSession,
+  );
+
+  // console.debug(activeTrialDaSession);
 
   // Constants
-  const uploadedDocuments = activeDASession?.uploadedDocuments;
-  const trialSession = useTrialSessionContext((s) => s.trialSession);
-  const step = trialSession?.step;
+  const uploadedDocuments = activeDaSession?.uploadedDocuments;
 
   // Hooks
   const { isOpen, onOpen } = usePopDisclosure(
@@ -575,88 +780,116 @@ const UploadedFiles = () => {
     uploadedDocuments?.[0] ? [uploadedDocuments[0]] : [],
   );
 
-  // Derived Values
-  const isManualPhase = step === 2;
-
   return (
-    <>
-      {isManualPhase && (
-        <CContainer gap={2}>
-          <HStack h={"32px"}>
-            <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
-          </HStack>
+    <CContainer gap={2}>
+      <HStack h={"32px"}>
+        <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
+      </HStack>
 
-          <CContainer
-            gap={2}
-            rounded={themeConfig.radii.container}
-            // border={"1px solid"}
-            borderColor={"border.muted"}
-          >
-            {uploadedDocuments?.map((doc) => {
-              return (
-                <HStack
-                  flexDir={["column", null, "row"]}
-                  key={doc.documentRequirement.id}
-                  gapX={4}
-                  bg={"d0"}
-                  pl={4}
-                  pr={3}
-                  py={3}
-                  rounded={themeConfig.radii.component}
+      <CContainer
+        gap={2}
+        rounded={themeConfig.radii.container}
+        borderColor={"border.muted"}
+      >
+        {uploadedDocuments?.map((doc) => {
+          return (
+            <HStack
+              key={doc.documentRequirement.id}
+              flexDir={["column", null, "row"]}
+              justify={"space-between"}
+              gapX={4}
+              bg={"d0"}
+              pl={4}
+              pr={3}
+              py={3}
+              rounded={themeConfig.radii.container}
+            >
+              <CContainer gap={1}>
+                <ClampText fontWeight={"medium"}>
+                  {doc.documentRequirement.name}
+                </ClampText>
+
+                <FileName
+                  color={"fg.muted"}
+                  onClick={() => {
+                    setActiveDocs([doc]);
+                    onOpen();
+                  }}
                 >
-                  <CContainer gap={1}>
-                    <HStack flexShrink={0}>
-                      <ClampText fontWeight={"medium"}>
-                        {doc.documentRequirement.name}
-                      </ClampText>
+                  {doc.metaData.fileName}
+                </FileName>
+              </CContainer>
 
-                      {!doc.documentRequirement.isMandatory && (
-                        <Badge bg={"d1"} colorPalette={"gray"}>
-                          {l.optional}
-                        </Badge>
-                      )}
-                    </HStack>
+              {/* Action buttons */}
+              <Btn
+                clicky={false}
+                variant={"subtle"}
+                onClick={() => {
+                  setActiveDocs([doc]);
+                  onOpen();
+                }}
+              >
+                <AppIcon icon={EyeIcon} />
 
-                    {doc.metaData.fileName ? (
-                      <FileName
-                        color={"fg.muted"}
-                        onClick={() => {
-                          setActiveDocs([doc]);
-                          onOpen();
-                        }}
-                      >
-                        {doc.metaData.fileName}
-                      </FileName>
-                    ) : (
-                      <P>-</P>
-                    )}
-                  </CContainer>
+                {l.view}
+              </Btn>
 
+              {/* <HStack>
+                <Btn
+                  clicky={false}
+                  h={"fit"}
+                  px={0}
+                  border={"none"}
+                  borderBottom={"1px solid"}
+                  borderColor={"fg.success"}
+                  rounded={0}
+                  variant={"plain"}
+                  colorPalette={"teal"}
+                  ml={"auto"}
+                  onClick={() => {
+                    setActiveDocs([doc]);
+                    onOpen();
+                  }}
+                >
+                  {l.view}
+                </Btn>
+
+                <Divider w={"1px"} h={"20px"} />
+
+                <ValidationConfirmation
+                  id={doc.documentRequirement.id.toString()}
+                  validationType={"uploadedFile"}
+                  metaType={doc.documentRequirement.name}
+                  validationStatus={"rejected"}
+                >
                   <Btn
-                    variant={"subtle"}
+                    clicky={false}
+                    h={"fit"}
+                    px={0}
+                    border={"none"}
+                    borderBottom={"1px solid"}
+                    borderColor={"fg.error"}
+                    rounded={0}
+                    variant={"plain"}
+                    colorPalette={"red"}
                     ml={"auto"}
-                    onClick={() => {
-                      setActiveDocs([doc]);
-                      onOpen();
-                    }}
                   >
-                    {l.open}
-                    <AppIcon icon={ArrowUpRightIcon} />
+                    Tolak
                   </Btn>
-                </HStack>
-              );
-            })}
-          </CContainer>
+                </ValidationConfirmation>
+              </HStack> */}
+            </HStack>
+          );
+        })}
+      </CContainer>
 
-          <PdfViewerDisclosure
-            open={isOpen}
-            uploadedDocuments={uploadedDocuments}
-            activeDocs={activeDocs}
-            setActiveDocs={setActiveDocs}
-          />
-        </CContainer>
-      )}
-    </>
+      <PdfViewerDisclosure
+        open={isOpen}
+        uploadedDocuments={uploadedDocuments}
+        activeDocs={activeDocs}
+        setActiveDocs={setActiveDocs}
+      />
+    </CContainer>
   );
 };
 
@@ -1123,16 +1356,13 @@ const ResultSection = (props: Props__ResultSection) => {
   const { themeConfig } = useThemeConfig();
 
   // States
-  const [show, setShow] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"accordion" | "table">("accordion");
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const uploadedDocuments = daSession?.uploadedDocuments;
 
   return (
     <CContainer pos={"relative"} {...restProps}>
-      {!show && <Btn onClick={() => setShow(true)}>Lihat Hasil AI</Btn>}
-
-      <CContainer display={show ? "flex" : "none"}>
+      <CContainer>
         <CContainer
           pos={"sticky"}
           top={"-32px"}
@@ -1241,7 +1471,7 @@ const ResultSection = (props: Props__ResultSection) => {
 
 // -----------------------------------------------------------------
 
-interface Props__TrialDaSessionFinalValidations extends GroupProps {
+interface Props__TrialDaSessionFinalValidations extends StackProps {
   disabled?: boolean;
 }
 
@@ -1249,18 +1479,74 @@ const TrialDaSessionFinalValidations = (
   props: Props__TrialDaSessionFinalValidations,
 ) => {
   // Props
-  const { disabled, ...restProps } = props;
+  const { ...restProps } = props;
+
+  // Contexts
+  const { themeConfig } = useThemeConfig();
+  const activeTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.activeTrialDaSession,
+  );
+  const activeDaSession = activeTrialDaSession?.daSession;
+
+  // Constants
+  const totalUploadedDocuments = activeDaSession?.uploadedDocuments?.length;
+
+  // Derived Values
+  const disabled =
+    activeDaSession?.uploadedDocuments?.length !==
+    activeTrialDaSession?.manualDetails?.length;
 
   return (
-    <Group {...restProps}>
-      <Btn variant={"outline"} colorPalette={"red"} disabled={disabled}>
-        Tolak
-      </Btn>
+    <CContainer
+      gap={4}
+      p={4}
+      bg={"d0"}
+      border={"1px solid"}
+      borderColor={"border.emphasized"}
+      rounded={themeConfig.radii.container}
+      {...restProps}
+    >
+      <CContainer gap={1}>
+        <HStack>
+          <AppIcon icon={CheckCheckIcon} />
 
-      <Btn variant={"outline"} colorPalette={"green"} disabled={disabled}>
-        Valid dan siap disahkan
-      </Btn>
-    </Group>
+          <P fontSize={"lg"} fontWeight={"semibold"}>
+            Validasi Akhir Berkas
+          </P>
+        </HStack>
+
+        <P color={"fg.muted"}>
+          Semua {totalUploadedDocuments} dokumen telah diperiksa. Berikan
+          keupusan final untuk berkas ini.
+        </P>
+      </CContainer>
+
+      <HStack>
+        <ValidationConfirmation
+          id={"active-da-session"}
+          validationType={"trialDaSession"}
+          validationStatus={"rejected"}
+          flex={1}
+        >
+          <Btn variant={"outline"} colorPalette={"red"} disabled={disabled}>
+            <AppIcon icon={XCircleIcon} />
+            Tolak berkas
+          </Btn>
+        </ValidationConfirmation>
+
+        <ValidationConfirmation
+          id={"active-da-session"}
+          validationType={"trialDaSession"}
+          validationStatus={"valid"}
+          flex={1}
+        >
+          <Btn colorPalette={"teal"} disabled={disabled}>
+            <AppIcon icon={CheckCircleIcon} />
+            Valid & siap disahkan
+          </Btn>
+        </ValidationConfirmation>
+      </HStack>
+    </CContainer>
   );
 };
 
@@ -1268,12 +1554,15 @@ const TrialDaSessionFinalValidations = (
 
 export default function Page() {
   // Contexts
+  const { themeConfig } = useThemeConfig();
   const setBreadcrumbs = useBreadcrumbs((s) => s.setBreadcrumbs);
   const trialSession = useTrialSessionContext((s) => s.trialSession);
-  const setActiveDaSession = useActiveDA((s) => s.setSession);
-  const step = trialSession?.step;
+  const setActiveTrialDaSession = useActiveTrialDaSessionContext(
+    (s) => s.setActiveTrialDaSession,
+  );
   const trialDaSessions = trialSession?.trialDaSessions;
-  const currentDaSessionId = trialDaSessions?.[0].daSession?.id;
+  const currentDaSessionId =
+    trialDaSessions?.[(trialSession?.daSessionStep || 1) - 1]?.daSession?.id;
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -1282,27 +1571,23 @@ export default function Page() {
   const containerDimension = useContainerDimension(containerRef);
 
   // States
+  const [show, setShow] = useState<boolean>(false);
   const {
     initialLoading,
     error,
-    data: currentDaSession,
+    data: activeTrialDaSession,
     onRetry,
-  } = useDataState<Interface__DASessionDetail>({
-    // initialData: DUMMY_ACTIVE_DA_SESSION as any,
-    url: `${DA_API_SESSION_DETAIL}/${currentDaSessionId}`,
+  } = useDataState<Interface__TrialDASessionDetail>({
+    initialData: DUMMY_TRIAL_DA_SESSION_DETAIL as any,
+    // url: `${DA_API_SESSION_DETAIL}/${currentDaSessionId}`,
     dataResource: false,
     dependencies: [currentDaSessionId],
     loadingBarInitialOnly: true,
   });
 
-  // Derived Values
-  const isAiPhase = step === 3;
-  // TODO make disabled condition for trial verification buttons
-  const isDisabled = true;
-
   // Update breadcrumbs
   useEffect(() => {
-    if (currentDaSession) {
+    if (activeTrialDaSession) {
       setBreadcrumbs({
         backPath: `/service-trial`,
         activeNavs: [
@@ -1311,7 +1596,7 @@ export default function Page() {
             path: `/service-trial`,
           },
           {
-            label: currentDaSession?.title,
+            label: activeTrialDaSession?.daSession?.title,
             path: `/service-trial/${currentDaSessionId}`,
           },
         ],
@@ -1331,14 +1616,17 @@ export default function Page() {
         ],
       });
     }
-  }, [currentDaSession]);
+  }, [activeTrialDaSession]);
 
-  // Set active DA on data load
+  // Set active trial DA session on data load
   useEffect(() => {
-    if (currentDaSession && currentDaSession.id === currentDaSessionId) {
-      setActiveDaSession(currentDaSession);
+    if (
+      activeTrialDaSession &&
+      activeTrialDaSession?.daSession?.id === currentDaSessionId
+    ) {
+      setActiveTrialDaSession(activeTrialDaSession);
     }
-  }, [currentDaSession, currentDaSessionId, setActiveDaSession]);
+  }, [activeTrialDaSession, currentDaSessionId, setActiveTrialDaSession]);
 
   const render = {
     loading: <DASessonPageSkeleton />,
@@ -1354,14 +1642,27 @@ export default function Page() {
 
         <UploadedFiles />
 
-        <ResultSection
-          daSession={currentDaSession}
-          containerDimension={containerDimension}
-          display={isAiPhase ? "flex" : "none"}
-        />
+        <>
+          {!show && (
+            <Btn
+              colorPalette={themeConfig.colorPalette}
+              // TODO: hit api da session timestamp (START)
+              onClick={() => setShow(true)}
+            >
+              Lihat Hasil AI
+            </Btn>
+          )}
 
-        {/* Verification */}
-        <TrialDaSessionFinalValidations disabled={isDisabled} mx={"auto"} />
+          <CContainer display={show ? "flex" : "none"} gap={8}>
+            <ResultSection
+              daSession={activeTrialDaSession?.daSession}
+              containerDimension={containerDimension}
+            />
+
+            {/* Verification */}
+            <TrialDaSessionFinalValidations mx={"auto"} />
+          </CContainer>
+        </>
       </CContainer>
     ),
   };
@@ -1380,8 +1681,8 @@ export default function Page() {
             {error && render.error}
             {!error && (
               <>
-                {currentDaSession && render.loaded}
-                {!currentDaSession && render.empty}
+                {activeTrialDaSession && render.loaded}
+                {!activeTrialDaSession && render.empty}
               </>
             )}
           </>

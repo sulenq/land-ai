@@ -47,14 +47,11 @@ const ServiceItem = (props: Interface__ServiceItem) => {
   // Contexts
   const { l, lang } = useLang();
   const { themeConfig } = useThemeConfig();
-  // const setTrialSession = useTrialSessionContext((s) => s.setTrialSession);
+  const setTrialSession = useTrialSessionContext((s) => s.setTrialSession);
   const setStep = useTrialSessionContext((s) => s.setStep);
 
   // Hooks
-  const {
-    // req,
-    loading,
-  } = useRequest({
+  const { req, loading } = useRequest({
     id: "create-trial-session",
   });
   const router = useRouter();
@@ -64,31 +61,31 @@ const ServiceItem = (props: Interface__ServiceItem) => {
 
   // Utils
   const handleCeateTrialSession = () => {
-    // const payload = {
-    //   daServiceId: service.id,
-    // };
+    const payload = {
+      daServiceId: service.id,
+    };
 
-    // const config = {
-    //   url: "/api/trial/create",
-    //   method: "POST",
-    //   data: payload,
-    // };
+    const config = {
+      url: "/api/trial/step-1",
+      method: "POST",
+      data: payload,
+    };
 
-    // req({
-    //   config,
-    //   onResolve: {
-    //     onSuccess: (r) => {
-    //       setTrialSession(r.data);
-    //       setStep(2);
-    //       router.push(`${path}/${r.data.id}`);
-    //     },
-    //     onError: () => {},
-    //   },
-    // });
-
-    // TODO remove below
-    setStep(2);
-    router.push(`${path}/1/manual-phase`);
+    req({
+      config,
+      onResolve: {
+        onSuccess: (r) => {
+          setTrialSession(r.data);
+          setStep(2);
+          router.push(`${path}/${r.data.id}/manual-phase`);
+        },
+        onError: () => {
+          // TODO remove below when api ready
+          setStep(2);
+          router.push(`${path}/1/manual-phase`);
+        },
+      },
+    });
   };
 
   useEffect(() => {

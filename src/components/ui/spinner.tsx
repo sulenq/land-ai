@@ -8,7 +8,6 @@ export const Spinner = (props: Props) => {
 
   // TODO buat 3 dots spinner, apply global, like in btn
   // TODO cek mobile
-  // TODO
 
   return <ChakraSpinner aspectRatio={1} {...restProps} />;
 };

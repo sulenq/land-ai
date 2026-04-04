@@ -1221,8 +1221,7 @@ const ResultSection = (props: Props__ResultSection) => {
   const { themeConfig } = useThemeConfig();
 
   // States
-  // TODO default is 'accordion'
-  const [viewMode, setViewMode] = useState<"accordion" | "table">("table");
+  const [viewMode, setViewMode] = useState<"accordion" | "table">("accordion");
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
   const uploadedDocuments = daSession?.uploadedDocuments;
 
