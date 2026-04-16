@@ -263,8 +263,163 @@ export interface Interface__DAService {
   icon: string;
   title: Interface__LangContent;
   description: Interface__LangContent;
+  trialSetup?: Interface__DATrialSetup;
   documentRequirements?: Interface__DAServiceDocumentRequirement[];
   createdAt: string;
+  updatedAt?: string | null;
+}
+export interface Interface__DATrialSetup {
+  manualSessionIds?: string[];
+  aiSessionIds?: string[];
+  manualScenarios?: Interface__DATrialScenario[];
+  aiScenarios?: Interface__DATrialScenario[];
+  uploadedFileNotesBySession?: Record<string, Record<string, string>>;
+  aiNoteOverridesBySession?: Record<string, Record<string, string>>;
+  compareRulesBySession?: Record<string, Interface__TrialCompareRule[]>;
+  compareRules?: Interface__TrialCompareRule[];
+  content?: Record<string, any>;
+}
+export interface Interface__DATrialScenarioSummary {
+  pemohon?: string | null;
+  letak?: string | null;
+  aiAssessment?: string | null;
+  aiConfidenceScore?: string | null;
+}
+export interface Interface__DATrialScenario {
+  id: string;
+  title: string;
+  kategori?: string;
+  noBerkas?: string | null;
+  totalExecutionTime?: string | null;
+  summary?: Interface__DATrialScenarioSummary;
+  uploadedDocuments: Interface__DAUploadedDocument[];
+  result: Interface__DAAnalysisResultItem[];
+  aiValidationOverrides?: Interface__TrialAIValidationOverride[];
+  aiNoteOverrides?: Interface__TrialAINoteOverride[];
+}
+export interface Interface__TrialCmsGlobalContent {
+  landingTitle?: string;
+  landingDescription?: string;
+  warningTitle?: string;
+  warningItems?: string[];
+  noteText?: string;
+  summaryTitle?: string;
+  summaryDescription?: string;
+  finishButtonLabel?: string;
+  stepItems?: Array<{
+    title: string;
+    description: string;
+  }>;
+}
+export interface Interface__TrialCmsSettingsResponse {
+  globalContent: Interface__TrialCmsGlobalContent;
+  services: Interface__DAService[];
+  updatedAt?: string | null;
+}
+export interface Interface__TrialCompareRule {
+  id?: string;
+  enabled?: boolean;
+  noBerkas?: string;
+  sourceDocument: string;
+  sourceField: string;
+  targetDocument: string;
+  targetField: string;
+  overrideResult?: "system" | "force_match" | "force_mismatch";
+  acceptedPairs?: Array<{
+    left: string;
+    right: string;
+  }>;
+  comparator:
+    | "person_name"
+    | "nik"
+    | "nik_one_of"
+    | "nib"
+    | "land_right_type"
+    | "location"
+    | "currency"
+    | "area"
+    | "exact"
+    | string;
+}
+export interface Interface__TrialCmsCompareFinding {
+  type: string;
+  severity: "high" | "medium" | "low";
+  field: string;
+  documentKey?: string;
+  expected?: string;
+  actual?: string;
+  message: string;
+  expectedValidation?: string;
+  actualValidation?: string;
+  actualDocs?: Array<{
+    doc: string;
+    value: string;
+  }>;
+  extraFields?: string[];
+}
+export interface Interface__TrialCmsCompareFile {
+  id: string;
+  mode: "human" | "human + ai";
+  serviceId?: number | null;
+  serviceFolder: string;
+  serviceTitle: string;
+  noBerkas: string;
+  scenarioTitle: string;
+  devFileName: string;
+  expectedFileName: string;
+  summary: {
+    missingFields: number;
+    diffs: number;
+    extraActuals: number;
+    wrongDocMatches: number;
+    splitMatches: number;
+    maskedSkips: number;
+    validationDiffs: number;
+    extraFields: number;
+    totalFindings: number;
+  };
+  findings: Interface__TrialCmsCompareFinding[];
+  extraDevFields?: string[];
+}
+export interface Interface__TrialCmsCompareResponse {
+  generatedAt: string;
+  filters: {
+    serviceId?: number | null;
+    mode?: string | null;
+    noBerkas?: string | null;
+    scenarioTitle?: string | null;
+    onlyMismatched?: boolean;
+  };
+  sources: {
+    devBaseUrl: string;
+    expectedHumanRoot: string;
+    expectedHumanAiRoot: string;
+  };
+  totals: {
+    comparedFiles: number;
+    mismatchedFiles: number;
+    totalFindings: number;
+    diffs: number;
+    validationDiffs: number;
+    missingFields: number;
+    extraFields: number;
+    unmatchedDevFiles: number;
+    unmatchedExpectedFiles: number;
+  };
+  files: Interface__TrialCmsCompareFile[];
+  unmatchedDevFiles: Array<{
+    mode?: string;
+    devRelPath: string;
+    noBerkas?: string;
+    serviceTitle?: string;
+    reason: string;
+  }>;
+  unmatchedExpectedFiles: Array<{
+    mode?: string;
+    devRelPath?: string;
+    expectedFileName: string;
+    reason: string;
+  }>;
 }
 export interface Interface__DAServiceDocumentRequirement {
   id: number;
@@ -299,9 +454,10 @@ export interface Interface__DASession {
   serviceId?: string;
   serviceIcon?: string;
   serviceName?: string;
+  noBerkas?: string | null;
 }
 export interface Interface__DAAnalysisValue {
-  documentId: number;
+  documentId: string | number;
   renderType: Type__RenderType;
   value: string | number | boolean | null;
 }
@@ -316,6 +472,8 @@ export interface Interface__DAAnalysisResultItem {
   validation: Interface__DAAnalysisValidation;
 }
 export interface Interface__DAUploadedDocument {
+  id?: string;
+  jobId?: string | number;
   documentRequirement: Interface__DAServiceDocumentRequirement;
   metaData: {
     fileName: string;
@@ -333,25 +491,6 @@ export interface Interface__DASessionDetail extends Interface__DASession {
   kategori: string;
   totalExecutionTime: string;
 }
-export interface Interface__DATrialScenarioSummary {
-  pemohon?: string | null;
-  letak?: string | null;
-  aiAssessment?: string | null;
-  aiConfidenceScore?: string | null;
-}
-export interface Interface__TrialAIValidationOverride {
-  label: string;
-  status: Type__AIValidationState;
-  source?: "manual";
-  updatedAt?: string | null;
-}
-export type Type__AIValidationState = "match" | "mismatch" | "note";
-export interface Interface__TrialAINoteOverride {
-  documentName: string;
-  note: string;
-  source?: "manual";
-  updatedAt?: string | null;
-}
 export type Interface__DASessionDraft = Partial<Interface__DASessionDetail>;
 export interface Interface__ActiveDAState {
   session: Interface__DASessionDraft | null;
@@ -364,39 +503,71 @@ export interface Interface__ActiveDAState {
 // Trial
 export interface Interface__TrialSession {
   id: string;
-  user: Interface__User;
+  name?: string;
+  user?: Interface__User | null;
   step: number;
-  daSessionStep: number;
+  questionVariant?: "A" | "B" | null;
+  daSessionStep?: number;
+  serviceId?: string | number | null;
+  ocrSessionId?: string | null;
+  finishedAt?: string | null;
+  selectedService?: Partial<Interface__DAService> | null;
   trialDaSessions: Interface__TrialDASession[];
   createdAt: string;
+}
+
+export type Type__AIValidationState = "match" | "mismatch" | "note";
+
+export interface Interface__TrialAIValidationOverride {
+  label: string;
+  status: Type__AIValidationState;
+  source?: "manual";
+  updatedAt?: string | null;
+}
+
+export interface Interface__TrialAINoteOverride {
+  documentName: string;
+  note: string;
+  source?: "manual";
+  updatedAt?: string | null;
 }
 
 export interface Interface__TrialDASession {
   id: string;
   daSession: Interface__DASession;
-  startTime: string;
-  endTime: string;
+  startTime?: string | null;
+  endTime?: string | null;
+  manualStatus?: string | null;
+  aiStatus?: string | null;
   manualDetails: Interface__TrialDADocumentDetail[];
   aiDetails: Interface__TrialDADocumentDetail[];
+  aiValidationOverrides?: Interface__TrialAIValidationOverride[];
   createdAt: string;
 }
 
 export interface Interface__TrialDASessionDetail {
   id: string;
   daSession: Interface__DASessionDetail;
-  startTime: string;
-  endTime: string;
+  startTime?: string | null;
+  endTime?: string | null;
+  manualDurationMs?: number | null;
+  aiDurationMs?: number | null;
+  manualStatus?: string | null;
+  aiStatus?: string | null;
   manualDetails: Interface__TrialDADocumentDetail[];
   aiDetails: Interface__TrialDADocumentDetail[];
+  aiValidationOverrides?: Interface__TrialAIValidationOverride[];
+  aiNoteOverrides?: Interface__TrialAINoteOverride[];
   createdAt: string;
 }
 
 export interface Interface__TrialDADocumentDetail {
-  jobId: string;
+  jobId: string | number;
   docName: string;
-  startTime: string;
-  endTime: string;
+  startTime?: string | null;
+  endTime?: string | null;
   timeMs: number; // duration
   status: "VERIFIED" | "REJECTED";
   notes: string; // used if rejected only
+  validationOverrides?: Interface__TrialAIValidationOverride[];
 }
