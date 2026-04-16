@@ -401,7 +401,7 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                               w={
                                 activeDocs.length === 1
                                   ? "full"
-                                  : ["85%", null, "calc(50% - 8px)"]
+                                  : ["85%", null, "calc(50% - 4px)"]
                               }
                               css={{
                                 scrollSnapAlign: "start",
@@ -463,7 +463,7 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                               w={
                                 activeDocs.length === 1
                                   ? "full"
-                                  : ["85%", null, "calc(50% - 8px)"]
+                                  : ["85%", null, "calc(50% - 4px)"]
                               }
                               css={{
                                 scrollSnapAlign: "start",
