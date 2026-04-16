@@ -316,6 +316,8 @@ export interface Interface__DAAnalysisResultItem {
   validation: Interface__DAAnalysisValidation;
 }
 export interface Interface__DAUploadedDocument {
+  id: string;
+  jobId: string;
   documentRequirement: Interface__DAServiceDocumentRequirement;
   metaData: {
     fileName: string;
@@ -323,6 +325,7 @@ export interface Interface__DAUploadedDocument {
   };
 }
 export interface Interface__DASessionDetail extends Interface__DASession {
+  noBerkas: string;
   documentService: Interface__DAServiceDetail;
   uploadedDocuments: Interface__DAUploadedDocument[];
   result: Interface__DAAnalysisResultItem[];
