@@ -143,6 +143,10 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const extracted_result = {
+  id: "Hasil ekstrak",
+  en: "Extracted result",
+};
 export const execution_time = {
   id: "Waktu eksekusi",
   en: "Execution time",

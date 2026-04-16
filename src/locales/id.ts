@@ -208,6 +208,7 @@ const translations = {
   "exceed_char_limit": "Melebihi batas karakter",
   "execution_time": "Waktu eksekusi",
   "explanation": "Penjelasan",
+  "extracted_result": "Hasil ekstrak",
   "february": "Februari",
   "feedback": {
     "disclosure_title": "Bantu kami menjadi lebih baik",

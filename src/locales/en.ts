@@ -208,6 +208,7 @@ const translations = {
   "exceed_char_limit": "Exceed character limit",
   "execution_time": "Execution time",
   "explanation": "Explanation",
+  "extracted_result": "Extracted result",
   "february": "February",
   "feedback": {
     "disclosure_title": "Help us be better",

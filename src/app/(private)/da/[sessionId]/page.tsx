@@ -41,6 +41,7 @@ import FeedbackRetry from "@/components/widget/FeedbackRetry";
 import FeedbackState from "@/components/widget/FeedbackState";
 import { LucideIcon } from "@/components/widget/Icon";
 import { DotIndicator } from "@/components/widget/Indicator";
+import { InfoPopover } from "@/components/widget/InfoPopover";
 import { MContainer } from "@/components/widget/MContainer";
 import {
   ConstrainedContainer,
@@ -65,19 +66,13 @@ import { useContainerDimension } from "@/hooks/useContainerDimension";
 import useDataState from "@/hooks/useDataState";
 import { useIsSmScreenWidth } from "@/hooks/useIsSmScreenWidth";
 import usePopDisclosure from "@/hooks/usePopDisclosure";
+import { formatAnalysisValue, isNotFoundAnalysisValue } from "@/utils/analysis";
 import { isEmptyArray } from "@/utils/array";
 import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { fileUrl, imgUrl } from "@/utils/url";
-import {
-  Badge,
-  Box,
-  HStack,
-  Stack,
-  StackProps,
-  TextProps,
-} from "@chakra-ui/react";
+import { Badge, Box, HStack, Stack, StackProps } from "@chakra-ui/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
@@ -100,24 +95,36 @@ import React, {
   useState,
 } from "react";
 
+type Type__ActiveDoc =
+  | {
+      id: string;
+      type: "doc";
+      value: Interface__DAUploadedDocument;
+    }
+  | {
+      id: string;
+      type: "extractedDoc";
+      value: any;
+    };
+
 // -----------------------------------------------------------------
 
-interface Props__PdfViewerUploadedDocuments extends StackProps {
-  uploadedDocuments?: Interface__DAUploadedDocument[];
-  activeDocs: Interface__DAUploadedDocument[];
-  setActiveDocs: React.Dispatch<
-    React.SetStateAction<Interface__DAUploadedDocument[]>
-  >;
+interface Props__ViewerUploadedDocuments extends StackProps {
+  activeDocs: Type__ActiveDoc[];
+  setActiveDocs: React.Dispatch<React.SetStateAction<Type__ActiveDoc[]>>;
 }
 
-const PdfViewerUploadedDocuments = (
-  props: Props__PdfViewerUploadedDocuments,
-) => {
+// -----------------------------------------------------------------
+
+const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
   // Props
-  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+  const { activeDocs, setActiveDocs, ...restProps } = props;
 
   // Contexts
+  const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+  const activeDaSession = useActiveDA((s) => s.activeDA.session);
+  const uploadedDocuments = activeDaSession?.uploadedDocuments;
 
   // Hooks
   const iss = useIsSmScreenWidth();
@@ -128,71 +135,114 @@ const PdfViewerUploadedDocuments = (
       gap={1}
       w={["full", null, "300px"]}
       h={"full"}
-      p={2}
       overflowY={"auto"}
       {...restProps}
     >
-      {uploadedDocuments?.map((doc) => {
-        const isActive = activeDocs.some(
-          (d) => d.documentRequirement.id === doc.documentRequirement.id,
-        );
+      {/* Docs */}
+      <CContainer overflowY={"auto"}>
+        <CContainer px={4} py={3}>
+          <P color={"fg.subtle"}>{l.uploaded_file}</P>
+        </CContainer>
 
-        return (
-          <HStack
-            key={doc.documentRequirement.id}
-            align={"start"}
-            px={3}
-            py={2}
-            rounded={themeConfig.radii.component}
-            cursor={"pointer"}
-            _hover={{
-              bg: "d1",
-            }}
-            onClick={() => {
-              setActiveDocs((ps) =>
-                iss ? [doc] : ps[0] ? [ps[0], doc] : [doc],
-              );
-            }}
-          >
-            <CContainer gap={1}>
-              <Tooltip content={doc.documentRequirement.name}>
-                <P
-                  lineClamp={1}
-                  fontSize={"sm"}
-                  textAlign={"left"}
-                  color={"fg.subtle"}
-                  mr={4}
-                >
+        <CContainer px={2} pb={2} overflowY={"auto"}>
+          {uploadedDocuments?.map((doc) => {
+            const isActive = activeDocs.some(
+              (d) => d.id === `${doc.documentRequirement.id}-doc`,
+            );
+
+            return (
+              <HStack
+                key={doc.documentRequirement.id}
+                align={"start"}
+                px={3}
+                py={2}
+                rounded={themeConfig.radii.component}
+                cursor={"pointer"}
+                _hover={{
+                  bg: "d1",
+                }}
+                onClick={() => {
+                  const docItem: Type__ActiveDoc = {
+                    id: `${doc.documentRequirement.id}-doc`,
+                    type: "doc",
+                    value: doc,
+                  };
+                  setActiveDocs((ps) =>
+                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
+                  );
+                }}
+              >
+                <P fontSize={"sm"} mr={4}>
                   {doc.documentRequirement.name}
                 </P>
-              </Tooltip>
 
-              <Tooltip content={doc.metaData.fileName}>
-                <P
-                  lineClamp={1}
-                  fontSize={"sm"}
-                  fontWeight={"medium"}
-                  textAlign={"left"}
-                  mr={4}
-                >
-                  {doc.metaData.fileName}
+                {isActive && <DotIndicator ml={"auto"} mt={2} />}
+              </HStack>
+            );
+          })}
+        </CContainer>
+      </CContainer>
+
+      {/* Extracted Doc */}
+      <CContainer
+        borderTop={"1px solid"}
+        borderColor={"border.muted"}
+        overflowY={"auto"}
+      >
+        <CContainer px={4} py={3}>
+          <P color={"fg.subtle"}>{l.extracted_result}</P>
+        </CContainer>
+
+        <CContainer px={2} pb={2} overflowY={"auto"}>
+          {uploadedDocuments?.map((doc) => {
+            const isActive = activeDocs.some(
+              (d) => d.id === `${doc.documentRequirement.id}-extracted-doc`,
+            );
+
+            return (
+              <HStack
+                key={doc.documentRequirement.id}
+                align={"start"}
+                px={3}
+                py={2}
+                rounded={themeConfig.radii.component}
+                cursor={"pointer"}
+                _hover={{
+                  bg: "d1",
+                }}
+                onClick={() => {
+                  const docItem: Type__ActiveDoc = {
+                    id: `${doc.documentRequirement.id}-extracted-doc`,
+                    type: "extractedDoc",
+                    value: doc,
+                  };
+                  setActiveDocs((ps) =>
+                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
+                  );
+                }}
+              >
+                <P fontSize={"sm"} mr={4}>
+                  {doc.documentRequirement.name}
                 </P>
-              </Tooltip>
-            </CContainer>
 
-            {isActive && <DotIndicator ml={"auto"} mt={2} />}
-          </HStack>
-        );
-      })}
+                {isActive && <DotIndicator ml={"auto"} mt={2} />}
+              </HStack>
+            );
+          })}
+        </CContainer>
+      </CContainer>
     </CContainer>
   );
 };
 
-const PdfViewerUploadedDocumentsTrigger = (
-  props: Props__PdfViewerUploadedDocuments,
+// -----------------------------------------------------------------
+
+const ViewerUploadedDocumentsTrigger = (
+  props: Props__ViewerUploadedDocuments,
 ) => {
   // Props
-  const { uploadedDocuments, activeDocs, setActiveDocs, ...restProps } = props;
+  const { activeDocs, setActiveDocs, ...restProps } = props;
+
   // Contexts
   const { l } = useLang();
 
@@ -212,8 +262,7 @@ const PdfViewerUploadedDocumentsTrigger = (
           </DisclosureHeader>
 
           <DisclosureBody>
-            <PdfViewerUploadedDocuments
-              uploadedDocuments={uploadedDocuments}
+            <ViewerUploadedDocuments
               activeDocs={activeDocs}
               setActiveDocs={setActiveDocs}
               p={0}
@@ -231,18 +280,16 @@ const PdfViewerUploadedDocumentsTrigger = (
 
 // -----------------------------------------------------------------
 
-interface Props__PdfViewerDisclosure {
+interface Props__ViewerDisclosure {
   open: boolean;
   uploadedDocuments?: Interface__DASessionDetail["uploadedDocuments"];
-  activeDocs: Interface__DAUploadedDocument[];
-  setActiveDocs: React.Dispatch<
-    React.SetStateAction<Interface__DAUploadedDocument[]>
-  >;
+  activeDocs: Type__ActiveDoc[];
+  setActiveDocs: React.Dispatch<React.SetStateAction<Type__ActiveDoc[]>>;
 }
 
-const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
+const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
   // Props
-  const { open, uploadedDocuments, activeDocs, setActiveDocs } = props;
+  const { open, activeDocs, setActiveDocs } = props;
 
   // Contexts
   const { l } = useLang();
@@ -276,8 +323,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
             >
               {iss && (
                 <CContainer px={R_SPACING_MD}>
-                  <PdfViewerUploadedDocumentsTrigger
-                    uploadedDocuments={uploadedDocuments}
+                  <ViewerUploadedDocumentsTrigger
                     activeDocs={activeDocs}
                     setActiveDocs={setActiveDocs}
                     w={"full"}
@@ -287,15 +333,15 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
 
                       {l.your_files}
                     </Btn>
-                  </PdfViewerUploadedDocumentsTrigger>
+                  </ViewerUploadedDocumentsTrigger>
                 </CContainer>
               )}
 
               <CContainer
                 flex={1}
-                gap={4}
+                gap={2}
                 h={"full"}
-                p={4}
+                p={2}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
                 overflow={"hidden"}
@@ -307,7 +353,7 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                 {!isEmptyArray(activeDocs) && (
                   <HStack
                     flex={1}
-                    gap={4}
+                    gap={2}
                     h={"full"}
                     overflowX={"auto"}
                     overflowY={"hidden"}
@@ -342,59 +388,133 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
                   >
                     {activeDocs?.map((doc, index) => {
                       return (
-                        <CContainer
-                          key={doc.documentRequirement.id}
-                          gap={2}
-                          p={2}
-                          bg={"bg.muted"}
-                          border={"1px solid"}
-                          borderColor={"border.muted"}
-                          rounded={themeConfig.radii.component}
-                          h={"full"}
-                          overflow={"hidden"}
-                          flexShrink={0}
-                          w={
-                            activeDocs.length === 1
-                              ? "full"
-                              : ["85%", null, "calc(50% - 8px)"]
-                          }
-                          css={{
-                            scrollSnapAlign: "start",
-                          }}
-                        >
-                          <HStack justify={"space-between"} flexShrink={0}>
-                            <P fontWeight={"medium"} ml={2}>
-                              {doc.metaData.fileName}
-                            </P>
-
-                            <Btn
-                              iconButton
-                              variant={"subtle"}
-                              rounded={"full"}
-                              size={"2xs"}
-                              onClick={() => {
-                                setActiveDocs((ps) =>
-                                  ps.filter((_, i) => i !== index),
-                                );
+                        <>
+                          {doc.type === "doc" && (
+                            <CContainer
+                              key={doc.id}
+                              border={"1px solid"}
+                              borderColor={"border.muted"}
+                              rounded={themeConfig.radii.component}
+                              h={"full"}
+                              overflow={"hidden"}
+                              flexShrink={0}
+                              w={
+                                activeDocs.length === 1
+                                  ? "full"
+                                  : ["85%", null, "calc(50% - 8px)"]
+                              }
+                              css={{
+                                scrollSnapAlign: "start",
                               }}
                             >
-                              <AppIcon icon={XIcon} boxSize={4} />
-                            </Btn>
-                          </HStack>
+                              <HStack
+                                align={"start"}
+                                justify={"space-between"}
+                                flexShrink={0}
+                                pl={3}
+                                pr={2}
+                                py={2}
+                              >
+                                <HStack wrap={"wrap"}>
+                                  <P>{doc.value.documentRequirement.name}</P>
+                                </HStack>
 
-                          <PdfViewer
-                            fileUrl={
-                              fileUrl(doc.metaData.filePath) || DUMMY_PDF_URL
-                            }
-                            fileName={doc.metaData.fileName}
-                            defaultMode="continuous"
-                            border={"1px solid"}
-                            borderColor={"border.muted"}
-                            rounded={themeConfig.radii.component}
-                            flex={1}
-                            minH={0}
-                          />
-                        </CContainer>
+                                <Btn
+                                  iconButton
+                                  variant={"subtle"}
+                                  rounded={"full"}
+                                  size={"2xs"}
+                                  onClick={() => {
+                                    setActiveDocs((ps) =>
+                                      ps.filter((_, i) => i !== index),
+                                    );
+                                  }}
+                                >
+                                  <AppIcon icon={XIcon} boxSize={4} />
+                                </Btn>
+                              </HStack>
+
+                              <PdfViewer
+                                fileUrl={
+                                  fileUrl(doc.value.metaData.filePath) ||
+                                  DUMMY_PDF_URL
+                                }
+                                fileName={doc.value.metaData.fileName}
+                                defaultMode="continuous"
+                                border={"1px solid"}
+                                borderColor={"border.muted"}
+                                rounded={themeConfig.radii.component}
+                                flex={1}
+                                minH={0}
+                                roundedTop={0}
+                              />
+                            </CContainer>
+                          )}
+
+                          {doc.type === "extractedDoc" && (
+                            <CContainer
+                              key={doc.id}
+                              border={"1px solid"}
+                              borderColor={"border.muted"}
+                              rounded={themeConfig.radii.component}
+                              h={"full"}
+                              overflow={"hidden"}
+                              flexShrink={0}
+                              w={
+                                activeDocs.length === 1
+                                  ? "full"
+                                  : ["85%", null, "calc(50% - 8px)"]
+                              }
+                              css={{
+                                scrollSnapAlign: "start",
+                              }}
+                            >
+                              <HStack
+                                align={"start"}
+                                justify={"space-between"}
+                                flexShrink={0}
+                                pl={3}
+                                pr={2}
+                                py={2}
+                              >
+                                <HStack wrap={"wrap"}>
+                                  <P>{doc.value.documentRequirement.name}</P>
+
+                                  <Badge>{l.extracted_result}</Badge>
+                                </HStack>
+
+                                <Btn
+                                  iconButton
+                                  variant={"subtle"}
+                                  rounded={"full"}
+                                  size={"2xs"}
+                                  onClick={() => {
+                                    setActiveDocs((ps) =>
+                                      ps.filter((_, i) => i !== index),
+                                    );
+                                  }}
+                                >
+                                  <AppIcon icon={XIcon} boxSize={4} />
+                                </Btn>
+                              </HStack>
+
+                              <PdfViewer
+                                fileUrl={
+                                  fileUrl(doc.value.metaData.filePath) ||
+                                  DUMMY_PDF_URL
+                                }
+                                fileName={doc.value.metaData.fileName}
+                                defaultMode="continuous"
+                                border={"1px solid"}
+                                borderColor={"border.muted"}
+                                rounded={themeConfig.radii.component}
+                                flex={1}
+                                minH={0}
+                                roundedTop={0}
+                              />
+                            </CContainer>
+                          )}
+                        </>
                       );
                     })}
                   </HStack>
@@ -402,11 +522,9 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
               </CContainer>
 
               {!iss && (
-                <PdfViewerUploadedDocuments
-                  uploadedDocuments={uploadedDocuments}
+                <ViewerUploadedDocuments
                   activeDocs={activeDocs}
                   setActiveDocs={setActiveDocs}
-                  bg={"bg.muted"}
                 />
               )}
             </Stack>
@@ -425,58 +543,220 @@ const PdfViewerDisclosure = (props: Props__PdfViewerDisclosure) => {
 
 // -----------------------------------------------------------------
 
-const FileName = (props: TextProps) => {
-  // Props
-  const { children, ...restProps } = props;
+const ApplicationInformation = () => {
+  // Contexts
+  const { l, lang } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const daSession = useActiveDA((s) => s.activeDA.session);
 
-  // States
-  const [hover, setHover] = useState<boolean>(false);
+  // Constants
+  const documentService = daSession?.documentService;
+  const result = (daSession as any)?.result as
+    | { label: string; values: { value: any }[] }[]
+    | undefined;
+  const normalizedServiceName = String(
+    documentService?.title?.id || documentService?.title?.en || "",
+  ).toLowerCase();
+
+  const normalizeLabel = (value: string) =>
+    String(value || "")
+      .toLowerCase()
+      .replace(/[:*().,/\\-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  // Extract resume fields from sertifikat extraction result
+  const getFieldValue = (keywords: string[]) => {
+    if (!result) return null;
+    const item = result.find((r) =>
+      keywords.some((kw) => r.label?.toLowerCase().includes(kw.toLowerCase())),
+    );
+    if (!item) return null;
+    const val = item.values?.find((v) => v.value && v.value !== "NOT_FOUND");
+    return val?.value ? String(val.value) : null;
+  };
+
+  const getBestFieldValue = (candidateLabels: string[]) => {
+    if (!result?.length) return null;
+
+    for (const candidateLabel of candidateLabels) {
+      const normalizedCandidate = normalizeLabel(candidateLabel);
+      const item = result.find(
+        (r) => normalizeLabel(String(r.label || "")) === normalizedCandidate,
+      );
+
+      if (!item) continue;
+
+      const val = item.values?.find((v) => {
+        const value = String(v?.value ?? "").trim();
+        return value && value !== "NOT_FOUND";
+      });
+
+      if (val?.value) return String(val.value);
+    }
+
+    for (const candidateLabel of candidateLabels) {
+      const normalizedCandidate = normalizeLabel(candidateLabel);
+      const item = result.find((r) =>
+        normalizeLabel(String(r.label || "")).includes(normalizedCandidate),
+      );
+
+      if (!item) continue;
+
+      const val = item.values?.find((v) => {
+        const value = String(v?.value ?? "").trim();
+        return value && value !== "NOT_FOUND";
+      });
+
+      if (val?.value) return String(val.value);
+    }
+
+    return null;
+  };
+
+  const pemohonCandidateLabels = normalizedServiceName.includes(
+    "hak tanggungan",
+  )
+    ? [
+        "Nama Pihak 2 (Pembeli)",
+        "Nama Pihak 2 Pembeli",
+        "Nama Pihak 2",
+        "Nama Pembeli",
+        "Nama Pihak 1 (Penjual)",
+        "Nama Pihak 1 Penjual",
+        "Nama Pihak 1",
+        "Nama Badan Hukum",
+        "Nama Pemilik Kuasa Badan Hukum",
+        "Nama Penjual",
+        "Nama pemegang HAK",
+        "Nama Pemohon",
+        "Pemohon",
+      ]
+    : normalizedServiceName.includes("surat keterangan pendaftaran tanah")
+      ? [
+          "Nama pemegang HAK",
+          "Nama Badan Hukum",
+          "Nama Pemilik Kuasa Badan Hukum",
+          "Nama Pemohon",
+          "Pemohon",
+          "Nama Pembeli",
+          "Nama Penjual",
+        ]
+      : normalizedServiceName.includes("pengecekan")
+        ? [
+            "Nama pemegang HAK",
+            "Nama Badan Hukum",
+            "Nama Pemilik Kuasa Badan Hukum",
+            "Nama Pemohon",
+            "Pemohon",
+            "Nama Pembeli",
+            "Nama Penjual",
+          ]
+        : normalizedServiceName.includes("peralihan")
+          ? [
+              "Nama Pembeli",
+              "Nama Penjual",
+              "Nama Persetujuan",
+              "Nama Pemohon",
+              "Pemohon",
+            ]
+          : [
+              "Nama Pemohon",
+              "Pemohon",
+              "Nama pemegang HAK",
+              "Nama Badan Hukum",
+              "Nama Pembeli",
+              "Nama Penjual",
+            ];
+
+  const noBerkas =
+    daSession?.noBerkas ||
+    getFieldValue(["no berkas", "nomor berkas", "no. berkas"]);
+  const summaryPemohon = String(daSession?.summary?.pemohon || "").trim();
+  const summaryLetak = String(daSession?.summary?.letak || "").trim();
+  const pemohon =
+    summaryPemohon ||
+    getBestFieldValue(pemohonCandidateLabels) ||
+    getFieldValue(["pemohon", "nama pemohon", "pemegang hak", "nama pemilik"]);
+  const letak =
+    summaryLetak ||
+    getFieldValue(["letak", "alamat", "lokasi tanah", "letak tanah"]);
+
+  const resumeRows = [
+    { label: "No. Berkas", value: noBerkas || "-" },
+    { label: "Pemohon", value: pemohon || "-" },
+    { label: "Letak", value: letak || "-" },
+  ];
 
   return (
-    <Tooltip
-      content={children}
-      positioning={{
-        placement: "right",
-      }}
-    >
-      <HStack cursor={"pointer"}>
-        <P
-          lineClamp={1}
-          fontWeight={"medium"}
-          borderBottom={"1px solid"}
-          borderColor={hover ? "fg" : "transparent"}
-          transition={"200ms"}
-          onMouseEnter={() => {
-            setHover(true);
-          }}
-          onMouseLeave={() => {
-            setHover(false);
-          }}
-          {...restProps}
-        >
-          {children}
-        </P>
-
-        <AppIcon
-          icon={ArrowUpRightIcon}
-          opacity={hover ? 1 : 0}
-          transition={"200ms"}
-        />
+    <CContainer gap={2}>
+      <HStack h={"32px"}>
+        <P fontWeight={"semibold"}>{capitalizeWords(l.file_information)}</P>
       </HStack>
-    </Tooltip>
+
+      <CContainer
+        gap={2}
+        p={4}
+        rounded={themeConfig.radii.container}
+        borderColor={"border.muted"}
+        bg={"d0"}
+      >
+        {resumeRows.map((row) => (
+          <HStack key={row.label} gap={4} align={"start"}>
+            <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+              {row.label}
+            </P>
+            <P>{row.value}</P>
+          </HStack>
+        ))}
+
+        <Box
+          borderTop={"1px solid"}
+          borderColor={"border.muted"}
+          mt={1}
+          mb={1}
+        />
+
+        <HStack gap={4} align={"start"}>
+          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+            {l.service}
+          </P>
+
+          <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
+            <Img
+              key={daSession?.documentService?.icon}
+              src={imgUrl(daSession?.documentService?.icon)}
+              flexShrink={0}
+              w={"20px"}
+              h={"20px"}
+              objectFit={"contain"}
+            />
+
+            <P>{documentService?.title[lang]}</P>
+
+            <InfoPopover popoverContent={documentService?.description[lang]} />
+          </HStack>
+        </HStack>
+
+        <HStack gap={4} align={"start"}>
+          <P w={"140px"} flexShrink={0} color={"fg.muted"}>
+            {l.category}
+          </P>
+
+          <P>{daSession?.kategori}</P>
+        </HStack>
+      </CContainer>
+    </CContainer>
   );
 };
 
 // -----------------------------------------------------------------
 
-const MetaData = () => {
+const UploadedDocuments = () => {
   // Contexts
-  const { l, lang } = useLang();
+  const { l } = useLang();
   const { themeConfig } = useThemeConfig();
   const activeDASession = useActiveDA((s) => s.activeDA.session);
-
-  // Constants
-  const documentService = activeDASession?.documentService;
   const uploadedDocuments = activeDASession?.uploadedDocuments;
 
   // Hooks
@@ -485,127 +765,97 @@ const MetaData = () => {
   );
 
   // States
-  const [activeDocs, setActiveDocs] = useState<Interface__DAUploadedDocument[]>(
-    uploadedDocuments?.[0] ? [uploadedDocuments[0]] : [],
-  );
+  const [activeDocs, setActiveDocs] = useState<Type__ActiveDoc[]>([]);
 
   return (
-    <>
-      {/* Service */}
-      <CContainer gap={2}>
-        <HStack h={"32px"}>
-          <P fontWeight={"semibold"}>{capitalizeWords(l.service)}</P>
-        </HStack>
+    <CContainer gap={2}>
+      <HStack h={"32px"}>
+        <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
+      </HStack>
 
-        <CContainer
-          gap={2}
-          p={4}
-          rounded={themeConfig.radii.container}
-          // border={"1px solid"}
-          borderColor={"border.muted"}
-          bg={"d0"}
-        >
-          <HStack gap={4} align={"start"}>
-            <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-              {l.name}
-            </P>
+      <CContainer
+        pl={4}
+        pr={2}
+        py={1}
+        rounded={themeConfig.radii.container}
+        // border={"1px solid"}
+        borderColor={"border.muted"}
+        bg={"d0"}
+      >
+        {uploadedDocuments?.map((doc, index) => {
+          const firstIndex = index === 0;
 
-            <HStack flexDir={["column", null, "row"]} align={"start"} gapY={1}>
-              <Img
-                key={activeDASession?.documentService?.icon}
-                src={imgUrl(activeDASession?.documentService?.icon)}
-                flexShrink={0}
-                w={"20px"}
-                h={"20px"}
-                objectFit={"contain"}
-              />
+          return (
+            <HStack
+              key={doc.documentRequirement.id}
+              flexDir={["column", null, "row"]}
+              justify={"space-between"}
+              gapX={4}
+              py={1}
+              borderTop={firstIndex ? "" : "1px solid"}
+              borderColor={"border.muted"}
+            >
+              <P>{doc.documentRequirement.name}</P>
 
-              <P>{documentService?.title[lang]}</P>
-            </HStack>
-          </HStack>
+              <HStack>
+                <Btn
+                  size={"xs"}
+                  variant={"ghost"}
+                  colorPalette={themeConfig.colorPalette}
+                  onClick={() => {
+                    setActiveDocs([
+                      {
+                        id: `${doc.documentRequirement.id}-doc`,
+                        type: "doc",
+                        value: doc,
+                      },
+                    ]);
+                    onOpen();
+                  }}
+                >
+                  {l.view} file
+                </Btn>
 
-          <HStack gap={4} align={"start"}>
-            <P w={"140px"} flexShrink={0} color={"fg.muted"}>
-              {l.description}
-            </P>
-
-            <P>{documentService?.description[lang]}</P>
-          </HStack>
-        </CContainer>
-      </CContainer>
-
-      {/* Uploaded files */}
-      <CContainer gap={2}>
-        <HStack h={"32px"}>
-          <P fontWeight={"semibold"}>{capitalizeWords(l.uploaded_file)}</P>
-        </HStack>
-
-        <CContainer
-          gap={[4, null, 2]}
-          p={4}
-          rounded={themeConfig.radii.container}
-          // border={"1px solid"}
-          borderColor={"border.muted"}
-          bg={"d0"}
-        >
-          {uploadedDocuments?.map((doc) => {
-            return (
-              <HStack
-                flexDir={["column", null, "row"]}
-                key={doc.documentRequirement.id}
-                align={"start"}
-                gapX={4}
-              >
-                <HStack flexShrink={0} w={["full", null, "240px"]}>
-                  <ClampText color={"fg.muted"}>
-                    {doc.documentRequirement.name}
-                  </ClampText>
-
-                  {!doc.documentRequirement.isMandatory && (
-                    <Badge bg={"d1"}>{l.optional}</Badge>
-                  )}
-                </HStack>
-
-                {doc.metaData.fileName ? (
-                  <FileName
-                    onClick={() => {
-                      setActiveDocs([doc]);
-                      onOpen();
-                    }}
-                  >
-                    {doc.metaData.fileName}
-                  </FileName>
-                ) : (
-                  <P>-</P>
-                )}
+                <Btn
+                  size={"xs"}
+                  variant={"ghost"}
+                  colorPalette={themeConfig.colorPalette}
+                  onClick={() => {
+                    setActiveDocs([
+                      {
+                        id: `${doc.documentRequirement.id}-extracted-doc`,
+                        type: "extractedDoc",
+                        value: doc,
+                      },
+                    ]);
+                    onOpen();
+                  }}
+                >
+                  {l.extracted_result}
+                </Btn>
               </HStack>
-            );
-          })}
-        </CContainer>
-
-        <PdfViewerDisclosure
-          open={isOpen}
-          uploadedDocuments={uploadedDocuments}
-          activeDocs={activeDocs}
-          setActiveDocs={setActiveDocs}
-        />
+            </HStack>
+          );
+        })}
       </CContainer>
-    </>
+
+      <ViewerDisclosure
+        open={isOpen}
+        uploadedDocuments={uploadedDocuments}
+        activeDocs={activeDocs}
+        setActiveDocs={setActiveDocs}
+      />
+    </CContainer>
   );
 };
 
 // -----------------------------------------------------------------
 
-interface Props__AccordionItemsList {
-  daSession?: Interface__DASessionDetail;
-  l: any;
-  themeConfig: any;
-}
-
-const AccordionItemsList = memo(function AccordionItemsList(
-  props: Props__AccordionItemsList,
-) {
-  const { daSession, l, themeConfig } = props;
+const AccordionItemsList = memo(function AccordionItemsList() {
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const daSession = useActiveDA((s) => s.activeDA.session);
 
   const documentRequirements = daSession?.documentService?.documentRequirements;
   const result = daSession?.result;
@@ -682,11 +932,9 @@ const AccordionItemsList = memo(function AccordionItemsList(
                 )}
 
                 {documentRequirement?.extractionSchema?.map((field) => {
-                  const value = getValueResult(
-                    field.label,
-                    doc,
-                  );
-                  const isNotFound = value === "NOT_FOUND";
+                  const value = getValueResult(field.label, doc);
+                  const isNotFound = isNotFoundAnalysisValue(value);
+                  const displayValue = formatAnalysisValue(field.label, value);
 
                   return (
                     value && (
@@ -700,7 +948,7 @@ const AccordionItemsList = memo(function AccordionItemsList(
                         </ClampText>
 
                         <ClampText color={value ? "" : "fg.muted"}>
-                          {isNotFound ? l.not_found : value}
+                          {isNotFound ? l.not_found : displayValue}
                         </ClampText>
                       </HStack>
                     )
@@ -740,7 +988,8 @@ const AccordionItemsList = memo(function AccordionItemsList(
               )}
 
               {visibleValidationResults?.map((r, index) => {
-                const isLastIndex = index === visibleValidationResults.length - 1;
+                const isLastIndex =
+                  index === visibleValidationResults.length - 1;
                 const fieldLabel = r.label;
                 const isMatch = r.validation.status;
 
@@ -777,11 +1026,12 @@ const AccordionItemsList = memo(function AccordionItemsList(
                     <AccordionItemContent px={0} py={2}>
                       <CContainer rounded={"md"} gap={2}>
                         {uploadedDocuments?.map((doc) => {
-                          const val = getValueResult(
+                          const val = getValueResult(fieldLabel, doc);
+                          const isNotFound = isNotFoundAnalysisValue(val);
+                          const displayValue = formatAnalysisValue(
                             fieldLabel,
-                            doc,
+                            val,
                           );
-                          const isNotFound = val === "NOT_FOUND";
 
                           return (
                             <HStack key={doc.documentRequirement.id}>
@@ -794,7 +1044,11 @@ const AccordionItemsList = memo(function AccordionItemsList(
                               </ClampText>
 
                               <ClampText>
-                                {val ? (isNotFound ? l.not_found : val) : "-"}
+                                {val
+                                  ? isNotFound
+                                    ? l.not_found
+                                    : displayValue
+                                  : "-"}
                               </ClampText>
                             </HStack>
                           );
@@ -840,18 +1094,13 @@ const AccordionItemsList = memo(function AccordionItemsList(
 // -----------------------------------------------------------------
 
 interface Props__AccordionMode extends StackProps {
-  daSession?: Interface__DASessionDetail;
   accordionValue: string[];
   setAccordionValue: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const AccordionMode = memo(function AccordionMode(props: Props__AccordionMode) {
   // Props
-  const { daSession, accordionValue, setAccordionValue } = props;
-
-  // Contexts
-  const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
+  const { accordionValue, setAccordionValue } = props;
 
   return (
     <CContainer gap={4}>
@@ -863,11 +1112,7 @@ const AccordionMode = memo(function AccordionMode(props: Props__AccordionMode) {
         overflow={"clip"}
       >
         <CContainer gap={2}>
-          <AccordionItemsList
-            daSession={daSession}
-            l={l}
-            themeConfig={themeConfig}
-          />
+          <AccordionItemsList />
         </CContainer>
       </AccordionRoot>
     </CContainer>
@@ -886,10 +1131,11 @@ interface Props__TableMode extends StackProps {
 
 const TableMode = memo(function TableMode(props: Props__TableMode) {
   // Props
-  const { daSession } = props;
+  const {} = props;
 
   // Contexts
   const { l } = useLang();
+  const daSession = useActiveDA((s) => s.activeDA.session);
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -931,7 +1177,7 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
         return count + (hasValue ? 1 : 0);
       }, 0);
 
-      return filledCount > 1;
+      return filledCount > 0;
     });
   }, [result, uploadedDocuments]);
   const rows = useMemo<Interface__FormattedTableRow[]>(() => {
@@ -964,11 +1210,12 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
               (doc as any)?.jobId,
               doc.documentRequirement.id,
             ].filter((value) => value != null);
-            const matchedValue = r.values.find(
-              (value) => candidateIds.includes(value.documentId),
+            const matchedValue = r.values.find((value) =>
+              candidateIds.includes(value.documentId),
             );
             const value = matchedValue?.value ?? null;
-            const isNotFound = value === "NOT_FOUND";
+            const isNotFound = isNotFoundAnalysisValue(value);
+            const displayValue = formatAnalysisValue(r.label, value);
 
             return {
               td: (
@@ -978,7 +1225,7 @@ const TableMode = memo(function TableMode(props: Props__TableMode) {
                   whiteSpace={"normal"}
                   wordBreak={"break-word"}
                 >
-                  {isNotFound ? l.not_found : value || "-"}
+                  {isNotFound ? l.not_found : displayValue || "-"}
                 </P>
               ),
               dim: isNotFound || value === null,
@@ -1088,16 +1335,17 @@ interface Props__ResultSection extends StackProps {
 
 const ResultSection = (props: Props__ResultSection) => {
   // Props
-  const { daSession, containerDimension, ...restProps } = props;
+  const { containerDimension, ...restProps } = props;
 
   // Contexts
   const { l } = useLang();
   const { themeConfig } = useThemeConfig();
+  const daSession = useActiveDA((s) => s.activeDA.session);
+  const uploadedDocuments = daSession?.uploadedDocuments;
 
   // States
   const [viewMode, setViewMode] = useState<"accordion" | "table">("accordion");
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
-  const uploadedDocuments = daSession?.uploadedDocuments;
 
   return (
     <CContainer pos={"relative"} {...restProps}>
@@ -1188,7 +1436,6 @@ const ResultSection = (props: Props__ResultSection) => {
         <CContainer px={4}>
           <ConstrainedContainer>
             <AccordionMode
-              daSession={daSession}
               accordionValue={accordionValue}
               setAccordionValue={setAccordionValue}
             />
@@ -1198,10 +1445,7 @@ const ResultSection = (props: Props__ResultSection) => {
 
       <Box display={viewMode === "table" ? "block" : "none"}>
         <CContainer px={4}>
-          <TableMode
-            daSession={daSession}
-            containerDimension={containerDimension}
-          />
+          <TableMode containerDimension={containerDimension} />
         </CContainer>
       </Box>
     </CContainer>
@@ -1287,7 +1531,8 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Hooks
-  const { sessionId } = useParams();
+  const params = useParams<{ sessionId: string }>();
+  const sessionId = params?.sessionId;
   const router = useRouter();
   const containerDimension = useContainerDimension(containerRef);
 
@@ -1298,7 +1543,7 @@ export default function Page() {
   // const initialLoading = true;
   const { initialLoading, error, status, data, onRetry } =
     useDataState<Interface__DASessionDetail>({
-      url: `${DA_API_SESSION_DETAIL}/${sessionId}`,
+      url: sessionId ? `${DA_API_SESSION_DETAIL}/${sessionId}` : "",
       dataResource: false,
       dependencies: [sessionId, pollingTick],
       loadingBarInitialOnly: true,
@@ -1320,18 +1565,18 @@ export default function Page() {
 
   // Set active DA on data load
   useEffect(() => {
-    if (data && data.id === sessionId) {
+    if (data && sessionId && data.id === sessionId) {
       setSession(data);
     }
   }, [data, sessionId, setSession]);
 
   // Handle 404 - redirect and remove session
   useEffect(() => {
-    if (status === 404) {
-      removeFromDASessions(sessionId as string);
+    if (status === 404 && sessionId) {
+      removeFromDASessions(sessionId);
       router.push("/new-da");
     }
-  }, [status]);
+  }, [status, sessionId]);
 
   // Update breadcroumbs
   useEffect(() => {
@@ -1344,7 +1589,7 @@ export default function Page() {
           },
           {
             label: activeDA.session?.title,
-            path: `/da/${sessionId}`,
+            path: sessionId ? `/da/${sessionId}` : "/da",
           },
         ],
       });
@@ -1357,12 +1602,12 @@ export default function Page() {
           },
           {
             label: "...",
-            path: `/da/${sessionId}`,
+            path: sessionId ? `/da/${sessionId}` : "/da",
           },
         ],
       });
     }
-  }, [activeDA.session]);
+  }, [activeDA.session, sessionId]);
 
   // Refetch if processing
   useEffect(() => {
@@ -1399,8 +1644,11 @@ export default function Page() {
               </P>
             </CContainer>
 
-            {/* Meta */}
-            <MetaData />
+            {/* File Information */}
+            <ApplicationInformation />
+
+            {/* Uploaded files */}
+            <UploadedDocuments />
           </ConstrainedContainer>
         </CContainer>
 
@@ -1428,10 +1676,7 @@ export default function Page() {
 
           {completed && (
             <>
-              <ResultSection
-                daSession={data}
-                containerDimension={containerDimension}
-              />
+              <ResultSection containerDimension={containerDimension} />
 
               <GenerateLetterButtons data={data} mt={8} />
             </>
@@ -1460,9 +1705,9 @@ export default function Page() {
 
   return (
     <PageContainer ref={containerRef} py={8} pos={"relative"}>
-      {/* <PdfViewer height={"800px"}>
+      {/* <Viewer height={"800px"}>
         <SuratPermohonanPDF data={data?.rawData} />
-      </PdfViewer> */}
+      </Viewer> */}
 
       <CContainer flex={1} gap={4} justify={"space-between"}>
         <FadingSkeletonContainer loading={initialLoading}>
