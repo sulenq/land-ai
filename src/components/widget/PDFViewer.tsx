@@ -559,26 +559,28 @@ export const PdfViewer = (props: Props__PdfViewer) => {
         {loadState.phase !== "ready" && (
           <CContainer
             position={"absolute"}
-            inset={2}
+            inset={0}
             zIndex={1}
             align={"center"}
             justify={"center"}
-            bg={"rgba(18, 18, 18, 0.82)"}
             borderRadius={"lg"}
             pointerEvents={"none"}
             gap={4}
             px={6}
           >
             <Spinner />
+
             <CContainer gap={2} maxW={"360px"} w={"full"} align={"center"}>
-              <P fontWeight={"semibold"} color={"white"}>
+              <P fontWeight={"medium"}>
                 {loadState.phase === "loading"
                   ? "Memuat PDF..."
                   : "Merender halaman PDF..."}
               </P>
-              <P fontSize={"sm"} color={"whiteAlpha.700"} textAlign={"center"}>
+
+              <P fontSize={"sm"} color={"fg.subtle"} textAlign={"center"}>
                 {loadState.progress}% selesai
               </P>
+
               <Box
                 w={"full"}
                 h={"8px"}
