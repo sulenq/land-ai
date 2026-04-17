@@ -49,12 +49,14 @@ import {
 } from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
-import { DUMMY_PDF_URL } from "@/constants/dummyData";
+import { DUMMY_PDF_URL, DUMMY_UPLOADED_DOCS } from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__DAUploadedDocument,
+  Interface__ExtractedParameter,
   Interface__FormattedTableHeader,
   Interface__FormattedTableRow,
+  Interface__ParameterValidation,
 } from "@/constants/interfaces";
 import { R_SPACING_MD, R_SUBTITLE, R_TITLE } from "@/constants/styles";
 import { useActiveDA } from "@/context/useActiveDA";
@@ -116,170 +118,6 @@ interface Props__ViewerUploadedDocuments extends StackProps {
 
 // -----------------------------------------------------------------
 
-const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
-  // Props
-  const { activeDocs, setActiveDocs, ...restProps } = props;
-
-  // Contexts
-  const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
-  const activeDaSession = useActiveDA((s) => s.activeDA.session);
-  const uploadedDocuments = activeDaSession?.uploadedDocuments;
-
-  // Hooks
-  const iss = useIsSmScreenWidth();
-
-  return (
-    <CContainer
-      flexShrink={0}
-      gap={1}
-      w={["full", null, "300px"]}
-      h={"full"}
-      overflowY={"auto"}
-      {...restProps}
-    >
-      {/* Docs */}
-      <CContainer overflowY={"auto"}>
-        <CContainer px={4} py={3}>
-          <P color={"fg.subtle"}>{l.uploaded_file}</P>
-        </CContainer>
-
-        <CContainer px={2} pb={2} overflowY={"auto"}>
-          {uploadedDocuments?.map((doc) => {
-            const isActive = activeDocs.some(
-              (d) => d.id === `${doc.documentRequirement.id}-doc`,
-            );
-
-            return (
-              <HStack
-                key={doc.documentRequirement.id}
-                align={"start"}
-                px={3}
-                py={2}
-                rounded={themeConfig.radii.component}
-                cursor={"pointer"}
-                _hover={{
-                  bg: "d1",
-                }}
-                onClick={() => {
-                  const docItem: Type__ActiveDoc = {
-                    id: `${doc.documentRequirement.id}-doc`,
-                    type: "doc",
-                    value: doc,
-                  };
-                  setActiveDocs((ps) =>
-                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
-                  );
-                }}
-              >
-                <P fontSize={"sm"} mr={4}>
-                  {doc.documentRequirement.name}
-                </P>
-
-                {isActive && <DotIndicator ml={"auto"} mt={2} />}
-              </HStack>
-            );
-          })}
-        </CContainer>
-      </CContainer>
-
-      {/* Extracted Doc */}
-      <CContainer
-        borderTop={"1px solid"}
-        borderColor={"border.muted"}
-        overflowY={"auto"}
-      >
-        <CContainer px={4} py={3}>
-          <P color={"fg.subtle"}>{l.extracted_result}</P>
-        </CContainer>
-
-        <CContainer px={2} pb={2} overflowY={"auto"}>
-          {uploadedDocuments?.map((doc) => {
-            const isActive = activeDocs.some(
-              (d) => d.id === `${doc.documentRequirement.id}-extracted-doc`,
-            );
-
-            return (
-              <HStack
-                key={doc.documentRequirement.id}
-                align={"start"}
-                px={3}
-                py={2}
-                rounded={themeConfig.radii.component}
-                cursor={"pointer"}
-                _hover={{
-                  bg: "d1",
-                }}
-                onClick={() => {
-                  const docItem: Type__ActiveDoc = {
-                    id: `${doc.documentRequirement.id}-extracted-doc`,
-                    type: "extractedDoc",
-                    value: doc,
-                  };
-                  setActiveDocs((ps) =>
-                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
-                  );
-                }}
-              >
-                <P fontSize={"sm"} mr={4}>
-                  {doc.documentRequirement.name}
-                </P>
-
-                {isActive && <DotIndicator ml={"auto"} mt={2} />}
-              </HStack>
-            );
-          })}
-        </CContainer>
-      </CContainer>
-    </CContainer>
-  );
-};
-
-// -----------------------------------------------------------------
-
-const ViewerUploadedDocumentsTrigger = (
-  props: Props__ViewerUploadedDocuments,
-) => {
-  // Props
-  const { activeDocs, setActiveDocs, ...restProps } = props;
-
-  // Contexts
-  const { l } = useLang();
-
-  // Hooks
-  const { isOpen, onOpen } = usePopDisclosure(
-    disclosureId(`pdf-viewer-uploaded-documents-list`),
-  );
-
-  return (
-    <>
-      <CContainer w={"fit"} onClick={onOpen} {...restProps} />
-
-      <DisclosureRoot open={isOpen} lazyLoad>
-        <DisclosureContent>
-          <DisclosureHeader>
-            <DisclosureHeaderContent title={l.your_files} />
-          </DisclosureHeader>
-
-          <DisclosureBody>
-            <ViewerUploadedDocuments
-              activeDocs={activeDocs}
-              setActiveDocs={setActiveDocs}
-              p={0}
-            />
-          </DisclosureBody>
-
-          <DisclosureFooter>
-            <BackButton />
-          </DisclosureFooter>
-        </DisclosureContent>
-      </DisclosureRoot>
-    </>
-  );
-};
-
-// -----------------------------------------------------------------
-
 interface Props__ViewerDisclosure {
   open: boolean;
   uploadedDocuments?: Interface__DASessionDetail["uploadedDocuments"];
@@ -298,11 +136,40 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
   // Hooks
   const iss = useIsSmScreenWidth();
 
+  // Utils
+  function getParameterValidation(
+    parameterLabel: string,
+    validations: Interface__ParameterValidation[] | null | undefined,
+    currentRequirementDocumentId: string,
+  ) {
+    if (!validations) return null;
+
+    const pairedDoc = activeDocs.find(
+      (d) =>
+        d.type === "extractedDoc" &&
+        d.value.documentRequirement.id !== currentRequirementDocumentId,
+    );
+
+    if (!pairedDoc) return null;
+
+    const targetId = pairedDoc.value.documentRequirement.id;
+
+    const match = validations.find(
+      (v) =>
+        v.withDocumentRequirementId === targetId &&
+        v.withParameterLabel === parameterLabel,
+    );
+
+    return match ? match.valid : null;
+  }
+
   useEffect(() => {
     if (!open) {
       setActiveDocs([]);
     }
   }, [open]);
+
+  // console.debug(activeDocs);
 
   return (
     <>
@@ -341,7 +208,7 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                 flex={1}
                 gap={2}
                 h={"full"}
-                p={2}
+                p={[4, null, 2]}
                 borderRight={"1px solid"}
                 borderColor={"border.muted"}
                 overflow={"hidden"}
@@ -469,11 +336,12 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                                 scrollSnapAlign: "start",
                               }}
                             >
+                              {/* Header */}
                               <HStack
                                 align={"start"}
                                 justify={"space-between"}
                                 flexShrink={0}
-                                pl={3}
+                                pl={4}
                                 pr={2}
                                 py={2}
                               >
@@ -498,20 +366,88 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                                 </Btn>
                               </HStack>
 
-                              <PdfViewer
-                                fileUrl={
-                                  fileUrl(doc.value.metaData.filePath) ||
-                                  DUMMY_PDF_URL
-                                }
-                                fileName={doc.value.metaData.fileName}
-                                defaultMode="continuous"
-                                border={"1px solid"}
-                                borderColor={"border.muted"}
-                                rounded={themeConfig.radii.component}
-                                flex={1}
-                                minH={0}
-                                roundedTop={0}
-                              />
+                              {/* Body */}
+                              {doc.value.extracted && (
+                                <CContainer overflowY={"auto"}>
+                                  <CContainer overflowY={"auto"}>
+                                    {doc.value.extracted.map(
+                                      (
+                                        item: Interface__ExtractedParameter,
+                                        index: number,
+                                      ) => {
+                                        const result = getParameterValidation(
+                                          item.label,
+                                          item.validationSchema,
+                                          doc.value.documentRequirement.id,
+                                        );
+
+                                        // console.debug(result);
+
+                                        return (
+                                          <HStack
+                                            key={index}
+                                            wrap={"wrap"}
+                                            align={"start"}
+                                            px={4}
+                                            pt={2.5}
+                                            pb={3}
+                                            bg={
+                                              result === null
+                                                ? "transparent"
+                                                : result
+                                                  ? "bg.success"
+                                                  : "bg.error"
+                                            }
+                                            borderBottom={"1px solid"}
+                                            borderColor={
+                                              result === null
+                                                ? "border.subtle"
+                                                : result
+                                                  ? "#4ade8040"
+                                                  : "#f8717140"
+                                            }
+                                            pos={"relative"}
+                                          >
+                                            {result !== null && (
+                                              <Box
+                                                w={"4px"}
+                                                h={"full"}
+                                                bg={
+                                                  result
+                                                    ? "border.success"
+                                                    : "border.error"
+                                                }
+                                                pos={"absolute"}
+                                                left={0}
+                                                top={0}
+                                              />
+                                            )}
+
+                                            <P w={"200px"} color={"fg.muted"}>
+                                              {item.label}
+                                            </P>
+
+                                            <CContainer
+                                              flex={1}
+                                              w={"fit"}
+                                              gap={1}
+                                            >
+                                              <P>{item.value}</P>
+
+                                              <P
+                                                fontSize={"sm"}
+                                                color={"fg.subtle"}
+                                              >
+                                                Keterangan tambahan disini
+                                              </P>
+                                            </CContainer>
+                                          </HStack>
+                                        );
+                                      },
+                                    )}
+                                  </CContainer>
+                                </CContainer>
+                              )}
                             </CContainer>
                           )}
                         </>
@@ -846,6 +782,172 @@ const UploadedDocuments = () => {
         setActiveDocs={setActiveDocs}
       />
     </CContainer>
+  );
+};
+
+// -----------------------------------------------------------------
+
+// -----------------------------------------------------------------
+
+const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
+  // Props
+  const { activeDocs, setActiveDocs, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+  const activeDaSession = useActiveDA((s) => s.activeDA.session);
+  const uploadedDocuments = activeDaSession?.uploadedDocuments;
+
+  // Hooks
+  const iss = useIsSmScreenWidth();
+
+  return (
+    <CContainer
+      flexShrink={0}
+      gap={1}
+      w={["full", null, "300px"]}
+      h={"full"}
+      overflowY={"auto"}
+      {...restProps}
+    >
+      {/* Docs */}
+      <CContainer overflowY={"auto"}>
+        <CContainer px={4} py={3}>
+          <P color={"fg.subtle"}>{l.uploaded_file}</P>
+        </CContainer>
+
+        <CContainer px={2} pb={2} overflowY={"auto"}>
+          {uploadedDocuments?.map((doc) => {
+            const isActive = activeDocs.some(
+              (d) => d.id === `${doc.documentRequirement.id}-doc`,
+            );
+
+            return (
+              <HStack
+                key={doc.documentRequirement.id}
+                align={"start"}
+                px={3}
+                py={2}
+                rounded={themeConfig.radii.component}
+                cursor={"pointer"}
+                _hover={{
+                  bg: "d1",
+                }}
+                onClick={() => {
+                  const docItem: Type__ActiveDoc = {
+                    id: `${doc.documentRequirement.id}-doc`,
+                    type: "doc",
+                    value: doc,
+                  };
+                  setActiveDocs((ps) =>
+                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
+                  );
+                }}
+              >
+                <P fontSize={"sm"} mr={4}>
+                  {doc.documentRequirement.name}
+                </P>
+
+                {isActive && <DotIndicator ml={"auto"} mt={2} />}
+              </HStack>
+            );
+          })}
+        </CContainer>
+      </CContainer>
+
+      {/* Extracted Doc */}
+      <CContainer
+        borderTop={"1px solid"}
+        borderColor={"border.muted"}
+        overflowY={"auto"}
+      >
+        <CContainer px={4} py={3}>
+          <P color={"fg.subtle"}>{l.extracted_result}</P>
+        </CContainer>
+
+        <CContainer px={2} pb={2} overflowY={"auto"}>
+          {DUMMY_UPLOADED_DOCS?.map((doc) => {
+            const isActive = activeDocs.some(
+              (d) => d.id === `${doc.documentRequirement.id}-extracted-doc`,
+            );
+
+            return (
+              <HStack
+                key={doc.documentRequirement.id}
+                align={"start"}
+                px={3}
+                py={2}
+                rounded={themeConfig.radii.component}
+                cursor={"pointer"}
+                _hover={{
+                  bg: "d1",
+                }}
+                onClick={() => {
+                  const docItem: Type__ActiveDoc = {
+                    id: `${doc.documentRequirement.id}-extracted-doc`,
+                    type: "extractedDoc",
+                    value: doc,
+                  };
+                  setActiveDocs((ps) =>
+                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
+                  );
+                }}
+              >
+                <P fontSize={"sm"} mr={4}>
+                  {doc.documentRequirement.name}
+                </P>
+
+                {isActive && <DotIndicator ml={"auto"} mt={2} />}
+              </HStack>
+            );
+          })}
+        </CContainer>
+      </CContainer>
+    </CContainer>
+  );
+};
+
+// -----------------------------------------------------------------
+
+const ViewerUploadedDocumentsTrigger = (
+  props: Props__ViewerUploadedDocuments,
+) => {
+  // Props
+  const { activeDocs, setActiveDocs, ...restProps } = props;
+
+  // Contexts
+  const { l } = useLang();
+
+  // Hooks
+  const { isOpen, onOpen } = usePopDisclosure(
+    disclosureId(`pdf-viewer-uploaded-documents-list`),
+  );
+
+  return (
+    <>
+      <CContainer w={"fit"} onClick={onOpen} {...restProps} />
+
+      <DisclosureRoot open={isOpen} lazyLoad>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={l.your_files} />
+          </DisclosureHeader>
+
+          <DisclosureBody>
+            <ViewerUploadedDocuments
+              activeDocs={activeDocs}
+              setActiveDocs={setActiveDocs}
+              p={0}
+            />
+          </DisclosureBody>
+
+          <DisclosureFooter>
+            <BackButton />
+          </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
   );
 };
 

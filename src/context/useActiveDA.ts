@@ -67,7 +67,7 @@ export const useActiveDA = create<State_Actions>((set) => ({
     set((state) => ({
       activeDA: {
         ...state.activeDA,
-        isNewChat: value,
+        isNewDA: value,
       },
     })),
 

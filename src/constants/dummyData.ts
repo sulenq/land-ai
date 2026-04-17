@@ -11541,3 +11541,318 @@ export const DUMMY_TRIAL_SESSION: Interface__TrialSession = {
     // to 6 items
   ],
 };
+
+export const DUMMY_UPLOADED_DOCS = [
+  {
+    id: 1,
+    jobId: 1217,
+    documentRequirement: {
+      id: 101,
+      name: "Sertipikat",
+      description: null,
+      isMandatory: true,
+    },
+    metaData: {
+      fileName: "sertipikat.pdf",
+      status: "COMPLETED",
+      errorMessage: null,
+      filePath: "/uploads/sertipikat.pdf",
+    },
+    extracted: [
+      {
+        label: "Nama Pemilik Terakhir",
+        value: "Budi Santoso",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 102,
+            withParameterLabel: "Nama Pemohon",
+            valid: true,
+          },
+          {
+            withDocumentRequirementId: 103,
+            withParameterLabel: "Nama Pemohon",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Nomor Sertipikat",
+        value: "1234/SMG",
+        validationSchema: [],
+      },
+      {
+        label: "NIB",
+        value: "3374010000001234",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 102,
+            withParameterLabel: "NIB",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Alamat",
+        value: "Jl. Melati No. 10, Semarang",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 102,
+            withParameterLabel: "Alamat",
+            valid: true,
+          },
+          {
+            withDocumentRequirementId: 103,
+            withParameterLabel: "Alamat",
+            valid: false,
+          },
+          {
+            withDocumentRequirementId: 104,
+            withParameterLabel: "Alamat",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Luas Tanah",
+        value: 150,
+        validationSchema: [
+          {
+            withDocumentRequirementId: 102,
+            withParameterLabel: "Luas Tanah",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Jenis Hak",
+        value: "SHM",
+        validationSchema: [],
+      },
+      {
+        label: "Tanggal Terbit",
+        value: "2015-06-12",
+        validationSchema: [],
+      },
+    ],
+  },
+
+  {
+    id: 2,
+    jobId: 1217,
+    documentRequirement: {
+      id: 102,
+      name: "Draft",
+      description: null,
+      isMandatory: true,
+    },
+    metaData: {
+      fileName: "draft.pdf",
+      status: "COMPLETED",
+      errorMessage: null,
+      filePath: "/uploads/draft.pdf",
+    },
+    extracted: [
+      {
+        label: "Nama Pemohon",
+        value: "Budi Santoso",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "Nama Pemilik Terakhir",
+            valid: true,
+          },
+          {
+            withDocumentRequirementId: 103,
+            withParameterLabel: "Nama Pemohon",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "NIK",
+        value: "3374010101900001",
+        validationSchema: [],
+      },
+      {
+        label: "NIB",
+        value: "3374010000001234",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "NIB",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Alamat",
+        value: "Jl. Melati No. 10, Semarang",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "Alamat",
+            valid: true,
+          },
+          {
+            withDocumentRequirementId: 103,
+            withParameterLabel: "Alamat",
+            valid: false,
+          },
+          {
+            withDocumentRequirementId: 104,
+            withParameterLabel: "Alamat",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Luas Tanah",
+        value: 150,
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "Luas Tanah",
+            valid: true,
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 3,
+    jobId: 1217,
+    documentRequirement: {
+      id: 103,
+      name: "Penetapan",
+      description: null,
+      isMandatory: true,
+    },
+    metaData: {
+      fileName: "penetapan.pdf",
+      status: "COMPLETED",
+      errorMessage: null,
+      filePath: "/uploads/penetapan.pdf",
+    },
+    extracted: [
+      {
+        label: "Nama Pemohon",
+        value: "Budi Santoso",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "Nama Pemilik Terakhir",
+            valid: true,
+          },
+          {
+            withDocumentRequirementId: 102,
+            withParameterLabel: "Nama Pemohon",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Nomor Penetapan",
+        value: "PN-2026-045",
+        validationSchema: [],
+      },
+      {
+        label: "Alamat",
+        value: "Jl. Melati No. 11, Semarang",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "Alamat",
+            valid: false,
+          },
+          {
+            withDocumentRequirementId: 102,
+            withParameterLabel: "Alamat",
+            valid: false,
+          },
+          {
+            withDocumentRequirementId: 104,
+            withParameterLabel: "Alamat",
+            valid: false,
+          },
+        ],
+      },
+      {
+        label: "Status Tanah",
+        value: "Tidak Sengketa",
+        validationSchema: [],
+      },
+      {
+        label: "Tanggal Penetapan",
+        value: "2026-03-01",
+        validationSchema: [],
+      },
+    ],
+  },
+
+  {
+    id: 4,
+    jobId: 1217,
+    documentRequirement: {
+      id: 104,
+      name: "Pengantar",
+      description: null,
+      isMandatory: false,
+    },
+    metaData: {
+      fileName: "pengantar.pdf",
+      status: "COMPLETED",
+      errorMessage: null,
+      filePath: "/uploads/pengantar.pdf",
+    },
+    extracted: [
+      {
+        label: "Nama Pemohon",
+        value: "Budi Santoso",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "Nama Pemilik Terakhir",
+            valid: true,
+          },
+          {
+            withDocumentRequirementId: 102,
+            withParameterLabel: "Nama Pemohon",
+            valid: true,
+          },
+        ],
+      },
+      {
+        label: "Alamat",
+        value: "Jl. Melati No. 10, Semarang",
+        validationSchema: [
+          {
+            withDocumentRequirementId: 101,
+            withParameterLabel: "Alamat",
+            valid: true,
+          },
+          {
+            withDocumentRequirementId: 103,
+            withParameterLabel: "Alamat",
+            valid: false,
+          },
+        ],
+      },
+      {
+        label: "Keperluan",
+        value: "Permohonan SKPT",
+        validationSchema: [],
+      },
+      {
+        label: "Tanggal Surat",
+        value: "2026-02-25",
+        validationSchema: [],
+      },
+      {
+        label: "Instansi Pengirim",
+        value: "Kelurahan Mulyo",
+        validationSchema: [],
+      },
+    ],
+  },
+];

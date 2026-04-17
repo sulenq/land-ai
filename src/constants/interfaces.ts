@@ -22,6 +22,7 @@ export interface Interface__ActivityLog extends Interface__CUD {
   metadata?: Record<string, any>;
   user?: Interface__User;
 }
+
 export interface Interface__AuthLog extends Interface__CUD {
   id: string;
   ip: string;
@@ -30,6 +31,7 @@ export interface Interface__AuthLog extends Interface__CUD {
   userAgent: string;
   action: string; // "Sign in" | "Sign out" ;
 }
+
 export interface Interface__User extends Interface__CUD {
   id: string;
   name: string;
@@ -40,6 +42,7 @@ export interface Interface__User extends Interface__CUD {
   avatar?: Interface__StorageFile[];
   lastLogin: string;
 }
+
 export interface Interface__Role extends Interface__CUD {
   id: string;
   name: string;
@@ -52,6 +55,7 @@ export interface Interface__NavGroup {
   labelKey?: string;
   navs: Interface__Nav[];
 }
+
 export interface Interface__Nav {
   icon?: any;
   labelKey?: string;
@@ -71,6 +75,7 @@ export interface Interface__DataProps {
   rowOptions?: Interface__RowOptionsTableOptionGenerator[];
   batchOptions?: Interface__BatchOptionsTableOptionGenerator[];
 }
+
 export interface Interface__FormattedTableHeader {
   th: string;
   sortable?: boolean;
@@ -78,6 +83,7 @@ export interface Interface__FormattedTableHeader {
   wrapperProps?: StackProps;
   align?: string;
 }
+
 export interface Interface__FormattedTableRow<T = any> {
   id: string;
   idx: number;
@@ -93,6 +99,7 @@ export interface Interface__FormattedTableRow<T = any> {
     dim?: boolean;
   }[];
 }
+
 export interface Interface__TableOption {
   disabled?: boolean;
   label?: string;
@@ -115,6 +122,7 @@ export type Interface__RowOptionsTableOptionGenerator<T = any> = (
   formattedRow: Interface__FormattedTableRow<T>,
   overloads?: any,
 ) => Interface__TableOption | null | false;
+
 export type Interface__BatchOptionsTableOptionGenerator<T = string[]> = (
   selectedRowIds: T,
   overloads?: any,
@@ -127,6 +135,7 @@ export interface Interface__RequestState<T = any> {
   error: any;
   response: AxiosResponse<T> | null;
 }
+
 export interface Interface__Req<T = any> {
   config: AxiosRequestConfig;
   onResolve?: {
@@ -178,9 +187,11 @@ export interface Interface__ChatSession extends Interface__CUD {
   isProtected: boolean;
   createdAt: string;
 }
+
 export interface Interface__ContextChatSession extends Interface__ChatSession {
   controller: AbortController;
 }
+
 export type Interface__ContextChatSessionDraft =
   Partial<Interface__ContextChatSession>;
 
@@ -220,6 +231,7 @@ export interface Interface__SubmitFeedbackRequest {
   category?: Type__FeedbackCategory;
   userComment?: string;
 }
+
 export interface Interface__ActiveChatState {
   session: Interface__ContextChatSessionDraft | null;
   messages: Interface__ChatMessage[];
@@ -229,6 +241,7 @@ export interface Interface__ActiveChatState {
   hasLoadedHistory: boolean;
   // isNewSession: boolean;
 }
+
 export interface Interface__ChatAIKnowledge {
   id: string;
   fileName: string;
@@ -241,6 +254,8 @@ export interface Interface__ChatAIKnowledge {
   createdAt: string;
 }
 
+// -----------------------------------------------------------------
+
 // Modul 2 - Document Analysis
 export interface Interface__DemoDetailPage {
   hasMaterai: boolean;
@@ -249,6 +264,7 @@ export interface Interface__DemoDetailPage {
   isValidPage: boolean;
   extractedText: string;
 }
+
 export interface Interface__DemoResult {
   fileName: string;
   totalPages: number;
@@ -258,6 +274,7 @@ export interface Interface__DemoResult {
     isValid: boolean;
   };
 }
+
 export interface Interface__DAService {
   id: string;
   icon: string;
@@ -266,6 +283,7 @@ export interface Interface__DAService {
   documentRequirements?: Interface__DAServiceDocumentRequirement[];
   createdAt: string;
 }
+
 export interface Interface__DAServiceDocumentRequirement {
   id: number;
   name: string;
@@ -288,9 +306,11 @@ export interface Interface__DAServiceDocumentRequirement {
     type: string;
   }[];
 }
+
 export interface Interface__DAServiceDetail extends Interface__DAService {
   documentRequirements: Interface__DAServiceDocumentRequirement[];
 }
+
 export interface Interface__DASession {
   id: string;
   title: string;
@@ -300,21 +320,37 @@ export interface Interface__DASession {
   serviceIcon?: string;
   serviceName?: string;
 }
+
 export interface Interface__DAAnalysisValue {
   documentId: number;
   renderType: Type__RenderType;
   value: string | number | boolean | null;
 }
+
 export interface Interface__DAAnalysisValidation {
   status: boolean;
 }
 // Schema?
+
 export interface Interface__DAAnalysisResultItem {
   // key: string;
   label: string;
   values: Interface__DAAnalysisValue[];
   validation: Interface__DAAnalysisValidation;
 }
+
+export interface Interface__ParameterValidation {
+  withDocumentRequirementId: number;
+  withParameterLabel: string;
+  valid: boolean;
+}
+
+export interface Interface__ExtractedParameter {
+  label: string;
+  value: string | number | null;
+  validationSchema: Interface__ParameterValidation[];
+}
+
 export interface Interface__DAUploadedDocument {
   id: string;
   jobId: string;
@@ -323,7 +359,9 @@ export interface Interface__DAUploadedDocument {
     fileName: string;
     filePath: string;
   };
+  extracted: Interface__ExtractedParameter[];
 }
+
 export interface Interface__DASessionDetail extends Interface__DASession {
   noBerkas: string;
   documentService: Interface__DAServiceDetail;
@@ -336,26 +374,32 @@ export interface Interface__DASessionDetail extends Interface__DASession {
   kategori: string;
   totalExecutionTime: string;
 }
+
 export interface Interface__DATrialScenarioSummary {
   pemohon?: string | null;
   letak?: string | null;
   aiAssessment?: string | null;
   aiConfidenceScore?: string | null;
 }
+
 export interface Interface__TrialAIValidationOverride {
   label: string;
   status: Type__AIValidationState;
   source?: "manual";
   updatedAt?: string | null;
 }
+
 export type Type__AIValidationState = "match" | "mismatch" | "note";
+
 export interface Interface__TrialAINoteOverride {
   documentName: string;
   note: string;
   source?: "manual";
   updatedAt?: string | null;
 }
+
 export type Interface__DASessionDraft = Partial<Interface__DASessionDetail>;
+
 export interface Interface__ActiveDAState {
   session: Interface__DASessionDraft | null;
   isNewDA: boolean;
