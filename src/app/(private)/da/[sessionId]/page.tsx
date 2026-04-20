@@ -457,7 +457,10 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
       overflowY={"auto"}
       {...restProps}
     >
-      <Accordion.Root multiple>
+      <Accordion.Root
+        multiple
+        defaultValue={["uploaded-file", "extracted-result"]}
+      >
         <CContainer gap={2}>
           {/* Docs */}
           <Accordion.Item
@@ -512,7 +515,7 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
                         <P mr={4}>{doc.documentRequirement.name}</P>
                       </CContainer>
 
-                      {isActive && <DotIndicator ml={"auto"} mt={2} />}
+                      {isActive && <DotIndicator ml={"auto"} mr={1} mt={2} />}
                     </HStack>
                   );
                 })}
@@ -538,10 +541,14 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
 
             <Accordion.ItemContent>
               <CContainer px={1} pb={1}>
+                {/* TODO pakai data asli */}
                 {DUMMY_UPLOADED_DOCS?.map((doc) => {
                   const isActive = activeDocs.some(
                     (d) =>
                       d.id === `${doc.documentRequirement.id}-extracted-doc`,
+                  );
+                  const isMismatch = doc.extracted.some((e) =>
+                    e.validationSchema.some((v) => v.valid === false),
                   );
 
                   return (
@@ -550,6 +557,7 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
                       align={"start"}
                       px={3}
                       py={2}
+                      color={isMismatch ? "fg.error" : ""}
                       rounded={themeConfig.radii.component}
                       cursor={"pointer"}
                       _hover={{
@@ -561,21 +569,56 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
                           type: "extractedDoc",
                           value: doc,
                         };
-                        setActiveDocs((ps) =>
-                          iss
-                            ? [docItem]
-                            : ps[0]
-                              ? [ps[0], docItem]
-                              : [docItem],
-                        );
+
+                        setActiveDocs((ps) => {
+                          const exists = ps.some((i) => i.id === docItem.id);
+
+                          if (exists) {
+                            return ps.filter((i) => i.id !== docItem.id);
+                          }
+
+                          if (iss) {
+                            return [docItem];
+                          }
+
+                          if (ps.length >= 2) {
+                            return [ps[0], docItem];
+                          }
+
+                          return [...ps, docItem];
+                        });
                       }}
                     >
                       <P mr={4}>{doc.documentRequirement.name}</P>
 
-                      {isActive && <DotIndicator ml={"auto"} mt={2} />}
+                      {isActive && <DotIndicator ml={"auto"} mr={1} mt={2} />}
                     </HStack>
                   );
                 })}
+
+                <CContainer
+                  gap={2}
+                  p={3}
+                  borderTop={"1px solid"}
+                  borderColor={"border.muted"}
+                  mt={2}
+                >
+                  <HStack>
+                    <DotIndicator color={"current"} />
+
+                    <P fontSize={"sm"} color={"fg.muted"}>
+                      {l.match}
+                    </P>
+                  </HStack>
+
+                  <HStack>
+                    <DotIndicator color={"fg.error"} />
+
+                    <P fontSize={"sm"} color={"fg.muted"}>
+                      {l.mismatch}
+                    </P>
+                  </HStack>
+                </CContainer>
               </CContainer>
             </Accordion.ItemContent>
           </Accordion.Item>
