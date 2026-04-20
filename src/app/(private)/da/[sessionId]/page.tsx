@@ -74,7 +74,14 @@ import { disclosureId } from "@/utils/disclosure";
 import { formatDate } from "@/utils/formatter";
 import { capitalizeWords } from "@/utils/string";
 import { fileUrl, imgUrl } from "@/utils/url";
-import { Badge, Box, HStack, Stack, StackProps } from "@chakra-ui/react";
+import {
+  Accordion,
+  Badge,
+  Box,
+  HStack,
+  Stack,
+  StackProps,
+} from "@chakra-ui/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import {
   AlertTriangleIcon,
@@ -115,367 +122,6 @@ interface Props__ViewerUploadedDocuments extends StackProps {
   activeDocs: Type__ActiveDoc[];
   setActiveDocs: React.Dispatch<React.SetStateAction<Type__ActiveDoc[]>>;
 }
-
-// -----------------------------------------------------------------
-
-interface Props__ViewerDisclosure {
-  open: boolean;
-  uploadedDocuments?: Interface__DASessionDetail["uploadedDocuments"];
-  activeDocs: Type__ActiveDoc[];
-  setActiveDocs: React.Dispatch<React.SetStateAction<Type__ActiveDoc[]>>;
-}
-
-const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
-  // Props
-  const { open, activeDocs, setActiveDocs } = props;
-
-  // Contexts
-  const { l } = useLang();
-  const { themeConfig } = useThemeConfig();
-
-  // Hooks
-  const iss = useIsSmScreenWidth();
-
-  // Utils
-  function getParameterValidation(
-    parameterLabel: string,
-    validations: Interface__ParameterValidation[] | null | undefined,
-    currentRequirementDocumentId: string,
-  ) {
-    if (!validations) return null;
-
-    const pairedDoc = activeDocs.find(
-      (d) =>
-        d.type === "extractedDoc" &&
-        d.value.documentRequirement.id !== currentRequirementDocumentId,
-    );
-
-    if (!pairedDoc) return null;
-
-    const targetId = pairedDoc.value.documentRequirement.id;
-
-    const match = validations.find(
-      (v) =>
-        v.withDocumentRequirementId === targetId &&
-        v.withParameterLabel === parameterLabel,
-    );
-
-    return match ? match.valid : null;
-  }
-
-  useEffect(() => {
-    if (!open) {
-      setActiveDocs([]);
-    }
-  }, [open]);
-
-  // console.debug(activeDocs);
-
-  return (
-    <>
-      <DisclosureRoot open={open} lazyLoad size={"cover"}>
-        <DisclosureContent>
-          <DisclosureHeader>
-            <DisclosureHeaderContent title={capitalizeWords(l.uploaded_file)} />
-          </DisclosureHeader>
-
-          <DisclosureBody p={0} bg={["body", null, "transparent"]}>
-            <Stack
-              flexDir={["column", null, "row"]}
-              align={"stretch"}
-              gap={0}
-              h={"full"}
-              // roundedBottom={[0, null, themeConfig.radii.container]}
-              overflow={"clip"}
-            >
-              {iss && (
-                <CContainer px={R_SPACING_MD}>
-                  <ViewerUploadedDocumentsTrigger
-                    activeDocs={activeDocs}
-                    setActiveDocs={setActiveDocs}
-                    w={"full"}
-                  >
-                    <Btn variant={"outline"} size={"sm"}>
-                      <AppIcon icon={ListIcon} />
-
-                      {l.your_files}
-                    </Btn>
-                  </ViewerUploadedDocumentsTrigger>
-                </CContainer>
-              )}
-
-              <CContainer
-                flex={1}
-                gap={2}
-                h={"full"}
-                p={[4, null, 2]}
-                borderRight={"1px solid"}
-                borderColor={"border.muted"}
-                overflow={"hidden"}
-              >
-                {isEmptyArray(activeDocs) && (
-                  <FeedbackNotFound title={`${l.select} file`} />
-                )}
-
-                {!isEmptyArray(activeDocs) && (
-                  <HStack
-                    flex={1}
-                    gap={2}
-                    h={"full"}
-                    overflowX={"auto"}
-                    overflowY={"hidden"}
-                    css={{
-                      scrollSnapType: "x mandatory",
-                      WebkitOverflowScrolling: "touch",
-                      scrollbarWidth: "thin",
-                      "&::-webkit-scrollbar": {
-                        height: "6px",
-                      },
-                      "&::-webkit-scrollbar-thumb": {
-                        background: "var(--chakra-colors-border-muted)",
-                        borderRadius: "3px",
-                      },
-                    }}
-                    onMouseDown={(e) => {
-                      const container = e.currentTarget;
-                      const startX = e.clientX;
-                      const scrollLeft = container.scrollLeft;
-
-                      const onMouseMove = (ev: MouseEvent) => {
-                        const dx = ev.clientX - startX;
-                        container.scrollLeft = scrollLeft - dx;
-                      };
-                      const onMouseUp = () => {
-                        window.removeEventListener("mousemove", onMouseMove);
-                        window.removeEventListener("mouseup", onMouseUp);
-                      };
-                      window.addEventListener("mousemove", onMouseMove);
-                      window.addEventListener("mouseup", onMouseUp);
-                    }}
-                  >
-                    {activeDocs?.map((doc, index) => {
-                      return (
-                        <>
-                          {doc.type === "doc" && (
-                            <CContainer
-                              key={doc.id}
-                              border={"1px solid"}
-                              borderColor={"border.muted"}
-                              rounded={themeConfig.radii.component}
-                              h={"full"}
-                              overflow={"hidden"}
-                              flexShrink={0}
-                              w={
-                                activeDocs.length === 1
-                                  ? "full"
-                                  : ["85%", null, "calc(50% - 4px)"]
-                              }
-                              css={{
-                                scrollSnapAlign: "start",
-                              }}
-                            >
-                              <HStack
-                                align={"start"}
-                                justify={"space-between"}
-                                flexShrink={0}
-                                pl={3}
-                                pr={2}
-                                py={2}
-                              >
-                                <HStack wrap={"wrap"}>
-                                  <P>{doc.value.documentRequirement.name}</P>
-                                </HStack>
-
-                                <Btn
-                                  iconButton
-                                  variant={"subtle"}
-                                  rounded={"full"}
-                                  size={"2xs"}
-                                  onClick={() => {
-                                    setActiveDocs((ps) =>
-                                      ps.filter((_, i) => i !== index),
-                                    );
-                                  }}
-                                >
-                                  <AppIcon icon={XIcon} boxSize={4} />
-                                </Btn>
-                              </HStack>
-
-                              <PdfViewer
-                                fileUrl={
-                                  fileUrl(doc.value.metaData.filePath) ||
-                                  DUMMY_PDF_URL
-                                }
-                                fileName={doc.value.metaData.fileName}
-                                defaultMode="continuous"
-                                border={"1px solid"}
-                                borderColor={"border.muted"}
-                                rounded={themeConfig.radii.component}
-                                flex={1}
-                                minH={0}
-                                roundedTop={0}
-                              />
-                            </CContainer>
-                          )}
-
-                          {doc.type === "extractedDoc" && (
-                            <CContainer
-                              key={doc.id}
-                              border={"1px solid"}
-                              borderColor={"border.muted"}
-                              rounded={themeConfig.radii.component}
-                              h={"full"}
-                              overflow={"hidden"}
-                              flexShrink={0}
-                              w={
-                                activeDocs.length === 1
-                                  ? "full"
-                                  : ["85%", null, "calc(50% - 4px)"]
-                              }
-                              css={{
-                                scrollSnapAlign: "start",
-                              }}
-                            >
-                              {/* Header */}
-                              <HStack
-                                align={"start"}
-                                justify={"space-between"}
-                                flexShrink={0}
-                                pl={4}
-                                pr={2}
-                                py={2}
-                              >
-                                <HStack wrap={"wrap"}>
-                                  <P>{doc.value.documentRequirement.name}</P>
-
-                                  <Badge>{l.extracted_result}</Badge>
-                                </HStack>
-
-                                <Btn
-                                  iconButton
-                                  variant={"subtle"}
-                                  rounded={"full"}
-                                  size={"2xs"}
-                                  onClick={() => {
-                                    setActiveDocs((ps) =>
-                                      ps.filter((_, i) => i !== index),
-                                    );
-                                  }}
-                                >
-                                  <AppIcon icon={XIcon} boxSize={4} />
-                                </Btn>
-                              </HStack>
-
-                              {/* Body */}
-                              {doc.value.extracted && (
-                                <CContainer overflowY={"auto"}>
-                                  <CContainer overflowY={"auto"}>
-                                    {doc.value.extracted.map(
-                                      (
-                                        item: Interface__ExtractedParameter,
-                                        index: number,
-                                      ) => {
-                                        const result = getParameterValidation(
-                                          item.label,
-                                          item.validationSchema,
-                                          doc.value.documentRequirement.id,
-                                        );
-
-                                        // console.debug(result);
-
-                                        return (
-                                          <HStack
-                                            key={index}
-                                            wrap={"wrap"}
-                                            align={"start"}
-                                            px={4}
-                                            pt={2.5}
-                                            pb={3}
-                                            bg={
-                                              result === null
-                                                ? "transparent"
-                                                : result
-                                                  ? "bg.success"
-                                                  : "bg.error"
-                                            }
-                                            borderBottom={"1px solid"}
-                                            borderColor={
-                                              result === null
-                                                ? "border.subtle"
-                                                : result
-                                                  ? "#4ade8040"
-                                                  : "#f8717140"
-                                            }
-                                            pos={"relative"}
-                                          >
-                                            {result !== null && (
-                                              <Box
-                                                w={"4px"}
-                                                h={"full"}
-                                                bg={
-                                                  result
-                                                    ? "border.success"
-                                                    : "border.error"
-                                                }
-                                                pos={"absolute"}
-                                                left={0}
-                                                top={0}
-                                              />
-                                            )}
-
-                                            <P w={"200px"} color={"fg.muted"}>
-                                              {item.label}
-                                            </P>
-
-                                            <CContainer
-                                              flex={1}
-                                              w={"fit"}
-                                              gap={1}
-                                            >
-                                              <P>{item.value}</P>
-
-                                              <P
-                                                fontSize={"sm"}
-                                                color={"fg.subtle"}
-                                              >
-                                                Keterangan tambahan disini
-                                              </P>
-                                            </CContainer>
-                                          </HStack>
-                                        );
-                                      },
-                                    )}
-                                  </CContainer>
-                                </CContainer>
-                              )}
-                            </CContainer>
-                          )}
-                        </>
-                      );
-                    })}
-                  </HStack>
-                )}
-              </CContainer>
-
-              {!iss && (
-                <ViewerUploadedDocuments
-                  activeDocs={activeDocs}
-                  setActiveDocs={setActiveDocs}
-                />
-              )}
-            </Stack>
-          </DisclosureBody>
-
-          {iss && (
-            <DisclosureFooter>
-              <BackButton />
-            </DisclosureFooter>
-          )}
-        </DisclosureContent>
-      </DisclosureRoot>
-    </>
-  );
-};
 
 // -----------------------------------------------------------------
 
@@ -811,99 +457,130 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
       overflowY={"auto"}
       {...restProps}
     >
-      {/* Docs */}
-      <CContainer overflowY={"auto"}>
-        <CContainer px={4} py={3}>
-          <P color={"fg.subtle"}>{l.uploaded_file}</P>
-        </CContainer>
+      <Accordion.Root multiple>
+        <CContainer gap={2}>
+          {/* Docs */}
+          <Accordion.Item
+            value={"uploaded-file"}
+            border={"1px solid"}
+            borderColor={"border.muted"}
+            rounded={themeConfig.radii.component}
+            _open={{
+              bg: "d0",
+            }}
+          >
+            <Accordion.ItemTrigger px={4} py={3} cursor={"pointer"}>
+              <P color={"fg.muted"}>{l.uploaded_file}</P>
 
-        <CContainer px={2} pb={2} overflowY={"auto"}>
-          {uploadedDocuments?.map((doc) => {
-            const isActive = activeDocs.some(
-              (d) => d.id === `${doc.documentRequirement.id}-doc`,
-            );
+              <Accordion.ItemIndicator ml={"auto"} />
+            </Accordion.ItemTrigger>
 
-            return (
-              <HStack
-                key={doc.documentRequirement.id}
-                align={"start"}
-                px={3}
-                py={2}
-                rounded={themeConfig.radii.component}
-                cursor={"pointer"}
-                _hover={{
-                  bg: "d1",
-                }}
-                onClick={() => {
-                  const docItem: Type__ActiveDoc = {
-                    id: `${doc.documentRequirement.id}-doc`,
-                    type: "doc",
-                    value: doc,
-                  };
-                  setActiveDocs((ps) =>
-                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
+            <Accordion.ItemContent>
+              <CContainer px={1} pb={1}>
+                {uploadedDocuments?.map((doc) => {
+                  const isActive = activeDocs.some(
+                    (d) => d.id === `${doc.documentRequirement.id}-doc`,
                   );
-                }}
-              >
-                <P fontSize={"sm"} mr={4}>
-                  {doc.documentRequirement.name}
-                </P>
 
-                {isActive && <DotIndicator ml={"auto"} mt={2} />}
-              </HStack>
-            );
-          })}
-        </CContainer>
-      </CContainer>
+                  return (
+                    <HStack
+                      key={doc.documentRequirement.id}
+                      align={"start"}
+                      px={3}
+                      py={2}
+                      rounded={themeConfig.radii.component}
+                      cursor={"pointer"}
+                      _hover={{
+                        bg: "d1",
+                      }}
+                      onClick={() => {
+                        const docItem: Type__ActiveDoc = {
+                          id: `${doc.documentRequirement.id}-doc`,
+                          type: "doc",
+                          value: doc,
+                        };
+                        setActiveDocs((ps) =>
+                          iss
+                            ? [docItem]
+                            : ps[0]
+                              ? [ps[0], docItem]
+                              : [docItem],
+                        );
+                      }}
+                    >
+                      <CContainer>
+                        <P mr={4}>{doc.documentRequirement.name}</P>
+                      </CContainer>
 
-      {/* Extracted Doc */}
-      <CContainer
-        borderTop={"1px solid"}
-        borderColor={"border.muted"}
-        overflowY={"auto"}
-      >
-        <CContainer px={4} py={3}>
-          <P color={"fg.subtle"}>{l.extracted_result}</P>
-        </CContainer>
-
-        <CContainer px={2} pb={2} overflowY={"auto"}>
-          {DUMMY_UPLOADED_DOCS?.map((doc) => {
-            const isActive = activeDocs.some(
-              (d) => d.id === `${doc.documentRequirement.id}-extracted-doc`,
-            );
-
-            return (
-              <HStack
-                key={doc.documentRequirement.id}
-                align={"start"}
-                px={3}
-                py={2}
-                rounded={themeConfig.radii.component}
-                cursor={"pointer"}
-                _hover={{
-                  bg: "d1",
-                }}
-                onClick={() => {
-                  const docItem: Type__ActiveDoc = {
-                    id: `${doc.documentRequirement.id}-extracted-doc`,
-                    type: "extractedDoc",
-                    value: doc,
-                  };
-                  setActiveDocs((ps) =>
-                    iss ? [docItem] : ps[0] ? [ps[0], docItem] : [docItem],
+                      {isActive && <DotIndicator ml={"auto"} mt={2} />}
+                    </HStack>
                   );
-                }}
-              >
-                <P fontSize={"sm"} mr={4}>
-                  {doc.documentRequirement.name}
-                </P>
+                })}
+              </CContainer>
+            </Accordion.ItemContent>
+          </Accordion.Item>
 
-                {isActive && <DotIndicator ml={"auto"} mt={2} />}
-              </HStack>
-            );
-          })}
+          {/* Extracted Doc */}
+          <Accordion.Item
+            value={"extracted-result"}
+            border={"1px solid"}
+            borderColor={"border.muted"}
+            rounded={themeConfig.radii.component}
+            _open={{
+              bg: "d0",
+            }}
+          >
+            <Accordion.ItemTrigger px={4} py={3} cursor={"pointer"}>
+              <P color={"fg.muted"}>{l.extracted_result}</P>
+
+              <Accordion.ItemIndicator ml={"auto"} />
+            </Accordion.ItemTrigger>
+
+            <Accordion.ItemContent>
+              <CContainer px={1} pb={1}>
+                {DUMMY_UPLOADED_DOCS?.map((doc) => {
+                  const isActive = activeDocs.some(
+                    (d) =>
+                      d.id === `${doc.documentRequirement.id}-extracted-doc`,
+                  );
+
+                  return (
+                    <HStack
+                      key={doc.documentRequirement.id}
+                      align={"start"}
+                      px={3}
+                      py={2}
+                      rounded={themeConfig.radii.component}
+                      cursor={"pointer"}
+                      _hover={{
+                        bg: "d1",
+                      }}
+                      onClick={() => {
+                        const docItem: Type__ActiveDoc = {
+                          id: `${doc.documentRequirement.id}-extracted-doc`,
+                          type: "extractedDoc",
+                          value: doc,
+                        };
+                        setActiveDocs((ps) =>
+                          iss
+                            ? [docItem]
+                            : ps[0]
+                              ? [ps[0], docItem]
+                              : [docItem],
+                        );
+                      }}
+                    >
+                      <P mr={4}>{doc.documentRequirement.name}</P>
+
+                      {isActive && <DotIndicator ml={"auto"} mt={2} />}
+                    </HStack>
+                  );
+                })}
+              </CContainer>
+            </Accordion.ItemContent>
+          </Accordion.Item>
         </CContainer>
-      </CContainer>
+      </Accordion.Root>
     </CContainer>
   );
 };
@@ -945,6 +622,369 @@ const ViewerUploadedDocumentsTrigger = (
           <DisclosureFooter>
             <BackButton />
           </DisclosureFooter>
+        </DisclosureContent>
+      </DisclosureRoot>
+    </>
+  );
+};
+
+// -----------------------------------------------------------------
+
+interface Props__ViewerDisclosure {
+  open: boolean;
+  uploadedDocuments?: Interface__DASessionDetail["uploadedDocuments"];
+  activeDocs: Type__ActiveDoc[];
+  setActiveDocs: React.Dispatch<React.SetStateAction<Type__ActiveDoc[]>>;
+}
+
+const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
+  // Props
+  const { open, activeDocs, setActiveDocs } = props;
+
+  // Contexts
+  const { l } = useLang();
+  const { themeConfig } = useThemeConfig();
+
+  // Hooks
+  const iss = useIsSmScreenWidth();
+
+  // Utils
+  function getParameterValidation(
+    parameterLabel: string,
+    validations: Interface__ParameterValidation[] | null | undefined,
+    currentRequirementDocumentId: string,
+  ) {
+    if (!validations) return null;
+
+    const pairedDoc = activeDocs.find(
+      (d) =>
+        d.type === "extractedDoc" &&
+        d.value.documentRequirement.id !== currentRequirementDocumentId,
+    );
+
+    if (!pairedDoc) return null;
+
+    const targetId = pairedDoc.value.documentRequirement.id;
+
+    const match = validations.find(
+      (v) =>
+        v.withDocumentRequirementId === targetId &&
+        v.withParameterLabel === parameterLabel,
+    );
+
+    return match ? match.valid : null;
+  }
+
+  useEffect(() => {
+    if (!open) {
+      setActiveDocs([]);
+    }
+  }, [open]);
+
+  // console.debug(activeDocs);
+
+  return (
+    <>
+      <DisclosureRoot open={open} lazyLoad size={"cover"}>
+        <DisclosureContent>
+          <DisclosureHeader>
+            <DisclosureHeaderContent title={capitalizeWords(l.uploaded_file)} />
+          </DisclosureHeader>
+
+          <DisclosureBody p={0} bg={["body", null, "transparent"]}>
+            <Stack
+              flexDir={["column", null, "row"]}
+              align={"stretch"}
+              gap={0}
+              h={"full"}
+              // roundedBottom={[0, null, themeConfig.radii.container]}
+              overflow={"clip"}
+            >
+              {iss && (
+                <CContainer px={R_SPACING_MD}>
+                  <ViewerUploadedDocumentsTrigger
+                    activeDocs={activeDocs}
+                    setActiveDocs={setActiveDocs}
+                    w={"full"}
+                  >
+                    <Btn variant={"outline"} size={"sm"}>
+                      <AppIcon icon={ListIcon} />
+
+                      {l.your_files}
+                    </Btn>
+                  </ViewerUploadedDocumentsTrigger>
+                </CContainer>
+              )}
+
+              <CContainer
+                flex={1}
+                gap={2}
+                h={"full"}
+                p={[4, null, 2]}
+                // borderRight={"1px solid"}
+                borderColor={"border.muted"}
+                overflow={"hidden"}
+              >
+                {isEmptyArray(activeDocs) && (
+                  <FeedbackNotFound title={`${l.select} file`} />
+                )}
+
+                {!isEmptyArray(activeDocs) && (
+                  <HStack
+                    flex={1}
+                    gap={2}
+                    h={"full"}
+                    overflowX={"auto"}
+                    overflowY={"hidden"}
+                    css={{
+                      scrollSnapType: "x mandatory",
+                      WebkitOverflowScrolling: "touch",
+                      scrollbarWidth: "thin",
+                      "&::-webkit-scrollbar": {
+                        height: "6px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        background: "var(--chakra-colors-border-muted)",
+                        borderRadius: "3px",
+                      },
+                    }}
+                    onMouseDown={(e) => {
+                      const container = e.currentTarget;
+                      const startX = e.clientX;
+                      const scrollLeft = container.scrollLeft;
+
+                      const onMouseMove = (ev: MouseEvent) => {
+                        const dx = ev.clientX - startX;
+                        container.scrollLeft = scrollLeft - dx;
+                      };
+                      const onMouseUp = () => {
+                        window.removeEventListener("mousemove", onMouseMove);
+                        window.removeEventListener("mouseup", onMouseUp);
+                      };
+                      window.addEventListener("mousemove", onMouseMove);
+                      window.addEventListener("mouseup", onMouseUp);
+                    }}
+                  >
+                    {activeDocs?.map((doc, index) => {
+                      return (
+                        <>
+                          {doc.type === "doc" && (
+                            <CContainer
+                              key={doc.id}
+                              border={"1px solid"}
+                              borderColor={"border.muted"}
+                              rounded={themeConfig.radii.component}
+                              h={"full"}
+                              overflow={"hidden"}
+                              flexShrink={0}
+                              w={
+                                activeDocs.length === 1
+                                  ? "full"
+                                  : ["85%", null, "calc(50% - 4px)"]
+                              }
+                              css={{
+                                scrollSnapAlign: "start",
+                              }}
+                            >
+                              <HStack
+                                align={"start"}
+                                justify={"space-between"}
+                                flexShrink={0}
+                                pl={3}
+                                pr={2}
+                                py={2}
+                              >
+                                <HStack wrap={"wrap"}>
+                                  <P>{doc.value.documentRequirement.name}</P>
+                                </HStack>
+
+                                <Btn
+                                  iconButton
+                                  variant={"subtle"}
+                                  rounded={"full"}
+                                  size={"2xs"}
+                                  onClick={() => {
+                                    setActiveDocs((ps) =>
+                                      ps.filter((_, i) => i !== index),
+                                    );
+                                  }}
+                                >
+                                  <AppIcon icon={XIcon} boxSize={4} />
+                                </Btn>
+                              </HStack>
+
+                              <PdfViewer
+                                fileUrl={
+                                  fileUrl(doc.value.metaData.filePath) ||
+                                  DUMMY_PDF_URL
+                                }
+                                fileName={doc.value.metaData.fileName}
+                                defaultMode="continuous"
+                                border={"1px solid"}
+                                borderColor={"border.muted"}
+                                rounded={themeConfig.radii.component}
+                                flex={1}
+                                minH={0}
+                                roundedTop={0}
+                              />
+                            </CContainer>
+                          )}
+
+                          {doc.type === "extractedDoc" && (
+                            <CContainer
+                              key={doc.id}
+                              border={"1px solid"}
+                              borderColor={"border.muted"}
+                              rounded={themeConfig.radii.component}
+                              h={"full"}
+                              overflow={"hidden"}
+                              flexShrink={0}
+                              w={
+                                activeDocs.length === 1
+                                  ? "full"
+                                  : ["85%", null, "calc(50% - 4px)"]
+                              }
+                              css={{
+                                scrollSnapAlign: "start",
+                              }}
+                            >
+                              {/* Header */}
+                              <HStack
+                                align={"start"}
+                                justify={"space-between"}
+                                flexShrink={0}
+                                pl={4}
+                                pr={2}
+                                py={2}
+                              >
+                                <HStack wrap={"wrap"}>
+                                  <P>{doc.value.documentRequirement.name}</P>
+
+                                  <Badge>{l.extracted_result}</Badge>
+                                </HStack>
+
+                                <Btn
+                                  iconButton
+                                  variant={"subtle"}
+                                  rounded={"full"}
+                                  size={"2xs"}
+                                  onClick={() => {
+                                    setActiveDocs((ps) =>
+                                      ps.filter((_, i) => i !== index),
+                                    );
+                                  }}
+                                >
+                                  <AppIcon icon={XIcon} boxSize={4} />
+                                </Btn>
+                              </HStack>
+
+                              {/* Body */}
+                              {doc.value.extracted && (
+                                <CContainer overflowY={"auto"}>
+                                  <CContainer overflowY={"auto"}>
+                                    {doc.value.extracted.map(
+                                      (
+                                        item: Interface__ExtractedParameter,
+                                        index: number,
+                                      ) => {
+                                        const result = getParameterValidation(
+                                          item.label,
+                                          item.validationSchema,
+                                          doc.value.documentRequirement.id,
+                                        );
+
+                                        // console.debug(result);
+
+                                        return (
+                                          <HStack
+                                            key={index}
+                                            wrap={"wrap"}
+                                            align={"start"}
+                                            px={4}
+                                            pt={2.5}
+                                            pb={3}
+                                            bg={
+                                              result === null
+                                                ? "transparent"
+                                                : result
+                                                  ? "bg.success"
+                                                  : "bg.error"
+                                            }
+                                            borderBottom={"1px solid"}
+                                            borderColor={
+                                              result === null
+                                                ? "border.subtle"
+                                                : result
+                                                  ? "#4ade8040"
+                                                  : "#f8717140"
+                                            }
+                                            pos={"relative"}
+                                          >
+                                            {result !== null && (
+                                              <Box
+                                                w={"4px"}
+                                                h={"full"}
+                                                bg={
+                                                  result
+                                                    ? "border.success"
+                                                    : "border.error"
+                                                }
+                                                pos={"absolute"}
+                                                left={0}
+                                                top={0}
+                                              />
+                                            )}
+
+                                            <P w={"200px"} color={"fg.muted"}>
+                                              {item.label}
+                                            </P>
+
+                                            <CContainer
+                                              flex={1}
+                                              w={"fit"}
+                                              gap={1}
+                                            >
+                                              <P>{item.value}</P>
+
+                                              <P
+                                                fontSize={"sm"}
+                                                color={"fg.subtle"}
+                                              >
+                                                Keterangan tambahan disini
+                                              </P>
+                                            </CContainer>
+                                          </HStack>
+                                        );
+                                      },
+                                    )}
+                                  </CContainer>
+                                </CContainer>
+                              )}
+                            </CContainer>
+                          )}
+                        </>
+                      );
+                    })}
+                  </HStack>
+                )}
+              </CContainer>
+
+              {!iss && (
+                <ViewerUploadedDocuments
+                  activeDocs={activeDocs}
+                  setActiveDocs={setActiveDocs}
+                  py={2}
+                  pr={2}
+                />
+              )}
+            </Stack>
+          </DisclosureBody>
+
+          {iss && (
+            <DisclosureFooter>
+              <BackButton />
+            </DisclosureFooter>
+          )}
         </DisclosureContent>
       </DisclosureRoot>
     </>
