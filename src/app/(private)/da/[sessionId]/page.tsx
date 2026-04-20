@@ -18,7 +18,6 @@ import {
   DisclosureRoot,
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
-import { Divider } from "@/components/ui/divider";
 import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
@@ -480,7 +479,7 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
             </Accordion.ItemTrigger>
 
             <Accordion.ItemContent>
-              <Divider />
+              {/* <Divider /> */}
 
               <CContainer p={1}>
                 {uploadedDocuments?.map((doc) => {
@@ -548,7 +547,7 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
             </Accordion.ItemTrigger>
 
             <Accordion.ItemContent>
-              <Divider />
+              {/* <Divider /> */}
 
               <CContainer p={1}>
                 {/* TODO pakai data asli */}
@@ -614,7 +613,7 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
                 })}
               </CContainer>
 
-              <Divider />
+              {/* <Divider /> */}
 
               <CContainer gap={2} p={3}>
                 <HStack>
