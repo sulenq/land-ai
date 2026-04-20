@@ -58,6 +58,19 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+      // Local development backend
+      {
+        protocol: "http",
+        hostname: "172.22.251.122",
+        port: "3133",
+        pathname: "/uploads/**",
+      },
+      // Localhost for development
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/**",
+      },
     ],
     qualities: [60, 70, 80, 90, 100],
   },
