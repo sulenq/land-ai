@@ -18,6 +18,7 @@ import {
   DisclosureRoot,
 } from "@/components/ui/disclosure";
 import { DisclosureHeaderContent } from "@/components/ui/disclosure-header-content";
+import { Divider } from "@/components/ui/divider";
 import { HelperText } from "@/components/ui/helper-text";
 import { Img } from "@/components/ui/img";
 import { NavLink } from "@/components/ui/nav-link";
@@ -473,13 +474,15 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
             }}
           >
             <Accordion.ItemTrigger px={4} py={3} cursor={"pointer"}>
-              <P color={"fg.muted"}>{l.uploaded_file}</P>
+              <P fontWeight={"medium"}>{l.uploaded_file}</P>
 
               <Accordion.ItemIndicator ml={"auto"} />
             </Accordion.ItemTrigger>
 
             <Accordion.ItemContent>
-              <CContainer px={1} pb={1}>
+              <Divider />
+
+              <CContainer p={1}>
                 {uploadedDocuments?.map((doc) => {
                   const isActive = activeDocs.some(
                     (d) => d.id === `${doc.documentRequirement.id}-doc`,
@@ -511,11 +514,16 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
                         );
                       }}
                     >
-                      <CContainer>
-                        <P mr={4}>{doc.documentRequirement.name}</P>
-                      </CContainer>
+                      <P mr={4}>{doc.documentRequirement.name}</P>
 
-                      {isActive && <DotIndicator ml={"auto"} mr={1} mt={2} />}
+                      <DotIndicator
+                        color={
+                          isActive ? `${themeConfig.colorPalette}.solid` : "d1"
+                        }
+                        ml={"auto"}
+                        mr={1}
+                        mt={2}
+                      />
                     </HStack>
                   );
                 })}
@@ -534,13 +542,15 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
             }}
           >
             <Accordion.ItemTrigger px={4} py={3} cursor={"pointer"}>
-              <P color={"fg.muted"}>{l.extracted_result}</P>
+              <P fontWeight={"medium"}>{l.extracted_result}</P>
 
               <Accordion.ItemIndicator ml={"auto"} />
             </Accordion.ItemTrigger>
 
             <Accordion.ItemContent>
-              <CContainer px={1} pb={1}>
+              <Divider />
+
+              <CContainer p={1}>
                 {/* TODO pakai data asli */}
                 {DUMMY_UPLOADED_DOCS?.map((doc) => {
                   const isActive = activeDocs.some(
@@ -591,34 +601,37 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
                     >
                       <P mr={4}>{doc.documentRequirement.name}</P>
 
-                      {isActive && <DotIndicator ml={"auto"} mr={1} mt={2} />}
+                      <DotIndicator
+                        color={
+                          isActive ? `${themeConfig.colorPalette}.solid` : "d1"
+                        }
+                        ml={"auto"}
+                        mr={1}
+                        mt={2}
+                      />
                     </HStack>
                   );
                 })}
+              </CContainer>
 
-                <CContainer
-                  gap={2}
-                  p={3}
-                  borderTop={"1px solid"}
-                  borderColor={"border.muted"}
-                  mt={2}
-                >
-                  <HStack>
-                    <DotIndicator color={"current"} />
+              <Divider />
 
-                    <P fontSize={"sm"} color={"fg.muted"}>
-                      {l.match}
-                    </P>
-                  </HStack>
+              <CContainer gap={2} p={3}>
+                <HStack>
+                  <DotIndicator color={"current"} />
 
-                  <HStack>
-                    <DotIndicator color={"fg.error"} />
+                  <P fontSize={"sm"} color={"fg.muted"}>
+                    {l.match}
+                  </P>
+                </HStack>
 
-                    <P fontSize={"sm"} color={"fg.muted"}>
-                      {l.mismatch}
-                    </P>
-                  </HStack>
-                </CContainer>
+                <HStack>
+                  <DotIndicator color={"fg.error"} />
+
+                  <P fontSize={"sm"} color={"fg.muted"}>
+                    {l.mismatch}
+                  </P>
+                </HStack>
               </CContainer>
             </Accordion.ItemContent>
           </Accordion.Item>
@@ -838,7 +851,9 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                                 py={2}
                               >
                                 <HStack wrap={"wrap"}>
-                                  <P>{doc.value.documentRequirement.name}</P>
+                                  <P fontWeight={"medium"}>
+                                    {doc.value.documentRequirement.name}
+                                  </P>
                                 </HStack>
 
                                 <Btn
@@ -901,7 +916,9 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                                 py={2}
                               >
                                 <HStack wrap={"wrap"}>
-                                  <P>{doc.value.documentRequirement.name}</P>
+                                  <P fontWeight={"medium"}>
+                                    {doc.value.documentRequirement.name}
+                                  </P>
 
                                   <Badge>{l.extracted_result}</Badge>
                                 </HStack>
