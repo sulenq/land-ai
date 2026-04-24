@@ -142,11 +142,11 @@ export const NavBreadcrumb = (props: any) => {
   }, [pathname]);
 
   return (
-    <HStack gap={1} ml={"-4px"} h={"36px"} cursor={"pointer"} {...restProps}>
+    <HStack gap={1} ml={"-4px"} h={"36px"} {...restProps}>
       {backPath && <BackButton iconButton clicky={false} backPath={backPath} />}
 
       <SimplePopover
-        content={currentActiveNavs
+        content={breadcrumbs.activeNavs
           .map((nav) => {
             return nav?.label || pluckString(l, nav?.labelKey);
           })

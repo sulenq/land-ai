@@ -49,6 +49,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "be.landai.tech",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "land-be.cunindonesia.web.id",
         pathname: "/**",
       },

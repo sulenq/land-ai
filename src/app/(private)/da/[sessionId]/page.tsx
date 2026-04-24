@@ -49,7 +49,6 @@ import {
 } from "@/components/widget/PageShell";
 import { PdfViewer } from "@/components/widget/PDFViewer";
 import { DA_API_SESSION_DETAIL } from "@/constants/apis";
-import { DUMMY_PDF_URL, DUMMY_UPLOADED_DOCS } from "@/constants/dummyData";
 import {
   Interface__DASessionDetail,
   Interface__DAUploadedDocument,
@@ -550,8 +549,7 @@ const ViewerUploadedDocuments = (props: Props__ViewerUploadedDocuments) => {
               {/* <Divider /> */}
 
               <CContainer p={1}>
-                {/* TODO pakai data asli */}
-                {DUMMY_UPLOADED_DOCS?.map((doc) => {
+                {uploadedDocuments?.map((doc) => {
                   const isActive = activeDocs.some(
                     (d) =>
                       d.id === `${doc.documentRequirement.id}-extracted-doc`,
@@ -871,10 +869,7 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                               </HStack>
 
                               <PdfViewer
-                                fileUrl={
-                                  fileUrl(doc.value.metaData.filePath) ||
-                                  DUMMY_PDF_URL
-                                }
+                                fileUrl={fileUrl(doc.value.metaData.filePath)}
                                 fileName={doc.value.metaData.fileName}
                                 defaultMode="continuous"
                                 border={"1px solid"}
@@ -1005,12 +1000,12 @@ const ViewerDisclosure = (props: Props__ViewerDisclosure) => {
                                             >
                                               <P>{item.value}</P>
 
-                                              <P
+                                              {/* <P
                                                 fontSize={"sm"}
                                                 color={"fg.subtle"}
                                               >
                                                 Keterangan tambahan disini
-                                              </P>
+                                              </P> */}
                                             </CContainer>
                                           </HStack>
                                         );

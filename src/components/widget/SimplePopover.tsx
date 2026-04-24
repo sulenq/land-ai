@@ -31,7 +31,7 @@ const SimplePopover = (props: Props) => {
 
   return (
     <PopoverRoot open={open} {...rootProps}>
-      <PopoverTrigger asChild onClick={onOpen}>
+      <PopoverTrigger asChild cursor={"pointer"} onClick={onOpen}>
         {children}
       </PopoverTrigger>
 
