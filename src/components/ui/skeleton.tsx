@@ -19,6 +19,7 @@ export const Skeleton = (props: Props) => {
 
   return (
     <ChakraSkeleton
+      flex={1}
       w={"full"}
       rounded={themeConfig.radii.component}
       variant={"shine"}

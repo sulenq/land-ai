@@ -477,7 +477,15 @@ export interface Interface__VerificationResponse {
           value: string;
           normalized_value: string;
         }[];
-        mismatches?: unknown[];
+        mismatches?: {
+          document_type: string;
+          field: string;
+          value: string;
+          normalized_value: string;
+          anchor_document_type: string;
+          anchor_value: string;
+          anchor_normalized_value: string;
+        }[];
       };
       check_code: string;
       check_type: string;

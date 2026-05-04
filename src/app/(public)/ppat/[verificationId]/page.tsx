@@ -4,11 +4,12 @@ import { CContainer } from "@/components/ui/c-container";
 import { ColorModeButton } from "@/components/ui/color-mode";
 import { LangMenu } from "@/components/ui/lang-menu";
 import { P } from "@/components/ui/p";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
+import { DUMMY_PPAT_RESPONSE } from "@/constants/dummyData";
 import { Interface__VerificationResponse } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -16,6 +17,7 @@ import useDataState from "@/hooks/useDataState";
 import { isEmptyArray } from "@/utils/array";
 import { isEmptyObject } from "@/utils/object";
 import {
+  Accordion,
   Badge,
   Circle,
   HStack,
@@ -61,7 +63,7 @@ const Detail = (props: Props__Detail) => {
   );
 
   return (
-    <CContainer {...restProps}>
+    <CContainer className={"scrollY"} overflowY={"auto"} {...restProps}>
       {!activeDoc && (
         <P m={"auto"} color={"fg.muted"}>
           {"Select document"}
@@ -83,19 +85,22 @@ const Detail = (props: Props__Detail) => {
               borderBottom={"1px solid"}
               borderColor={"border.muted"}
             >
-              <P fontWeight={"semibold"}>Critical Issues</P>
+              <P fontWeight={"semibold"}>Passed</P>
 
-              <Circle p={1} w={"32px"} h={"32px"} bg={"bg.error"}>
-                <P fontWeight={"medium"} color={"fg.error"}>
-                  {activeDocCriticalIssues?.length}
-                </P>
-              </Circle>
+              {activeDocCriticalIssues &&
+                activeDocCriticalIssues?.length > 0 && (
+                  <Circle p={1} w={"32px"} h={"32px"} bg={"bg.success"}>
+                    <P fontWeight={"medium"} color={"fg.success"}>
+                      {activeDocCriticalIssues?.length}
+                    </P>
+                  </Circle>
+                )}
             </HStack>
 
             <CContainer gap={2} p={4}>
               {isEmptyArray(activeDocCriticalIssues) && (
                 <CContainer>
-                  <P color={"fg.muted"}>No Critical Issues</P>
+                  <P color={"fg.muted"}>No Passed</P>
                 </CContainer>
               )}
 
@@ -103,7 +108,7 @@ const Detail = (props: Props__Detail) => {
                 return (
                   <CContainer
                     key={index}
-                    gap={2}
+                    gap={4}
                     p={3}
                     border={"1px solid"}
                     borderColor={"border.muted"}
@@ -120,7 +125,7 @@ const Detail = (props: Props__Detail) => {
                       {check.status}
                     </Badge>
 
-                    <HStack align={"start"}>
+                    <HStack align={"start"} gap={4}>
                       <ClampText
                         flexShrink={0}
                         w={"150px"}
@@ -133,7 +138,7 @@ const Detail = (props: Props__Detail) => {
                       <P>{check.check_code}</P>
                     </HStack>
 
-                    <HStack align={"start"}>
+                    <HStack align={"start"} gap={4}>
                       <ClampText
                         flexShrink={0}
                         w={"150px"}
@@ -146,7 +151,7 @@ const Detail = (props: Props__Detail) => {
                       <P>{check.check_type}</P>
                     </HStack>
 
-                    <HStack align={"start"}>
+                    <HStack align={"start"} gap={4}>
                       <ClampText
                         flexShrink={0}
                         w={"150px"}
@@ -157,6 +162,306 @@ const Detail = (props: Props__Detail) => {
                       </ClampText>
 
                       <P>{check.notes}</P>
+                    </HStack>
+
+                    <HStack align={"start"} gap={4}>
+                      <ClampText
+                        flexShrink={0}
+                        w={"150px"}
+                        color={"fg.muted"}
+                        // fontWeight={"medium"}
+                      >
+                        Evidence
+                      </ClampText>
+
+                      <Accordion.Root multiple>
+                        <Accordion.Item value={"evidence"} border={"none"}>
+                          <Accordion.ItemTrigger
+                            p={0}
+                            pb={3}
+                            cursor={"pointer"}
+                          >
+                            Evidence
+                            <Accordion.ItemIndicator mt={"4px"} ml={"auto"} />
+                          </Accordion.ItemTrigger>
+
+                          <Accordion.ItemContent py={1}>
+                            <CContainer gap={4}>
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Document Value
+                                </ClampText>
+
+                                <CContainer>
+                                  {check.evidence.document_value
+                                    ?.split(";")
+                                    .map((v) => {
+                                      return <P>{v}</P>;
+                                    })}
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Registration Value
+                                </ClampText>
+
+                                <CContainer>
+                                  {check.evidence.registration_value
+                                    ?.split(";")
+                                    .map((v) => {
+                                      return <P>{v}</P>;
+                                    })}
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Anchor
+                                </ClampText>
+
+                                <CContainer gap={1}>
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Document Type
+                                    </P>
+                                    <P>
+                                      {check.evidence.anchor?.document_type}
+                                    </P>
+                                  </HStack>
+
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Field
+                                    </P>
+                                    <P>{check.evidence.anchor?.field}</P>
+                                  </HStack>
+
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Value
+                                    </P>
+                                    <P>{check.evidence.anchor?.value}</P>
+                                  </HStack>
+
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Normalize Value
+                                    </P>
+                                    <P>
+                                      {check.evidence.anchor?.normalized_value}
+                                    </P>
+                                  </HStack>
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Compared Value
+                                </ClampText>
+
+                                <CContainer gap={4}>
+                                  {check.evidence.compared_values?.map(
+                                    (comparedValue, index) => {
+                                      return (
+                                        <CContainer key={index} gap={1}>
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Document Type
+                                            </P>
+                                            <P>
+                                              {comparedValue?.document_type}
+                                            </P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Field
+                                            </P>
+                                            <P>{comparedValue?.field}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Value
+                                            </P>
+                                            <P>{comparedValue?.value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Normalize Value
+                                            </P>
+                                            <P>
+                                              {comparedValue?.normalized_value}
+                                            </P>
+                                          </HStack>
+                                        </CContainer>
+                                      );
+                                    },
+                                  )}
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Mismatches
+                                </ClampText>
+
+                                <CContainer gap={2}>
+                                  {check.evidence.mismatches?.map(
+                                    (mismatch, index) => {
+                                      return (
+                                        <CContainer key={index} gap={1}>
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Document Type
+                                            </P>
+                                            <P>{mismatch?.document_type}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Field
+                                            </P>
+                                            <P>{mismatch?.field}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Value
+                                            </P>
+                                            <P>{mismatch?.value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Normalize Value
+                                            </P>
+                                            <P>{mismatch?.normalized_value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Anchor Document Type
+                                            </P>
+                                            <P>
+                                              {mismatch?.anchor_document_type}
+                                            </P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Anchor Value
+                                            </P>
+                                            <P>{mismatch?.anchor_value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Anchor Normalized Value
+                                            </P>
+                                            <P>
+                                              {
+                                                mismatch?.anchor_normalized_value
+                                              }
+                                            </P>
+                                          </HStack>
+                                        </CContainer>
+                                      );
+                                    },
+                                  )}
+                                </CContainer>
+                              </HStack>
+                            </CContainer>
+                          </Accordion.ItemContent>
+                        </Accordion.Item>
+                      </Accordion.Root>
                     </HStack>
                   </CContainer>
                 );
@@ -221,14 +526,10 @@ const Detail = (props: Props__Detail) => {
                           borderBottom={"1px solid"}
                           borderColor={"border.muted"}
                         >
-                          <HStack align={"start"}>
-                            <ClampText
-                              flexShrink={0}
-                              w={"150px"}
-                              color={"fg.muted"}
-                            >
+                          <HStack align={"start"} gap={4}>
+                            <P flexShrink={0} w={"150px"} color={"fg.muted"}>
                               {key}
-                            </ClampText>
+                            </P>
 
                             <P>{extracted[key]}</P>
                           </HStack>
@@ -256,11 +557,13 @@ const Detail = (props: Props__Detail) => {
             >
               <P fontWeight={"semibold"}>Passed</P>
 
-              <Circle p={1} w={"32px"} h={"32px"} bg={"bg.success"}>
-                <P fontWeight={"medium"} color={"fg.success"}>
-                  {activeDocsPassed?.length}
-                </P>
-              </Circle>
+              {activeDocsPassed && activeDocsPassed?.length > 0 && (
+                <Circle p={1} w={"32px"} h={"32px"} bg={"bg.success"}>
+                  <P fontWeight={"medium"} color={"fg.success"}>
+                    {activeDocsPassed?.length}
+                  </P>
+                </Circle>
+              )}
             </HStack>
 
             <CContainer gap={2} p={4}>
@@ -274,7 +577,7 @@ const Detail = (props: Props__Detail) => {
                 return (
                   <CContainer
                     key={index}
-                    gap={2}
+                    gap={4}
                     p={3}
                     border={"1px solid"}
                     borderColor={"border.muted"}
@@ -291,7 +594,7 @@ const Detail = (props: Props__Detail) => {
                       {check.status}
                     </Badge>
 
-                    <HStack align={"start"}>
+                    <HStack align={"start"} gap={4}>
                       <ClampText
                         flexShrink={0}
                         w={"150px"}
@@ -304,7 +607,7 @@ const Detail = (props: Props__Detail) => {
                       <P>{check.check_code}</P>
                     </HStack>
 
-                    <HStack align={"start"}>
+                    <HStack align={"start"} gap={4}>
                       <ClampText
                         flexShrink={0}
                         w={"150px"}
@@ -317,7 +620,7 @@ const Detail = (props: Props__Detail) => {
                       <P>{check.check_type}</P>
                     </HStack>
 
-                    <HStack align={"start"}>
+                    <HStack align={"start"} gap={4}>
                       <ClampText
                         flexShrink={0}
                         w={"150px"}
@@ -328,6 +631,306 @@ const Detail = (props: Props__Detail) => {
                       </ClampText>
 
                       <P>{check.notes}</P>
+                    </HStack>
+
+                    <HStack align={"start"} gap={4}>
+                      <ClampText
+                        flexShrink={0}
+                        w={"150px"}
+                        color={"fg.muted"}
+                        // fontWeight={"medium"}
+                      >
+                        Evidence
+                      </ClampText>
+
+                      <Accordion.Root multiple>
+                        <Accordion.Item value={"evidence"} border={"none"}>
+                          <Accordion.ItemTrigger
+                            p={0}
+                            pb={3}
+                            cursor={"pointer"}
+                          >
+                            Evidence
+                            <Accordion.ItemIndicator mt={"4px"} ml={"auto"} />
+                          </Accordion.ItemTrigger>
+
+                          <Accordion.ItemContent py={1}>
+                            <CContainer gap={4}>
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Document Value
+                                </ClampText>
+
+                                <CContainer>
+                                  {check.evidence.document_value
+                                    ?.split(";")
+                                    .map((v) => {
+                                      return <P>{v}</P>;
+                                    })}
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Registration Value
+                                </ClampText>
+
+                                <CContainer>
+                                  {check.evidence.registration_value
+                                    ?.split(";")
+                                    .map((v) => {
+                                      return <P>{v}</P>;
+                                    })}
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Anchor
+                                </ClampText>
+
+                                <CContainer gap={1}>
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Document Type
+                                    </P>
+                                    <P>
+                                      {check.evidence.anchor?.document_type}
+                                    </P>
+                                  </HStack>
+
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Field
+                                    </P>
+                                    <P>{check.evidence.anchor?.field}</P>
+                                  </HStack>
+
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Value
+                                    </P>
+                                    <P>{check.evidence.anchor?.value}</P>
+                                  </HStack>
+
+                                  <HStack align={"start"}>
+                                    <P
+                                      flexShrink={0}
+                                      w={"150px"}
+                                      color={"fg.muted"}
+                                    >
+                                      Normalize Value
+                                    </P>
+                                    <P>
+                                      {check.evidence.anchor?.normalized_value}
+                                    </P>
+                                  </HStack>
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Compared Value
+                                </ClampText>
+
+                                <CContainer gap={4}>
+                                  {check.evidence.compared_values?.map(
+                                    (comparedValue, index) => {
+                                      return (
+                                        <CContainer key={index} gap={1}>
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Document Type
+                                            </P>
+                                            <P>
+                                              {comparedValue?.document_type}
+                                            </P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Field
+                                            </P>
+                                            <P>{comparedValue?.field}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Value
+                                            </P>
+                                            <P>{comparedValue?.value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Normalize Value
+                                            </P>
+                                            <P>
+                                              {comparedValue?.normalized_value}
+                                            </P>
+                                          </HStack>
+                                        </CContainer>
+                                      );
+                                    },
+                                  )}
+                                </CContainer>
+                              </HStack>
+
+                              <HStack align={"start"} gap={4}>
+                                <ClampText
+                                  flexShrink={0}
+                                  w={"150px"}
+                                  color={"fg.muted"}
+                                  // fontWeight={"medium"}
+                                >
+                                  Mismatches
+                                </ClampText>
+
+                                <CContainer gap={2}>
+                                  {check.evidence.mismatches?.map(
+                                    (mismatch, index) => {
+                                      return (
+                                        <CContainer key={index} gap={1}>
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Document Type
+                                            </P>
+                                            <P>{mismatch?.document_type}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Field
+                                            </P>
+                                            <P>{mismatch?.field}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Value
+                                            </P>
+                                            <P>{mismatch?.value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Normalize Value
+                                            </P>
+                                            <P>{mismatch?.normalized_value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Anchor Document Type
+                                            </P>
+                                            <P>
+                                              {mismatch?.anchor_document_type}
+                                            </P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Anchor Value
+                                            </P>
+                                            <P>{mismatch?.anchor_value}</P>
+                                          </HStack>
+
+                                          <HStack align={"start"}>
+                                            <P
+                                              flexShrink={0}
+                                              w={"150px"}
+                                              color={"fg.muted"}
+                                            >
+                                              Anchor Normalized Value
+                                            </P>
+                                            <P>
+                                              {
+                                                mismatch?.anchor_normalized_value
+                                              }
+                                            </P>
+                                          </HStack>
+                                        </CContainer>
+                                      );
+                                    },
+                                  )}
+                                </CContainer>
+                              </HStack>
+                            </CContainer>
+                          </Accordion.ItemContent>
+                        </Accordion.Item>
+                      </Accordion.Root>
                     </HStack>
                   </CContainer>
                 );
@@ -395,8 +998,8 @@ export default function Page() {
   const [activeDoc, setActiveDoc] = useState<Interface__ActiveDoc | null>(null);
 
   // Constants
-  // const data = DUMMY_PPAT_RESPONSE as Interface__VerificationResponse;
-  const data = response as Interface__VerificationResponse | null;
+  const data = DUMMY_PPAT_RESPONSE as Interface__VerificationResponse;
+  // const data = response?.data as Interface__VerificationResponse | null;
 
   // Derived Values
   const totalPassedDocs = data?.documents?.filter(
@@ -411,7 +1014,7 @@ export default function Page() {
 
   // Render State Map
   const render = {
-    loading: <Skeleton />,
+    loading: <Spinner m={"auto"} />,
     error: <FeedbackRetry onRetry={onRetry} />,
     empty: <FeedbackNoData />,
     notFound: <FeedbackNotFound />,
@@ -511,7 +1114,7 @@ export default function Page() {
   };
 
   return (
-    <CContainer minH={"100dvh"}>
+    <CContainer h={"100dvh"} overflowY={"auto"}>
       {initialLoading && render.loading}
       {!initialLoading && (
         <>
