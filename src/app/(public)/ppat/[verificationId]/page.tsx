@@ -85,7 +85,7 @@ const Detail = (props: Props__Detail) => {
               borderBottom={"1px solid"}
               borderColor={"border.muted"}
             >
-              <P fontWeight={"semibold"}>Passed</P>
+              <P fontWeight={"semibold"}>Critical Issues</P>
 
               {activeDocCriticalIssues &&
                 activeDocCriticalIssues?.length > 0 && (
@@ -100,7 +100,7 @@ const Detail = (props: Props__Detail) => {
             <CContainer gap={2} p={4}>
               {isEmptyArray(activeDocCriticalIssues) && (
                 <CContainer>
-                  <P color={"fg.muted"}>No Passed</P>
+                  <P color={"fg.muted"}>No Critical Issues</P>
                 </CContainer>
               )}
 
@@ -161,7 +161,14 @@ const Detail = (props: Props__Detail) => {
                         Notes
                       </ClampText>
 
-                      <P>{check.notes}</P>
+                      <CContainer>
+                        {String(check.evidence?.document_value ?? "")
+                          .split(";")
+                          .filter((v: any) => v !== "")
+                          .map((v) => {
+                            return <P key={v}>{v}</P>;
+                          })}
+                      </CContainer>
                     </HStack>
 
                     <HStack align={"start"} gap={4}>
@@ -198,10 +205,11 @@ const Detail = (props: Props__Detail) => {
                                 </ClampText>
 
                                 <CContainer>
-                                  {check.evidence.document_value
-                                    ?.split(";")
+                                  {String(check.evidence?.document_value ?? "")
+                                    .split(";")
+                                    .filter((v: any) => v !== "")
                                     .map((v) => {
-                                      return <P>{v}</P>;
+                                      return <P key={v}>{v}</P>;
                                     })}
                                 </CContainer>
                               </HStack>
@@ -217,10 +225,13 @@ const Detail = (props: Props__Detail) => {
                                 </ClampText>
 
                                 <CContainer>
-                                  {check.evidence.registration_value
-                                    ?.split(";")
+                                  {String(
+                                    check.evidence?.registration_value ?? "",
+                                  )
+                                    .split(";")
+                                    .filter((v: any) => v !== "")
                                     .map((v) => {
-                                      return <P>{v}</P>;
+                                      return <P key={v}>{v}</P>;
                                     })}
                                 </CContainer>
                               </HStack>
@@ -630,7 +641,14 @@ const Detail = (props: Props__Detail) => {
                         Notes
                       </ClampText>
 
-                      <P>{check.notes}</P>
+                      <CContainer>
+                        {String(check.evidence?.document_value ?? "")
+                          .split(";")
+                          .filter((v: any) => v !== "")
+                          .map((v) => {
+                            return <P key={v}>{v}</P>;
+                          })}
+                      </CContainer>
                     </HStack>
 
                     <HStack align={"start"} gap={4}>
@@ -667,10 +685,11 @@ const Detail = (props: Props__Detail) => {
                                 </ClampText>
 
                                 <CContainer>
-                                  {check.evidence.document_value
-                                    ?.split(";")
+                                  {String(check.evidence?.document_value ?? "")
+                                    .split(";")
+                                    .filter((v: any) => v !== "")
                                     .map((v) => {
-                                      return <P>{v}</P>;
+                                      return <P key={v}>{v}</P>;
                                     })}
                                 </CContainer>
                               </HStack>
@@ -686,10 +705,13 @@ const Detail = (props: Props__Detail) => {
                                 </ClampText>
 
                                 <CContainer>
-                                  {check.evidence.registration_value
-                                    ?.split(";")
+                                  {String(
+                                    check.evidence?.registration_value ?? "",
+                                  )
+                                    .split(";")
+                                    .filter((v: any) => v !== "")
                                     .map((v) => {
-                                      return <P>{v}</P>;
+                                      return <P key={v}>{v}</P>;
                                     })}
                                 </CContainer>
                               </HStack>
