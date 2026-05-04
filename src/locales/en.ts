@@ -209,6 +209,7 @@ const translations = {
   "execution_time": "Execution time",
   "explanation": "Explanation",
   "extracted_result": "Extracted result",
+  "failed": "Failed",
   "february": "February",
   "feedback": {
     "disclosure_title": "Help us be better",
@@ -396,6 +397,7 @@ const translations = {
     "master_data": "Master Data",
     "profile": "Profile"
   },
+  "needs_review": "Needs review",
   "new_chat": "New chat",
   "new_da": "New document analysis",
   "new_da_with_same_service": "New document analysis with same service",
@@ -419,6 +421,7 @@ const translations = {
   "others": "Others",
   "otp_sent": "OTP has been sent",
   "otp_sent_to": "OTP has been sent to",
+  "passed": "Passed",
   "password_confirmation": "Password Confirmation",
   "pending_data": "Pending data",
   "personal_information": "Personal information",

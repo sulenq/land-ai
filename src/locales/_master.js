@@ -143,6 +143,18 @@ export const settings_navs = {
 };
 
 // Semantic UI
+export const failed = {
+  id: "Gagal",
+  en: "Failed",
+};
+export const needs_review = {
+  id: "Perlu tinjauan",
+  en: "Needs review",
+};
+export const passed = {
+  id: "Lulus",
+  en: "Passed",
+};
 export const extracted_result = {
   id: "Hasil ekstrak",
   en: "Extracted result",

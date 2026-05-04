@@ -447,3 +447,48 @@ export interface Interface__TrialDADocumentDetail {
   status: "VERIFIED" | "REJECTED";
   notes: string; // used if rejected only
 }
+
+// PPAT
+export interface Interface__VerificationResponse {
+  verification_id: string;
+  registration_id: string;
+  status: string;
+  analysis_version: number;
+  overall_decision: string;
+  documents: {
+    document_type: string;
+    document_status: string;
+    extracted_data: Record<string, string | null | undefined>;
+    checks: {
+      notes: string;
+      status: string;
+      evidence: {
+        document_value: string | null;
+        registration_value?: string | null;
+        anchor?: {
+          document_type: string;
+          field: string;
+          value: string;
+          normalized_value: string;
+        };
+        compared_values?: {
+          document_type: string;
+          field: string;
+          value: string;
+          normalized_value: string;
+        }[];
+        mismatches?: unknown[];
+      };
+      check_code: string;
+      check_type: string;
+    }[];
+  }[];
+  summary: {
+    total_documents: number;
+    passed_checks: number;
+    failed_checks: number;
+    needs_review_checks: number;
+  };
+  processed_at: string;
+  respon_code: string;
+}

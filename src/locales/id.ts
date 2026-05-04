@@ -209,6 +209,7 @@ const translations = {
   "execution_time": "Waktu eksekusi",
   "explanation": "Penjelasan",
   "extracted_result": "Hasil ekstrak",
+  "failed": "Gagal",
   "february": "Februari",
   "feedback": {
     "disclosure_title": "Bantu kami menjadi lebih baik",
@@ -396,6 +397,7 @@ const translations = {
     "master_data": "Master Data",
     "profile": "Profil"
   },
+  "needs_review": "Perlu tinjauan",
   "new_chat": "Obrolan baru",
   "new_da": "Analisa dokumen baru",
   "new_da_with_same_service": "Analisa dokumen baru dengan layanan sama",
@@ -419,6 +421,7 @@ const translations = {
   "others": "Lainnya",
   "otp_sent": "OTP telah dikirim",
   "otp_sent_to": "OTP telah dikirim ke",
+  "passed": "Lulus",
   "password_confirmation": "Konfirmasi Password",
   "pending_data": "Data tertunda",
   "personal_information": "Informasi pribadi",

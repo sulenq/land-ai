@@ -11856,3 +11856,905 @@ export const DUMMY_UPLOADED_DOCS = [
     ],
   },
 ];
+
+export const DUMMY_PPAT_RESPONSE = {
+  verification_id: "89bb7542-797d-4485-b634-52cde8b0fac2",
+  registration_id: "TEST-PALSU-TEKS-POLOS-001",
+  status: "COMPLETED",
+  analysis_version: 1,
+  overall_decision: "FAIL",
+  documents: [
+    {
+      document_type: "KTP",
+      document_status: "FAIL",
+      extracted_data: {
+        nik: "3311084604830004",
+        nama: "AKHIRI PRAJAWATI",
+        tempat_lahir: "Sukoharjo",
+        tanggal_lahir: "06 April 1983",
+      },
+      checks: [
+        {
+          notes:
+            "Deteksi KTP (AI classification: Tidak Sesuai; confidence=0.1; alasan=dokumen ini adalah teks polos yang menyatakan KTP palsu; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=TIDAK; authenticity_score=0; authenticity_alasan=Dokumen ini adalah teks polos yang menyatakan dirinya palsu dan tidak memiliki elemen visual KTP asli.; logo_instansi_terdeteksi=TIDAK; watermark_atau_background_resmi=TIDAK)",
+          status: "FAIL",
+          evidence: {
+            document_value:
+              "AI classification: Tidak Sesuai; confidence=0.1; alasan=dokumen ini adalah teks polos yang menyatakan KTP palsu; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=TIDAK; authenticity_score=0; authenticity_alasan=Dokumen ini adalah teks polos yang menyatakan dirinya palsu dan tidak memiliki elemen visual KTP asli.; logo_instansi_terdeteksi=TIDAK; watermark_atau_background_resmi=TIDAK",
+            registration_value: null,
+          },
+          check_code: "KTP_DOCUMENT_TYPE_VALID",
+          check_type: "DOCUMENT_CLASSIFICATION",
+        },
+        {
+          notes: "Pencocokan Nama",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            registration_value: "AKHIRI PRAJAWATI, SH, MH",
+          },
+          check_code: "KTP_NAME_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Pencocokan NIK",
+          status: "PASS",
+          evidence: {
+            document_value: "3311084604830004",
+            registration_value: "3311084604830004",
+          },
+          check_code: "KTP_NIK_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Pencocokan TTL",
+          status: "PASS",
+          evidence: {
+            document_value: "sukoharjo 6 april 1983",
+            registration_value: "sukoharjo 6 april 1983",
+          },
+          check_code: "KTP_TTL_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          check_code: "CONSISTENCY_NAME_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            anchor: {
+              document_type: "KTP",
+              field: "nama",
+              value: "AKHIRI PRAJAWATI",
+              normalized_value: "akhiri prajawati",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SKCK",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi nama antar dokumen",
+        },
+        {
+          check_code: "CONSISTENCY_TTL_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "Sukoharjo 06 April 1983",
+            anchor: {
+              document_type: "KTP",
+              field: "ttl",
+              value: "Sukoharjo 06 April 1983",
+              normalized_value: "sukoharjo 6 april 1983",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "SKCK",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "ttl",
+                value: "06 April 1983",
+                normalized_value: "6 april 1983",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi tempat/tanggal lahir antar dokumen",
+        },
+      ],
+    },
+    {
+      document_type: "SKCK",
+      document_status: "FAIL",
+      extracted_data: {
+        nama: "AKHIRI PRAJAWATI",
+        tempat_lahir: "Sukoharjo",
+        tanggal_lahir: "06 April 1983",
+        tanggal_berlaku_sampai: "15 Mei 2025",
+        ada_stempel: "TIDAK",
+        ada_tanda_tangan: "TIDAK",
+      },
+      checks: [
+        {
+          notes:
+            "Deteksi SKCK (AI classification: Tidak Sesuai; confidence=1; alasan=Dokumen ini secara eksplisit menyatakan 'SKCK PALSU TEKS POLOS' dan 'Bukan SKCK resmi, tidak ada kop POLRI, logo, foto, stempel, tanda tangan pejabat'.; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=TIDAK; authenticity_score=0; authenticity_alasan=Dokumen ini adalah teks polos yang menyatakan dirinya palsu dan tidak memiliki elemen visual resmi seperti kop, logo, stempel, atau tanda tangan.; logo_instansi_terdeteksi=TIDAK; kop_surat_terdeteksi=TIDAK; stempel_terdeteksi=TIDAK; tanda_tangan_pejabat_terdeteksi=TIDAK)",
+          status: "FAIL",
+          evidence: {
+            document_value:
+              "AI classification: Tidak Sesuai; confidence=1; alasan=Dokumen ini secara eksplisit menyatakan 'SKCK PALSU TEKS POLOS' dan 'Bukan SKCK resmi, tidak ada kop POLRI, logo, foto, stempel, tanda tangan pejabat'.; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=TIDAK; authenticity_score=0; authenticity_alasan=Dokumen ini adalah teks polos yang menyatakan dirinya palsu dan tidak memiliki elemen visual resmi seperti kop, logo, stempel, atau tanda tangan.; logo_instansi_terdeteksi=TIDAK; kop_surat_terdeteksi=TIDAK; stempel_terdeteksi=TIDAK; tanda_tangan_pejabat_terdeteksi=TIDAK",
+            registration_value: null,
+          },
+          check_code: "SKCK_DOCUMENT_TYPE_VALID",
+          check_type: "DOCUMENT_CLASSIFICATION",
+        },
+        {
+          notes: "Pencocokan Nama",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            registration_value: "AKHIRI PRAJAWATI, SH, MH",
+          },
+          check_code: "SKCK_NAME_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Pencocokan TTL",
+          status: "PASS",
+          evidence: {
+            document_value: "sukoharjo 6 april 1983",
+            registration_value: "sukoharjo 6 april 1983",
+          },
+          check_code: "SKCK_TTL_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes:
+            "Validasi Masa Berlaku SKCK terhadap tanggal penutupan pendaftaran",
+          status: "PASS",
+          evidence: {
+            document_value: "15 Mei 2025",
+            registration_value: "30/04/2024",
+          },
+          check_code: "SKCK_VALID_UNTIL_REGISTRATION_CLOSE",
+          check_type: "RULE_VALIDATION",
+        },
+        {
+          notes: "Pengecekan Stempel",
+          status: "FAIL",
+          evidence: {
+            document_value: "TIDAK",
+            registration_value: null,
+          },
+          check_code: "SKCK_STAMP_PRESENT",
+          check_type: "REQUIRED_VALUE",
+        },
+        {
+          notes: "Pengecekan Tanda Tangan",
+          status: "FAIL",
+          evidence: {
+            document_value: "TIDAK",
+            registration_value: null,
+          },
+          check_code: "SKCK_SIGNATURE_PRESENT",
+          check_type: "REQUIRED_VALUE",
+        },
+        {
+          check_code: "CONSISTENCY_NAME_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            anchor: {
+              document_type: "KTP",
+              field: "nama",
+              value: "AKHIRI PRAJAWATI",
+              normalized_value: "akhiri prajawati",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SKCK",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi nama antar dokumen",
+        },
+        {
+          check_code: "CONSISTENCY_TTL_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "Sukoharjo 06 April 1983",
+            anchor: {
+              document_type: "KTP",
+              field: "ttl",
+              value: "Sukoharjo 06 April 1983",
+              normalized_value: "sukoharjo 6 april 1983",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "SKCK",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "ttl",
+                value: "06 April 1983",
+                normalized_value: "6 april 1983",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi tempat/tanggal lahir antar dokumen",
+        },
+      ],
+    },
+    {
+      document_type: "PAS_FOTO",
+      document_status: "NEEDS_REVIEW",
+      extracted_data: {
+        warna_latar: "Merah",
+        latar_valid_biru_atau_merah: "YA",
+        foto_tegak: "YA",
+        pakaian_formal: "YA",
+        tidak_tersenyum: null,
+        indikasi_ai_generated: null,
+      },
+      checks: [
+        {
+          notes: "Validasi Warna Latar",
+          status: "PASS",
+          evidence: {
+            document_value: "Merah",
+            registration_value: "MERAH atau BIRU",
+          },
+          check_code: "PHOTO_BACKGROUND_VALID",
+          check_type: "VISUAL_CHECK",
+        },
+        {
+          notes: "Validasi Postur",
+          status: "PASS",
+          evidence: {
+            document_value: "YA",
+            registration_value: "TEGAK",
+          },
+          check_code: "PHOTO_UPRIGHT",
+          check_type: "VISUAL_CHECK",
+        },
+        {
+          notes: "Validasi Pakaian",
+          status: "PASS",
+          evidence: {
+            document_value: "YA",
+            registration_value: "FORMAL",
+          },
+          check_code: "PHOTO_FORMAL_ATTIRE",
+          check_type: "VISUAL_CHECK",
+        },
+        {
+          notes: "Deteksi AI Image",
+          status: "NEEDS_REVIEW",
+          evidence: {
+            document_value: null,
+            registration_value: "ASLI / BUKAN AI",
+          },
+          check_code: "PHOTO_NOT_AI_GENERATED",
+          check_type: "VISUAL_CHECK",
+        },
+        {
+          notes: "Pencocokan wajah dengan dokumen menggunakan AI",
+          status: "NEEDS_REVIEW",
+          evidence: {
+            document_value:
+              "TIDAK DAPAT DITENTUKAN (confidence 0) - Tidak ada gambar wajah pada dokumen manapun.",
+            registration_value: "SAMA",
+          },
+          check_code: "PHOTO_SUBJECT_AUTHENTIC",
+          check_type: "VISUAL_CHECK",
+        },
+      ],
+    },
+    {
+      document_type: "IJAZAH_S1",
+      document_status: "FAIL",
+      extracted_data: {
+        nama: "AKHIRI PRAJAWATI",
+        tempat_lahir: "Sukoharjo",
+        tanggal_lahir: "06 April 1983",
+        program_studi: "Ilmu Hukum",
+        nomor_ijazah: "FAKE-S1-HUKUM-0001/2024",
+        prodi_hukum_valid: "YA",
+      },
+      checks: [
+        {
+          notes:
+            "Deteksi Ijazah S1 (AI classification: Tidak Sesuai; confidence=1; alasan=Dokumen ini secara eksplisit menyatakan 'IJAZAH S1 PALSU TEKS POLOS' dan 'Bukan ijazah resmi'.; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=TIDAK; authenticity_score=0; authenticity_alasan=Dokumen ini adalah teks polos yang menyatakan dirinya palsu dan tidak memiliki elemen visual dokumen resmi seperti logo, kop surat, stempel, atau tanda tangan.; logo_instansi_terdeteksi=TIDAK; stempel_terdeteksi=TIDAK; tanda_tangan_pejabat_terdeteksi=TIDAK)",
+          status: "FAIL",
+          evidence: {
+            document_value:
+              "AI classification: Tidak Sesuai; confidence=1; alasan=Dokumen ini secara eksplisit menyatakan 'IJAZAH S1 PALSU TEKS POLOS' dan 'Bukan ijazah resmi'.; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=TIDAK; authenticity_score=0; authenticity_alasan=Dokumen ini adalah teks polos yang menyatakan dirinya palsu dan tidak memiliki elemen visual dokumen resmi seperti logo, kop surat, stempel, atau tanda tangan.; logo_instansi_terdeteksi=TIDAK; stempel_terdeteksi=TIDAK; tanda_tangan_pejabat_terdeteksi=TIDAK",
+            registration_value: null,
+          },
+          check_code: "S1_DOCUMENT_TYPE_VALID",
+          check_type: "DOCUMENT_CLASSIFICATION",
+        },
+        {
+          notes: "Pencocokan Nama",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            registration_value: "AKHIRI PRAJAWATI, SH, MH",
+          },
+          check_code: "S1_NAME_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Pencocokan TTL",
+          status: "PASS",
+          evidence: {
+            document_value: "sukoharjo 6 april 1983",
+            registration_value: "sukoharjo 6 april 1983",
+          },
+          check_code: "S1_TTL_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Validasi Prodi Hukum",
+          status: "PASS",
+          evidence: {
+            document_value: "Ilmu Hukum",
+            registration_value: "Hukum",
+          },
+          check_code: "S1_STUDY_PROGRAM_HUKUM",
+          check_type: "RULE_VALIDATION",
+        },
+        {
+          notes: "Keberadaan Nomor Ijazah",
+          status: "PASS",
+          evidence: {
+            document_value: "FAKE-S1-HUKUM-0001/2024",
+            registration_value: null,
+          },
+          check_code: "S1_CERTIFICATE_NUMBER_PRESENT",
+          check_type: "REQUIRED_VALUE",
+        },
+        {
+          check_code: "CONSISTENCY_NAME_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            anchor: {
+              document_type: "KTP",
+              field: "nama",
+              value: "AKHIRI PRAJAWATI",
+              normalized_value: "akhiri prajawati",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SKCK",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi nama antar dokumen",
+        },
+        {
+          check_code: "CONSISTENCY_TTL_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "Sukoharjo 06 April 1983",
+            anchor: {
+              document_type: "KTP",
+              field: "ttl",
+              value: "Sukoharjo 06 April 1983",
+              normalized_value: "sukoharjo 6 april 1983",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "SKCK",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "ttl",
+                value: "06 April 1983",
+                normalized_value: "6 april 1983",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi tempat/tanggal lahir antar dokumen",
+        },
+      ],
+    },
+    {
+      document_type: "IJAZAH_S2",
+      document_status: "FAIL",
+      extracted_data: {
+        nomor_seri: "FAKE-S2-NOTARIAT-9999/2024",
+        nama: "AKHIRI PRAJAWATI",
+        tanggal_lahir: "06 April 1983",
+        program_studi: "Magister Hukum - Kenotariatan",
+      },
+      checks: [
+        {
+          notes:
+            "Deteksi Ijazah S2 (AI classification: Tidak Sesuai; confidence=0.1; alasan=Dokumen ini adalah teks polos yang menyatakan dirinya sebagai ijazah palsu dan tidak memiliki layout resmi.; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=YA; authenticity_score=0; authenticity_alasan=Dokumen ini secara eksplisit menyatakan dirinya sebagai 'PALSU TEKS POLOS' dan tidak memiliki elemen visual dokumen resmi seperti logo, kop surat, stempel, atau tanda tangan.; logo_instansi_terdeteksi=TIDAK; stempel_terdeteksi=TIDAK; tanda_tangan_pejabat_terdeteksi=TIDAK)",
+          status: "FAIL",
+          evidence: {
+            document_value:
+              "AI classification: Tidak Sesuai; confidence=0.1; alasan=Dokumen ini adalah teks polos yang menyatakan dirinya sebagai ijazah palsu dan tidak memiliki layout resmi.; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=YA; authenticity_score=0; authenticity_alasan=Dokumen ini secara eksplisit menyatakan dirinya sebagai 'PALSU TEKS POLOS' dan tidak memiliki elemen visual dokumen resmi seperti logo, kop surat, stempel, atau tanda tangan.; logo_instansi_terdeteksi=TIDAK; stempel_terdeteksi=TIDAK; tanda_tangan_pejabat_terdeteksi=TIDAK",
+            registration_value: null,
+          },
+          check_code: "S2_DOCUMENT_TYPE_VALID",
+          check_type: "DOCUMENT_CLASSIFICATION",
+        },
+        {
+          notes: "Pencocokan Nama",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            registration_value: "AKHIRI PRAJAWATI, SH, MH",
+          },
+          check_code: "S2_NAME_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Pencocokan TTL",
+          status: "PASS",
+          evidence: {
+            document_value: "6 april 1983",
+            registration_value: "sukoharjo 6 april 1983",
+          },
+          check_code: "S2_TTL_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Validasi Prodi/Penjurusan Kenotariatan",
+          status: "PASS",
+          evidence: {
+            document_value: "Magister Hukum - Kenotariatan",
+            registration_value:
+              "Magister Kenotariatan atau Magister Hukum dengan peminatan/konsentrasi Kenotariatan",
+          },
+          check_code: "S2_STUDY_PROGRAM_KENOTARIATAN",
+          check_type: "RULE_VALIDATION",
+        },
+        {
+          notes: "Keberadaan Nomor Ijazah",
+          status: "PASS",
+          evidence: {
+            document_value: "FAKE-S2-NOTARIAT-9999/2024",
+            registration_value: null,
+          },
+          check_code: "S2_SERIAL_OR_CERTIFICATE_NUMBER_PRESENT",
+          check_type: "REQUIRED_VALUE",
+        },
+        {
+          check_code: "CONSISTENCY_NAME_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            anchor: {
+              document_type: "KTP",
+              field: "nama",
+              value: "AKHIRI PRAJAWATI",
+              normalized_value: "akhiri prajawati",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SKCK",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi nama antar dokumen",
+        },
+        {
+          check_code: "CONSISTENCY_TTL_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "06 April 1983",
+            anchor: {
+              document_type: "KTP",
+              field: "ttl",
+              value: "Sukoharjo 06 April 1983",
+              normalized_value: "sukoharjo 6 april 1983",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "SKCK",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "ttl",
+                value: "06 April 1983",
+                normalized_value: "6 april 1983",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi tempat/tanggal lahir antar dokumen",
+        },
+      ],
+    },
+    {
+      document_type: "SURAT_PERNYATAAN",
+      document_status: "PASS",
+      extracted_data: {
+        nama: "AKHIRI PRAJAWATI",
+        tempat_lahir: "Sukoharjo",
+        tanggal_lahir: "06 April 1983",
+        redaksi_sesuai_baku: "YA",
+        ada_tanda_tangan: "YA",
+        ada_meterai: "YA",
+        emeterai_valid: "TIDAK",
+      },
+      checks: [
+        {
+          notes:
+            "Deteksi Surat Pernyataan (AI classification: Sesuai; confidence=0.9; alasan=Dokumen memiliki judul 'SURAT PERNYATAAN' dan memuat identitas pemohon serta isi pernyataan.; layout_resmi=TIDAK; indikasi_file_teks_manual=YA; indikasi_manipulasi_visual=TIDAK; authenticity_score=0.1; authenticity_alasan=Dokumen ini secara eksplisit menyatakan sebagai 'PALSU TEKS POLOS' dan 'Bukan surat pernyataan scan asli, tidak ada tanda tangan nyata, meterai/e-meterai visual, QR, atau cap.' serta 'data diketik agar OCR bisa membaca isi, tetapi visual authenticity harus gagal.') (lulus berdasarkan field dokumen yang berhasil diekstrak)",
+          status: "PASS",
+          evidence: {
+            document_value:
+              "PASS berdasarkan inferensi field wajib yang berhasil diekstrak",
+            registration_value: null,
+          },
+          check_code: "STATEMENT_DOCUMENT_TYPE_VALID",
+          check_type: "DOCUMENT_CLASSIFICATION",
+        },
+        {
+          notes: "Pencocokan Nama",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            registration_value: "AKHIRI PRAJAWATI, SH, MH",
+          },
+          check_code: "STATEMENT_NAME_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Pencocokan TTL",
+          status: "PASS",
+          evidence: {
+            document_value: "sukoharjo 6 april 1983",
+            registration_value: "sukoharjo 6 april 1983",
+          },
+          check_code: "STATEMENT_TTL_MATCH",
+          check_type: "COMPARE_TO_REGISTRATION",
+        },
+        {
+          notes: "Keberadaan Tanda Tangan",
+          status: "PASS",
+          evidence: {
+            document_value: "YA berdasarkan evidence visual",
+            registration_value: null,
+          },
+          check_code: "STATEMENT_SIGNATURE_PRESENT",
+          check_type: "REQUIRED_VALUE",
+        },
+        {
+          notes: "Keberadaan Materai",
+          status: "PASS",
+          evidence: {
+            document_value: "YA berdasarkan evidence visual",
+            registration_value: null,
+          },
+          check_code: "STATEMENT_METERAI_PRESENT",
+          check_type: "REQUIRED_VALUE",
+        },
+        {
+          notes: "Format dan Wording",
+          status: "PASS",
+          evidence: {
+            document_value: "YA",
+            registration_value: true,
+          },
+          check_code: "STATEMENT_STANDARD_WORDING_VALID",
+          check_type: "RULE_VALIDATION",
+        },
+        {
+          check_code: "CONSISTENCY_NAME_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "AKHIRI PRAJAWATI",
+            anchor: {
+              document_type: "KTP",
+              field: "nama",
+              value: "AKHIRI PRAJAWATI",
+              normalized_value: "akhiri prajawati",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SKCK",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "nama",
+                value: "AKHIRI PRAJAWATI",
+                normalized_value: "akhiri prajawati",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi nama antar dokumen",
+        },
+        {
+          check_code: "CONSISTENCY_TTL_ACROSS_DOCUMENTS",
+          check_type: "CROSS_DOCUMENT_CONSISTENCY",
+          status: "PASS",
+          evidence: {
+            document_value: "Sukoharjo 06 April 1983",
+            anchor: {
+              document_type: "KTP",
+              field: "ttl",
+              value: "Sukoharjo 06 April 1983",
+              normalized_value: "sukoharjo 6 april 1983",
+            },
+            compared_values: [
+              {
+                document_type: "KTP",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "SKCK",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S1",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+              {
+                document_type: "IJAZAH_S2",
+                field: "ttl",
+                value: "06 April 1983",
+                normalized_value: "6 april 1983",
+              },
+              {
+                document_type: "SURAT_PERNYATAAN",
+                field: "ttl",
+                value: "Sukoharjo 06 April 1983",
+                normalized_value: "sukoharjo 6 april 1983",
+              },
+            ],
+            mismatches: [],
+          },
+          notes: "Konsistensi tempat/tanggal lahir antar dokumen",
+        },
+      ],
+    },
+  ],
+  summary: {
+    total_documents: 6,
+    passed_checks: 33,
+    failed_checks: 6,
+    needs_review_checks: 2,
+  },
+  processed_at: "2026-05-03T16:45:06.598Z",
+  respon_code: "OK",
+};

@@ -19,6 +19,7 @@ interface Props<T> {
   dataResource?: boolean;
   loadingBar?: boolean;
   loadingBarInitialOnly?: boolean;
+  headers?: any;
 }
 
 const useDataState = <T = any>({
@@ -36,6 +37,7 @@ const useDataState = <T = any>({
   dataResource = true,
   loadingBar = true,
   loadingBarInitialOnly = false,
+  headers,
 }: Props<T>) => {
   const setLoadingBar = useLoadingBar((s) => s.setLoadingBar);
   const { rt } = useRenderTrigger();
@@ -64,10 +66,11 @@ const useDataState = <T = any>({
     return {
       url,
       method,
+      headers,
       data: { ...payload, limit, page },
       params: { ...(dataResource ? { limit, page } : {}), ...params },
     };
-  }, [url, method, payload, params, limit, page, dataResource]);
+  }, [url, method, payload, params, limit, page, dataResource, headers]);
 
   const makeRequest = useCallback(() => {
     if (!config || !conditions) return;
