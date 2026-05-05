@@ -26,7 +26,7 @@ import {
   StackProps,
 } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // -----------------------------------------------------------------
 
@@ -54,6 +54,9 @@ const Detail = (props: Props__Detail) => {
   // Contexts
   const { themeConfig } = useThemeConfig();
 
+  // Refs
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
   // Derived Values
   const activeDocCriticalIssues = activeDoc?.data?.checks?.filter(
     (check) => check.status !== "PASS",
@@ -62,8 +65,20 @@ const Detail = (props: Props__Detail) => {
     (check) => check.status === "PASS",
   );
 
+  useEffect(() => {
+    containerRef.current?.scrollTo({
+      top: 0,
+    });
+  }, [activeDoc]);
+
   return (
-    <CContainer className={"scrollY"} overflowY={"auto"} {...restProps}>
+    <CContainer
+      ref={containerRef}
+      flex={1}
+      className={"scrollY"}
+      overflowY={"auto"}
+      {...restProps}
+    >
       {!activeDoc && (
         <P m={"auto"} color={"fg.muted"}>
           {"Select document"}
@@ -71,7 +86,7 @@ const Detail = (props: Props__Detail) => {
       )}
 
       {activeDoc && (
-        <CContainer gap={4} p={4} overflowY={"auto"}>
+        <CContainer gap={4} p={4}>
           {/* Critical issues */}
           <CContainer
             bg={"body"}
@@ -89,8 +104,8 @@ const Detail = (props: Props__Detail) => {
 
               {activeDocCriticalIssues &&
                 activeDocCriticalIssues?.length > 0 && (
-                  <Circle p={1} w={"32px"} h={"32px"} bg={"bg.success"}>
-                    <P fontWeight={"medium"} color={"fg.success"}>
+                  <Circle p={1} w={"20px"} h={"20px"} bg={"bg.error"}>
+                    <P fontSize={"sm"} fontWeight={"medium"} color={"fg.error"}>
                       {activeDocCriticalIssues?.length}
                     </P>
                   </Circle>
@@ -569,8 +584,8 @@ const Detail = (props: Props__Detail) => {
               <P fontWeight={"semibold"}>Passed</P>
 
               {activeDocsPassed && activeDocsPassed?.length > 0 && (
-                <Circle p={1} w={"32px"} h={"32px"} bg={"bg.success"}>
-                  <P fontWeight={"medium"} color={"fg.success"}>
+                <Circle p={1} w={"20px"} h={"20px"} bg={"bg.success"}>
+                  <P fontSize={"sm"} fontWeight={"medium"} color={"fg.success"}>
                     {activeDocsPassed?.length}
                   </P>
                 </Circle>
@@ -1053,7 +1068,7 @@ export default function Page() {
         <CContainer
           className={"scrollY"}
           gap={6}
-          w={["full", null, "450px"]}
+          w={["full", null, "350px"]}
           minH={"fit"}
           p={4}
           bg={"body"}
