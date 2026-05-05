@@ -171,8 +171,6 @@ const DetailPilihanTrigger = (props: Props__DetailPilihanTrigger) => {
     ),
   };
 
-  if (isOpen) console.debug(data);
-
   return (
     <>
       <CContainer onClick={onOpen} {...restProps}>

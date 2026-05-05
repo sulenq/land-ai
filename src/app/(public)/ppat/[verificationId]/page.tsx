@@ -24,7 +24,12 @@ import {
   Stack,
   StackProps,
 } from "@chakra-ui/react";
-import { useParams, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 // -----------------------------------------------------------------
@@ -1021,6 +1026,8 @@ export default function Page() {
   // Hooks
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const verificationId = params.verificationId;
 
   // States
@@ -1039,8 +1046,6 @@ export default function Page() {
   const data = response?.data as Interface__VerificationResponse | null;
   const initialActiveDocType = searchParams.get("initial_active_doc_type");
 
-  console.debug(initialActiveDocType);
-
   // Derived Values
   const totalPassedDocs = data?.documents?.filter(
     (d) => d.document_status === "PASS",
@@ -1051,6 +1056,15 @@ export default function Page() {
   const totalNeedsReviewDocs = data?.documents?.filter(
     (d) => d.document_status === "NEEDS_REVIEW",
   )?.length;
+
+  // Utils
+  function removeInitialActiveDocType() {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("initial_active_doc_type");
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname);
+  }
 
   useEffect(() => {
     if (!initialActiveDocType) return;
@@ -1139,6 +1153,7 @@ export default function Page() {
                         index,
                         data: doc,
                       });
+                      removeInitialActiveDocType();
                     }}
                   >
                     <CContainer>
