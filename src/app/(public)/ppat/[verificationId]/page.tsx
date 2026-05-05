@@ -24,7 +24,7 @@ import {
   Stack,
   StackProps,
 } from "@chakra-ui/react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 // -----------------------------------------------------------------
@@ -1020,6 +1020,7 @@ export default function Page() {
 
   // Hooks
   const params = useParams();
+  const searchParams = useSearchParams();
   const verificationId = params.verificationId;
 
   // States
@@ -1036,6 +1037,9 @@ export default function Page() {
   // Constants
   // const data = DUMMY_PPAT_RESPONSE as Interface__VerificationResponse;
   const data = response?.data as Interface__VerificationResponse | null;
+  const initialActiveDocType = searchParams.get("initial_active_doc_type");
+
+  console.debug(initialActiveDocType);
 
   // Derived Values
   const totalPassedDocs = data?.documents?.filter(
@@ -1047,6 +1051,20 @@ export default function Page() {
   const totalNeedsReviewDocs = data?.documents?.filter(
     (d) => d.document_status === "NEEDS_REVIEW",
   )?.length;
+
+  useEffect(() => {
+    if (!initialActiveDocType) return;
+
+    const doc = data?.documents?.find(
+      (d) => d.document_type === initialActiveDocType,
+    );
+    if (doc) {
+      setActiveDoc({
+        index: data?.documents?.indexOf(doc) ?? 0,
+        data: doc,
+      });
+    }
+  }, [initialActiveDocType, data?.documents]);
 
   // Render State Map
   const render = {

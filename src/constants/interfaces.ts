@@ -451,6 +451,7 @@ export interface Interface__TrialDADocumentDetail {
 // PPAT
 export interface Interface__ApplicantItem {
   no: number;
+  verification_id: string;
   registration_id: string;
   nama: string;
   nik: string;
@@ -471,6 +472,7 @@ export interface Interface__ApplicantItem {
 }
 
 export interface Interface__ApplicantDetail {
+  verification_id: string;
   registration_id: string;
   nama: string;
   title: string;
@@ -489,6 +491,7 @@ export interface Interface__ApplicantDetail {
 }
 
 export interface Interface__ApplicantFiles {
+  verification_id: string;
   registration_id: string;
   nama: string;
   nik: string;

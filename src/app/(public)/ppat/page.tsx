@@ -116,7 +116,9 @@ const DetailPilihanTrigger = (props: Props__DetailPilihanTrigger) => {
           },
           {
             td: (
-              <NavLink to={`/ppat/${applicant.registration_id}/viewer`}>
+              <NavLink
+                to={`/ppat/${applicant.verification_id}?initial_active_doc_type=${item.document_type}`}
+              >
                 <Btn colorPalette={"green"}>
                   <AppIcon icon={EyeIcon} />
                   Lihat
@@ -370,7 +372,7 @@ export default function Page() {
                   </Btn>
                 </DetailPilihanTrigger>
 
-                <NavLink to={`/ppat/${item.registration_id}`}>
+                <NavLink to={`/ppat/${item.verification_id}`}>
                   <HStack>
                     <DotIndicator
                       color={isRejected ? "fg.error" : "fg.success"}
