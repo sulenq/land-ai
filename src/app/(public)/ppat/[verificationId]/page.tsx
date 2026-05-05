@@ -9,7 +9,6 @@ import { ClampText } from "@/components/widget/ClampText";
 import FeedbackNoData from "@/components/widget/FeedbackNoData";
 import FeedbackNotFound from "@/components/widget/FeedbackNotFound";
 import FeedbackRetry from "@/components/widget/FeedbackRetry";
-import { DUMMY_PPAT_RESPONSE } from "@/constants/dummyData";
 import { Interface__VerificationResponse } from "@/constants/interfaces";
 import useLang from "@/context/useLang";
 import { useThemeConfig } from "@/context/useThemeConfig";
@@ -1035,8 +1034,8 @@ export default function Page() {
   const [activeDoc, setActiveDoc] = useState<Interface__ActiveDoc | null>(null);
 
   // Constants
-  const data = DUMMY_PPAT_RESPONSE as Interface__VerificationResponse;
-  // const data = response?.data as Interface__VerificationResponse | null;
+  // const data = DUMMY_PPAT_RESPONSE as Interface__VerificationResponse;
+  const data = response?.data as Interface__VerificationResponse | null;
 
   // Derived Values
   const totalPassedDocs = data?.documents?.filter(
