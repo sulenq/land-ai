@@ -267,5 +267,12 @@ export default function useRequest<T = any>(props: Props) {
     ],
   );
 
-  return { req, loading, status, error, response, setReqState };
+  return {
+    req,
+    loading,
+    status,
+    error,
+    response: response as any,
+    setReqState,
+  };
 }

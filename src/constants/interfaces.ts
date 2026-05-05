@@ -449,6 +449,80 @@ export interface Interface__TrialDADocumentDetail {
 }
 
 // PPAT
+export interface Interface__ApplicantItem {
+  no: number;
+  registration_id: string;
+  nama: string;
+  nik: string;
+  wilayah_kerja: string;
+  wilayah_kerja_asal: string;
+  persyaratan: string;
+  status_konfirmasi: {
+    label: string;
+    confirmed_at: string;
+    display: string;
+  };
+  status_verifikasi: {
+    label: string;
+    tone: string;
+  };
+  group: string;
+  detail_url: string;
+}
+
+export interface Interface__ApplicantDetail {
+  registration_id: string;
+  nama: string;
+  title: string;
+  detail: Record<string, string>;
+  rows: {
+    label: string;
+    value: string;
+  }[];
+  sections: {
+    title: string;
+    columns: {
+      label?: string;
+      value?: string;
+    }[][];
+  }[];
+}
+
+export interface Interface__ApplicantFiles {
+  registration_id: string;
+  nama: string;
+  nik: string;
+  title: string;
+  files: {
+    document_type: string;
+    jenis_file: string;
+    file_name: string;
+    file_url: string;
+    ekstensi: string;
+    tanggal_upload: string;
+    tanggal_upload_display: string;
+    ukuran_bytes: number;
+    ukuran: string;
+    wajib: boolean;
+    pilihan: {
+      label: string;
+      file_url: string;
+    };
+    status: {
+      label: string;
+      tone: string;
+    };
+    no: number;
+  }[];
+  summary: {
+    total_files: number;
+    required_uploaded: number;
+    all_required_uploaded: boolean;
+    statuses: Record<string, number>;
+  };
+  notes: string[];
+}
+
 export interface Interface__VerificationResponse {
   verification_id: string;
   registration_id: string;

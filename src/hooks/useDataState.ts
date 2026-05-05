@@ -141,7 +141,7 @@ const useDataState = <T = any>({
     return () => {
       abortControllerRef.current?.abort();
     };
-  }, [url, page, limit, ...(noRt ? [] : [rt]), ...dependencies]);
+  }, [url, page, limit, conditions, ...(noRt ? [] : [rt]), ...dependencies]);
 
   useEffect(() => {
     if (!loadingBar || !conditions) return;

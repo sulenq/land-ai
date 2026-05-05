@@ -435,11 +435,10 @@ export const DataTable = (props: Props__DataTable) => {
                       {...col?.tableCellProps}
                     >
                       <HStack
-                        // className="debug"
                         align={"stretch"}
                         py={3}
                         px={cellPx}
-                        h={"auto"}
+                        h={"full"}
                         minH={tdMinH}
                         bg={isRowSelected ? selectedColor : tdBg}
                         justify={col.align}
@@ -448,7 +447,6 @@ export const DataTable = (props: Props__DataTable) => {
                       >
                         <Box
                           opacity={row.dim || col.dim ? 0.4 : 1}
-                          w="full"
                           minW={0}
                           overflow={"visible"}
                         >
